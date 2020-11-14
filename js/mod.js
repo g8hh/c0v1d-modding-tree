@@ -1,20 +1,19 @@
 let modInfo = {
-	name: "The ??? Tree",
-	id: "mymod",
+	name: "The COVID Tree",
+	id: "c0v1d",
 	author: "nobody",
-	pointsName: "points",
+	pointsName: "cases",
 	discordName: "",
 	discordLink: "",
 	changelogLink: "https://github.com/Acamaeda/The-Modding-Tree/blob/master/changelog.md",
-	initialStartPoints: new Decimal (10), // Used for hard resets and new players
-	
-	offlineLimit: 1,  // In hours
+	initialStartPoints: new Decimal (1), // Used for hard resets and new players
+	offlineLimit: 0,  // In hours
 }
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.0",
-	name: "Literally nothing",
+	num: "0.1",
+	name: "Vorona Cirus",
 }
 
 // If you add new functions anywhere inside of a layer, and those functions have an effect when called, add them here.
@@ -25,31 +24,24 @@ function getStartPoints(){
     return new Decimal(modInfo.initialStartPoints)
 }
 
-// Determines if it should show points/sec
 function canGenPoints(){
-	return true
+	let can=false
+	if(hasVUpg(11)) can = getVUpgEff(11)
+	return can
 }
 
-// Calculate points/sec!
-function getPointGen() {
-	if(!canGenPoints())
-		return new Decimal(0)
-
-	let gain = new Decimal(1)
-	return gain
-}
+    gain = new Decimal(0)
 
 // You can add non-layer related variables that should to into "player" and be saved here, along with default values
 function addedPlayerData() { return {
 }}
 
 // Display extra things at the top of the page
-var displayThings = [
-]
+var displayThings = ["Current endgame: 1e24 cases"]
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.points.gte(new Decimal("e280000000"))
+	return player.points.gte(new Decimal("1e24"))
 }
 
 
