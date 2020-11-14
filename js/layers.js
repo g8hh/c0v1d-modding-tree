@@ -218,6 +218,14 @@ addLayer("i", {
     type: "normal",
     exponent: 0.08,
     branches: ["v"],
+    hotkeys: [
+        {
+            key:"i", description: "I:Reset for infectivity", onPress() {
+                if (canReset(this.layer))
+                    doReset(this.layer)
+            }
+        },
+    ],
     effect(){
         let eff = player.i.points.add(1)
         eff = eff.pow(2)
