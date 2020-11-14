@@ -266,6 +266,9 @@ addLayer("i", {
             effectDisplay(){
             return "^"+format(getIUpgEff(12))
             },
+            unlocked(){
+                return hasIUpg(11)
+            }
         },
     },
 })
