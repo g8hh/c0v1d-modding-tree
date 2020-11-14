@@ -37,7 +37,7 @@ function addedPlayerData() { return {
 }}
 
 // Display extra things at the top of the page
-var displayThings = ["Current endgame: 1e24 cases"]
+var displayThings = ["Current endgame: 1e24 cases (v0.1)"]
 
 // Determines when the game "ends"
 function isEndgame() {
