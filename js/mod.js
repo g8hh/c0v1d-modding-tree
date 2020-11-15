@@ -37,7 +37,7 @@ function addedPlayerData() { return {
 }}
 
 // Display extra things at the top of the page
-var displayThings = ["Current endgame: 1.00e1,320 cases and 1e117 infectivity (v0.2)"]
+var displayThings = ["Current endgame: 1.00e1,320 cases and 1.00e117 infectivity (v0.2)"]
 
 // Determines when the game "ends"
 function isEndgame() {
