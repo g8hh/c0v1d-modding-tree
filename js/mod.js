@@ -41,7 +41,7 @@ var displayThings = ["Current endgame: 1.00e3,580 cases and 1.00e320 infectivity
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.points.gte(new Decimal("e3580")) && player.i.points.gte(new Decimal("1e117"))
+	return player.points.gte(new Decimal("e3580")) && player.i.points.gte(new Decimal("1e320"))
 }
 
 
