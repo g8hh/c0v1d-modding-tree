@@ -1,5 +1,5 @@
 let modInfo = {
-	name: "Vorona Cirus Treesease",
+	name: "Plague Tree (Vorona Cirus Treesease)",
 	id: "c0v1d",
 	author: "Vorona",
 	pointsName: "cases",
@@ -12,7 +12,7 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.2",
+	num: "0.2.1",
 	name: "Vorona Cirus",
 }
 
@@ -37,11 +37,11 @@ function addedPlayerData() { return {
 }}
 
 // Display extra things at the top of the page
-var displayThings = ["Current endgame: 1.00e1,320 cases and 1.00e117 infectivity (v0.2)"]
+var displayThings = ["Current endgame: 1.00e3,580 cases and 1.00e320 infectivity (v0.2.1)"]
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.points.gte(new Decimal("1e1320")) && player.i.points.gte(new Decimal("1e117"))
+	return player.points.gte(new Decimal("e3580")) && player.i.points.gte(new Decimal("1e117"))
 }
 
 
