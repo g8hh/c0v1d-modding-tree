@@ -827,6 +827,9 @@ addLayer("u", {
             effectDisplay(){
             return format(getUUpgEff(12))+"x"
             },
+            unlocked(){
+                return hasUUpg(11)
+            }
         },
         13: {
             title: "Synergy",
@@ -842,6 +845,9 @@ addLayer("u", {
             effectDisplay(){
             return format(this.effect().r)+"x to replicators base, "+format(this.effect().u)+"x to uncoaters base."
             },
+            unlocked(){
+                return hasUUpg(12)
+            }
         },
     },
 })
