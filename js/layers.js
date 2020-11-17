@@ -120,7 +120,7 @@ addLayer("v", {
         let keep = [];
         if (hasMilestone("i", 0) && resettingLayer=="i") keep.push("upgrades")
         if (hasMilestone("r", 0) && resettingLayer=="r") keep.push("upgrades")
-        if (hasMilestone("u", 0) && resettingLayer=="u") keep.push("upgrades")
+        if (hasMilestone("u", 1) && resettingLayer=="u") keep.push("upgrades")
         if (layers[resettingLayer].row > this.row) layerDataReset(this.layer, keep)
     },
     upgrades: {
@@ -143,8 +143,8 @@ addLayer("v", {
                 if(hasIUpg(21)) base = base.add(getIUpgEff(21))
                 if(hasIUpg(22)) base = base.add(getIUpgEff(22))
                 base = base.add(layers.r.effect2())
-                if(hasIUpg(21) && hasIUpg(31)) base = base.mul(getIUpgEff(21))
-                if(hasIUpg(22) && hasIUpg(32)) base = base.mul(getIUpgEff(22))
+                if(hasIUpg(21) && hasIUpg(31)) base = base.mul(getIUpgEff(21).add(1))
+                if(hasIUpg(22) && hasIUpg(32)) base = base.mul(getIUpgEff(22).add(1))
                 if(hasUUpg(11)) base = base.mul(getUUpgEff(11))
                 if(hasVUpg(23)) base = base.pow(getVUpgEff(23))
                 return base
@@ -163,15 +163,22 @@ addLayer("v", {
             effect(){
                 let v13 = player.v.points.add(2)
                 let v13sf = new Decimal("1.8e308")
+                let v13sf2 = new Decimal("1e2370")
                 v13 = v13.pow(1/2)
                 if(hasUUpg(12)) v13sf = v13sf.mul(getUUpgEff(12))
+                if(hasUUpg(12)) v13sf2 = v13sf2.mul(getUUpgEff(12)).add(1)
                 if(hasIUpg(12)) v13 = v13.pow(getIUpgEff(12))
-                if(v13.gte(v13sf)) v13 = v13.mul(v13sf).pow(0.5)
-                return v13
+                if(v13.gte(v13sf)) v13 = v13.mul(v13sf).pow(0.5) 
+                if(v13.gte(v13sf2)) {
+                    v13 = Decimal.pow(10,Decimal.log10(v13.div(v13sf2)).pow(0.8)).mul(v13sf2)
+                }
+                return v13  
             },
             effectDisplay(){
+                let v13sf = new Decimal("1.8e308")
+                if(hasUUpg(12)) v13sf = v13sf.mul(getUUpgEff(12))
                 let v13dis = format(getVUpgEff(13))+"x"
-                if (getVUpgEff(13).gte(new Decimal("1.8e308"))) v13dis = v13dis+" (softcapped)"
+                if (getVUpgEff(13).gte(v13sf)) v13dis = v13dis+" (softcapped)"
             return v13dis
             },
             unlocked(){
@@ -316,6 +323,7 @@ addLayer("i", {
     doReset(resettingLayer) {
         let keep = [];
         if (hasMilestone("u", 0) && resettingLayer=="u") keep.push("milestones")
+        if (hasMilestone("u", 3) && resettingLayer=="u") keep.push("upgrades")
         if (layers[resettingLayer].row > this.row) layerDataReset(this.layer, keep)
     },
     effect(){
@@ -375,15 +383,19 @@ addLayer("i", {
             cost: new Decimal(20),
             effect(){
             let i12 = player.i.points.add(15)
+            let i12sf = new Decimal(1.35)
             i12 = Decimal.log10(i12.mul(2)).pow(0.3)
-            if (i12.gte(1.35)) i12 = i12.mul(Decimal.pow(1.35,2)).pow(1/3)
-            if (i12.gte(2)) i12 = new Decimal(2)
+            if (hasUUpg(21)) i12sf = i12sf.mul(getUUpgEff(21))
+            if (i12.gte(i12sf)) i12 = i12.mul(Decimal.pow(i12sf,2)).pow(1/3)
+            if (i12.gte(2) && !hasUUpg(21)) i12 = new Decimal(2)
             return i12
             },
             effectDisplay(){
                 let i12dis = "^"+format(getIUpgEff(12))
-                if (getIUpgEff(12).gte(1.4) && getIUpgEff(12).lt(2)) i12dis = i12dis+" (softcapped)" 
-                if (getIUpgEff(12).gte(2)) i12dis = i12dis+" (hardcapped)"
+                let i12sf = new Decimal(1.35)
+                if (hasUUpg(21)) i12sf = i12sf.mul(getUUpgEff(21))
+                if ((getIUpgEff(12).gte(i12sf) && getIUpgEff(12).lt(2)) || (hasUUpg(21) && getIUpgEff(12).gte(i12sf))) i12dis = i12dis+" (softcapped)" 
+                if (getIUpgEff(12).gte(2) && !hasUUpg(21)) i12dis = i12dis+" (hardcapped)"
             return i12dis
             },
             unlocked(){
@@ -515,6 +527,7 @@ addLayer("r", {
         points: new Decimal(0),
         total: new Decimal(0),
         best: new Decimal(0),
+        auto: false,
     unlocked: false
     }},
     color: "#df34c9",
@@ -537,8 +550,11 @@ addLayer("r", {
     doReset(resettingLayer) {
         let keep = [];
         if (hasMilestone("u", 0) && resettingLayer=="u") keep.push("milestones")
+        if (hasMilestone("u", 3) && resettingLayer=="u") keep.push("upgrades")
         if (layers[resettingLayer].row > this.row) layerDataReset(this.layer, keep)
     },
+    automate() {},
+    autoPrestige() { return (hasMilestone("u", 4) && player.r.auto) },
     effect(){
         let eff = new Decimal(100)
         if(hasRUpg(11)) eff = eff.mul(getRUpgEff(11))
@@ -551,6 +567,7 @@ addLayer("r", {
         let eff2 = player.r.points
         eff2 = eff2.pow(0.75)
         if(hasRUpg(21)) eff2 = eff2.mul(getRUpgEff(21))
+        if(hasUUpg(22)) eff2 = eff2.pow(getUUpgEff(22))
         return eff2
     },
     effectDescription() {
@@ -558,6 +575,7 @@ addLayer("r", {
     },
     gainMult() {
         rmult = new Decimal(1)
+        if(hasUUpg(14)) rmult = rmult.div(getUUpgEff(14))
         return rmult
     },
     gainExp() {
@@ -796,16 +814,27 @@ addLayer("u", {
             effectDescription: "Gain 100% of infectivity gain per second.",
             done() { return player.u.points.gte(6) }
         },
+        3: {
+            requirementDescription: "8 uncoaters",
+            effectDescription: "Keep Infectivity/Replicator upgrades on reset.",
+            done() { return player.u.points.gte(8) }
+        },
+        4: {
+            requirementDescription: "11 uncoaters",
+            effectDescription: "Autobuy replicators.",
+            toggles: [["r", "auto"]],
+            done() { return player.u.points.gte(11) }
+        },
     },
     upgrades: {
-        rows: 3,
-        cols: 3,
+        rows: 2,
+        cols: 4,
         11: {
             title: "Uncoated Infection",
-            description: "Uncoaters boosts 'Infection' base.",
+            description: "Best uncoaters boosts 'Infection' base.",
             cost: new Decimal(2),
             effect(){
-            let u11 = player.u.points.add(1)
+            let u11 = player.u.best.add(1)
             u11 = u11.pow(4.5)
             return u11
             },
@@ -822,10 +851,13 @@ addLayer("u", {
             u12 = u12.pow(7.5)
             let rep = player.r.points
             u12 = u12.pow(rep.div(10).add(1))
+            if (u12.gte(new Decimal("e1500"))) u12 = u12.div(new Decimal("e1500")).pow(0.3).mul(new Decimal("e1500"))
             return u12
             },
             effectDisplay(){
-            return format(getUUpgEff(12))+"x"
+                let u12dis = format(getUUpgEff(12))+"x"
+                if (this.effect().gte(new Decimal("e1500"))) u12dis = u12dis + " (softcapped)"
+                return u12dis
             },
             unlocked(){
                 return hasUUpg(11)
@@ -847,6 +879,58 @@ addLayer("u", {
             },
             unlocked(){
                 return hasUUpg(12)
+            }
+        },
+        14: {
+            title: "Genome Replication",
+            description: "Cases make replicators cheaper.",
+            cost: new Decimal(6),
+            effect(){
+            let u14 = player.points.add(1)
+            u14 = Decimal.log10(u14).pow(0.83)
+            u14 = Decimal.pow(10,u14).pow(1.536)
+            return u14
+            },
+            effectDisplay(){
+            return format(getUUpgEff(14))+"x"
+            },
+            unlocked(){
+                return hasUUpg(13)
+            }
+        },
+        21: {
+            title: "Bird Transmission",
+            description: "Remove 'Air Transmission' hardcap and its softcap starts later based on cases.",
+            cost: new Decimal(8),
+            effect(){
+            let u21 = player.points.add(10)
+            u21 = Decimal.log10(u21).add(10)
+            u21 = Decimal.log10(u21).add(10)
+            u21 = u21.pow(0.1).div(1.12)
+            return u21
+            },
+            effectDisplay(){
+            return format(getUUpgEff(21))+"x"
+            },
+            unlocked(){
+                return hasUUpg(14)
+            }
+        },
+        22: {
+            title: "Viral Proteins",
+            description: "Infectivity boosts replicators 2nd effect.",
+            cost: new Decimal(10),
+            effect(){
+            let u22 = player.i.points.add(10)
+            u22 = Decimal.log10(u22)
+            u22 = u22.pow(0.26).add(0.13)
+            return u22
+            },
+            effectDisplay(){
+            return "^"+format(getUUpgEff(22))
+            },
+            unlocked(){
+                return hasUUpg(21)
             }
         },
     },
