@@ -12,7 +12,7 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.2.2",
+	num: "0.3",
 	name: "Vorona Cirus",
 }
 
@@ -37,11 +37,11 @@ function addedPlayerData() { return {
 }}
 
 // Display extra things at the top of the page
-var displayThings = ["Current endgame: 1.00e9,032 cases and 1.00e780 infectivity (v0.2.2)"]
+var displayThings = ["Current endgame: e117,170 cases and e10,310 infectivity (v0.3)"]
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.points.gte(new Decimal("e9032")) && player.i.points.gte(new Decimal("1e780"))
+	return player.points.gte(new Decimal("e117170")) && player.i.points.gte(new Decimal("e10310"))
 }
 
 

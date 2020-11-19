@@ -24,6 +24,9 @@ function getUUpgEff(id){
 }
 function getPointGen() {
     let gain = new Decimal(0.1)
+    let c22c = challengeCompletions("u", 11)+challengeCompletions("u", 12)+challengeCompletions("u", 21)+challengeCompletions("u", 22)-5
+    c22c = Decimal.add(c22c, 1)
+    c22c = Decimal.pow(5, c22c)
     if(!canGenPoints()) gain = new Decimal(0)
     if(hasVUpg(12)) gain = gain.mul(getVUpgEff(12))
     if(hasVUpg(13)) gain = gain.mul(getVUpgEff(13))
@@ -31,6 +34,7 @@ function getPointGen() {
     gain = gain.mul(layers.i.effect())
     gain = gain.mul(layers.r.effect())
     gain = gain.mul(layers.u.effect())
+    if (inChallenge("u", 22)) gain = Decimal.mul(gain ,c22c)
 	return gain
 }
 
@@ -140,6 +144,7 @@ addLayer("v", {
             cost: new Decimal(5),
             effect(){
                 let base = new Decimal(2)
+                let v12sf = new Decimal("e10000")
                 if(hasIUpg(21)) base = base.add(getIUpgEff(21))
                 if(hasIUpg(22)) base = base.add(getIUpgEff(22))
                 base = base.add(layers.r.effect2())
@@ -147,10 +152,15 @@ addLayer("v", {
                 if(hasIUpg(22) && hasIUpg(32)) base = base.mul(getIUpgEff(22).add(1))
                 if(hasUUpg(11)) base = base.mul(getUUpgEff(11))
                 if(hasVUpg(23)) base = base.pow(getVUpgEff(23))
+                if(base.gte(v12sf)) base = Decimal.pow(10,Decimal.log10(base.div(v12sf)).pow(3/4)).mul(v12sf)
+                if (inChallenge("u", 12)) base = new Decimal(1)
                 return base
             },
             effectDisplay(){
-                return format(getVUpgEff(12))+"x"
+                let v12dis = format(getVUpgEff(12))+"x"
+                let v12sf = new Decimal("e10000")
+                if (getVUpgEff(12).gte(v12sf)) v12dis = v12dis+" (softcapped)"
+                return v12dis
             },
             unlocked(){
                 return hasVUpg(11)
@@ -164,13 +174,19 @@ addLayer("v", {
                 let v13 = player.v.points.add(2)
                 let v13sf = new Decimal("1.8e308")
                 let v13sf2 = new Decimal("1e2370")
+                let v13sff = new Decimal(0.5)
+                let v13sff2 = new Decimal(0.8)
                 v13 = v13.pow(1/2)
                 if(hasUUpg(12)) v13sf = v13sf.mul(getUUpgEff(12))
                 if(hasUUpg(12)) v13sf2 = v13sf2.mul(getUUpgEff(12)).add(1)
+                if (inChallenge("u", 22)) v13sf = new Decimal(1)
+                if (inChallenge("u", 22)) v13sf2 = new Decimal(1)
+                if (hasChallenge("u", 22)) v13sff = v13sff.pow(challengeEffect("u", 22).pow(-1))
+                if (hasChallenge("u", 22)) v13sff2 = v13sff2.pow(challengeEffect("u", 22).pow(-1))
                 if(hasIUpg(12)) v13 = v13.pow(getIUpgEff(12))
-                if(v13.gte(v13sf)) v13 = v13.mul(v13sf).pow(0.5) 
+                if(v13.gte(v13sf)) v13 = v13.mul(v13sf).pow(v13sff) 
                 if(v13.gte(v13sf2)) {
-                    v13 = Decimal.pow(10,Decimal.log10(v13.div(v13sf2)).pow(0.8)).mul(v13sf2)
+                    v13 = Decimal.pow(10,Decimal.log10(v13.div(v13sf2)).pow(v13sff2)).mul(v13sf2)
                 }
                 return v13  
             },
@@ -178,7 +194,7 @@ addLayer("v", {
                 let v13sf = new Decimal("1.8e308")
                 if(hasUUpg(12)) v13sf = v13sf.mul(getUUpgEff(12))
                 let v13dis = format(getVUpgEff(13))+"x"
-                if (getVUpgEff(13).gte(v13sf)) v13dis = v13dis+" (softcapped)"
+                if (getVUpgEff(13).gte(v13sf) || inChallenge("u", 22)) v13dis = v13dis+" (softcapped)"
             return v13dis
             },
             unlocked(){
@@ -329,6 +345,7 @@ addLayer("i", {
     effect(){
         let eff = player.i.points.add(1)
         eff = eff.pow(2)
+        if (inChallenge("u", 12)) eff = new Decimal(1)
         return eff
     },
     effectDescription() {
@@ -371,6 +388,7 @@ addLayer("i", {
             cost: new Decimal(10),
             effect(){
             let i11 = player.i.points.add(1)
+            if (inChallenge("u", 12)) i11 = new Decimal(1)
             return i11
             },
             effectDisplay(){
@@ -388,6 +406,7 @@ addLayer("i", {
             if (hasUUpg(21)) i12sf = i12sf.mul(getUUpgEff(21))
             if (i12.gte(i12sf)) i12 = i12.mul(Decimal.pow(i12sf,2)).pow(1/3)
             if (i12.gte(2) && !hasUUpg(21)) i12 = new Decimal(2)
+            if (inChallenge("u", 12)) i12 = new Decimal(1)
             return i12
             },
             effectDisplay(){
@@ -427,6 +446,7 @@ addLayer("i", {
             let i21 = player.i.points.add(1)
             i21 = Decimal.log10(i21).pow(0.5)
             if(hasIUpg(31)) i21 = i21.mul(getIUpgEff(31))
+            if (inChallenge("u", 12)) i21 = new Decimal(1)
             return i21
             },
             effectDisplay(){
@@ -477,6 +497,7 @@ addLayer("i", {
             effect(){
             let i31 = player.r.points.add(1)
             i31 = i31.pow(0.78)
+            if (inChallenge("u", 21)) i31 = new Decimal(1)
             return i31
             },
             effectDisplay(){
@@ -492,6 +513,7 @@ addLayer("i", {
             cost: new Decimal("4.20e69"),
             effect(){
             let i32 = player.r.points.add(1)
+            if (inChallenge("u", 21)) i32 = new Decimal(1)
             return i32
             },
             effectDisplay(){
@@ -508,6 +530,8 @@ addLayer("i", {
             effect(){
             let i33 = player.i.points.add(10)
             i33 = Decimal.log10(i33).pow(1/3)
+            if (inChallenge("u", 12)) i33 = new Decimal(1)
+            if (hasChallenge("u", 12)) i33 = i33.pow(challengeEffect("u", 12))
             return i33
             },
             effectDisplay(){
@@ -527,7 +551,6 @@ addLayer("r", {
         points: new Decimal(0),
         total: new Decimal(0),
         best: new Decimal(0),
-        auto: false,
     unlocked: false
     }},
     color: "#df34c9",
@@ -554,13 +577,15 @@ addLayer("r", {
         if (layers[resettingLayer].row > this.row) layerDataReset(this.layer, keep)
     },
     automate() {},
-    autoPrestige() { return (hasMilestone("u", 4) && player.r.auto) },
+    autoPrestige() { return (hasMilestone("u", 4) && player.u.auto) },
     effect(){
         let eff = new Decimal(100)
         if(hasRUpg(11)) eff = eff.mul(getRUpgEff(11))
         if(hasRUpg(13)) eff = eff.mul(getRUpgEff(13))
         if(hasUUpg(13)) eff = eff.mul(upgradeEffect("u",13).r)
+        if(hasChallenge("u", 21)) eff = eff.mul(challengeEffect("u", 21))
         eff = Decimal.pow(eff,player.r.points)
+        if (inChallenge("u", 21)) eff = new Decimal(1)
         return eff
     },
     effect2(){
@@ -568,6 +593,7 @@ addLayer("r", {
         eff2 = eff2.pow(0.75)
         if(hasRUpg(21)) eff2 = eff2.mul(getRUpgEff(21))
         if(hasUUpg(22)) eff2 = eff2.pow(getUUpgEff(22))
+        if (inChallenge("u", 21)) eff2 = new Decimal(0)
         return eff2
     },
     effectDescription() {
@@ -582,6 +608,7 @@ addLayer("r", {
         return new Decimal(1)
     },
     row: 1,
+    resetsNothing() { return hasMilestone("u", 5) },
     layerShown() {
         let shown = player.i.total.gte(new Decimal(1))
         if(player.r.unlocked) shown = true
@@ -612,6 +639,7 @@ addLayer("r", {
             effect(){
             let r11 = player.i.points.add(10)
             r11 = Decimal.log10(r11).pow(1.2).add(1)
+            if (inChallenge("u", 12)) r11 = new Decimal(1)
             return r11
             },
             effectDisplay(){
@@ -626,6 +654,7 @@ addLayer("r", {
             let r12 = player.r.points.add(10)
             r12 = Decimal.log10(r12).pow(1.6).mul(1.65).add(1)
             if(hasRUpg(33)) r12 = r12.pow(getRUpgEff(33))
+            if (inChallenge("u", 21)) r12 = new Decimal(1)
             return r12
             },
             effectDisplay(){
@@ -692,6 +721,9 @@ addLayer("r", {
             effect(){
             let r23 = player.r.points.add(10)
             r23 = Decimal.log10(r23).pow(2.4).add(1)
+            if (hasChallenge("u", 22)) r23 = r23.mul(challengeEffect("u", 22))
+            if (hasUUpg(24)) r23 = r23.pow(getUUpgEff(24))
+            if (inChallenge("u", 21)) r23 = new Decimal(1)
             return r23
             },
             effectDisplay(){
@@ -708,6 +740,7 @@ addLayer("r", {
             effect(){
             let r31 = player.r.points.add(10)
             r31 = Decimal.log10(r31).pow(3.8).add(1)
+            if (inChallenge("u", 21)) r31 = new Decimal(1)
             return r31
             },
             effectDisplay(){
@@ -752,6 +785,7 @@ addLayer("u", {
         points: new Decimal(0),
         best: new Decimal(0),
         total: new Decimal(0),
+        auto: false,
     unlocked: false
     }},
     color: "#3fa3d3",
@@ -775,11 +809,14 @@ addLayer("u", {
         let eff = new Decimal("30")
         if(hasUUpg(13)) eff = eff.mul(upgradeEffect("u",13).u)
         eff = eff.pow(player.u.points)
+        if (inChallenge("u", 11)) eff = new Decimal(1)
         return eff
     },
     effect2(){
         let eff2 = player.u.points.add(10)
         eff2 = Decimal.log10(eff2).pow(3)
+        if(hasUUpg(23)) eff2 = eff2.pow(getUUpgEff(23))
+        if (inChallenge("u", 11)) eff2 = new Decimal(1)
         return eff2
     },
     effectDescription() {
@@ -787,6 +824,10 @@ addLayer("u", {
     },
     gainMult() {
         umult = new Decimal(1)
+        let u = player.u.points
+        let usc = new Decimal(30)
+        if (hasChallenge("u", 11)) umult = umult.div(challengeEffect("u", 11))
+        if (u.gte(usc)) umult = umult.mul(Decimal.pow(1e10, u.sub(usc).pow(3.2)))
         return umult
     },
     gainExp() {
@@ -822,8 +863,18 @@ addLayer("u", {
         4: {
             requirementDescription: "11 uncoaters",
             effectDescription: "Autobuy replicators.",
-            toggles: [["r", "auto"]],
+            toggles: [["u", "auto"]],
             done() { return player.u.points.gte(11) }
+        },
+        5: {
+            requirementDescription: "13 uncoaters",
+            effectDescription: "Replicators reset nothing.",
+            done() { return player.u.points.gte(13) }
+        },
+        6: {
+            requirementDescription: "15 uncoaters",
+            effectDescription: "Unlock uncoater challenges.",
+            done() { return player.u.points.gte(15) }
         },
     },
     upgrades: {
@@ -836,6 +887,7 @@ addLayer("u", {
             effect(){
             let u11 = player.u.best.add(1)
             u11 = u11.pow(4.5)
+            if (inChallenge("u", 11)) u11 = new Decimal(1)
             return u11
             },
             effectDisplay(){
@@ -851,6 +903,8 @@ addLayer("u", {
             u12 = u12.pow(7.5)
             let rep = player.r.points
             u12 = u12.pow(rep.div(10).add(1))
+            if (inChallenge("u", 11)) u12 = new Decimal(1)
+            if (inChallenge("u", 21)) u12 = new Decimal(1)
             if (u12.gte(new Decimal("e1500"))) u12 = u12.div(new Decimal("e1500")).pow(0.3).mul(new Decimal("e1500"))
             return u12
             },
@@ -872,6 +926,8 @@ addLayer("u", {
                 let u13b = player.r.points.add(1)
                 u13 = u13.pow(2.2)
                 u13b = u13b.pow(0.63)
+                if (inChallenge("u", 11)) u13 = new Decimal(1)
+                if (inChallenge("u", 21)) u13b = new Decimal(1)
                 return {r:u13, u:u13b}
             },
             effectDisplay(){
@@ -924,6 +980,7 @@ addLayer("u", {
             let u22 = player.i.points.add(10)
             u22 = Decimal.log10(u22)
             u22 = u22.pow(0.26).add(0.13)
+            if (inChallenge("u", 12)) u22 = new Decimal(1)
             return u22
             },
             effectDisplay(){
@@ -933,5 +990,176 @@ addLayer("u", {
                 return hasUUpg(21)
             }
         },
+        23: {
+            title: "Viral Enzymes",
+            description: "Infectivity boosts uncoaters 2nd effect.",
+            cost: new Decimal(11),
+            effect(){
+            let u23 = player.i.points.add(10)
+            u23 = Decimal.log10(u23)
+            u23 = u23.pow(0.0747)
+            if (inChallenge("u", 12)) u23 = new Decimal(1)
+            return u23
+            },
+            effectDisplay(){
+            return "^"+format(getUUpgEff(23))
+            },
+            unlocked(){
+                return hasUUpg(22)
+            }
+        },
+        24: {
+            title: "Endocytosis",
+            description: "'Transcription' is stronger based on uncoaters.",
+            cost: new Decimal(13),
+            effect(){
+            let u24 = player.u.points.add(10)
+            u24 = Decimal.log10(u24)
+            u24 = u24.pow(1.523)
+            if (inChallenge("u", 11)) u24 = new Decimal(1)
+            return u24
+            },
+            effectDisplay(){
+            return "^"+format(getUUpgEff(24))
+            },
+            unlocked(){
+                return hasUUpg(23)
+            }
+        },
     },
+    challenges: {
+        rows: 2,
+        cols: 2,
+        11: {
+            name: "Coated",
+            challengeDescription: function() {
+                let c11 = "Uncoaters are useless."
+                if (inChallenge("u", 11)) c11 = c11 + " (In Challenge)"
+                if (challengeCompletions("u", 11) == 3) c11 = c11 + " (Completed)"
+                c11 = c11 + "<br>Completed:" + challengeCompletions("u",11) + "/" + this.completionLimit
+                return c11
+            },
+            goal(){
+                if (challengeCompletions("u", 11) == 0) return new Decimal("e2615");
+                if (challengeCompletions("u", 11) == 1) return new Decimal("e2870");
+                if (challengeCompletions("u", 11) == 2) return new Decimal("e4865");
+            },
+            currencyDisplayName: "cases",
+            completionLimit:3 ,
+            rewardDescription: "Infectivity makes uncoaters cheaper.",
+            rewardEffect() {
+                 let c11 = player.i.points.add(1)
+                 let c11r = new Decimal(1.27)
+                 let c11c = challengeCompletions("u", 11)
+                 c11c = Decimal.pow(1.2, c11c)
+                 c11 = Decimal.log10(c11).pow(0.7)
+                 c11 = Decimal.pow(10,c11)
+                 c11r = c11r.mul(c11c)
+                 c11 = c11.pow(c11r)
+                 if (inChallenge("u", 12)) c11 = new Decimal(1)
+                 return c11
+            },
+            rewardDisplay() {return format(this.rewardEffect())+"x"},
+            unlocked(){
+                return hasMilestone("u", 6)
+            }
+        },
+        12: {
+            name: "Disinfectant",
+            challengeDescription: function() {
+                let c12 = "Infectivity and 'Infection' are useless."
+                if (inChallenge("u", 12)) c12 = c12 + " (In Challenge)"
+                if (challengeCompletions("u", 12) == 3) c12 = c12 + " (Completed)"
+                c12 = c12 + "<br>Completed:" + challengeCompletions("u",12) + "/" + this.completionLimit
+                return c12
+            },
+            goal(){
+                if (challengeCompletions("u", 12) == 0) return new Decimal("e715");
+                if (challengeCompletions("u", 12) == 1) return new Decimal("5e2360");
+                if (challengeCompletions("u", 12) == 2) return new Decimal("e3435");
+            },
+            currencyDisplayName: "cases",
+            completionLimit:3 ,
+            rewardDescription: "Cases boost 'Genetic ReShuffle'.",
+            rewardEffect() {
+                 let c12 = player.points.add(10)
+                 let c12r = new Decimal(1/5)
+                 let c12c = challengeCompletions("u", 12)
+                 c12c = Decimal.div(c12c, 20)
+                 c12r = c12r.add(c12c)
+                 c12 = Decimal.log10(c12).add(10)
+                 c12 = Decimal.log10(c12).pow(c12r)
+                 return c12
+            },
+            rewardDisplay() {return "^"+format(this.rewardEffect())},
+            unlocked(){
+                return hasChallenge("u", 11)
+            }
+        },
+        21: {
+            name: "Unreplicated",
+            challengeDescription: function() {
+                let c21 = "Replicators are useless."
+                if (inChallenge("u", 21)) c21 = c21 + " (In Challenge)"
+                if (challengeCompletions("u", 21) == 3) c21 = c21 + " (Completed)"
+                c21 = c21 + "<br>Completed:" + challengeCompletions("u",21) + "/" + this.completionLimit
+                return c21
+            },
+            goal(){
+                if (challengeCompletions("u", 21) == 0) return new Decimal("e3750");
+                if (challengeCompletions("u", 21) == 1) return new Decimal("e5755");
+                if (challengeCompletions("u", 21) == 2) return new Decimal("e6950");
+            },
+            currencyDisplayName: "cases",
+            completionLimit:3 ,
+            rewardDescription: "Cases boost replicators 1st effect base.",
+            rewardEffect() {
+                 let c21 = player.points.add(10)
+                 let c21r = new Decimal(0.5)
+                 let c21c = challengeCompletions("u", 21)
+                 c21c = Decimal.div(c21c, 2)
+                 c21r = c21r.add(c21c)
+                 c21 = Decimal.log10(c21).pow(c21r)
+                 return c21
+            },
+            rewardDisplay() {return format(this.rewardEffect())+"x"},
+            unlocked(){
+                return hasChallenge("u", 12)
+            }
+        },
+        22: {
+            name: "Masks",
+            challengeDescription: function() {
+                let c22 = "'Transmission' softcap starts instantly and 'Coated' and 'Disinfectant' are applied at once. Cases gain is multiplied by 5^(total challenge completions-4)"
+                if (inChallenge("u", 22)) c22 = c22 + " (In Challenge)"
+                if (challengeCompletions("u", 22) == 3) c22 = c22 + " (Completed)"
+                c22 = c22 + "<br>Completed:" + challengeCompletions("u",22) + "/" + this.completionLimit
+                return c22
+            },
+            goal(){
+                if (challengeCompletions("u", 22) == 0) return new Decimal("e14");
+                if (challengeCompletions("u", 22) == 1) return new Decimal("3e19");
+                if (challengeCompletions("u", 22) == 2) return new Decimal("3e21");
+            },
+            currencyDisplayName: "cases",
+            completionLimit:3 ,
+            countsAs: [11, 12],
+            rewardDescription: "VP boosts 'Transcription' and makes 'Transmission' softcap weaker.",
+            rewardEffect() {
+                 let c22 = player.v.points.add(10)
+                 let c22r = new Decimal(0.15)
+                 let c22c = challengeCompletions("u", 22)
+                 c22c = Decimal.div(c22c, 20)
+                 c22r = c22r.add(c22c)
+                 c22 = Decimal.log10(c22).add(10)
+                 c22 = Decimal.max(Decimal.log10(c22).pow(c22r).div(1.15),1)
+                 return c22
+            },
+            rewardDisplay() {return format(this.rewardEffect())+"x"},
+            unlocked(){
+                return hasChallenge("u", 21)
+            }
+        },
+    },
+    
 })
