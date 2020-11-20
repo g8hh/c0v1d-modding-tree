@@ -7,13 +7,13 @@ let modInfo = {
 	discordLink: "",
 	changelogLink: "https://github.com/Acamaeda/The-Modding-Tree/blob/master/changelog.md",
 	initialStartPoints: new Decimal (1), // Used for hard resets and new players
-	offlineLimit: 0.1,  // In hours
+	offlineLimit: 0.01,  // In hours
 }
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.3",
-	name: "Vorona Cirus Challenge",
+	num: "0.3.1",
+	name: "Vorona Cirus Cimptom",
 }
 
 // If you add new functions anywhere inside of a layer, and those functions have an effect when called, add them here.
@@ -37,11 +37,11 @@ function addedPlayerData() { return {
 }}
 
 // Display extra things at the top of the page
-var displayThings = ["Current endgame: e117,170 cases and e10,310 infectivity (v0.3)"]
+var displayThings = ["Current endgame: e324,000 cases and e34,725 infectivity (v0.3.1)"]
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.points.gte(new Decimal("e117170")) && player.i.points.gte(new Decimal("e10310"))
+	return player.points.gte(new Decimal("e324000")) && player.i.points.gte(new Decimal("e34725"))
 }
 
 
