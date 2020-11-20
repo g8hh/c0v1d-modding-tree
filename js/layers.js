@@ -856,7 +856,7 @@ addLayer("u", {
         if(hasUUpg(13)) eff = eff.mul(upgradeEffect("u",13).u)
         if(hasSUpg(11)) eff = eff.mul(getSUpgEff(11))
         if(hasSUpg(13)) eff = eff.mul(getSUpgEff(13))
-        if (getBuyableAmount("s", 11).gte(1)) eff = eff.mul(layers.s.buyables[22].effect().add(1))
+        if (getBuyableAmount("s", 22).gte(1)) eff = eff.mul(layers.s.buyables[22].effect().add(1))
         eff = eff.pow(player.u.points)
         if (inChallenge("u", 11)) eff = new Decimal(1)
         return eff
