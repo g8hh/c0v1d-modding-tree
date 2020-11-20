@@ -104,7 +104,7 @@ addLayer("stat", {
         if(hasUUpg(13)) ueff = ueff.mul(upgradeEffect("u",13).u)
         if(hasSUpg(11)) ueff = ueff.mul(getSUpgEff(11))
         if(hasSUpg(13)) ueff = ueff.mul(getSUpgEff(13))
-        ueff = ueff.mul(layers.s.buyables[22].effect().add(1))
+        if (getBuyableAmount("s", 22).gte(1)) ueff = ueff.mul(layers.s.buyables[22].effect().add(1))
         if (player.u.unlocked) return "Uncoater base:"+format(ueff)
         }],
     ],
