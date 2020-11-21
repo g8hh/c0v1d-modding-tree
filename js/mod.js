@@ -12,7 +12,7 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.3.1",
+	num: "0.3.2",
 	name: "Vorona Cirus Cimptom Challenge",
 }
 
@@ -37,11 +37,11 @@ function addedPlayerData() { return {
 }}
 
 // Display extra things at the top of the page
-var displayThings = ["Current endgame: e324,000 cases and e34,725 infectivity (v0.3.1)"]
+var displayThings = ["Current endgame: 1.8e308 severity (v0.3.2)"]
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.points.gte(new Decimal("e324000")) && player.i.points.gte(new Decimal("e34725"))
+	return player.s.severity.gte(new Decimal("1.8e308"))
 }
 
 
@@ -50,5 +50,5 @@ function isEndgame() {
 
 // You can change this if you have things that can be messed up by long tick lengths
 function maxTickLength() {
-	return(3600000) // Default is 1 hour which is just arbitrarily large
+	return(36000) // Default is 1 hour which is just arbitrarily large
 }
