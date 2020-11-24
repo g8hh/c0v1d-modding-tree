@@ -2080,7 +2080,7 @@ addLayer("d", {
         11: {
             title: "Deadly",
             description: "Deaths boosts symptom base.",
-            cost: new Decimal(10),
+            cost: new Decimal(5),
             effect(){
             let d11 = player.d.points.add(1)
             d11 = Decimal.log10(d11).pow(4).add(1)
@@ -2096,7 +2096,7 @@ addLayer("d", {
         12: {
             title: "Fatal",
             description: "Cases boost death gain.",
-            cost: new Decimal(20),
+            cost: new Decimal(10),
             effect(){
             let d12 = player.points.add(1)
             d12 = Decimal.log10(d12).pow(0.07).add(1)
@@ -2112,7 +2112,7 @@ addLayer("d", {
         13: {
             title: "Lethal",
             description: "Deaths boost 'Infectivity Gain' base.",
-            cost: new Decimal(50),
+            cost: new Decimal(30),
             effect(){
             let d12 = player.d.points.add(1)
             d12 = d12.pow(20)
@@ -2128,7 +2128,7 @@ addLayer("d", {
         14: {
             title: "Blood Transmission",
             description: "Deaths boost 'Transmission'.",
-            cost: new Decimal(100),
+            cost: new Decimal(50),
             effect(){
             let d14 = player.d.points.add(10)
             d14 = Decimal.log10(d14).add(10)
@@ -2145,7 +2145,7 @@ addLayer("d", {
         21: {
             title: "Dangerous",
             description: "Deaths boost uncoater base.",
-            cost: new Decimal(300),
+            cost: new Decimal(100),
             effect(){
             let d12 = player.d.points.add(1)
             d12 = d12.pow(30)
@@ -2161,7 +2161,7 @@ addLayer("d", {
         22: {
             title: "Mortal",
             description: "Double death gain per death upgrade bought.",
-            cost: new Decimal(500),
+            cost: new Decimal(300),
             effect(){
             let d22 = player.d.upgrades.length
             d22 = Decimal.pow(2, d22)
