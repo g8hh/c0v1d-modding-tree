@@ -1198,9 +1198,9 @@ addLayer("u", {
                 return c21
             },
             goal(){
-                if (challengeCompletions("u", 21) == 0) return new Decimal("e3750");
-                if (challengeCompletions("u", 21) == 1) return new Decimal("e5755");
-                if (challengeCompletions("u", 21) == 2) return new Decimal("e6950");
+                if (challengeCompletions("u", 21) == 0) return new Decimal("e3710");
+                if (challengeCompletions("u", 21) == 1) return new Decimal("e5725");
+                if (challengeCompletions("u", 21) == 2) return new Decimal("e6910");
             },
             currencyDisplayName: "cases",
             completionLimit:3 ,
