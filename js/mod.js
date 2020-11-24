@@ -12,7 +12,7 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.3.2",
+	num: "0.3.3",
 	name: "Vorona Cirus Cimptom Challenge",
 }
 
@@ -37,11 +37,11 @@ function addedPlayerData() { return {
 }}
 
 // Display extra things at the top of the page
-var displayThings = ["Current endgame: 1.8e308 severity (v0.3.2)"]
+var displayThings = ["Current endgame: 1e1000 severity and all milestones(v0.3.3)"]
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.s.severity.gte(new Decimal("1.8e308"))
+	return player.s.severity.gte(new Decimal("1e1000")) && hasMilestone("d" ,8)
 }
 
 

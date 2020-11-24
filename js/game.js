@@ -8,16 +8,35 @@ const TMT_VERSION = {
 	tmtName: "Uprooted"
 }
 
-function getResetGain(layer, useType = null) {
+function getResetGain(layer, canMax=false, useType = null) {
 	let type = useType
 	if (!useType) type = tmp[layer].type
 	if(tmp[layer].type == "none")
 		return new Decimal (0)
 	if (tmp[layer].gainExp.eq(0)) return new Decimal(0)
 	if (type=="static") {
+		let base = new Decimal(1e8)
+		let exp = new Decimal(1.9)
 		if ((!tmp[layer].canBuyMax) || tmp[layer].baseAmount.lt(tmp[layer].requires)) return new Decimal(1)
 		let gain = tmp[layer].baseAmount.div(tmp[layer].requires).div(tmp[layer].gainMult).max(1).log(tmp[layer].base).times(tmp[layer].gainExp).pow(Decimal.pow(tmp[layer].exponent, -1))
-		return gain.floor().sub(player[layer].points).add(1).max(1);
+		if (layer == "r" ) gain = softcapStaticGain(gain, tmp[layer].row)
+		if (layer == "u" ) {
+			let amt = player[layer].points.plus((canMax&&tmp[layer].baseAmount.gte(tmp[layer].nextAt))?tmp[layer].resetGain:0)
+			if (player.u.points.gte(30)) {
+				let umult = Decimal.pow(1e8,amt.pow(1.9))
+				gain = tmp[layer].baseAmount.div(umult).div(tmp[layer].requires).div(tmp[layer].gainMult).max(1).log(tmp[layer].base).times(tmp[layer].gainExp).pow(Decimal.pow(tmp[layer].exponent, -1)).add(30)
+			}
+			if (player.u.points.lt(30)) { 
+				gain = Decimal.div(tmp["u"].baseAmount,tmp[layer].requires).div(tmp[layer].gainMult).max(1).log(base).times(tmp[layer].gainExp).pow(Decimal.pow(exp, -1))
+				if (gain.gte(30)) { 
+					let umult = Decimal.pow(1e8,amt.pow(1.9))
+					gain = tmp[layer].baseAmount.div(umult).div(tmp[layer].requires).div(tmp[layer].gainMult).max(1).log(tmp[layer].base).times(tmp[layer].gainExp).pow(Decimal.pow(tmp[layer].exponent, -1)).add(30)
+				}
+			}
+		}
+		let resetgain = gain.floor().sub(player[layer].points).add(1).max(1)
+		if (player.u.points.gte(30) && layer == "u") resetgain = gain.floor().sub(player[layer].points).add(1).max(1)
+		return resetgain;
 	} else if (type=="normal"){
 		if (tmp[layer].baseAmount.lt(tmp[layer].requires)) return new Decimal(0)
 		let gain = tmp[layer].baseAmount.div(tmp[layer].requires).pow(tmp[layer].exponent).times(tmp[layer].gainMult).pow(tmp[layer].gainExp)
@@ -42,9 +61,29 @@ function getNextAt(layer, canMax=false, useType = null) {
 	if (type=="static") 
 	{
 		if (!tmp[layer].canBuyMax) canMax = false
+		let base = new Decimal(1e8)
+		let exp = new Decimal(1.9)
 		let amt = player[layer].points.plus((canMax&&tmp[layer].baseAmount.gte(tmp[layer].nextAt))?tmp[layer].resetGain:0)
+		if (layer == "r" ) amt = scaleStaticCost(amt, tmp[layer].row)
 		let extraCost = Decimal.pow(tmp[layer].base, amt.pow(tmp[layer].exponent).div(tmp[layer].gainExp)).times(tmp[layer].gainMult)
 		let cost = extraCost.times(tmp[layer].requires).max(tmp[layer].requires)
+		if (layer == "u" ) {
+			if (player.u.points.gte(30)) {
+				amt = amt.sub(30)
+				let umult = Decimal.pow(1e8,(amt.add(30)).pow(1.9))
+				extraCost = Decimal.pow(tmp[layer].base, amt.pow(tmp[layer].exponent).div(tmp[layer].gainExp)).times(tmp[layer].gainMult).mul(umult)
+				cost = extraCost.times(tmp[layer].requires).max(tmp[layer].requires)
+			}
+			if (player.u.points.lt(30)) { 
+				amt = player[layer].points.plus((canMax&&tmp[layer].baseAmount.gte(tmp[layer].nextAt))?tmp[layer].resetGain:0)
+				extraCost = Decimal.pow(base, amt.pow(exp).div(tmp[layer].gainExp)).times(tmp[layer].gainMult)
+				if (amt.gte(30)) { 
+					let umult = Decimal.pow(1e8,amt.pow(1.9))
+					extraCost = Decimal.pow(tmp[layer].base, (amt.sub(30)).pow(tmp[layer].exponent).div(tmp[layer].gainExp)).times(tmp[layer].gainMult).mul(umult)
+				}
+				cost = extraCost.times(tmp[layer].requires).max(tmp[layer].requires)
+			}
+		}
 		if (tmp[layer].roundUpCost) cost = cost.ceil()
 		return cost;
 	} else if (type=="normal"){
