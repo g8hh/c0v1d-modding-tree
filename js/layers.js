@@ -1946,40 +1946,7 @@ addLayer("s", {
             }
         },
     },
-    challenges: {
-        rows: 2,
-        cols: 2,
-        11: {
-            name: "Asymptomatic",
-            currencyDisplayName: "infectivity",
-            currencyInternalName: "points",
-            currencyLayer: "i",
-            challengeDescription: function() {
-                let c11 = "Symptoms and severity are useless. Cases and infectivity gain is ^0.1."
-                if (inChallenge("s", 11)) c11 = c11 + " (In Challenge)"
-                if (challengeCompletions("s", 11) == 5) c11 = c11 + " (Completed)"
-                c11 = c11 + "<br>Completed:" + challengeCompletions("s",11) + "/" + this.completionLimit
-                return c11
-            },
-            goal(){
-                if (challengeCompletions("s", 11) == 0) return new Decimal("e9040");
-                if (challengeCompletions("s", 11) == 1) return new Decimal("e12870");
-                if (challengeCompletions("s", 11) == 2) return new Decimal("e14865");
-            },
-            completionLimit: 5,
-            rewardDescription: "Infectivity makes uncoaters cheaper.",
-            rewardEffect() {
-                 let c11 = player.i.points.add(1)
-                 let c11r = new Decimal(1.27)
-                 let c11c = challengeCompletions("s", 11)
-                 return c11
-            },
-            rewardDisplay() {return format(this.rewardEffect())+"x"},
-            unlocked(){
-                return hasMilestone("d", 8)
-            }
-        },
-    },
+    
 })
 addLayer("d", {
     name: "deaths",
