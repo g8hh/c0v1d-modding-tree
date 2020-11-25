@@ -2124,7 +2124,7 @@ addLayer("d", {
             description: "Deaths boosts symptom base.",
             cost: new Decimal(5),
             effect(){
-            let d11 = player.d.points.add(1)
+            let d11 = player.d.points.add(10)
             d11 = Decimal.log10(d11).pow(4.5).add(1)
             return d11
             },
