@@ -64,6 +64,7 @@ function getPointGen() {
     gain = gain.mul(layers.d.effect())
     if (player.s.unlocked) gain = gain.mul(tmp.s.severityEff);
     if (inChallenge("u", 22)) gain = Decimal.mul(gain ,c22c)
+    if (inChallenge("s", 11)) gain = gain.pow(0.1)
 	return gain
 }
 
@@ -426,7 +427,9 @@ addLayer("i", {
         return imult
     },
     gainExp() {
-        return new Decimal(1)
+        let exp = new Decimal(1)
+        if (inChallenge("s", 11)) exp = new Decimal(0.1)
+        return exp
     },
     row: 1,
     layerShown() {
@@ -1325,6 +1328,7 @@ addLayer("s", {
         let seff = player.s.severity.add(1)
         seff = seff.pow(6)
         if (hasSUpg(21)) seff = seff.pow(getSUpgEff(21))
+        if (inChallenge("s", 11)) seff = new Decimal(1)
         return seff
     },
     update(diff) {
@@ -1741,6 +1745,7 @@ addLayer("s", {
             let s11 = player.s.severity.add(10)
             s11 = Decimal.log10(s11)
             s11 = s11.pow(2).add(10)
+            if (inChallenge("s", 11)) s11 = new Decimal(1)
             return s11
             },
             effectDisplay(){
@@ -1774,6 +1779,7 @@ addLayer("s", {
             effect(){
             let s13 = player.s.points.add(1)
             s13 = s13.pow(3.75)
+            if (inChallenge("s", 11)) s13 = new Decimal(1)
             return s13
             },
             effectDisplay(){
@@ -1812,6 +1818,7 @@ addLayer("s", {
             effect(){
             let s15 = player.s.severity.add(1)
             s15 = s15.pow(0.3)
+            if (inChallenge("s", 11)) s15 = new Decimal(1)
             return s15
             },
             effectDisplay(){
@@ -1869,6 +1876,7 @@ addLayer("s", {
             effect(){
             let s24 = player.s.points
             s24 = Decimal.pow(1e4,s24)
+            if (inChallenge("s", 11)) s24 = new Decimal(1)
             return s24
             },
             effectDisplay(){
@@ -1935,6 +1943,40 @@ addLayer("s", {
                 },
             unlocked(){
                 return hasSUpg(32)
+            }
+        },
+    },
+    challenges: {
+        rows: 2,
+        cols: 2,
+        11: {
+            name: "Asymptomatic",
+            currencyDisplayName: "infectivity",
+            currencyInternalName: "points",
+            currencyLayer: "i",
+            challengeDescription: function() {
+                let c11 = "Symptoms and severity are useless. Cases and infectivity gain is ^0.1."
+                if (inChallenge("s", 11)) c11 = c11 + " (In Challenge)"
+                if (challengeCompletions("s", 11) == 5) c11 = c11 + " (Completed)"
+                c11 = c11 + "<br>Completed:" + challengeCompletions("s",11) + "/" + this.completionLimit
+                return c11
+            },
+            goal(){
+                if (challengeCompletions("s", 11) == 0) return new Decimal("e9040");
+                if (challengeCompletions("s", 11) == 1) return new Decimal("e12870");
+                if (challengeCompletions("s", 11) == 2) return new Decimal("e14865");
+            },
+            completionLimit: 5,
+            rewardDescription: "Infectivity makes uncoaters cheaper.",
+            rewardEffect() {
+                 let c11 = player.i.points.add(1)
+                 let c11r = new Decimal(1.27)
+                 let c11c = challengeCompletions("s", 11)
+                 return c11
+            },
+            rewardDisplay() {return format(this.rewardEffect())+"x"},
+            unlocked(){
+                return hasMilestone("d", 8)
             }
         },
     },
@@ -2026,52 +2068,52 @@ addLayer("d", {
     ],
     milestones: {
         0: {
-            requirementDescription: "2 deaths",
+            requirementDescription: "2 total deaths",
             effectDescription: "Keep uncoater/symptom milestones on reset.",
-            done() { return player.d.points.gte(2) }
+            done() { return player.d.total.gte(2) }
         },
         1: {
-            requirementDescription: "4 deaths",
+            requirementDescription: "3 total deaths",
             effectDescription: "You can buy max uncoaters.",
-            done() { return player.d.points.gte(4) }
+            done() { return player.d.total.gte(3) }
         },
         2: {
-            requirementDescription: "8 deaths",
+            requirementDescription: "4 total deaths",
             effectDescription: "Autobuy uncoaters and unlock upgrades.",
             toggles:[["d", "auto"]],
-            done() { return player.d.points.gte(8) }
+            done() { return player.d.total.gte(4) }
         },
         3: {
-            requirementDescription: "16 deaths",
+            requirementDescription: "8 total deaths",
             effectDescription: "Keep uncoater challenge completions.",
-            done() { return player.d.points.gte(16) }
+            done() { return player.d.total.gte(8) }
         },
         4: {
-            requirementDescription: "32 deaths",
+            requirementDescription: "16 total deaths",
             effectDescription: "Autobuy symptom buyables (10/s).",
             toggles:[["d", "autob"]],
-            done() { return player.d.points.gte(32) }
+            done() { return player.d.total.gte(16) }
         },
         5: {
-            requirementDescription: "64 deaths",
+            requirementDescription: "32 total deaths",
             effectDescription: "Uncoaters reset nothing.",
-            done() { return player.d.points.gte(64) }
+            done() { return player.d.total.gte(32) }
         },
         6: {
-            requirementDescription: "128 deaths",
+            requirementDescription: "64 total deaths",
             effectDescription: "Keep previous upgrades on reset.",
-            done() { return player.d.points.gte(128) }
+            done() { return player.d.total.gte(64) }
         },
         7: {
-            requirementDescription: "256 deaths",
+            requirementDescription: "128 total deaths",
             effectDescription: "Autobuy symptoms.",
             toggles:[["d", "autos"]],
-            done() { return player.d.points.gte(256) }
+            done() { return player.d.total.gte(128) }
         },
         8: {
-            requirementDescription: "1,048,576 deaths",
+            requirementDescription: "1,048,576 total deaths",
             effectDescription: "Unlock symptom challenges (next update).",
-            done() { return player.d.points.gte(1048576) }
+            done() { return player.d.total.gte(1048576) }
         },
     },
     upgrades: {
@@ -2083,7 +2125,7 @@ addLayer("d", {
             cost: new Decimal(5),
             effect(){
             let d11 = player.d.points.add(1)
-            d11 = Decimal.log10(d11).pow(4).add(1)
+            d11 = Decimal.log10(d11).pow(4.5).add(1)
             return d11
             },
             effectDisplay(){
@@ -2099,7 +2141,7 @@ addLayer("d", {
             cost: new Decimal(10),
             effect(){
             let d12 = player.points.add(1)
-            d12 = Decimal.log10(d12).pow(0.07).add(1)
+            d12 = Decimal.log10(d12).pow(0.085).add(1)
             return d12
             },
             effectDisplay(){
