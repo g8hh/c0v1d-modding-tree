@@ -1449,7 +1449,7 @@ addLayer("s", {
                     return player.s.severity.gte(tmp[this.layer].buyables[this.id].cost)},
             buy() { 
                 cost = tmp[this.layer].buyables[this.id].cost
-                player.s.severity = player.s.severity.sub(cost)	
+                if (!hasMilestone("d", 4)) player.s.severity = player.s.severity.sub(cost)	
                 player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
             },
             buyMax(max) {
@@ -1459,7 +1459,7 @@ addLayer("s", {
                 let cost = Decimal.pow(2.5, target.sub(1).pow(1.3)).mul(1e17)
                 let diff = target.sub(player.s.buyables[11])
                 if (this.canAfford()) {
-                    player.s.severity = player.s.severity.sub(cost)
+                    if (!hasMilestone("d", 4)) player.s.severity = player.s.severity.sub(cost)
                     if (diff.gt(max)) diff = max
                     player.s.buyables[11] = player.s.buyables[11].add(diff)
                 }
@@ -1504,7 +1504,7 @@ addLayer("s", {
                     return player.s.severity.gte(tmp[this.layer].buyables[this.id].cost)},
             buy() { 
                 cost = tmp[this.layer].buyables[this.id].cost
-                player.s.severity = player.s.severity.sub(cost)	
+                if (!hasMilestone("d", 4)) player.s.severity = player.s.severity.sub(cost)	
                 player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
             },
             buyMax(max) {
@@ -1514,7 +1514,7 @@ addLayer("s", {
                 let cost = Decimal.pow(10, target.sub(1).pow(1.3)).mul(1e19)
                 let diff = target.sub(player.s.buyables[12])
                 if (this.canAfford()) {
-                    player.s.severity = player.s.severity.sub(cost)
+                    if (!hasMilestone("d", 4)) player.s.severity = player.s.severity.sub(cost)
                     if (diff.gt(max)) diff = max
                     player.s.buyables[12] = player.s.buyables[12].add(diff)
                 }
@@ -1557,7 +1557,7 @@ addLayer("s", {
                     return player.s.severity.gte(tmp[this.layer].buyables[this.id].cost)},
             buy() { 
                 cost = tmp[this.layer].buyables[this.id].cost
-                player.s.severity = player.s.severity.sub(cost)	
+                if (!hasMilestone("d", 4)) player.s.severity = player.s.severity.sub(cost)	
                 player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
             },
             buyMax(max) {
@@ -1567,7 +1567,7 @@ addLayer("s", {
                 let cost = Decimal.pow(65, target.sub(1).pow(1.35)).mul(2e20)
                 let diff = target.sub(player.s.buyables[21])
                 if (this.canAfford()) {
-                    player.s.severity = player.s.severity.sub(cost)
+                    if (!hasMilestone("d", 4)) player.s.severity = player.s.severity.sub(cost)
                     if (diff.gt(max)) diff = max
                     player.s.buyables[21] = player.s.buyables[21].add(diff)
                 }
@@ -1609,7 +1609,7 @@ addLayer("s", {
                     return player.s.severity.gte(tmp[this.layer].buyables[this.id].cost)},
             buy() { 
                 cost = tmp[this.layer].buyables[this.id].cost
-                player.s.severity = player.s.severity.sub(cost)	
+                if (!hasMilestone("d", 4)) player.s.severity = player.s.severity.sub(cost)	
                 player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
             },
             buyMax(max) {
@@ -1619,7 +1619,7 @@ addLayer("s", {
                 let cost = Decimal.pow(5e3, target.sub(1).pow(1.5)).mul(3e37)
                 let diff = target.sub(player.s.buyables[22])
                 if (this.canAfford()) {
-                    player.s.severity = player.s.severity.sub(cost)
+                    if (!hasMilestone("d", 4)) player.s.severity = player.s.severity.sub(cost)
                     if (diff.gt(max)) diff = max
                     player.s.buyables[22] = player.s.buyables[22].add(diff)
                 }
@@ -1662,7 +1662,7 @@ addLayer("s", {
                     return player.s.severity.gte(tmp[this.layer].buyables[this.id].cost)},
             buy() { 
                 cost = tmp[this.layer].buyables[this.id].cost
-                player.s.severity = player.s.severity.sub(cost)	
+                if (!hasMilestone("d", 4)) player.s.severity = player.s.severity.sub(cost)	
                 player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
             },
             buyMax(max) {
@@ -1672,7 +1672,7 @@ addLayer("s", {
                 let cost = Decimal.pow(1e5, target.sub(1).pow(1.5)).mul("2e164")
                 let diff = target.sub(player.s.buyables[13])
                 if (this.canAfford()) {
-                    player.s.severity = player.s.severity.sub(cost)
+                    if (!hasMilestone("d", 4)) player.s.severity = player.s.severity.sub(cost)
                     if (diff.gt(max)) diff = max
                     player.s.buyables[13] = player.s.buyables[13].add(diff)
                 }
@@ -1714,7 +1714,7 @@ addLayer("s", {
                 return player.s.severity.gte(tmp[this.layer].buyables[this.id].cost)},
             buy() { 
                 cost = tmp[this.layer].buyables[this.id].cost
-                player.s.severity = player.s.severity.sub(cost)	
+                if (!hasMilestone("d", 4)) player.s.severity = player.s.severity.sub(cost)	
                 player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
             },
             buyMax(max) {
@@ -1724,7 +1724,7 @@ addLayer("s", {
                 let cost = Decimal.pow(1e10, target.sub(1).pow(1.65)).mul("e270")
                 let diff = target.sub(player.s.buyables[23])
                 if (this.canAfford()) {
-                    player.s.severity = player.s.severity.sub(cost)
+                    if (!hasMilestone("d", 4)) player.s.severity = player.s.severity.sub(cost)
                     if (diff.gt(max)) diff = max
                     player.s.buyables[23] = player.s.buyables[23].add(diff)
                 }
