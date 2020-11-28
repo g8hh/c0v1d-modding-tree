@@ -386,7 +386,7 @@ function loadVue() {
 		template: `
 		<div v-if="tmp[layer].achievements && tmp[layer].achievements[data]!== undefined && tmp[layer].achievements[data].unlocked" v-bind:class="{ [layer]: true, achievement: true, locked: !hasAchievement(layer, data), bought: hasAchievement(layer, data)}"
 			v-bind:tooltip="
-				hasAchievement(layer, data) ? (tmp[layer].achievements[data].doneTooltip ? tmp[layer].achievements[data].doneTooltip : (tmp[layer].achievements[data].tooltip ? tmp[layer].achievements[data].tooltip : 'You did it!'))
+				(tmp[layer].achievements[data].tooltip == '') ? false : hasAchievement(layer, data) ? (tmp[layer].achievements[data].doneTooltip ? tmp[layer].achievements[data].doneTooltip : (tmp[layer].achievements[data].tooltip ? tmp[layer].achievements[data].tooltip : 'You did it!'))
 				: (tmp[layer].achievements[data].goalTooltip ? tmp[layer].achievements[data].goalTooltip : (tmp[layer].achievements[data].tooltip ? tmp[layer].achievements[data].tooltip : 'LOCKED'))
 			"
 
@@ -428,8 +428,7 @@ function loadVue() {
 	// SYSTEM COMPONENTS
 
 	Vue.component('tab-buttons', systemComponents['tab-buttons'])
-	Vue.component('button-node', systemComponents['button-node'])
-	Vue.component('layer-node', systemComponents['layer-node'])
+	Vue.component('tree-node', systemComponents['tree-node'])
 	Vue.component('layer-tab', systemComponents['layer-tab'])
 	Vue.component('overlay-head', systemComponents['overlay-head'])
 	Vue.component('info-tab', systemComponents['info-tab'])
