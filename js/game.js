@@ -19,8 +19,8 @@ function getResetGain(layer, canMax=false, useType = null) {
 		let exp = new Decimal(1.9)
 		if ((!tmp[layer].canBuyMax) || tmp[layer].baseAmount.lt(tmp[layer].requires)) return new Decimal(1)
 		let gain = tmp[layer].baseAmount.div(tmp[layer].requires).div(tmp[layer].gainMult).max(1).log(tmp[layer].base).times(tmp[layer].gainExp).pow(Decimal.pow(tmp[layer].exponent, -1))
-		if (layer == "r" ) gain = softcapStaticGain(gain, tmp[layer].row)
-		if (layer == "u" ) {
+		if (layer == "r"  || layer == "u") gain = softcapStaticGain(gain, tmp[layer].row)
+		if (layer == "u" && player.u.points.lt(320)) {
 			let amt = player[layer].points.plus((canMax&&tmp[layer].baseAmount.gte(tmp[layer].nextAt))?tmp[layer].resetGain:0)
 			if (player.u.points.gte(30)) {
 				let umult = Decimal.pow(1e8,amt.pow(1.9))
@@ -64,10 +64,10 @@ function getNextAt(layer, canMax=false, useType = null) {
 		let base = new Decimal(1e8)
 		let exp = new Decimal(1.9)
 		let amt = player[layer].points.plus((canMax&&tmp[layer].baseAmount.gte(tmp[layer].nextAt))?tmp[layer].resetGain:0)
-		if (layer == "r" ) amt = scaleStaticCost(amt, tmp[layer].row)
+		if (layer == "r" || layer == "u") amt = scaleStaticCost(amt, tmp[layer].row)
 		let extraCost = Decimal.pow(tmp[layer].base, amt.pow(tmp[layer].exponent).div(tmp[layer].gainExp)).times(tmp[layer].gainMult)
 		let cost = extraCost.times(tmp[layer].requires).max(tmp[layer].requires)
-		if (layer == "u" ) {
+		if (layer == "u") {
 			if (player.u.points.gte(30)) {
 				amt = amt.sub(30)
 				let umult = Decimal.pow(1e8,(amt.add(30)).pow(1.9))
@@ -258,7 +258,10 @@ function startChallenge(layer, x) {
 		enter = true
 	}	
 	doReset(layer, true)
-	if(enter) player[layer].activeChallenge = x
+	if(enter) {
+		player[layer].activeChallenge = x
+		if (layers[layer].challenges[x].onStart) layers[layer].challenges[x].onStart(true);
+	}
 
 	updateChallengeTemp(layer)
 }

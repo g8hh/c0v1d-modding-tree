@@ -1,16 +1,23 @@
 const STATIC_SCALE_STARTS = {
-	"2": function() { return new Decimal(2000) },
+    "2": function() { return new Decimal(2000) },
+    "3": function() { return new Decimal(320) },
 }
 
 function scaleStaticCost(gain, row) {
 	let start = (STATIC_SCALE_STARTS[String(row+1)]?STATIC_SCALE_STARTS[String(row+1)]():1);
-	if (gain.gte(start)) gain = gain.pow(2).div(start);
+    if (gain.gte(start)) { 
+        if (row == 1) gain = gain.pow(2).div(start);
+        if (row == 2) gain = gain.pow(3).div(Decimal.pow(start, 2))
+    }
 	return gain;
 }
 
 function softcapStaticGain(gain, row) {
 	let start = (STATIC_SCALE_STARTS[String(row+1)]?STATIC_SCALE_STARTS[String(row+1)]():1);
-	if (gain.gte(start)) gain = gain.times(start).pow(1/2);
+    if (gain.gte(start)) {
+        if (row == 1) gain = gain.times(start).pow(1/2);
+        if (row == 2) gain = gain.times(Decimal.pow(start,2)).root(3)
+    }
 	return gain;
 }
 function hasVUpg(id){
@@ -48,24 +55,6 @@ function hasDUpg(id){
 }
 function getDUpgEff(id){
     return upgradeEffect("d",id)
-}
-function getPointGen() {
-    let gain = new Decimal(0.1)
-    let c22c = challengeCompletions("u", 11)+challengeCompletions("u", 12)+challengeCompletions("u", 21)+challengeCompletions("u", 22)-5
-    c22c = Decimal.add(c22c, 1)
-    c22c = Decimal.pow(5, c22c)
-    if(!canGenPoints()) gain = new Decimal(0)
-    if(hasVUpg(12)) gain = gain.mul(getVUpgEff(12))
-    if(hasVUpg(13)) gain = gain.mul(getVUpgEff(13))
-    if(hasVUpg(21)) gain = gain.mul(getVUpgEff(21))
-    gain = gain.mul(layers.i.effect())
-    gain = gain.mul(layers.r.effect())
-    gain = gain.mul(layers.u.effect())
-    gain = gain.mul(layers.d.effect())
-    if (player.s.unlocked) gain = gain.mul(tmp.s.severityEff);
-    if (inChallenge("u", 22)) gain = Decimal.mul(gain ,c22c)
-    if (inChallenge("s", 11)) gain = gain.pow(0.1)
-	return gain
 }
 
 addLayer("stat", {
@@ -191,7 +180,7 @@ addLayer("v", {
         12: {
             title: "Infection",
             description: "Multiply cases gain.",
-            cost: new Decimal(5),
+            cost: new Decimal(2),
             base() {
                 let base =  new Decimal(2)
                 if(hasIUpg(21)) base = base.add(getIUpgEff(21))
@@ -207,8 +196,10 @@ addLayer("v", {
             effect(){
                 let eff = this.base()
                 let v12sf = new Decimal("e10000")
+                let v12sf2 = new Decimal("ee10")
                 if(hasVUpg(23)) eff = eff.pow(getVUpgEff(23))
                 if(eff.gte(v12sf)) eff = Decimal.pow(10,Decimal.log10(eff.div(v12sf)).pow(3/4)).mul(v12sf)
+                if(eff.gte(v12sf2)) eff = Decimal.pow(10,Decimal.log10(eff.div(v12sf2)).pow(0.9)).mul(v12sf2)
                 if (inChallenge("u", 12)) eff = new Decimal(1)
                 return eff
             },
@@ -225,13 +216,15 @@ addLayer("v", {
         13: {
             title: "Transmission",
             description: "Multiplier to cases based on VP.",
-            cost: new Decimal(10),
+            cost: new Decimal(5),
             effect(){
                 let v13 = player.v.points.add(2)
                 let v13sf = new Decimal("1.8e308")
                 let v13sf2 = new Decimal("1e2370")
+                let v13sf3 = new Decimal("e25e8")
                 let v13sff = new Decimal(0.5)
                 let v13sff2 = new Decimal(0.8)
+                let v13sff3 = new Decimal(10/11)
                 v13 = v13.pow(1/2)
                 if(hasUUpg(12)) v13sf = v13sf.mul(getUUpgEff(12))
                 if(hasUUpg(12)) v13sf2 = v13sf2.mul(getUUpgEff(12)).add(1)
@@ -241,9 +234,13 @@ addLayer("v", {
                 if (hasChallenge("u", 22)) v13sff2 = v13sff2.pow(challengeEffect("u", 22).pow(-1))
                 if(hasIUpg(12)) v13 = v13.pow(getIUpgEff(12))
                 if(hasDUpg(14)) v13 = v13.pow(getDUpgEff(14))
+                if(hasSUpg(55)) v13 = v13.pow(getSUpgEff(55))
                 if(v13.gte(v13sf)) v13 = v13.mul(v13sf).pow(v13sff) 
                 if(v13.gte(v13sf2)) {
                     v13 = Decimal.pow(10,Decimal.log10(v13.div(v13sf2)).pow(v13sff2)).mul(v13sf2)
+                }
+                if(v13.gte(v13sf3)) {
+                    v13 = Decimal.pow(10,Decimal.log10(v13.div(v13sf3)).pow(v13sff3)).mul(v13sf3)
                 }
                 return v13  
             },
@@ -261,7 +258,7 @@ addLayer("v", {
         21: {
             title: "Self Boost",
             description: "Multiplier to cases based on cases.",
-            cost: new Decimal("20"),
+            cost: new Decimal(10),
             effect(){
                 let v21 = player.points.add(1)
                 let v21sf = new Decimal("ee5")
@@ -284,7 +281,7 @@ addLayer("v", {
         22: {
             title: "Contaminate",
             description: "Multiplier to VP based on cases.",
-            cost: new Decimal("50"),
+            cost: new Decimal(20),
             effect(){
                 let v22 = player.points.add(1)
                 v22 = Decimal.log10(v22).add(1)
@@ -302,7 +299,7 @@ addLayer("v", {
         23: {
             title: "More Infections",
             description: "Raise 'Infection' to the number of bought upgrades.",
-            cost: new Decimal("1e3"),
+            cost: new Decimal(200),
             effect(){
                 let v23 = player.v.upgrades.length
                 if(hasRUpg(22)) v23 = Decimal.mul(v23,getRUpgEff(22))
@@ -318,7 +315,7 @@ addLayer("v", {
         31: {
             title: "Disease",
             description: "Multiplier to VP based on VP.",
-            cost: new Decimal("2e4"),
+            cost: new Decimal(5e3),
             effect(){
                 let v31 = player.v.points.add(10)
                 v31 = Decimal.log10(v31).pow(1.3)
@@ -335,7 +332,7 @@ addLayer("v", {
         32: {
             title: "BOOSTER",
             description: "'Self Boost' is stronger based on VP.",
-            cost: new Decimal("1e6"),
+            cost: new Decimal(2.5e5),
             effect(){
                 let v32 = player.v.points.add(10)
                 v32 = Decimal.log10(v32).pow(0.2)
@@ -351,7 +348,7 @@ addLayer("v", {
         33: {
             title: "Food Contamination",
             description: "'Contaminate' is stronger based on cases.",
-            cost: new Decimal("1e7"),
+            cost: new Decimal(5e6),
             effect(){
                 let v33 = player.points.add(10)
                 v33 = Decimal.log10(v33).pow(0.15)
@@ -395,9 +392,6 @@ addLayer("i", {
             }
         },
     ],
-    update(diff) {
-        if (hasMilestone("u", 2)) generatePoints("i", diff);
-    },
     doReset(resettingLayer) {
         let keep = [];
         if (hasMilestone("u", 0) && resettingLayer=="u") keep.push("milestones")
@@ -428,8 +422,10 @@ addLayer("i", {
     },
     gainExp() {
         let exp = new Decimal(1)
-        if (inChallenge("s", 11)) exp = new Decimal(0.1)
         return exp
+    },
+    update(diff) {
+        if (hasMilestone("u", 2)) generatePoints("i", diff);
     },
     row: 1,
     layerShown() {
@@ -439,14 +435,14 @@ addLayer("i", {
     },
     milestones: {
         0: {
-            requirementDescription: "500 infectivity",
+            requirementDescription: "15 total infectivity",
             effectDescription: "Keep virus upgrades on reset.",
-            done() { return player.i.points.gte(500) }
+            done() { return player.i.total.gte(15) }
         },
         1: {
-            requirementDescription: "500,000 infectivity",
+            requirementDescription: "2,000 total infectivity",
             effectDescription: "Gain 100% of VP gain per second.",
-            done() { return player.i.points.gte(5e5) }
+            done() { return player.i.total.gte(2e3) }
         }
     },
     upgrades: {
@@ -494,7 +490,7 @@ addLayer("i", {
         13: {
             title: "Resistance",
             description: "Multiplier to infectivity based on VP.",
-            cost: new Decimal(100),
+            cost: new Decimal(50),
             effect(){
             let i13 = player.v.points.add(10)
             i13 = Decimal.log10(i13).pow(0.4)
@@ -511,7 +507,7 @@ addLayer("i", {
         21: {
             title: "Susceptible",
             description: "Infectivity increases 'Infection' base.",
-            cost: new Decimal("1e3"),
+            cost: new Decimal(500),
             effect(){
             let i21 = player.i.points.add(1)
             i21 = Decimal.log10(i21).pow(0.5)
@@ -529,7 +525,7 @@ addLayer("i", {
         22: {
             title: "Drug Resistance",
             description: "Cases increase 'Infection' base.",
-            cost: new Decimal("3e4"),
+            cost: new Decimal(5e3),
             effect(){
             let i22 = player.points.add(1)
             i22 = Decimal.log10(i22).pow(0.2)
@@ -546,7 +542,7 @@ addLayer("i", {
         23: {
             title: "Environmental Hardening",
             description: "Multiplier to infectivity based on cases.",
-            cost: new Decimal("15e4"),
+            cost: new Decimal(25e3),
             effect(){
             let i23 = player.points.add(10)
             i23 = Decimal.log10(i23).pow(0.3).mul(1.25)
@@ -563,7 +559,7 @@ addLayer("i", {
         31: {
             title: "SUSceptible",
             description: "'Susceptible' is stronger based on replicators and make it add and multiply.",
-            cost: new Decimal("5e60"),
+            cost: new Decimal("2.5e60"),
             effect(){
             let i31 = player.r.points.add(1)
             i31 = i31.pow(0.78)
@@ -624,7 +620,7 @@ addLayer("r", {
     unlocked: false
     }},
     color: "#df34c9",
-    requires: new Decimal("1e60"),
+    requires: new Decimal("5e58"),
     resource: "replicators",
     baseResource: "cases",
     baseAmount() { return player.points },
@@ -697,14 +693,14 @@ addLayer("r", {
     },
     milestones: {
         0: {
-            requirementDescription: "8 replicators",
+            requirementDescription: "5 replicators",
             effectDescription: "Keep virus upgrades on reset.",
-            done() { return player.r.points.gte(8) }
+            done() { return player.r.points.gte(5) }
         },
         1: {
-            requirementDescription: "16 replicators",
+            requirementDescription: "12 replicators",
             effectDescription: "You can buy max replicators.",
-            done() { return player.r.points.gte(16) }
+            done() { return player.r.points.gte(12) }
         },
     },
     upgrades: {
@@ -783,10 +779,13 @@ addLayer("r", {
             r22 = Decimal.log10(r22).add(10)
             r22 = Decimal.log10(r22).pow(2).div(10).add(1)
             r22 = r22.mul(layers.u.effect2())
+            if (r22.gte(4.8e6)) r22 = r22.div(4.8e6).pow(0.5).mul(4.8e6)
             return r22
             },
             effectDisplay(){
-            return format(getRUpgEff(22))+"x"
+                let dis = format(getRUpgEff(22))+"x"
+                if (this.effect().gte(4.8e6)) dis += " (softcapped)"
+                return dis
             },
             unlocked(){
                 return hasRUpg(21)
@@ -867,7 +866,7 @@ addLayer("u", {
     unlocked: false
     }},
     color: "#3fa3d3",
-    requires: new Decimal("1e117"),
+    requires: new Decimal("2e116"),
     resource: "uncoaters",
     baseResource: "infectivity",
     baseAmount() { return player.i.points },
@@ -934,35 +933,35 @@ addLayer("u", {
     resetsNothing() { return hasMilestone("d", 5) },
     milestones: {
         0: {
-            requirementDescription: "3 uncoaters",
+            requirementDescription: "2 uncoaters",
             effectDescription: "Keep Infectivity/Replicator milestones on reset.",
-            done() { return player.u.points.gte(3) }
+            done() { return player.u.points.gte(2) }
         },
         1: {
-            requirementDescription: "4 uncoaters",
+            requirementDescription: "3 uncoaters",
             effectDescription: "Keep virus upgrades on reset.",
-            done() { return player.u.points.gte(4) }
+            done() { return player.u.points.gte(3) }
         },
         2: {
-            requirementDescription: "6 uncoaters",
+            requirementDescription: "4 uncoaters",
             effectDescription: "Gain 100% of infectivity gain per second.",
-            done() { return player.u.points.gte(6) }
+            done() { return player.u.points.gte(4) }
         },
         3: {
-            requirementDescription: "8 uncoaters",
+            requirementDescription: "6 uncoaters",
             effectDescription: "Keep Infectivity/Replicator upgrades on reset.",
-            done() { return player.u.points.gte(8) }
+            done() { return player.u.points.gte(6) }
         },
         4: {
-            requirementDescription: "11 uncoaters",
+            requirementDescription: "8 uncoaters",
             effectDescription: "Autobuy replicators.",
             toggles: [["u", "auto"]],
-            done() { return player.u.points.gte(11) }
+            done() { return player.u.points.gte(8) }
         },
         5: {
-            requirementDescription: "13 uncoaters",
+            requirementDescription: "11 uncoaters",
             effectDescription: "Replicators reset nothing.",
-            done() { return player.u.points.gte(13) }
+            done() { return player.u.points.gte(11) }
         },
         6: {
             requirementDescription: "15 uncoaters",
@@ -980,7 +979,7 @@ addLayer("u", {
             effect(){
             let u11 = player.u.best.add(1)
             u11 = u11.pow(4.5)
-            if (inChallenge("u", 11)) u11 = new Decimal(1)
+            if (inChallenge("u", 11) || inChallenge("s", 21)) u11 = new Decimal(1)
             return u11
             },
             effectDisplay(){
@@ -996,8 +995,7 @@ addLayer("u", {
             u12 = u12.pow(7.5)
             let rep = player.r.points
             u12 = u12.pow(rep.div(10).add(1))
-            if (inChallenge("u", 11)) u12 = new Decimal(1)
-            if (inChallenge("u", 21)) u12 = new Decimal(1)
+            if (inChallenge("u", 11) || inChallenge("u", 21) || inChallenge("s", 21)) u12 = new Decimal(1)
             if (u12.gte(new Decimal("e1500"))) u12 = u12.div(new Decimal("e1500")).pow(0.3).mul(new Decimal("e1500"))
             if (u12.gte(new Decimal("e15000"))) u12 = Decimal.pow(10,u12.div(new Decimal("e1500")).log10().pow(2/3)).mul(new Decimal("e15000"))
             return u12
@@ -1020,8 +1018,8 @@ addLayer("u", {
                 let u13b = player.r.points.add(1)
                 u13 = u13.pow(2.2)
                 u13b = u13b.pow(0.63)
-                if (inChallenge("u", 11)) u13 = new Decimal(1)
-                if (inChallenge("u", 21)) u13b = new Decimal(1)
+                if (inChallenge("u", 11) || inChallenge("s", 21)) u13 = new Decimal(1)
+                if (inChallenge("u", 21) || inChallenge("s", 21)) u13b = new Decimal(1)
                 return {r:u13, u:u13b}
             },
             effectDisplay(){
@@ -1039,6 +1037,7 @@ addLayer("u", {
             let u14 = player.points.add(1)
             u14 = Decimal.log10(u14).pow(0.83)
             u14 = Decimal.pow(10,u14).pow(1.536)
+            if (inChallenge("s", 21)) u14 = new Decimal(1)
             return u14
             },
             effectDisplay(){
@@ -1057,6 +1056,7 @@ addLayer("u", {
             u21 = Decimal.log10(u21).add(10)
             u21 = Decimal.log10(u21).add(10)
             u21 = u21.pow(0.1).div(1.12)
+            if (inChallenge("s", 21)) u21 = new Decimal(1)
             return u21
             },
             effectDisplay(){
@@ -1074,7 +1074,7 @@ addLayer("u", {
             let u22 = player.i.points.add(10)
             u22 = Decimal.log10(u22)
             u22 = u22.pow(0.26).add(0.13)
-            if (inChallenge("u", 12)) u22 = new Decimal(1)
+            if (inChallenge("u", 12) || inChallenge("s", 21)) u22 = new Decimal(1)
             return u22
             },
             effectDisplay(){
@@ -1092,7 +1092,7 @@ addLayer("u", {
             let u23 = player.i.points.add(10)
             u23 = Decimal.log10(u23)
             u23 = u23.pow(0.0747)
-            if (inChallenge("u", 12)) u23 = new Decimal(1)
+            if (inChallenge("u", 12) || inChallenge("s", 21)) u23 = new Decimal(1)
             return u23
             },
             effectDisplay(){
@@ -1110,7 +1110,7 @@ addLayer("u", {
             let u24 = player.u.points.add(10)
             u24 = Decimal.log10(u24)
             u24 = u24.pow(1.523)
-            if (inChallenge("u", 11)) u24 = new Decimal(1)
+            if (inChallenge("u", 11) || inChallenge("s", 21)) u24 = new Decimal(1)
             return u24
             },
             effectDisplay(){
@@ -1121,7 +1121,7 @@ addLayer("u", {
             }
         },
     },
-    challenges: {
+    challenges: { // Order: 1x1,2x1,1x2,3x1,4x1,2x2,1x3,3x2,2x3,4x2,3x3,4x3
         rows: 2,
         cols: 2,
         11: {
@@ -1134,9 +1134,9 @@ addLayer("u", {
                 return c11
             },
             goal(){
-                if (challengeCompletions("u", 11) == 0) return new Decimal("e2615");
-                if (challengeCompletions("u", 11) == 1) return new Decimal("e2870");
-                if (challengeCompletions("u", 11) == 2) return new Decimal("e4865");
+                if (challengeCompletions("u", 11) == 0) return new Decimal("e2610");
+                if (challengeCompletions("u", 11) == 1) return new Decimal("e2865");
+                if (challengeCompletions("u", 11) == 2) return new Decimal("e4860");
             },
             currencyDisplayName: "cases",
             completionLimit:3 ,
@@ -1169,9 +1169,9 @@ addLayer("u", {
                 return c12
             },
             goal(){
-                if (challengeCompletions("u", 12) == 0) return new Decimal("e715");
-                if (challengeCompletions("u", 12) == 1) return new Decimal("5e2360");
-                if (challengeCompletions("u", 12) == 2) return new Decimal("e3435");
+                if (challengeCompletions("u", 12) == 0) return new Decimal("e714");
+                if (challengeCompletions("u", 12) == 1) return new Decimal("e2360");
+                if (challengeCompletions("u", 12) == 2) return new Decimal("e3434");
             },
             currencyDisplayName: "cases",
             completionLimit:3 ,
@@ -1201,9 +1201,9 @@ addLayer("u", {
                 return c21
             },
             goal(){
-                if (challengeCompletions("u", 21) == 0) return new Decimal("e3710");
-                if (challengeCompletions("u", 21) == 1) return new Decimal("e5725");
-                if (challengeCompletions("u", 21) == 2) return new Decimal("e6910");
+                if (challengeCompletions("u", 21) == 0) return new Decimal("e3700");
+                if (challengeCompletions("u", 21) == 1) return new Decimal("e5720");
+                if (challengeCompletions("u", 21) == 2) return new Decimal("e6905");
             },
             currencyDisplayName: "cases",
             completionLimit:3 ,
@@ -1232,7 +1232,7 @@ addLayer("u", {
                 return c22
             },
             goal(){
-                if (challengeCompletions("u", 22) == 0) return new Decimal("e14");
+                if (challengeCompletions("u", 22) == 0) return new Decimal("5e13");
                 if (challengeCompletions("u", 22) == 1) return new Decimal("3e19");
                 if (challengeCompletions("u", 22) == 2) return new Decimal("3e21");
             },
@@ -1269,7 +1269,8 @@ addLayer("s", {
         severity: new Decimal(0),
         recoveries: new Decimal(0),
         time: new Decimal(0),
-    unlocked: false
+        ct: 0,
+        unlocked: false
     }},
     color: "#5ad93f",
     requires: new Decimal("e10310"),
@@ -1288,11 +1289,13 @@ addLayer("s", {
             }
         },
     ],
+    resetsNothing() { return hasMilestone("d", 9) },
     autoPrestige() { return (hasMilestone("d", 7) && player.d.autos) },
     effbase() {
         let eff = new Decimal("123")
         eff = eff.mul(layers.s.buyables[21].effect())
         if (hasDUpg(11)) eff = eff.mul(getDUpgEff(11))
+        if (hasSUpg(35)) eff = eff.mul(getSUpgEff(35))
         return eff
     },
     effect(){
@@ -1302,24 +1305,44 @@ addLayer("s", {
         if (hasSUpg(32)) eff = eff.mul(getSUpgEff(32))
         eff = eff.mul(layers.s.buyables[11].effect())
         eff = eff.mul(layers.d.effect())
+        if (hasChallenge("s", 11)) eff = eff.mul(challengeEffect("s", 11))
         if (player.s.severity.gte(new Decimal("1.8e308"))) eff = eff.div(tmp.s.recoveryEff)
+        if (hasDUpg(42)) {
+            eff = eff.pow(getDUpgEff(31)).pow(getDUpgEff(32)).pow(challengeEffect("s", 22))
+            eff = Decimal.pow(10,eff.log10().pow(getSUpgEff(53)).pow(getSUpgEff(54)))
+            if (hasDUpg(44)) eff = Decimal.pow(10,eff.log10().pow(getDUpgEff(44)))
+        }
+        if (eff.gte("e2e6")) eff = eff.log10().mul(5000).pow(2e5)
         return eff
     },
     recoveryGain() {
         let s = player.s.severity
         let recov = (s.add(10)).log10().div(308.254).pow(40)
-        if (s.gte(new Decimal("e1000"))) recov = recov.pow(s.log10().sub(999).pow(0.3))
+        let r = player.s.recoveries.add(1)
+        if (s.gte(new Decimal("e1000"))) recov = recov.pow(s.log10().sub(999).pow(0.3)).pow(r.log10().pow(0.1))
+        if (s.gte(new Decimal("e150000"))) recov = Decimal.pow(10,recov.log10().pow(s.log10().div(3e6).add(0.95)))
+        if (hasDUpg(42)) recov = new Decimal(0)
         return recov
     },
     recoveryEff() {
         let s = player.s.severity
         let recov = player.s.recoveries.add(1)
         recov = Decimal.log10(recov).add(1).pow(40)
-        if (s.gte(new Decimal("e1000"))) recov = recov.pow(s.log10().sub(999).pow(0.15)).pow(recov.log10().pow(0.08))
+        if (s.gte(new Decimal("e1000"))) recov = recov.pow(s.log10().sub(999).pow(0.15)).pow(recov.log10().pow(0.2))
+        if (s.gte(new Decimal("e2000"))) recov = recov.pow(s.log10().sub(1999).pow(0.12))
+        if (s.gte(new Decimal("e5000"))) recov = Decimal.pow(10,recov.log10().pow(s.log10().sub(4999).pow(0.02)))
+        if (s.gte(new Decimal("e150000"))) recov = Decimal.pow(10,recov.log10().pow(s.log10().div(1.5e6).add(0.9)))
+        if (hasDUpg(31)) recov = recov.pow(getDUpgEff(31))
+        if (hasDUpg(32)) recov = recov.pow(getDUpgEff(32))
+        if (hasChallenge("s", 22)) recov = recov.pow(challengeEffect("s", 22))
+        if (hasSUpg(53)) recov = Decimal.pow(10,recov.log10().pow(getSUpgEff(53)))
+        if (hasSUpg(54)) recov = Decimal.pow(10,recov.log10().pow(getSUpgEff(54)))
+        if (hasDUpg(42)) recov = new Decimal(1)
         return recov
     },
     effectDescription() {
         let desc = "which produces " + format(this.effect()) + " severity "
+        if (this.effect().gte("e2e6")) desc += " (softcapped) "
         if (player.s.severity.gte(new Decimal("1.8e308"))) desc = desc + "and " + format(this.recoveryGain()) + " recoveries"
         desc = desc + " per second."
         return desc
@@ -1328,26 +1351,43 @@ addLayer("s", {
         let seff = player.s.severity.add(1)
         seff = seff.pow(6)
         if (hasSUpg(21)) seff = seff.pow(getSUpgEff(21))
+        if (hasSUpg(51)) seff = seff.pow(getSUpgEff(51))
         if (inChallenge("s", 11)) seff = new Decimal(1)
         return seff
     },
     update(diff) {
         if (player.s.unlocked) player.s.severity = player.s.severity.add(tmp.s.effect.times(diff));
+        if (tmp.s.effect.gte(new Decimal("e1000")) && player.s.severity.lt(new Decimal("e1000"))) player.s.severity = new Decimal("e1000")
+        if (tmp.s.effect.gte(new Decimal("e5000")) && player.s.severity.lt(new Decimal("e5000"))) player.s.severity = new Decimal("e5000")
         if (player.s.severity.gte(new Decimal("1.8e308"))) player.s.recoveries = player.s.recoveries.add(tmp.s.recoveryGain.times(diff));
-            player.s.time = Decimal.add(player.s.time, diff)
+        if (player.s.recoveries.log10().gte(this.recoveryGain().log10().add(2))) player.s.recoveries = this.recoveryGain().mul(100)
+        let buymult = new Decimal(1)
+        if (hasMilestone("d", 4)) buymult = buymult.mul(10)
+        if (hasDUpg(23)) buymult = buymult.mul(2)
+        if (hasDUpg(32)) buymult = buymult.mul(5)
+        if (hasDUpg(33)) buymult = buymult.mul(2)
+        if (hasSUpg(55)) buymult = buymult.mul(25)
+        let t = diff
+        if (hasMilestone("d", 9)) t *= 2
+        if (hasDUpg(33)) t *= 2
+            player.s.time = Decimal.add(player.s.time, t)
             if (player.s.time.gte(1)) {
                 let times = Decimal.floor(player.s.time).mul(-1)
                 player.s.time = Decimal.add(player.s.time, times)
                 times = times.mul(-1)
-                if (hasMilestone("d", 4) && player.d.autob) {
-                    layers.s.buyables[11].buyMax(times.mul(10))
-                    layers.s.buyables[12].buyMax(times.mul(10))
-                    layers.s.buyables[13].buyMax(times.mul(10))
-                    layers.s.buyables[21].buyMax(times.mul(10))
-                    layers.s.buyables[22].buyMax(times.mul(10))
-                    layers.s.buyables[23].buyMax(times.mul(10))
+                if (hasUpgrade("s", 31) || hasMilestone("d", 4)) {
+                    layers.s.buyables[11].buyMax(times.mul(buymult))
+                    layers.s.buyables[12].buyMax(times.mul(buymult))
+                    layers.s.buyables[13].buyMax(times.mul(buymult))
+                    layers.s.buyables[21].buyMax(times.mul(buymult))
+                    layers.s.buyables[22].buyMax(times.mul(buymult))
+                    layers.s.buyables[23].buyMax(times.mul(buymult))
                 }
             };
+        if (player.s.ct <0.1 && (inChallenge("s", 11) || inChallenge("s", 12) || inChallenge("s", 21) || inChallenge("s", 22)))player.s.ct += diff
+        if (player.s.ct >= 0.1) {
+            player.v.upgrades = [11,12,13,21,22,23,31,32,33]
+        }
     },
     tabFormat: ["main-display",
     "prestige-button",
@@ -1370,7 +1410,10 @@ addLayer("s", {
         smult = new Decimal(1)
         let s = player.s.points
         let ssc = new Decimal(8)
+        let ssc2 = new Decimal(20)
+        if (hasDUpg(41)) ssc2 = ssc2.add(getDUpgEff(41))
         if (s.gte(ssc)) smult = smult.mul(Decimal.pow(1e100, s.sub(ssc).pow(3.7)))
+        if (s.gte(ssc2)) smult = smult.mul(Decimal.pow(new Decimal("e10000"),Decimal.pow(1.9,s.sub(ssc2))))
         return smult
     },
     gainExp() {
@@ -1384,19 +1427,19 @@ addLayer("s", {
     },
     milestones: {
         0: {
-            requirementDescription: "3 symptoms",
+            requirementDescription: "2 symptoms",
             effectDescription: "Keep Infectivity/Replicator milestones on reset.",
-            done() { return player.s.points.gte(3) }
+            done() { return player.s.points.gte(2) }
         },
         1: {
-            requirementDescription: "4 symptoms",
+            requirementDescription: "3 symptoms",
             effectDescription: "Keep virus upgrades on reset.",
-            done() { return player.s.points.gte(4) }
+            done() { return player.s.points.gte(3) }
         },
         2: {
-            requirementDescription: "5 symptoms",
+            requirementDescription: "4 symptoms",
             effectDescription: "Keep Infectivity/Replicator upgrades on reset and unlock buyables.",
-            done() { return player.s.points.gte(5) }
+            done() { return player.s.points.gte(4) }
         },
         3: {
             requirementDescription: "10 symptoms",
@@ -1410,7 +1453,7 @@ addLayer("s", {
         11: {
 			title: "Severity Gain",
 			cost(x=player[this.layer].buyables[this.id]) { // cost for buying xth buyable, can be an object if there are multiple currencies
-                let cost = Decimal.pow(2.5, x.pow(1.3)).mul(1e17)
+                let cost = Decimal.pow(2.5, x.pow(1.3)).mul(1e15)
                 return cost.floor()
             },
             base() { 
@@ -1420,29 +1463,29 @@ addLayer("s", {
             },
             extra() {
                 let extra = new Decimal(0)
-                if (hasSUpg(22)) extra = extra.add(getBuyableAmount("s", 12))
-                if (hasSUpg(23)) extra = extra.add(getBuyableAmount("s", 21))
-                if (hasSUpg(25)) extra = extra.add(getBuyableAmount("s", 22))
-                if (hasSUpg(31)) extra = extra.add(getBuyableAmount("s", 22))
+                if (!inChallenge("s", 22)) {
+                if (hasSUpg(22)) extra = extra.add(layers.s.buyables[12].total())
+                if (hasSUpg(23)) extra = extra.add(layers.s.buyables[21].total())
+                }
                 return extra
             },
             total() {
-                let total = getBuyableAmount("s", 11)
-                if (hasSUpg(22)) total = total.add(layers.s.buyables[11].extra())
+                let total = getBuyableAmount("s", 11).add(this.extra())
                 return total
             },
 			effect() { // Effects of owning x of the items, x is a decimal
-                let x = layers.s.buyables[11].total()
-                let base = layers.s.buyables[11].base()
+                let x = this.total()
+                let base = this.base()
+                if (inChallenge("s", 12)) x = new Decimal(0)
                 return Decimal.pow(base, x);
             },
 			display() { // Everything else displayed in the buyable button after the title
                 let extra = ""
-                if (hasSUpg(22)) extra = "+" + layers.s.buyables[11].extra()
+                if (hasSUpg(22)) extra = "+" + formatWhole(layers.s.buyables[11].extra())
                 return "Multiply severity gain by "+format(this.base())+".\n\
                 Cost: " + format(tmp[this.layer].buyables[this.id].cost)+" severity\n\
                 Effect: " + format(tmp[this.layer].buyables[this.id].effect)+"x\n\
-                Amount: " + getBuyableAmount("s", 11) + extra
+                Amount: " + formatWhole(getBuyableAmount("s", 11)) + extra
             },
             unlocked() { return hasMilestone("s", 2) }, 
             canAfford() {
@@ -1454,9 +1497,9 @@ addLayer("s", {
             },
             buyMax(max) {
                 let s = player.s.severity
-                let target = Decimal.log10(s.div(1e17)).div(Decimal.log10(2.5)).pow(10/13)
+                let target = Decimal.log10(s.div(1e15)).div(Decimal.log10(2.5)).pow(10/13)
                 target = target.ceil()
-                let cost = Decimal.pow(2.5, target.sub(1).pow(1.3)).mul(1e17)
+                let cost = Decimal.pow(2.5, target.sub(1).pow(1.3)).mul(1e15)
                 let diff = target.sub(player.s.buyables[11])
                 if (this.canAfford()) {
                     if (!hasMilestone("d", 4)) player.s.severity = player.s.severity.sub(cost)
@@ -1468,7 +1511,7 @@ addLayer("s", {
         12: {
 			title: "Infectivity Gain",
 			cost(x=player[this.layer].buyables[this.id]) { // cost for buying xth buyable, can be an object if there are multiple currencies
-                let cost = Decimal.pow(10, x.pow(1.3)).mul(1e19)
+                let cost = Decimal.pow(10, x.pow(1.29)).mul(1e19)
                 return cost.floor()
             },
             base() { 
@@ -1478,26 +1521,27 @@ addLayer("s", {
             },
             extra() {
                 let extra = new Decimal(0)
-                if (hasSUpg(25)) extra = extra.add(getBuyableAmount("s", 22))
+                if (hasSUpg(25) && !inChallenge("s", 21)) extra = extra.add(layers.s.buyables[22].total())
+                if (hasSUpg(34) && !inChallenge("s", 21)) extra = extra.add(layers.s.buyables[13].total())
                 return extra
             },
             total() {
-                let total = getBuyableAmount("s", 12)
-                if (hasSUpg(25)) total = total.add(layers.s.buyables[12].extra())
+                let total = getBuyableAmount("s", 12).add(this.extra())
                 return total
             },
 			effect() { // Effects of owning x of the items, x is a decimal
                 let x = layers.s.buyables[12].total()
                 let base = layers.s.buyables[12].base()
+                if (inChallenge("s", 12)) x = new Decimal(0)
                 return Decimal.pow(base, x);
             },
 			display() { // Everything else displayed in the buyable button after the title
                 let extra = ""
-                if (hasSUpg(25)) extra = "+" + layers.s.buyables[12].extra()
+                if (hasSUpg(25)) extra = "+" + formatWhole(layers.s.buyables[12].extra())
                 return "Multiply Infectivity gain by "+format(this.base())+".\n\
                 Cost: " + format(tmp[this.layer].buyables[this.id].cost)+" severity\n\
                 Effect: " + format(tmp[this.layer].buyables[this.id].effect)+"x\n\
-                Amount: " + getBuyableAmount("s", 12) + extra
+                Amount: " + formatWhole(getBuyableAmount("s", 12)) + extra
             },
             unlocked() { return player[this.layer].buyables[11].gte(1) }, 
             canAfford() {
@@ -1509,9 +1553,9 @@ addLayer("s", {
             },
             buyMax(max) {
                 let s = player.s.severity
-                let target = Decimal.log10(s.div(1e19)).pow(10/13)
+                let target = Decimal.log10(s.div(1e19)).pow(Decimal.pow(1.29,-1))
                 target = target.ceil()
-                let cost = Decimal.pow(10, target.sub(1).pow(1.3)).mul(1e19)
+                let cost = Decimal.pow(10, target.sub(1).pow(1.29)).mul(1e19)
                 let diff = target.sub(player.s.buyables[12])
                 if (this.canAfford()) {
                     if (!hasMilestone("d", 4)) player.s.severity = player.s.severity.sub(cost)
@@ -1523,34 +1567,36 @@ addLayer("s", {
 		21: {
 			title: "Symptom Base",
 			cost(x=player[this.layer].buyables[this.id]) { // cost for buying xth buyable, can be an object if there are multiple currencies
-                let cost = Decimal.pow(65, x.pow(1.35)).mul(new Decimal("2e20"))
+                let cost = Decimal.pow(65, x.pow(1.35)).mul(new Decimal("e20"))
                 return cost.floor()
             },
             base() { 
-                return new Decimal(1.5)
+                let base = new Decimal(1.5)
+                if (hasSUpg(45)) base = base.add(getSUpgEff(45))
+                return base
             },
             extra() {
                 let extra = new Decimal(0)
-                if (hasSUpg(31)) extra = extra.add(getBuyableAmount("s", 22))
+                if (hasSUpg(31) && !inChallenge("s", 21)) extra = extra.add(layers.s.buyables[22].total())
                 return extra
             },
             total() {
-                let total = getBuyableAmount("s", 21)
-                if (hasSUpg(31)) total = total.add(layers.s.buyables[21].extra())
+                let total = getBuyableAmount("s", 21).add(this.extra())
                 return total
             },
 			effect() { // Effects of owning x of the items, x is a decimal
                 let x = layers.s.buyables[21].total()
                 let base = layers.s.buyables[21].base()
+                if (inChallenge("s", 12)) x = new Decimal(0)
                 return Decimal.pow(base, x);
             },
 			display() { // Everything else displayed in the buyable button after the title
                 let extra = ""
-                if (hasSUpg(31)) extra = "+" + layers.s.buyables[21].extra()
-                return "Multiply the symptom base by 1.5.\n\
+                if (hasSUpg(31)) extra = "+" + formatWhole(layers.s.buyables[21].extra())
+                return "Multiply the symptom base by "+ format(this.base()) + ".\n\
                 Cost: " + format(tmp[this.layer].buyables[this.id].cost)+" severity\n\
                 Effect: " + format(tmp[this.layer].buyables[this.id].effect)+"x\n\
-                Amount: " + getBuyableAmount("s", 21) + extra
+                Amount: " + formatWhole(getBuyableAmount("s", 21)) + extra
             },
             unlocked() { return player[this.layer].buyables[12].gte(1) }, 
             canAfford() {
@@ -1574,9 +1620,14 @@ addLayer("s", {
             },
         },
         22: {
-			title: "Uncoater Base",
+            title: "Uncoater Base",
+            scalebase(){
+                let base = new Decimal(5e3)
+                if (hasSUpg(42)) base = base.div(getSUpgEff(42))
+                return base
+            },
 			cost(x=player[this.layer].buyables[this.id]) { // cost for buying xth buyable, can be an object if there are multiple currencies
-                let cost = Decimal.pow(5e3, x.pow(1.5)).mul(new Decimal("3e37"))
+                let cost = Decimal.pow(this.scalebase(), x.pow(1.5)).mul(new Decimal("e37"))
                 return cost.floor()
             },
             base() { 
@@ -1586,23 +1637,26 @@ addLayer("s", {
             },
             extra() {
                 let extra = new Decimal(0)
+                if (hasSUpg(44) && !inChallenge("s", 21)) extra = extra.add(layers.s.buyables[23].total())
                 return extra
             },
             total() {
-                let total = getBuyableAmount("s", 22)
+                let total = getBuyableAmount("s", 22).add(this.extra())
                 return total
             },
 			effect() { // Effects of owning x of the items, x is a decimal
                 let x = layers.s.buyables[22].total()
                 let base = layers.s.buyables[22].base()
+                if (inChallenge("s", 12)) x = new Decimal(0)
                 return Decimal.pow(base, x);
             },
 			display() { // Everything else displayed in the buyable button after the title
                 let extra = ""
+                if (hasSUpg(44)) extra = "+" + formatWhole(layers.s.buyables[22].extra())
                 return "Multiply the uncoater base by " + format(this.base())+" (based on cases)\n\
                 Cost: " + format(tmp[this.layer].buyables[this.id].cost)+" severity\n\
                 Effect: " + format(tmp[this.layer].buyables[this.id].effect)+"x\n\
-                Amount: " + getBuyableAmount("s", 22) + extra
+                Amount: " + formatWhole(getBuyableAmount("s", 22)) + extra
             },
             unlocked() { return player[this.layer].buyables[21].gte(1) }, 
             canAfford() {
@@ -1614,9 +1668,9 @@ addLayer("s", {
             },
             buyMax(max) {
                 let s = player.s.severity
-                let target = Decimal.log10(s.div(3e37)).div(Decimal.log10(5e3)).pow(Decimal.pow(1.5,-1))
+                let target = Decimal.log10(s.div(1e37)).div(Decimal.log10(this.scalebase())).pow(Decimal.pow(1.5,-1))
                 target = target.ceil()
-                let cost = Decimal.pow(5e3, target.sub(1).pow(1.5)).mul(3e37)
+                let cost = Decimal.pow(this.scalebase(), target.sub(1).pow(1.5)).mul(1e37)
                 let diff = target.sub(player.s.buyables[22])
                 if (this.canAfford()) {
                     if (!hasMilestone("d", 4)) player.s.severity = player.s.severity.sub(cost)
@@ -1626,9 +1680,14 @@ addLayer("s", {
             },
         },
         13: {
-			title: "'Coated' Boost",
+            title: "'Coated' Boost",
+            scalebase(){
+                let base = new Decimal(1e5)
+                if (hasSUpg(41)) base = base.div(getSUpgEff(41))
+                return base
+            },
 			cost(x=player[this.layer].buyables[this.id]) { // cost for buying xth buyable, can be an object if there are multiple currencies
-                let cost = Decimal.pow(1e5, x.pow(1.5)).mul(new Decimal("2e164"))
+                let cost = Decimal.pow(this.scalebase(), x.pow(1.5)).mul(new Decimal("2e164"))
                 return cost.floor()
             },
             base() { 
@@ -1639,23 +1698,26 @@ addLayer("s", {
             },
             extra() {
                 let extra = new Decimal(0)
+                if (hasSUpg(44) && !inChallenge("s", 21)) extra = extra.add(layers.s.buyables[23].total())
                 return extra
             },
             total() {
-                let total = getBuyableAmount("s", 13)
+                let total = getBuyableAmount("s", 13).add(this.extra())
                 return total
             },
 			effect() { // Effects of owning x of the items, x is a decimal
                 let x = layers.s.buyables[13].total()
                 let base = layers.s.buyables[13].base()
+                if (inChallenge("s", 12)) x = new Decimal(0)
                 return Decimal.mul(base, x).add(1);
             },
 			display() { // Everything else displayed in the buyable button after the title
                 let extra = ""
+                if (hasSUpg(44)) extra = "+" + formatWhole(layers.s.buyables[13].extra())
                 return "Raise 'Coated' reward to ^(1+" + format(this.base())+"x) (based on infectivity)\n\
                 Cost: " + format(tmp[this.layer].buyables[this.id].cost)+" severity\n\
                 Effect: ^" + format(tmp[this.layer].buyables[this.id].effect)+"\n\
-                Amount: " + getBuyableAmount("s", 13) + extra
+                Amount: " + formatWhole(getBuyableAmount("s", 13)) + extra
             },
             unlocked() { return hasMilestone("s", 3) }, 
             canAfford() {
@@ -1667,9 +1729,9 @@ addLayer("s", {
             },
             buyMax(max) {
                 let s = player.s.severity
-                let target = Decimal.log10(s.div("2e164")).div(Decimal.log10(1e5)).pow(Decimal.pow(1.5,-1))
+                let target = Decimal.log10(s.div("2e164")).div(Decimal.log10(this.scalebase())).pow(Decimal.pow(1.5,-1))
                 target = target.ceil()
-                let cost = Decimal.pow(1e5, target.sub(1).pow(1.5)).mul("2e164")
+                let cost = Decimal.pow(this.scalebase(), target.sub(1).pow(1.5)).mul("2e164")
                 let diff = target.sub(player.s.buyables[13])
                 if (this.canAfford()) {
                     if (!hasMilestone("d", 4)) player.s.severity = player.s.severity.sub(cost)
@@ -1679,9 +1741,14 @@ addLayer("s", {
             },
         },
         23: {
-			title: "'Infection' Base",
+            title: "'Infection' Base",
+            scalebase(){
+                let base = new Decimal(1e10)
+                if (hasSUpg(43)) base = base.div(getSUpgEff(43))
+                return base
+            },
 			cost(x=player[this.layer].buyables[this.id]) { // cost for buying xth buyable, can be an object if there are multiple currencies
-                let cost = Decimal.pow(1e10, x.pow(1.65)).mul(new Decimal("e270"))
+                let cost = Decimal.pow(this.scalebase(), x.pow(1.65)).mul(new Decimal("e270"))
                 return cost.floor()
             },
             base() { 
@@ -1694,12 +1761,13 @@ addLayer("s", {
                 return extra
             },
             total() {
-                let total = getBuyableAmount("s", 23)
+                let total = getBuyableAmount("s", 23).add(this.extra())
                 return total
             },
 			effect() { // Effects of owning x of the items, x is a decimal
                 let x = layers.s.buyables[23].total()
                 let base = layers.s.buyables[23].base()
+                if (inChallenge("s", 12)) x = new Decimal(0)
                 return Decimal.pow(base, x);
             },
 			display() { // Everything else displayed in the buyable button after the title
@@ -1707,7 +1775,7 @@ addLayer("s", {
                 return "Multiply 'Infection' base by " + format(this.base())+". (based on VP)\n\
                 Cost: " + format(tmp[this.layer].buyables[this.id].cost)+" severity\n\
                 Effect: " + format(tmp[this.layer].buyables[this.id].effect)+"x\n\
-                Amount: " + getBuyableAmount("s", 23) + extra
+                Amount: " + formatWhole(getBuyableAmount("s", 23)) + extra
             },
             unlocked() { return player[this.layer].buyables[13].gte(1) }, 
             canAfford() {
@@ -1719,9 +1787,9 @@ addLayer("s", {
             },
             buyMax(max) {
                 let s = player.s.severity
-                let target = Decimal.log10(s.div("e270")).div(Decimal.log10(1e10)).pow(Decimal.pow(1.65,-1))
+                let target = Decimal.log10(s.div("e270")).div(Decimal.log10(this.scalebase())).pow(Decimal.pow(1.65,-1))
                 target = target.ceil()
-                let cost = Decimal.pow(1e10, target.sub(1).pow(1.65)).mul("e270")
+                let cost = Decimal.pow(this.scalebase(), target.sub(1).pow(1.65)).mul("e270")
                 let diff = target.sub(player.s.buyables[23])
                 if (this.canAfford()) {
                     if (!hasMilestone("d", 4)) player.s.severity = player.s.severity.sub(cost)
@@ -1737,7 +1805,7 @@ addLayer("s", {
         11: {
             title: "Cough",
             description: "Severity boosts uncoaters 1st effect base.",
-            cost: new Decimal("15e3"),
+            cost: new Decimal("5e3"),
             currencyDisplayName: "severity",
             currencyInternalName: "severity",
             currencyLayer: "s",
@@ -1745,7 +1813,7 @@ addLayer("s", {
             let s11 = player.s.severity.add(10)
             s11 = Decimal.log10(s11)
             s11 = s11.pow(2).add(10)
-            if (inChallenge("s", 11)) s11 = new Decimal(1)
+            if (inChallenge("s", 11) || inChallenge("s", 21)) s11 = new Decimal(1)
             return s11
             },
             effectDisplay(){
@@ -1758,8 +1826,10 @@ addLayer("s", {
             cost: new Decimal(2),
             effect(){
             let s12 = player.s.upgrades.length
+            if (hasDUpg(34)) s12 += player.d.upgrades.length*2
             s12 = Decimal.div(s12, 2.85).pow(0.3)
             s12 = s12.mul(1.5).add(0.7)
+            if (inChallenge("s", 21)) s12 = new Decimal(1)
             return s12
             },
             effectDisplay(){
@@ -1772,14 +1842,14 @@ addLayer("s", {
         13: {
             title: "Tiredness",
             description: "Symptoms boost uncoaters 1st effect base.",
-            cost: new Decimal("5e7"),
+            cost: new Decimal("3e7"),
             currencyDisplayName: "severity",
             currencyInternalName: "severity",
             currencyLayer: "s",
             effect(){
             let s13 = player.s.points.add(1)
             s13 = s13.pow(3.75)
-            if (inChallenge("s", 11)) s13 = new Decimal(1)
+            if (inChallenge("s", 11) || inChallenge("s", 21)) s13 = new Decimal(1)
             return s13
             },
             effectDisplay(){
@@ -1792,17 +1862,21 @@ addLayer("s", {
         14: {
             title: "Pain",
             description: "Infectivity boost severity gain.",
-            cost: new Decimal("2e8"),
+            cost: new Decimal("77777777"),
             currencyDisplayName: "severity",
             currencyInternalName: "severity",
             currencyLayer: "s",
             effect(){
             let s14 = player.i.points.add(1)
             s14 = s14.pow(new Decimal("3e-4"))
+            if (s14.gte(new Decimal("e5000"))) s14 = s14.div("e5000").pow(0.1).mul("e5000")
+            if (inChallenge("s", 21)) s14 = new Decimal(1)
             return s14
             },
             effectDisplay(){
-            return format(getSUpgEff(14))+"x"
+                let dis = format(getSUpgEff(14))+"x"
+                if (this.effect().gte(new Decimal("e5000"))) dis += " (softcapped)"
+                return dis
             },
             unlocked(){
                 return hasSUpg(13)
@@ -1811,14 +1885,14 @@ addLayer("s", {
         15: {
             title: "Sore Throat",
             description: "Severity boosts replicators 1st effect base.",
-            cost: new Decimal("7e12"),
+            cost: new Decimal("1.5e12"),
             currencyDisplayName: "severity",
             currencyInternalName: "severity",
             currencyLayer: "s",
             effect(){
             let s15 = player.s.severity.add(1)
             s15 = s15.pow(0.3)
-            if (inChallenge("s", 11)) s15 = new Decimal(1)
+            if (inChallenge("s", 11) || inChallenge("s", 21)) s15 = new Decimal(1)
             return s15
             },
             effectDisplay(){
@@ -1831,13 +1905,14 @@ addLayer("s", {
         21: {
             title: "Chills",
             description: "'Fever' boosts severity effect.",
-            cost: new Decimal("3e15"),
+            cost: new Decimal("1e15"),
             currencyDisplayName: "severity",
             currencyInternalName: "severity",
             currencyLayer: "s",
             effect(){
             let s21 = getSUpgEff(12)
             s21 = s21.pow(2).add(1.8)
+            if (inChallenge("s", 21)) s21 = new Decimal(1)
             return s21
             },
             effectDisplay(){
@@ -1850,7 +1925,7 @@ addLayer("s", {
         22: {
             title: "Headache",
             description: "'Infectivity Gain' gives free levels to 'Severity Gain'.",
-            cost: new Decimal("5e22"),
+            cost: new Decimal("2.22e22"),
             currencyDisplayName: "severity",
             currencyInternalName: "severity",
             currencyLayer: "s",
@@ -1876,7 +1951,7 @@ addLayer("s", {
             effect(){
             let s24 = player.s.points
             s24 = Decimal.pow(1e4,s24)
-            if (inChallenge("s", 11)) s24 = new Decimal(1)
+            if (inChallenge("s", 11) || inChallenge("s", 21)) s24 = new Decimal(1)
             return s24
             },
             effectDisplay(){
@@ -1889,7 +1964,7 @@ addLayer("s", {
         25: {
             title: "Taste Loss",
             description: "'Uncoater Base' gives free levels to 'Infectivity Gain'.",
-            cost: new Decimal("25e58"),
+            cost: new Decimal("5e58"),
             currencyDisplayName: "severity",
             currencyInternalName: "severity",
             currencyLayer: "s",
@@ -1899,8 +1974,8 @@ addLayer("s", {
         },
         31: {
             title: "Smell Loss",
-            description: "'Uncoater Base' gives free levels to 'Symptom Base'.",
-            cost: new Decimal("25e62"),
+            description: "'Uncoater Base' gives free levels to 'Symptom Base' and autobuy buyables once per second.",
+            cost: new Decimal("1e63"),
             currencyDisplayName: "severity",
             currencyInternalName: "severity",
             currencyLayer: "s",
@@ -1918,11 +1993,12 @@ addLayer("s", {
             effect(){
                 let s32 = player.r.points
                 s32 = Decimal.pow(1.02, s32)
+                if (inChallenge("s", 21)) s32 = new Decimal(1)
                 return s32
-                },
-                effectDisplay(){
+            },
+            effectDisplay(){
                 return format(getSUpgEff(32))+"x"
-                },
+            },
             unlocked(){
                 return hasSUpg(31)
             }
@@ -1936,17 +2012,429 @@ addLayer("s", {
             currencyLayer: "s",
             effect(){
                 let s32 = layers.s.buyables[11].total().div(5e3)
+                if (hasChallenge("s", 21)) s32 = s32.mul(challengeEffect("s", 21))
+                if (inChallenge("s", 21)) s32 = new Decimal(1)
                 return s32
-                },
-                effectDisplay(){
+            },
+            effectDisplay(){
                 return "+"+format(getSUpgEff(33))
-                },
+            },
             unlocked(){
                 return hasSUpg(32)
             }
         },
+        34: {
+            title: "Shortness of Breath",
+            description: "'Coated Boost' gives free 'Infectivity gain'.",
+            cost: new Decimal("e54490"),
+            currencyDisplayName: "severity",
+            currencyInternalName: "severity",
+            currencyLayer: "s",
+            unlocked(){
+                return hasDUpg(34)
+            }
+        },
+        35: {
+            title: "Chest Pain",
+            description: "Cases boost symptom base.",
+            cost: new Decimal("e60100"),
+            currencyDisplayName: "severity",
+            currencyInternalName: "severity",
+            currencyLayer: "s",
+            effect(){
+                let s32 = player.points.add(10)
+                s32 = s32.log10().pow(5)
+                if (inChallenge("s", 21)) s32 = new Decimal(1)
+                return s32
+            },
+            effectDisplay(){
+                return format(getSUpgEff(35))+"x"
+            },
+            unlocked(){
+                return hasSUpg(34)
+            }
+        },
+        41: {
+            title: "Speech Loss",
+            description: "Deaths reduce 'Coated Boost' scaling base.",
+            cost: new Decimal("e70000"),
+            currencyDisplayName: "severity",
+            currencyInternalName: "severity",
+            currencyLayer: "s",
+            effect(){
+                let s32 = player.d.points.add(10)
+                s32 = s32.log10().pow(1.2)
+                if (inChallenge("s", 21)) s32 = new Decimal(1)
+                return s32.min(99999)
+            },
+            effectDisplay(){
+                return format(getSUpgEff(41))+"x"
+            },
+            unlocked(){
+                return hasSUpg(35)
+            }
+        },
+        42: {
+            title: "Movement Loss",
+            description: "Severity reduces 'Uncoater Base' scaling base.",
+            cost: new Decimal("e87700"),
+            currencyDisplayName: "severity",
+            currencyInternalName: "severity",
+            currencyLayer: "s",
+            effect(){
+                let s32 = player.s.severity.add(10)
+                s32 = s32.log10().pow(0.27)
+                if (inChallenge("s", 21)) s32 = new Decimal(1)
+                return s32.min(4999)
+            },
+            effectDisplay(){
+                return format(getSUpgEff(42))+"x"
+            },
+            unlocked(){
+                return hasSUpg(41)
+            }
+        },
+        43: {
+            title: "Pneumonia",
+            description: "Cases reduce 'Infection Base' scaling base.",
+            cost: new Decimal("e133420"),
+            currencyDisplayName: "severity",
+            currencyInternalName: "severity",
+            currencyLayer: "s",
+            effect(){
+                let s32 = player.points.add(10)
+                s32 = s32.log10().add(10)
+                s32 = s32.log10().pow(5).mul(3333)
+                if (inChallenge("s", 21)) s32 = new Decimal(1)
+                return s32.min(9999999999)
+            },
+            effectDisplay(){
+                return format(getSUpgEff(43))+"x"
+            },
+            unlocked(){
+                return hasSUpg(42)
+            }
+        },
+        44: {
+            title: "Fatigue",
+            description: "'Infection Base' gives free 'Coated Boost' and 'Uncoater Base'.",
+            cost: new Decimal("e146060"),
+            currencyDisplayName: "severity",
+            currencyInternalName: "severity",
+            currencyLayer: "s",
+            unlocked(){
+                return hasSUpg(43)
+            }
+        },
+        45: {
+            title: "Congestion",
+            description: "Each 'Infection Base' adds 0.0001 to 'Symptom Base' base.",
+            cost: new Decimal("e191185"),
+            currencyDisplayName: "severity",
+            currencyInternalName: "severity",
+            currencyLayer: "s",
+            effect(){
+                let s32 = layers.s.buyables[23].total().div(1e4)
+                return s32
+            },
+            effectDisplay(){
+                return "+"+format(getSUpgEff(45))
+            },
+            unlocked(){
+                return hasSUpg(44)
+            }
+        },
+        51: {
+            title: "Muscle Aches",
+            description: "Cases boost severity effect.",
+            cost: new Decimal("e215350"),
+            currencyDisplayName: "severity",
+            currencyInternalName: "severity",
+            currencyLayer: "s",
+            effect(){
+                let s32 = player.points.add(10)
+                s32 = s32.log10().add(1).log10()
+                return s32
+            },
+            effectDisplay(){
+                return "^"+format(getSUpgEff(51))
+            },
+            unlocked(){
+                return hasSUpg(45)
+            }
+        },
+        52: {
+            title: "Nausea",
+            description: "Infectivity boosts 'Deadly'.",
+            cost: new Decimal("e225315"),
+            currencyDisplayName: "severity",
+            currencyInternalName: "severity",
+            currencyLayer: "s",
+            effect(){
+                let s32 = player.i.points.add(10)
+                s32 = s32.log10().pow(0.23)
+                return s32
+            },
+            effectDisplay(){
+                return "^"+format(getSUpgEff(52))
+            },
+            unlocked(){
+                return hasSUpg(51)
+            }
+        },
+        53: {
+            title: "Asthma",
+            description() {
+                let des =  "Uncoaters reduce recovery effect exponent."
+                if (hasDUpg(42)) des =  "Uncoaters boost severity gain exponent."
+                return des
+            },
+            cost: new Decimal("e301777"),
+            currencyDisplayName: "severity",
+            currencyInternalName: "severity",
+            currencyLayer: "s",
+            effect(){
+                let s32 = player.u.points.add(10)
+                s32 = s32.log10().pow(-0.1)
+                if (hasDUpg(42)) s32 = s32.pow(-1)
+                return s32
+            },
+            effectDisplay(){
+                return "^"+format(getSUpgEff(53))
+            },
+            unlocked(){
+                return hasSUpg(52)
+            }
+        },
+        54: {
+            title: "Cancer",
+            description() {
+                let des =  "Replicators reduce recovery effect exponent."
+                if (hasDUpg(42)) des =  "Replicators boost severity gain exponent."
+                return des
+            },
+            cost: new Decimal("e435630"),
+            currencyDisplayName: "severity",
+            currencyInternalName: "severity",
+            currencyLayer: "s",
+            effect(){
+                let s32 = player.r.points.add(10)
+                s32 = s32.log10().pow(-0.05)
+                if (hasDUpg(42)) s32 = s32.pow(-1)
+                return s32
+            },
+            effectDisplay(){
+                return "^"+format(getSUpgEff(54))
+            },
+            unlocked(){
+                return hasSUpg(53)
+            }
+        },
+        55: {
+            title: "Heart Failure",
+            description: "Severity boosts 'Transmission', 'Smell Loss' buys 25x more, and unlock a row of death upgrades.",
+            cost: new Decimal("e545766"),
+            currencyDisplayName: "severity",
+            currencyInternalName: "severity",
+            currencyLayer: "s",
+            effect(){
+                let s32 = player.s.severity.add(10)
+                s32 = s32.log10().pow(0.12)
+                return s32
+            },
+            effectDisplay(){
+                return "^"+format(getSUpgEff(55))
+            },
+            unlocked(){
+                return hasSUpg(54)
+            }
+        },
     },
-    
+    challenges: { // Order: 1x1,2x1,1x2,3x1,2x2,1x3,4x1,1x4,2x3,3x2,4x2,3x3,2x4,1x5,4x3,3x4,4x4,2x5,3x5,4x5
+        rows: 2,
+        cols: 2,
+        11: {
+            name: "Asymptomatic",
+            currencyDisplayName: "cases",
+            challengeDescription: function() {
+                let c11 = "Symptoms and severity are useless. Cases gain is ^0.1."
+                if (inChallenge("s", 11)) c11 = c11 + " (In Challenge)"
+                if (challengeCompletions("s", 11) == 5) c11 = c11 + " (Completed)"
+                c11 = c11 + "<br>Completed:" + challengeCompletions("s",11) + "/" + this.completionLimit
+                return c11
+            },
+            goal(){
+                if (challengeCompletions("s", 11) == 0) return new Decimal("e78000");
+                if (challengeCompletions("s", 11) == 1) return new Decimal("e107500");
+                if (challengeCompletions("s", 11) == 2) return new Decimal("e285000");
+                if (challengeCompletions("s", 11) == 3) return new Decimal("e3e6");
+                if (challengeCompletions("s", 11) == 4) return new Decimal("e8.93e6");
+            },
+            onStart(testInput=false) { 
+                if (testInput) {
+                    doReset("i")
+                    player.v.upgrades = []
+                    player.s.ct = 0
+                    player.i.points = new Decimal(0)
+                    player.r.points = new Decimal(0)
+                    player.v.points = new Decimal(0)
+                    player.points = new Decimal(0)
+                }
+            },
+            completionLimit: 5,
+            rewardDescription: "Cases boost severity gain.",
+            rewardEffect() {
+                 let c11 = player.points.add(1)
+                 let c11r = new Decimal(0.38)
+                 let c11c = challengeCompletions("s", 11)
+                 c11r = Decimal.add(c11r, Decimal.div(c11c, 50))
+                 let c11r2 = new Decimal(0.3)
+                 if (c11c >= 4) c11r2 = Decimal.sub(0.6, Decimal.div(c11c, 11))
+                 if (c11c == 5) c11r = c11r.add(0.007)
+                 c11 = Decimal.pow(10, Decimal.log10(c11).pow(c11r)).pow(c11r2)
+                 return c11
+            },
+            rewardDisplay() {return format(this.rewardEffect())+"x"},
+            unlocked(){
+                return hasMilestone("d", 8)
+            }
+        },
+        12: {
+            name: "Unbuyable",
+            currencyDisplayName: "cases",
+            challengeDescription: function() {
+                let c12 = "Symptom buyables are useless. Cases gain is ^0.01."
+                if (inChallenge("s", 12)) c12 = c12 + " (In Challenge)"
+                if (challengeCompletions("s", 12) == 5) c12 = c12 + " (Completed)"
+                c12 = c12 + "<br>Completed:" + challengeCompletions("s",12) + "/" + this.completionLimit
+                return c12
+            },
+            goal(){
+                if (challengeCompletions("s", 12) == 0) return new Decimal("e5640");
+                if (challengeCompletions("s", 12) == 1) return new Decimal("e13600");
+                if (challengeCompletions("s", 12) == 2) return new Decimal("e86400");
+                if (challengeCompletions("s", 12) == 3) return new Decimal("e154000");
+                if (challengeCompletions("s", 12) == 4) return new Decimal("e327000");
+            },
+            onStart(testInput=false) { 
+                if (testInput) {
+                    doReset("i")
+                    player.v.upgrades = []
+                    player.s.ct = 0
+                    player.i.points = new Decimal(0)
+                    player.r.points = new Decimal(0)
+                    player.v.points = new Decimal(0)
+                    player.points = new Decimal(0)
+                }
+            },
+            completionLimit: 5,
+            rewardDescription: "Infectivity boosts death gain.",
+            rewardEffect() {
+                 let c12 = player.points.add(1)
+                 let c12r = new Decimal(0.33)
+                 let c12c = challengeCompletions("s", 12)
+                 c12r = Decimal.add(c12r, Decimal.div(c12c, 5))
+                 c12 = Decimal.log10(c12).pow(c12r).div(100).max(1)
+                 return c12
+            },
+            rewardDisplay() {return format(this.rewardEffect())+"x"},
+            unlocked(){
+                return hasChallenge("s", 11)
+            }
+        },
+        21: {
+            name: "Row 3 Downgrade",
+            currencyDisplayName: "cases",
+            challengeDescription: function() {
+                let c12 = "Row 3 Upgrades are useless. Cases gain is ^0.03."
+                if (inChallenge("s", 21)) c12 = c12 + " (In Challenge)"
+                if (challengeCompletions("s", 21) == 5) c12 = c12 + " (Completed)"
+                c12 = c12 + "<br>Completed:" + challengeCompletions("s",21) + "/" + this.completionLimit
+                return c12
+            },
+            goal(){
+                if (challengeCompletions("s", 21) == 0) return new Decimal("e4660");
+                if (challengeCompletions("s", 21) == 1) return new Decimal("e34100");
+                if (challengeCompletions("s", 21) == 2) return new Decimal("e44640");
+                if (challengeCompletions("s", 21) == 3) return new Decimal("e64500");
+                if (challengeCompletions("s", 21) == 4) return new Decimal("e89100");
+            },
+            onStart(testInput=false) { 
+                if (testInput) {
+                    doReset("i")
+                    player.v.upgrades = []
+                    player.s.ct = 0
+                    player.i.points = new Decimal(0)
+                    player.r.points = new Decimal(0)
+                    player.v.points = new Decimal(0)
+                    player.points = new Decimal(0)
+                }
+            },
+            completionLimit: 5,
+            rewardDescription: "Deaths boost 'Discoloration'.",
+            rewardEffect() {
+                 let c12 = player.d.points.add(10)
+                 let c12r = new Decimal(0.07)
+                 let c12c = challengeCompletions("s", 21)
+                 c12r = Decimal.add(c12r, Decimal.div(c12c, 15))
+                 c12 = Decimal.log10(c12).pow(c12r)
+                 return c12
+            },
+            rewardDisplay() {return format(this.rewardEffect())+"x"},
+            unlocked(){
+                return hasChallenge("s", 12)
+            }
+        },
+        22: {
+            name: "Symptomless Symptoms",
+            currencyDisplayName: "cases",
+            challengeDescription: function() {
+                let c12 = "'Asymptomatic' and 'Unbuyable' at once."
+                if (inChallenge("s", 22)) c12 = c12 + " (In Challenge)"
+                if (challengeCompletions("s", 22) == 5) c12 = c12 + " (Completed)"
+                c12 = c12 + "<br>Completed:" + challengeCompletions("s",22) + "/" + this.completionLimit
+                return c12
+            },
+            goal(){
+                if (challengeCompletions("s", 22) == 0) return new Decimal("e1020");
+                if (challengeCompletions("s", 22) == 1) return new Decimal("e2170");
+                if (challengeCompletions("s", 22) == 2) return new Decimal("e4720");
+                if (challengeCompletions("s", 22) == 3) return new Decimal("e5850");
+                if (challengeCompletions("s", 22) == 4) return new Decimal("e12715");
+            },
+            onStart(testInput=false) { 
+                if (testInput) {
+                    doReset("i")
+                    player.v.upgrades = []
+                    player.s.ct = 0
+                    player.i.points = new Decimal(0)
+                    player.r.points = new Decimal(0)
+                    player.v.points = new Decimal(0)
+                    player.points = new Decimal(0)
+                }
+            },
+            countsAs: [11,12],
+            completionLimit: 5,
+            rewardDescription() {
+                let des =  "Severity reduces the recovery effect."
+                if (hasDUpg(42)) des =  "Severity boosts severity gain."
+                return des
+            },
+            rewardEffect() {
+                 let c12 = player.s.severity.add(10)
+                 let c12r = new Decimal(0.02)
+                 let c12c = challengeCompletions("s", 22)
+                 c12r = Decimal.add(c12r, Decimal.div(c12c, 200))
+                 c12 = Decimal.log10(c12).pow(-c12r)
+                 if (hasDUpg(42)) c12 = c12.pow(-1)
+                 return c12
+            },
+            rewardDisplay() {return "^"+format(this.rewardEffect())},
+            unlocked(){
+                return hasChallenge("s", 21)
+            }
+        },
+    },
 })
 addLayer("d", {
     name: "deaths",
@@ -1978,6 +2466,9 @@ addLayer("d", {
             }
         },
     ],
+    update(diff) {
+        if (hasMilestone("d", 10)) generatePoints("d", diff/100);
+    },
     layerShown() {
         let shown = hasSUpg(33)
         if(player.d.unlocked) shown = true
@@ -1995,6 +2486,8 @@ addLayer("d", {
         let mult = new Decimal(1)
         if (hasDUpg(12)) mult = mult.mul(getDUpgEff(12))
         if (hasDUpg(22)) mult = mult.mul(getDUpgEff(22))
+        if (hasDUpg(24)) mult = mult.mul(getDUpgEff(24))
+        if (hasChallenge("s", 12)) mult = mult.mul(challengeEffect("s", 12))
         return mult
     },
     doReset(layer){
@@ -2022,7 +2515,10 @@ addLayer("d", {
         }
     },
     tabFormat: ["main-display",
-        "prestige-button",
+        function() {if (!hasMilestone("d", 10)) return "prestige-button"},
+        ["display-text",
+        function() {if (hasMilestone("d", 10)) return "You are gaining " + format(getResetGain("d").div(100)) + " deaths per second."},
+        ],
         "resource-display",
         "blank",
         ["display-text",
@@ -2051,48 +2547,65 @@ addLayer("d", {
             done() { return player.d.total.gte(4) }
         },
         3: {
-            requirementDescription: "8 total deaths",
+            requirementDescription: "5 total deaths",
             effectDescription: "Keep uncoater challenge completions.",
-            done() { return player.d.total.gte(8) }
+            done() { return player.d.total.gte(5) }
         },
         4: {
-            requirementDescription: "16 total deaths",
-            effectDescription: "Autobuy symptom buyables (10/s).",
-            toggles:[["d", "autob"]],
-            done() { return player.d.total.gte(16) }
+            requirementDescription: "8 total deaths",
+            effectDescription: "Autobuy buyables, 'Smell Loss' buys 10 and buyables cost nothing.",
+            done() { return player.d.total.gte(8) }
         },
         5: {
-            requirementDescription: "32 total deaths",
+            requirementDescription: "24 total deaths",
             effectDescription: "Uncoaters reset nothing.",
-            done() { return player.d.total.gte(32) }
+            done() { return player.d.total.gte(24) }
         },
         6: {
-            requirementDescription: "64 total deaths",
+            requirementDescription: "48 total deaths",
             effectDescription: "Keep previous upgrades on reset.",
-            done() { return player.d.total.gte(64) }
+            done() { return player.d.total.gte(48) }
         },
         7: {
-            requirementDescription: "128 total deaths",
+            requirementDescription: "96 total deaths",
             effectDescription: "Autobuy symptoms.",
             toggles:[["d", "autos"]],
-            done() { return player.d.total.gte(128) }
+            done() { return player.d.total.gte(96) }
         },
         8: {
             requirementDescription: "1,048,576 total deaths",
-            effectDescription: "Unlock symptom challenges (next update).",
+            effectDescription: "Unlock symptom challenges.",
             done() { return player.d.total.gte(1048576) }
         },
+        9: {
+            requirementDescription() {
+                return format(Decimal.pow(2, 32)) + " total deaths"
+            },
+            effectDescription: "Symptoms reset nothing and 'Smell Loss' buys 2x often.",
+            done() { return player.d.total.gte(Decimal.pow(2, 32)) }
+        },
+        10: {
+            requirementDescription: "1.798e308 total deaths",
+            effectDescription: "Gain 1% of death gain per second and disable prestige.",
+            unlocked() {
+                return hasDUpg(34)
+            },
+            done() { return player.d.total.gte(Decimal.pow(2,1024)) }
+        },
     },
+    canReset() { return !hasMilestone("d", 10) },
     upgrades: {
-        rows: 3,
+        rows: 4,
         cols: 4,
         11: {
             title: "Deadly",
             description: "Deaths boosts symptom base.",
-            cost: new Decimal(5),
+            cost: new Decimal(2),
             effect(){
             let d11 = player.d.points.add(10)
             d11 = Decimal.log10(d11).pow(4.5).add(1)
+            if (hasSUpg(52)) d11 = d11.pow(getSUpgEff(52))
+            if (inChallenge("s", 21)) d11 = new Decimal(1)
             return d11
             },
             effectDisplay(){
@@ -2105,10 +2618,12 @@ addLayer("d", {
         12: {
             title: "Fatal",
             description: "Cases boost death gain.",
-            cost: new Decimal(10),
+            cost: new Decimal(5),
             effect(){
             let d12 = player.points.add(1)
-            d12 = Decimal.log10(d12).pow(0.085).add(1)
+            d12 = Decimal.log10(d12).pow(0.1).add(1)
+            if (hasDUpg(33)) d12 = d12.pow(getDUpgEff(33))
+            if (inChallenge("s", 21)) d12 = new Decimal(1)
             return d12
             },
             effectDisplay(){
@@ -2121,10 +2636,11 @@ addLayer("d", {
         13: {
             title: "Lethal",
             description: "Deaths boost 'Infectivity Gain' base.",
-            cost: new Decimal(30),
+            cost: new Decimal(20),
             effect(){
             let d12 = player.d.points.add(1)
             d12 = d12.pow(20)
+            if (inChallenge("s", 21)) d12 = new Decimal(1)
             return d12
             },
             effectDisplay(){
@@ -2137,15 +2653,19 @@ addLayer("d", {
         14: {
             title: "Blood Transmission",
             description: "Deaths boost 'Transmission'.",
-            cost: new Decimal(50),
+            cost: new Decimal(30),
             effect(){
             let d14 = player.d.points.add(10)
             d14 = Decimal.log10(d14).add(10)
             d14 = Decimal.log10(d14).pow(4)
+            if (d14.gte(10)) d14 = d14.div(10).pow(0.3).mul(10)
+            if (inChallenge("s", 21)) d14 = new Decimal(1)
             return d14
             },
             effectDisplay(){
-            return "^"+format(getDUpgEff(14))
+                let dis = "^"+format(getDUpgEff(14))
+                if (this.effect().gte(10)) dis += " (softcapped)"
+                return dis
             },
             unlocked() {
                 return hasDUpg(13)
@@ -2154,10 +2674,11 @@ addLayer("d", {
         21: {
             title: "Dangerous",
             description: "Deaths boost uncoater base.",
-            cost: new Decimal(100),
+            cost: new Decimal(75),
             effect(){
             let d12 = player.d.points.add(1)
             d12 = d12.pow(30)
+            if (inChallenge("s", 21)) d12 = new Decimal(1)
             return d12
             },
             effectDisplay(){
@@ -2170,10 +2691,11 @@ addLayer("d", {
         22: {
             title: "Mortal",
             description: "Double death gain per death upgrade bought.",
-            cost: new Decimal(300),
+            cost: new Decimal(150),
             effect(){
             let d22 = player.d.upgrades.length
             d22 = Decimal.pow(2, d22)
+            if (inChallenge("s", 21)) d22 = new Decimal(1)
             return d22
             },
             effectDisplay(){
@@ -2181,6 +2703,159 @@ addLayer("d", {
             },
             unlocked() {
                 return hasDUpg(21)
+            }
+        },
+        23: {
+            title: "Kill",
+            description: "'Smell Loss' buys 2x more.",
+            cost: new Decimal(3e5),
+            unlocked() {
+                return hasDUpg(22)
+            }
+        },
+        24: {
+            title: "Dying",
+            description: "Severity boosts death gain.",
+            cost: new Decimal(1e8),
+            effect(){
+            let d24 = player.s.severity.add(10)
+            d24 = Decimal.log10(d24).pow(0.5)
+            if (inChallenge("s", 21)) d24 = new Decimal(1)
+            return d24
+            },
+            effectDisplay(){
+            return format(getDUpgEff(24))+"x"
+            },
+            unlocked() {
+                return hasDUpg(23)
+            }
+        },
+        31: {
+            title: "Pass Away",
+            description() {
+                let des =  "Deaths reduce recovery effect."
+                if (hasDUpg(42)) des =  "Deaths boost severity gain."
+                return des
+            },
+            cost: new Decimal(5e13),
+            effect(){
+            let d24 = player.d.points.add(10)
+            d24 = Decimal.log10(d24).pow(-0.12)
+            if (hasDUpg(42)) d24 = d24.pow(-1)
+            if (inChallenge("s", 21)) d24 = new Decimal(1)
+            return d24
+            },
+            effectDisplay(){
+            return "^"+format(getDUpgEff(31))
+            },
+            unlocked() {
+                return hasDUpg(24)
+            }
+        },
+        32: {
+            title: "Perish",
+            description() {
+                let des =  "Cases reduce recovery effect "
+                if (hasDUpg(42)) des =  "Cases boost severity gain"
+                return des + " and 'Smell Loss' buys 5x more."
+            },
+            cost: new Decimal(2e27),
+            effect(){
+            let d24 = player.points.add(10)
+            d24 = Decimal.log10(d24).pow(-0.018)
+            if (hasDUpg(42)) d24 = d24.pow(-1)
+            if (inChallenge("s", 21)) d24 = new Decimal(1)
+            return d24
+            },
+            effectDisplay(){
+            return "^"+format(getDUpgEff(32))
+            },
+            unlocked() {
+                return hasDUpg(31)
+            }
+        },
+        33: {
+            title: "Expire",
+            description: "VP boost 'Fatal' and 'Smell Loss' buys 2x more and 2x often.",
+            cost: new Decimal(3e46),
+            effect(){
+            let d24 = player.v.points.add(10)
+            d24 = Decimal.log10(d24).pow(0.1)
+            if (inChallenge("s", 21)) d24 = new Decimal(1)
+            return d24
+            },
+            effectDisplay(){
+            return "^"+format(getDUpgEff(33))
+            },
+            unlocked() {
+                return hasDUpg(32)
+            }
+        },
+        34: {
+            title: "Decease",
+            description: "Bought death upgrades boost 'Fever' and unlock more symptom upgrades.",
+            cost: new Decimal(4e165),
+            unlocked() {
+                return hasDUpg(33)
+            }
+        },
+        41: {
+            title: "Demise",
+            description: "Deaths make symptom scaling start later.",
+            cost: new Decimal("1.5e2089"),
+            effect(){
+            let d24 = player.d.points.add(10)
+            d24 = Decimal.log10(d24).pow(0.3).sub(1)
+            if (inChallenge("s", 21)) d24 = new Decimal(1)
+            return d24
+            },
+            effectDisplay(){
+            return "+"+format(getDUpgEff(41))
+            },
+            unlocked() {
+                return hasSUpg(55)
+            }
+        },
+        42: {
+            title: "Murder",
+            description: "Stop gaining recoveries and upgrades that reduce recovery effect boost severity gain.",
+            cost: new Decimal("5e2208"),
+            unlocked() {
+                return hasDUpg(41)
+            }
+        },
+        43: {
+            title: "Slain",
+            description: "Deaths boost cases gain.",
+            cost: new Decimal("1.5e9101"),
+            effect(){
+            let d24 = player.d.points.add(10)
+            d24 = Decimal.log10(d24).pow(0.025)
+            if (inChallenge("s", 21)) d24 = new Decimal(1)
+            return d24
+            },
+            effectDisplay(){
+            return "^"+format(getDUpgEff(43))
+            },
+            unlocked() {
+                return hasDUpg(42)
+            }
+        },
+        44: {
+            title: "Slaughter",
+            description: "Deaths boost severity gain exponent.",
+            cost: new Decimal("8e9291"),
+            effect(){
+                let d24 = player.d.points.add(10)
+                d24 = Decimal.log10(d24).pow(0.015)
+                if (inChallenge("s", 21)) d24 = new Decimal(1)
+                return d24
+                },
+                effectDisplay(){
+                return "^"+format(getDUpgEff(44))
+                },
+            unlocked() {
+                return hasDUpg(43)
             }
         },
     },
