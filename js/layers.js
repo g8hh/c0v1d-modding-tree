@@ -2478,30 +2478,30 @@ addLayer("d", {
     ],
     milestones: {
         0: {
-            requirementDescription: "2 total deaths",
+            requirementDescription: "1 total death",
             effectDescription: "Keep uncoater/symptom milestones on reset.",
-            done() { return player.d.total.gte(2) }
+            done() { return player.d.total.gte(1) }
         },
         1: {
-            requirementDescription: "3 total deaths",
+            requirementDescription: "2 total deaths",
             effectDescription: "You can buy max uncoaters.",
-            done() { return player.d.total.gte(3) }
+            done() { return player.d.total.gte(2) }
         },
         2: {
-            requirementDescription: "4 total deaths",
+            requirementDescription: "3 total deaths",
             effectDescription: "Autobuy uncoaters and unlock upgrades.",
             toggles:[["d", "auto"]],
-            done() { return player.d.total.gte(4) }
+            done() { return player.d.total.gte(3) }
         },
         3: {
-            requirementDescription: "5 total deaths",
+            requirementDescription: "4 total deaths",
             effectDescription: "Keep uncoater challenge completions.",
-            done() { return player.d.total.gte(5) }
+            done() { return player.d.total.gte(4) }
         },
         4: {
-            requirementDescription: "8 total deaths",
+            requirementDescription: "6 total deaths",
             effectDescription: "Autobuy buyables, 'Smell Loss' buys 10 and buyables cost nothing.",
-            done() { return player.d.total.gte(8) }
+            done() { return player.d.total.gte(6) }
         },
         5: {
             requirementDescription: "24 total deaths",
