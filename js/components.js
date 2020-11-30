@@ -108,7 +108,7 @@ function loadVue() {
 		<div v-if="tmp[layer].challenges" class="upgTable">
 			<div v-for="row in tmp[layer].challenges.rows" class="upgRow">
 				<div v-for="col in tmp[layer].challenges.cols">
-					<challenge v-if="tmp[layer].challenges[row*10+col]!== undefined && tmp[layer].challenges[row*10+col].unlocked" :layer = "layer" :data = "row*10+col" :cl="hasChallenge(layer, row*10+col)?'done':((player[layer].activeChallenge == (row*10+col)&&!hasChallenge(layer, row*10+col)&&canCompleteChallenge(layer, row*10+col))?'canComplete':'none')" v-bind:style="tmp[layer].componentStyles.challenge"></challenge>
+					<challenge v-if="tmp[layer].challenges[row*10+col]!== undefined && tmp[layer].challenges[row*10+col].unlocked" :layer = "layer" :data = "row*10+col" v-bind:style="tmp[layer].componentStyles.challenge"></challenge>
 				</div>
 			</div>
 		</div>
@@ -117,16 +117,18 @@ function loadVue() {
 
 	// data = id
 	Vue.component('challenge', {
-		props: ['layer', 'data', 'cl'],
+		props: ['layer', 'data'],
 		template: `
 		<div v-if="tmp[layer].challenges && tmp[layer].challenges[data]!== undefined && tmp[layer].challenges[data].unlocked && !(player.hideChallenges && maxedChallenge(layer, [data]))" v-bind:class="{hChallenge: true, done: hasChallenge(layer, data), canComplete: player[layer].activeChallenge == data && canCompleteChallenge(layer, data)}">
 			<br><h3 v-html="tmp[layer].challenges[data].name"></h3><br><br>
 			<button v-bind:class="{ longUpg: true, can: true, [layer]: true }" v-bind:style="{'background-color': tmp[layer].color}" v-on:click="startChallenge(layer, data)">{{player[layer].activeChallenge==(data)?(canCompleteChallenge(layer, data)?"Finish":"Exit Early"):(hasChallenge(layer, data)?"Completed":"Start")}}</button><br><br>
-			<span v-html="tmp[layer].challenges[data].challengeDescription"></span><br>
-			Goal: {{format(tmp[layer].challenges[data].goal)}} {{tmp[layer].challenges[data].currencyDisplayName ? tmp[layer].challenges[data].currencyDisplayName : "points"}}<br>
-			Reward: <span v-html="tmp[layer].challenges[data].rewardDescription"></span><br>
-			<span v-if="tmp[layer].challenges[data].rewardEffect"><span v-if="tmp.nerdMode" v-html="'Formula: '+(tmp[layer].challenges[data].formula?tmp[layer].challenges[data].formula:'???')"></span>
-			<span v-if="!tmp.nerdMode" v-html="'Currently: '+((tmp[layer].challenges[data].rewardDisplay) ? (tmp[layer].challenges[data].rewardDisplay) : format(tmp[layer].challenges[data].rewardEffect))"></span></span>
+			<span v-if="tmp[layer].challenges[data].fullDisplay" v-html="tmp[layer].challenges[data].fullDisplay"></span>
+			<span v-else>
+				<span v-html="tmp[layer].challenges[data].challengeDescription"></span><br>
+				Goal: {{format(tmp[layer].challenges[data].goal)}} {{tmp[layer].challenges[data].currencyDisplayName ? tmp[layer].challenges[data].currencyDisplayName : "points"}}<br>
+				Reward: <span v-html="tmp[layer].challenges[data].rewardDescription"></span><br>
+				<span v-if="tmp[layer].challenges[data].rewardEffect!==undefined">Currently: <span v-html="(tmp[layer].challenges[data].rewardDisplay) ? (tmp[layer].challenges[data].rewardDisplay) : format(tmp[layer].challenges[data].rewardEffect)"></span></span>
+			</span>
 		</div>
 		`
 	})
@@ -137,7 +139,7 @@ function loadVue() {
 		<div v-if="tmp[layer].upgrades" class="upgTable">
 			<div v-for="row in tmp[layer].upgrades.rows" class="upgRow">
 				<div v-for="col in tmp[layer].upgrades.cols"><div v-if="tmp[layer].upgrades[row*10+col]!== undefined && tmp[layer].upgrades[row*10+col].unlocked" class="upgAlign">
-					<upgrade :layer = "layer" :data = "row*10+col" :cl = "hasUpgrade(layer, row*10+col)?'bought':(canAffordUpgrade(layer, row*10+col)?'can':'locked')" v-bind:style="tmp[layer].componentStyles.upgrade"></upgrade>
+					<upgrade :layer = "layer" :data = "row*10+col" v-bind:style="tmp[layer].componentStyles.upgrade"></upgrade>
 				</div></div>
 			</div>
 			<br>
@@ -147,43 +149,18 @@ function loadVue() {
 
 	// data = id
 	Vue.component('upgrade', {
-		props: ['layer', 'data', 'cl'],
-		template: `
-		<button v-if="tmp[layer].upgrades && tmp[layer].upgrades[data]!== undefined && tmp[layer].upgrades[data].unlocked" v-on:click="buyUpg(layer, data)" v-bind:class="{ [layer]: true, upg: true, bought: cl=='bought', locked: cl=='locked', can: cl=='can'}"
-			v-bind:style="[((!hasUpgrade(layer, data) && canAffordUpgrade(layer, data)) ? {'background-color': tmp[layer].color} : {}), tmp[layer].upgrades[data].style]">
-			<span v-if= "tmp[layer].upgrades[data].title"><h3 v-html="tmp[layer].upgrades[data].title"></h3><br></span>
-			<span v-html="tmp[layer].upgrades[data].description"></span>
-			<span v-if="tmp[layer].upgrades[data].effect"><br>{{(tmp.nerdMode&&!tmp[layer].upgrades[data].noFormula)?'Formula: ':'Currently: '}}<span v-if="tmp.nerdMode&&!tmp[layer].upgrades[data].noFormula" v-html="tmp[layer].upgrades[data].formula?tmp[layer].upgrades[data].formula:'???'"></span><span v-if="(!tmp.nerdMode)||tmp[layer].upgrades[data].noFormula" v-html="(tmp[layer].upgrades[data].effectDisplay) ? (tmp[layer].upgrades[data].effectDisplay) : format(tmp[layer].upgrades[data].effect)"></span></span>
-			<br><span v-if="tmp.nerdMode&&tmp[layer].upgrades[data].costFormula">Cost Formula: {{tmp[layer].upgrades[data].costFormula}}</span><span v-if="!tmp.nerdMode||!tmp[layer].upgrades[data].costFormula"><br>Cost: {{ formatWhole(tmp[layer].upgrades[data].cost) }} {{(tmp[layer].upgrades[data].currencyDisplayName ? tmp[layer].upgrades[data].currencyDisplayName : tmp[layer].resource)}}</span>
-		</button>
-		`
-	})
-	
-	Vue.component('improvements', {
-		props: ['layer'],
-		template: `
-		<div v-if="tmp[layer].impr" class="upgTable">
-			<div v-for="row in tmp[layer].impr.rows" class="upgRow">
-				<div v-for="col in tmp[layer].impr.cols"><div v-if="tmp[layer].impr[row*10+col]!== undefined && tmp[layer].impr[row*10+col].unlocked" class="upgAlign">
-					<improvement :layer = "layer" :data = "row*10+col" v-bind:style="tmp[layer].componentStyles.upgrade"></improvement>
-				</div></div>
-			</div>
-			<br>
-		</div>
-		`
-	})
-
-	// data = id
-	Vue.component('improvement', {
 		props: ['layer', 'data'],
 		template: `
-		<button v-if="tmp[layer].impr && tmp[layer].impr[data]!== undefined && tmp[layer].impr[data].unlocked" v-bind:class="{ [layer]: true, upg: true, bought: getImprovements(layer, data).gt(0), locked: getImprovements(layer, data).lte(0)}"
-			v-bind:style="[tmp[layer].impr[data].style]">
-			<span v-if= "tmp[layer].impr[data].title"><h3 v-html="tmp[layer].impr[data].title"></h3><br></span>
-			<span v-html="tmp[layer].impr[data].description"></span>
-			Amount: <span v-html="formatWhole(getImprovements(layer, data))"></span> (next at <span v-html="format(getNextImpr(layer, data))"></span> <span v-html="tmp[layer].impr.resName"></span>)
-			<br><span v-if="tmp[layer].impr[data].effect"><br>{{(tmp.nerdMode&&!tmp[layer].impr[data].noFormula)?'Formula: ':'Currently: '}}<span v-if="tmp.nerdMode&&!tmp[layer].impr[data].noFormula" v-html="tmp[layer].impr[data].formula?tmp[layer].impr[data].formula:'???'"></span><span v-if="(!tmp.nerdMode)||tmp[layer].impr[data].noFormula" v-html="(tmp[layer].impr[data].effectDisplay) ? (tmp[layer].impr[data].effectDisplay) : format(tmp[layer].impr[data].effect)"></span></span>
-		</button>
+		<button v-if="tmp[layer].upgrades && tmp[layer].upgrades[data]!== undefined && tmp[layer].upgrades[data].unlocked" v-on:click="buyUpg(layer, data)" v-bind:class="{ [layer]: true, upg: true, bought: hasUpgrade(layer, data), locked: (!(canAffordUpgrade(layer, data))&&!hasUpgrade(layer, data)), can: (canAffordUpgrade(layer, data)&&!hasUpgrade(layer, data))}"
+			v-bind:style="[((!hasUpgrade(layer, data) && canAffordUpgrade(layer, data)) ? {'background-color': tmp[layer].color} : {}), tmp[layer].upgrades[data].style]">
+			<span v-if="tmp[layer].upgrades[data].fullDisplay" v-html="tmp[layer].upgrades[data].fullDisplay"></span>
+			<span v-else>
+				<span v-if= "tmp[layer].upgrades[data].title"><h3 v-html="tmp[layer].upgrades[data].title"></h3><br></span>
+				<span v-html="tmp[layer].upgrades[data].description"></span>
+				<span v-if="tmp[layer].upgrades[data].effectDisplay"><br>Currently: <span v-html="tmp[layer].upgrades[data].effectDisplay"></span></span>
+				<br><br>Cost: {{ formatWhole(tmp[layer].upgrades[data].cost) }} {{(tmp[layer].upgrades[data].currencyDisplayName ? tmp[layer].upgrades[data].currencyDisplayName : tmp[layer].resource)}}
+			</span>	
+			</button>
 		`
 	})
 
@@ -193,7 +170,7 @@ function loadVue() {
 		<div v-if="tmp[layer].milestones">
 			<table>
 				<tr v-for="id in Object.keys(tmp[layer].milestones)"><div v-if="tmp[layer].milestones[id]!== undefined && tmp[layer].milestones[id].unlocked"
-					<milestone :layer = "layer" :data = "id" :cl = "hasMilestone(layer, id)?'milestoneDone':'milestone'"  :shown = "milestoneShown(layer, id)" :locked = "!(tmp[layer].milestones[id].unlocked)" v-bind:style="tmp[layer].componentStyles.milestone"></milestone>
+					<milestone :layer = "layer" :data = "id" v-bind:style="tmp[layer].componentStyles.milestone"></milestone>
 				</tr></div>
 			</table>
 			<br>
@@ -203,9 +180,9 @@ function loadVue() {
 
 	// data = id
 	Vue.component('milestone', {
-		props: ['layer', 'data', 'cl', 'shown', 'locked'],
+		props: ['layer', 'data'],
 		template: `
-		<td v-if="tmp[layer].milestones && tmp[layer].milestones[data]!== undefined && shown" v-bind:style="[locked ? {'visibility': 'hidden'} : {}, tmp[layer].milestones[data].style]" v-bind:class="{milestone: cl=='milestone', milestoneDone: cl=='milestoneDone'}">
+		<td v-if="tmp[layer].milestones && tmp[layer].milestones[data]!== undefined && milestoneShown(layer, data)" v-bind:style="[(!tmp[layer].milestones[data].unlocked) ? {'visibility': 'hidden'} : {}, tmp[layer].milestones[data].style]" v-bind:class="{milestone: !hasMilestone(layer, data), milestoneDone: hasMilestone(layer, data)}">
 			<h3 v-html="tmp[layer].milestones[data].requirementDescription"></h3><br>
 			<span v-html="tmp[layer].milestones[data].effectDescription"></span><br>
 		<span v-if="(tmp[layer].milestones[data].toggles)&&(hasMilestone(layer, data))" v-for="toggle in tmp[layer].milestones[data].toggles"><toggle :layer= "layer" :data= "toggle" v-bind:style="tmp[layer].componentStyles.toggle"></toggle>&nbsp;</span></td></tr>
@@ -235,7 +212,7 @@ function loadVue() {
 	Vue.component('main-display', {
 		props: ['layer'],
 		template: `
-		<div v-if="!!player[layer].points"><span v-if="player[layer].points.lt('1e1000')">You have </span><h2 v-bind:style="{'color': tmp[layer].color, 'text-shadow': '0px 0px 10px' + tmp[layer].color}">{{formatWhole(player[layer].points)}}</h2> {{tmp[layer].resource}}<span v-if="tmp[layer].effectDescription">, {{tmp[layer].effectDescription}}</span><br><br></span>
+		<div><span v-if="player[layer].points.lt('1e1000')">You have </span><h2 v-bind:style="{'color': tmp[layer].color, 'text-shadow': '0px 0px 10px' + tmp[layer].color}">{{formatWhole(player[layer].points)}}</h2> {{tmp[layer].resource}}, <span v-if="tmp[layer].effectDescription" v-html="tmp[layer].effectDescription"></span><br><br></div>
 		`
 	})
 
@@ -339,7 +316,7 @@ function loadVue() {
 		},
 		template: `
 		<div v-if="tmp[layer].microtabs" :style="{'border-style': 'solid'}">
-			<div class="upgTable">
+			<div class="upgTable instant">
 				<tab-buttons :layer="layer" :data="tmp[layer].microtabs[data]" :name="data" v-bind:style="tmp[layer].componentStyles['tab-buttons']"></tab-buttons>
 			</div>
 			<layer-tab v-if="tmp[layer].microtabs[data][player.subtabs[layer][data]].embedLayer" :layer="tmp[layer].microtabs[data][player.subtabs[layer][data]].embedLayer" ></layer-tab>
@@ -448,12 +425,6 @@ function loadVue() {
 			layerunlocked,
 			doReset,
 			buyUpg,
-			canAffordUpgrade,
-			hasUpgrade,
-			hasAchievement,
-			hasMilestone,
-			hasChallenge,
-			challengeCompletions,
 			startChallenge,
 			milestoneShown,
 			keepGoing,
@@ -462,7 +433,9 @@ function loadVue() {
 			hasAchievement,
 			hasChallenge,
 			maxedChallenge,
+			inChallenge,
 			canAffordUpgrade,
+			canCompleteChallenge,
 			subtabShouldNotify,
 			subtabResetNotify,
 			VERSION,
