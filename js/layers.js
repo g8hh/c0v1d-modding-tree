@@ -57,59 +57,6 @@ function getDUpgEff(id){
     return upgradeEffect("d",id)
 }
 
-addLayer("stat", {
-    name: "Statistics", // This is optional, only used in a few places, If absent it just uses the layer id.
-    symbol: "ST", // This appears on the layer's node. Default is the id with the first letter capitalized
-    position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
-    startData() { return {
-        unlocked: true,
-              points: new Decimal(0),
-    }},
-    tooltip() {
-      return "Statistics"
-    },
-    color: "#FFFFFF",
-    requires: new Decimal(0.25), // Can be a function that takes requirement increases into account
-    resource: "points", // Name of prestige currency
-    type: "none", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
-    exponent: 0.5, // Prestige currency exponent
-    row: "side", // Row the layer is in on the tree (0 is the first row)
-    layerShown(){return true},
-    tabFormat: [
-        "blank",
-        ["display-text", function() {return "You have "+format(player.points)+" cases."}],
-        "blank",
-        ["display-text", function() {return "You have "+format(player.v.points)+" virus points."}],
-        "blank",
-        ["display-text", function() {if (player.i.unlocked) return "You have "+format(player.i.points)+" infectivity."}],
-        "blank",
-        ["display-text", function() {if (player.r.unlocked) return "You have "+formatWhole(player.r.points)+" replicators."}],
-        "blank",
-        ["display-text", function() {if (player.s.unlocked) return "You have "+formatWhole(player.s.points)+" symptoms."}],
-        "blank",
-        ["display-text", function() {if (player.s.unlocked) return "You have "+format(player.s.severity)+" severity."}],
-        "blank",
-        ["display-text", function() {
-              let base =  tmp["v"].upgrades[12].base
-              return "'Infection' base:"+format(base)
-            }],
-        "blank",
-        ["display-text", function() {
-        let eff = tmp["r"].effbase
-        if (player.r.unlocked) return "Replicator base:"+format(eff)
-        }],
-        "blank",
-        ["display-text", function() {
-        let ueff = tmp["u"].effbase
-        if (player.u.unlocked) return "Uncoater base:"+format(ueff)
-        }],
-        "blank",
-        ["display-text", function() {
-        let seff = tmp["s"].effbase
-        if (player.s.unlocked) return "Symptom base:"+format(seff)
-        }],
-    ],
-})
 
 addLayer("v", {
     name: "virus",
@@ -2859,4 +2806,57 @@ addLayer("d", {
             }
         },
     },
+})
+addLayer("stat", {
+    name: "Statistics", // This is optional, only used in a few places, If absent it just uses the layer id.
+    symbol: "ST", // This appears on the layer's node. Default is the id with the first letter capitalized
+    position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    startData() { return {
+        unlocked: true,
+        points: new Decimal(0),
+    }},
+    tooltip() {
+      return "Statistics"
+    },
+    color: "#FFFFFF",
+    requires: new Decimal(0), // Can be a function that takes requirement increases into account
+    resource: "points", // Name of prestige currency
+    type: "none", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+    exponent: 0.5, // Prestige currency exponent
+    row: "side", // Row the layer is in on the tree (0 is the first row)
+    layerShown() { return true },
+    tabFormat: [
+        "blank",
+        ["display-text", function() {return "You have "+format(player.points)+" cases."}],
+        "blank",
+        ["display-text", function() {return "You have "+format(player.v.points)+" virus points."}],
+        "blank",
+        ["display-text", function() {if (player.i.unlocked) return "You have "+format(player.i.points)+" infectivity."}],
+        "blank",
+        ["display-text", function() {if (player.r.unlocked) return "You have "+formatWhole(player.r.points)+" replicators."}],
+        "blank",
+        ["display-text", function() {if (player.s.unlocked) return "You have "+formatWhole(player.s.points)+" symptoms."}],
+        "blank",
+        ["display-text", function() {if (player.s.unlocked) return "You have "+format(player.s.severity)+" severity."}],
+        "blank",
+        ["display-text", function() {
+              let base =  tmp["v"].upgrades[12].base
+              return "'Infection' base:"+format(base)
+            }],
+        "blank",
+        ["display-text", function() {
+        let eff = tmp["r"].effbase
+        if (player.r.unlocked) return "Replicator base:"+format(eff)
+        }],
+        "blank",
+        ["display-text", function() {
+        let ueff = tmp["u"].effbase
+        if (player.u.unlocked) return "Uncoater base:"+format(ueff)
+        }],
+        "blank",
+        ["display-text", function() {
+        let seff = tmp["s"].effbase
+        if (player.s.unlocked) return "Symptom base:"+format(seff)
+        }],
+    ],
 })
