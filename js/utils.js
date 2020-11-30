@@ -188,8 +188,9 @@ function getStartBuyables(layer){
 function getStartClickables(layer){
 	let data = {}
 	if (layers[layer].clickables) {
-		if (isPlainObject(layers[layer].clickables[id]))
-			data[id] = ""
+		for (id in layers[layer].buyables)
+			if (isPlainObject(layers[layer].clickables[id]))
+				data[id] = ""
 	}
 	return data
 }
@@ -198,8 +199,8 @@ function getStartChallenges(layer){
 	let data = {}
 	if (layers[layer].challenges) {
 		for (id in layers[layer].challenges)
-		if (isPlainObject(layers[layer].challenges[id]))
-		data[id] = 0
+			if (isPlainObject(layers[layer].challenges[id]))
+				data[id] = 0
 	}
 	return data
 }
