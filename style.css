@@ -3,13 +3,13 @@
 	text-align: center;
 	font-family: "Inconsolata", monospace;
 	font-weight: bold;
-	text-align: center;
+	table-align: center;
 	margin: auto;
 }
 
 *:focus {
 	outline: none;
-	-webkit-box-align: none;
+	webkit-outline: none;
 }
 
 body {
@@ -169,6 +169,7 @@ h1, h2, h3, b, input {
 
 .barBase {
 	overflow: hidden;
+	-webkit-mask-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAA5JREFUeNpiYGBgAAgwAAAEAAGbA+oJAAAAAElFTkSuQmCC);
 	display:table
 }
 
@@ -177,6 +178,7 @@ h1, h2, h3, b, input {
 	border-radius: 10px;
 	border-color: var(--color);
 	overflow: hidden;
+	-webkit-mask-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAA5JREFUeNpiYGBgAAgwAAAEAAGbA+oJAAAAAElFTkSuQmCC);
 	margin:0
 }
 

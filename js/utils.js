@@ -74,14 +74,16 @@ function format(decimal, precision=3) {
 function formatWhole(decimal) {
 	decimal = new Decimal(decimal)
 	if (decimal.gte(1e9)) return format(decimal, 3)
-	if (decimal.lt(10) && decimal.neq(decimal.floor())) return format(decimal, 3)
+	if (decimal.lte(0.95) && !decimal.eq(0)) return format(decimal, 3)
 	return format(decimal, 0)
 }
 
 function formatTime(s) {
 	if (s<60) return format(s)+"s"
 	else if (s<3600) return formatWhole(Math.floor(s/60))+"m "+format(s%60)+"s"
-	else return formatWhole(Math.floor(s/3600))+"h "+formatWhole(Math.floor(s/60)%60)+"m "+format(s%60)+"s"
+	else if (s<86400) return formatWhole(Math.floor(s/3600))+"h "+formatWhole(Math.floor(s/60)%60)+"m "+format(s%60)+"s"
+	else if (s<31536000) return formatWhole(Math.floor(s/84600)%365)+"d " + formatWhole(Math.floor(s/3600)%24)+"h "+formatWhole(Math.floor(s/60)%60)+"m "+format(s%60)+"s"
+	else return formatWhole(Math.floor(s/31536000))+"y "+formatWhole(Math.floor(s/84600)%365)+"d " + formatWhole(Math.floor(s/3600)%24)+"h "+formatWhole(Math.floor(s/60)%60)+"m "+format(s%60)+"s"
 }
 
 function toPlaces(x, precision, maxAccepted) {

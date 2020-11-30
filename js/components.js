@@ -444,5 +444,3 @@ function loadVue() {
 		},
 	})
 }
-
- 

@@ -265,7 +265,6 @@ function startChallenge(layer, x) {
 		player[layer].activeChallenge = x
 		if (layers[layer].challenges[x].onStart) layers[layer].challenges[x].onStart(true);
 	}
-
 	updateChallengeTemp(layer)
 }
 
