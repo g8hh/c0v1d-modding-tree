@@ -1,5 +1,20 @@
 # The Modding Tree changelog:
 
+###
+- Another attempt to fix challenges not visually updating.
+
+### v2.2.5 11/29/20
+- Added features for overriding the displays and costs/goals of upgrades and challenges to make them fully custom.
+- best, total, and unlocked are always automatically added to layerData (but best and total will only display if you add them yourself).
+- Fixed getStartClickables.
+
+### v2.2.4 - 11/28/20
+- Added softcap and softcapPower features (for Normal layers)
+- Offline time limit and default max tick length were fixed (previously the limits were 1000x too large)
+- Added fixOldSaves.
+- You can use HTML in main-display.
+- Fixed a number of minor oddities.
+
 ### v2.2.3 - 11/28/20
 - Layers will be highlighted if you can finish a challenge.
 - The "can complete challenge" color now overrides the "already completed" color.
