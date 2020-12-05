@@ -4,7 +4,7 @@ var gameEnded = false;
 
 // Don't change this
 const TMT_VERSION = {
-	tmtNum: "2.2.6",
+	tmtNum: "2.2.8",
 	tmtName: "Uprooted"
 }
 
@@ -97,6 +97,12 @@ function getNextAt(layer, canMax=false, useType = null) {
 	} else {
 		return new Decimal(0)
 	}}
+
+function softcap(value, cap, power = 0.5) {
+	if (value.lte(cap)) return value
+	else
+		return value.pow(power).times(cap.pow(decimalOne.sub(power)))
+}
 
 // Return true if the layer should be highlighted. By default checks for upgrades only.
 function shouldNotify(layer){
@@ -313,6 +319,12 @@ VERSION.withoutName = "v" + VERSION.num + (VERSION.pre ? " Pre-Release " + VERSI
 VERSION.withName = VERSION.withoutName + (VERSION.name ? ": " + VERSION.name : "")
 
 
+function autobuyUpgrades(layer){
+	if (!tmp[layer].upgrades) return
+	for (id in tmp[layer].upgrades)
+		if (isPlainObject(tmp[layer].upgrades[id]) && (layers[layer].upgrades[id].canAfford === undefined || layers[layer].upgrades[id].canAfford() === true))
+			buyUpg(layer, id) 
+}
 
 function gameLoop(diff) {
 	if (isEndgame() || gameEnded) gameEnded = 1
@@ -353,6 +365,7 @@ function gameLoop(diff) {
 			let layer = TREE_LAYERS[x][item]
 			if (tmp[layer].autoPrestige && tmp[layer].canReset) doReset(layer);
 			if (layers[layer].automate) layers[layer].automate();
+			if (layers[layer].autoUpgrade) autobuyUpgrades(layer)
 		}
 	}
 
@@ -361,6 +374,7 @@ function gameLoop(diff) {
 			let layer = OTHER_LAYERS[row][item]
 			if (tmp[layer].autoPrestige && tmp[layer].canReset) doReset(layer);
 			if (layers[layer].automate) layers[layer].automate();
+			if (layers[layer].autoUpgrade) autobuyUpgrades(layer)
 		}
 	}
 
@@ -373,7 +387,7 @@ function gameLoop(diff) {
 
 function hardReset() {
 	if (!confirm("Are you sure you want to do this? You will lose all your progress!")) return
-	player = getStartPlayer()
+	player = null
 	save();
 	window.location.reload();
 }

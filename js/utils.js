@@ -25,7 +25,7 @@ function exponentialFormat(num, precision) {
 function commaFormat(num, precision) {
 	if (num === null || num === undefined) return "NaN"
 	if (num.mag < 0.001) return (0).toFixed(precision)
-	return num.toStringWithDecimalPlaces(precision).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+	return num.toStringWithDecimalPlaces(precision).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,")
 }
 
 
@@ -188,7 +188,7 @@ function getStartBuyables(layer){
 function getStartClickables(layer){
 	let data = {}
 	if (layers[layer].clickables) {
-		for (id in layers[layer].buyables)
+		for (id in layers[layer].clickables)
 			if (isPlainObject(layers[layer].clickables[id]))
 				data[id] = ""
 	}
@@ -243,8 +243,8 @@ function fixData(defaultData, newData) {
 			else
 				newData[item] = new Decimal(newData[item])
 		}
-		else if ((!!defaultData[item]) && (defaultData[item].constructor === Object)) {
-			if (newData[item] === undefined || (defaultData[item].constructor !== Object))
+		else if ((!!defaultData[item]) && (typeof defaultData[item] === "object")) {
+			if (newData[item] === undefined || (typeof defaultData[item] !== "object"))
 				newData[item] = defaultData[item]
 			else
 				fixData(defaultData[item], newData[item])
@@ -559,6 +559,7 @@ function buyUpgrade(layer, id) {
 }
 
 function buyUpg(layer, id) {
+	if (!tmp[layer].upgrades || !tmp[layer].upgrades[id]) return
 	let upg = tmp[layer].upgrades[id]
 	if (!player[layer].unlocked) return
 	if (!tmp[layer].upgrades[id].unlocked) return
@@ -641,7 +642,10 @@ function inChallenge(layer, id){
 var onTreeTab = true
 function showTab(name) {
 	if (LAYERS.includes(name) && !layerunlocked(name)) return
-
+	if (player.tab === name && player.subtabs[name] && player.subtabs[name].mainTabs) {
+		console.log("momo")
+		player.subtabs[name].mainTabs = Object.keys(layers[name].tabFormat)[0]
+	}
 	var toTreeTab = name == "none"
 	player.tab = name
 	if (player.navTab == "none" && (tmp[name].row !== "side") && (tmp[name].row !== "otherside")) player.lastSafeTab = name

@@ -27,6 +27,8 @@ You can make almost any value dynamic by using a function in its place, includin
 
     Using "side" instead of a number will cause the layer to appear off to the side as a smaller node (useful for achievements and statistics). Side layers are not affected by resets unless you add a doReset to them.
 
+- displayRow: **OVERRIDE** Changes where the layer node appears without changing where it is in the reset order.
+
 - resource: Name of the main currency you gain by resetting on this layer.
 
 - effect(): **optional**. A function that calculates and returns the current values of any bonuses inherent to the main currency. Can return a value or an object containing multiple values. *You will also have to implement the effect where it is applied.*
@@ -136,7 +138,9 @@ You can make almost any value dynamic by using a function in its place, includin
 
 - update(diff): **optional**. This function is called every game tick. Use it for any passive resource production or time-based things. `diff` is the time since the last tick. 
 
-- automate(): **optional**. This function is called every game tick, after production. Use it to activate automation things other than prestige, if appropriate. 
+- autoUpgrade: **optional**, a boolean value, if true, the game will attempt to buy this layer's upgrades every tick. Defaults to false.
+
+- automate(): **optional**. This function is called every game tick, after production. Use it to activate automation things that aren't otherwise supported. 
 
 - resetsNothing: **optional**. Returns true if this layer shouldn't trigger any resets when you prestige.
 
