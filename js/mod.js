@@ -12,7 +12,7 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.4",
+	num: "0.4.1",
 	name: "Vorona Cirus REBALANCING Coughin Dance",
 }
 
@@ -42,12 +42,17 @@ function getPointGen() {
     gain = gain.mul(layers.r.effect())
     gain = gain.mul(layers.u.effect())
     gain = gain.mul(layers.d.effect())
+    gain = gain.mul(layers.f.effect())
+    gain = gain.mul(layers.a.effect())
     if (player.s.unlocked) gain = gain.mul(tmp.s.severityEff);
     if (inChallenge("u", 22)) gain = Decimal.mul(gain ,c22c)
     if (inChallenge("s", 11)) gain = gain.pow(0.1)
     if (inChallenge("s", 12)) gain = gain.pow(0.01)
     if (inChallenge("s", 21)) gain = gain.pow(0.03)
     if (hasDUpg(43)) gain = gain.pow(getDUpgEff(43))
+    if (hasFUpg(43)) gain = gain.pow(getFUpgEff(43))
+    if (hasFUpg(44)) gain = gain.pow(getFUpgEff(44))
+    gain = gain.pow(layers.d.buyables[13].effect())
 	return gain
 }
 
@@ -56,11 +61,11 @@ function addedPlayerData() { return {
 }}
 
 // Display extra things at the top of the page
-var displayThings = ["Current endgame: e4.64e12 cases and e10,450 deaths(v0.4)"]
+var displayThings = ["Current endgame: all milestones (v0.4.1)"]
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.points.gte(new Decimal("e4.64e12")) && player.d.points.gte(new Decimal("e10450"))
+	return player.f.total.gte(new Decimal("1.341e154"))
 }
 
 
@@ -69,7 +74,7 @@ function isEndgame() {
 
 // You can change this if you have things that can be messed up by long tick lengths
 function maxTickLength() {
-	return(3600) // Default is 1 hour which is just arbitrarily large
+	return(300) // Default is 1 hour which is just arbitrarily large
 }
 
 // Use this if you need to undo inflation from an older version. If the version is older than the version that fixed the issue,
