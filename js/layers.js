@@ -2807,7 +2807,7 @@ addLayer("d", {
             content: [
             "main-display",
             function() {if (!hasMilestone("d", 10)) return "prestige-button"},
-            ["raw-html", function() {return "You are gaining " + layerText("h2", "d", format(getResetGain("d").div(100))) + " deaths per second"}],
+            ["raw-html", function() {if (hasMilestone("d",10)) return "You are gaining " + layerText("h2", "d", format(getResetGain("d").div(100))) + " deaths per second"}],
             "resource-display",
             "blank",
             ["display-text",
@@ -2820,7 +2820,7 @@ addLayer("d", {
             content: [
                 "main-display",
                 function() {if (!hasMilestone("d", 10)) return "prestige-button"},
-                ["raw-html", function() {return "You are gaining " + layerText("h2", "d", format(getResetGain("d").div(100))) + " deaths per second"}],
+                ["raw-html", function() {if (hasMilestone("d",10)) return "You are gaining " + layerText("h2", "d", format(getResetGain("d").div(100))) + " deaths per second"}],
                 "resource-display",
                 "blank",
                 ["display-text",
@@ -2834,7 +2834,7 @@ addLayer("d", {
             content: [
                 "main-display",
                 function() {if (!hasMilestone("d", 10)) return "prestige-button"},
-                ["raw-html", function() {return "You are gaining " + layerText("h2", "d", format(getResetGain("d").div(100))) + " deaths per second"}],
+                ["raw-html", function() {if (hasMilestone("d",10)) return "You are gaining " + layerText("h2", "d", format(getResetGain("d").div(100))) + " deaths per second"}],
                 "resource-display",
                 "blank",
                 ["display-text",
@@ -3934,7 +3934,7 @@ addLayer("f", {
         "Milestones": {
             content: [
                 "main-display",
-                ["raw-html", function() {return "You are gaining " + layerText("h2", "f", format(tmp.f.getResetGain)) + " fatality per second"}],
+                ["raw-html", function() {if (hasMilestone("f",9)) return "You are gaining " + layerText("h2", "f", format(tmp.f.getResetGain)) + " fatality per second"}],
                 function() {if (!hasMilestone("f",9)) return "prestige-button"},
                 "resource-display",
                 ["display-text", 
@@ -3949,7 +3949,7 @@ addLayer("f", {
         "Upgrades": {
             content: [
                 "main-display",
-                ["raw-html", function() {return "You are gaining " + layerText("h2", "f", format(tmp.f.getResetGain)) + " fatality per second"}],
+                ["raw-html", function() {if (hasMilestone("f",9)) return "You are gaining " + layerText("h2", "f", format(tmp.f.getResetGain)) + " fatality per second"}],
                 function() {if (!hasMilestone("f",9)) return "prestige-button"},
                 "resource-display",
                 ["display-text", 
@@ -3970,7 +3970,7 @@ addLayer("f", {
         "Dimensions": {
             content: [
                 "main-display",
-                ["raw-html", function() {return "You are gaining " + layerText("h2", "f", format(tmp.f.getResetGain)) + " fatality per second"}],
+                ["raw-html", function() {if (hasMilestone("f",9)) return "You are gaining " + layerText("h2", "f", format(tmp.f.getResetGain)) + " fatality per second"}],
                 function() {if (!hasMilestone("f",9)) return "prestige-button"},
                 "resource-display",
                 ["raw-html", function() {return "You have " + layerText("h2", "f", format(player.f.p)) + " fatality power, which boosts fatality gain by " + layerText("h2", "f", format(tmp.f.peffect))}],
@@ -4023,7 +4023,7 @@ addLayer("f", {
         "Casualty": {
             content: [
                 "main-display",
-                ["raw-html", function() {return "You are gaining " + layerText("h2", "f", format(tmp.f.getResetGain)) + " fatality per second"}],
+                ["raw-html", function() {if (hasMilestone("f",9)) return "You are gaining " + layerText("h2", "f", format(tmp.f.getResetGain)) + " fatality per second"}],
                 function() {if (!hasMilestone("f",9)) return "prestige-button"},
                 "resource-display",
                 ["display-text", 
