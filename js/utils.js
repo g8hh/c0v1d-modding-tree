@@ -339,6 +339,10 @@ function importSave(imported=undefined, forced=false) {
 	}
 }
 
+function layerText(elem, layer, text) {
+	return "<" + elem + " style='color:" + tmp[layer].color + ";text-shadow:0px 0px 10px;'>" + text + "</" + elem + ">"
+}
+
 function versionCheck() {
 	let setVersion = true
 	

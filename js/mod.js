@@ -7,13 +7,13 @@ let modInfo = {
 	discordLink: "",
 	changelogLink: "https://github.com/Acamaeda/The-Modding-Tree/blob/master/changelog.md",
 	initialStartPoints: new Decimal (1), // Used for hard resets and new players
-	offlineLimit: 0.0833,  // In hours
+	offlineLimit: 0.16666,  // In hours
 }
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.4.1",
-	name: "Vorona Cirus REBALANCING Coughin Dance",
+	num: "0.4.2",
+	name: "Vorona Cirus Dimensions",
 }
 
 // If you add new functions anywhere inside of a layer, and those functions have an effect when called, add them here.
@@ -58,14 +58,15 @@ function getPointGen() {
 
 // You can add non-layer related variables that should to into "player" and be saved here, along with default values
 function addedPlayerData() { return {
+    newsTotal: new Decimal(0)
 }}
 
 // Display extra things at the top of the page
-var displayThings = ["Current endgame: all milestones (v0.4.1)"]
+var displayThings = ["Current endgame: 1 C Upgrade (v0.4.2)"]
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.f.total.gte(new Decimal("1.341e154"))
+	return hasFUpg(82)
 }
 
 
@@ -74,7 +75,7 @@ function isEndgame() {
 
 // You can change this if you have things that can be messed up by long tick lengths
 function maxTickLength() {
-	return(300) // Default is 1 hour which is just arbitrarily large
+	return(600) // Default is 1 hour which is just arbitrarily large
 }
 
 // Use this if you need to undo inflation from an older version. If the version is older than the version that fixed the issue,

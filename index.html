@@ -7,6 +7,7 @@
 	<script type="text/javascript" src="js/technical/break_eternity.js"></script>
 	<script type="text/javascript" src="js/technical/layerSupport.js"></script>
 	<script type="text/javascript" src="js/tree.js"></script>
+	<script type="text/javascript" src="js/news.js" defer></script>
 	<script type="text/javascript" src="js/layers.js"></script>
 	<script type="text/javascript" src="js/mod.js"></script>
 	<script type="text/javascript" src="js/technical/temp.js"></script>
@@ -46,6 +47,9 @@
 		</div>		
 		
 		<div id="treeOverlay" v-if="!(gameEnded && !player.keepGoing)" class="treeOverlay" onscroll="resizeCanvas()" v-bind:class="{ fullWidth: (player.tab == 'none' || player.navTab == 'none'), col: (player.tab !== 'none' && player.navTab !== 'none'), left: (player.tab !== 'none' && player.navTab !== 'none')}">
+			<div id = "newsTicker">
+				<div id = "newsContent" style = "display: inline-block; position: relative;"></div>
+			  </div>
 			<div id="version" class="overlayThing" style="margin-right: 13px">{{VERSION.withoutName}}</div>
 			<button v-if= "player.navTab == 'none' && (tmp[player.tab].row == 'side' || tmp[player.tab].row == 'otherside')" class="other-back overlayThing" onclick="goBack()">←</button>
 			<img id="optionWheel"  class="overlayThing" v-if="player.tab!='options-tab'" src="options_wheel.png" onclick="showTab('options-tab')"></img>

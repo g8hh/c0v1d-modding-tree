@@ -677,3 +677,20 @@ button > * {
 #treeTab td button {
     margin: 0 10px 0 10px;
 }
+#newsTicker {
+	margin: 20px;
+	margin-left: 50px;
+	margin-right: 50px;
+
+	border: 3px solid white;
+	border-radius: 5px;
+
+  padding: 5px;
+
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+#newsContent {
+	transition-duration: 0s !important;
+}

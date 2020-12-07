@@ -123,7 +123,7 @@ var systemComponents = {
         </span>
         <br>
         The Modding Tree {{TMT_VERSION.tmtNum}} by Acamaeda
-        <br>
+		<br>
         The Prestige Tree made by Jacorb and Aarex
         <br>
         Original idea by papyrus (on discord)

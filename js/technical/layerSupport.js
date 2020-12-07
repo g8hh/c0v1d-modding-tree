@@ -226,42 +226,48 @@ addLayer("options-tab", {
         "Statistics": {
             content: [
                 "blank",
-                ["display-text", function() {return "You have "+format(player.points)+" cases."}],
-                "blank",
-                ["display-text", function() {return "You have "+format(player.v.points)+" virus points."}],
-                "blank",
-                ["display-text", function() {if (player.i.unlocked) return "You have "+format(player.i.points)+" infectivity."}],
-                "blank",
-                ["display-text", function() {if (player.r.unlocked) return "You have "+formatWhole(player.r.points)+" replicators."}],
-                "blank",
-                ["display-text", function() {if (player.s.unlocked) return "You have "+formatWhole(player.s.points)+" symptoms."}],
-                "blank",
-                ["display-text", function() {if (player.s.unlocked) return "You have "+format(player.s.severity)+" severity."}],
-                "blank",
-                ["display-text", function() {if (player.d.unlocked) return "You have "+format(player.d.points)+" deaths."}],
-                "blank",
-                ["display-text", function() {
-                      let base =  tmp["v"].upgrades[12].base
-                      return "'Infection' base:"+format(base)
-                    }],
-                "blank",
-                ["display-text", function() {
-                let eff = tmp["r"].effbase
-                if (player.r.unlocked) return "Replicator base:"+format(eff)
-                }],
-                "blank",
-                ["display-text", function() {
-                let ueff = tmp["u"].effbase
-                if (player.u.unlocked) return "Uncoater base:"+format(ueff)
-                }],
-                "blank",
-                ["display-text", function() {
-                let seff = tmp["s"].effbase
-                if (player.s.unlocked) return "Symptom base:"+format(seff)
-                }],
-                "blank",
-                ["display-text", function() {if (hasSUpg(31) || player.d.unlocked) return "'Smell Loss' autobuy:"+formatWhole(tmp.s.bulk)+"/" + format(1/tmp.s.speed)+"s (" + format(Decimal.mul(tmp.s.bulk,tmp.s.speed)) + "/s)"}],
-            ],
+        ["display-text", function() {return "You have "+format(player.points)+" cases."}],
+        "blank",
+        ["display-text", function() {return "You have "+format(player.v.points)+" virus points."}],
+        "blank",
+        ["display-text", function() {if (player.i.unlocked) return "You have "+format(player.i.points)+" infectivity."}],
+        "blank",
+        ["display-text", function() {if (player.r.unlocked) return "You have "+formatWhole(player.r.points)+" replicators."}],
+        "blank",
+        ["display-text", function() {if (player.u.unlocked) return "You have "+formatWhole(player.u.points)+" uncoaters."}],
+        "blank",
+        ["display-text", function() {if (player.s.unlocked) return "You have "+formatWhole(player.s.points)+" symptoms."}],
+        "blank",
+        ["display-text", function() {if (player.s.unlocked) return "You have "+format(player.s.severity)+" severity."}],
+        "blank",
+        ["display-text", function() {if (player.d.unlocked) return "You have "+format(player.d.points)+" deaths."}],
+        "blank",
+        ["display-text", function() {
+              let base =  tmp["v"].upgrades[12].base
+              return "'Infection' base:"+format(base)
+            }],
+        "blank",
+        ["display-text", function() {
+        let eff = tmp["r"].effbase
+        if (player.r.unlocked) return "Replicator base:"+format(eff)
+        }],
+        "blank",
+        ["display-text", function() {
+        let ueff = tmp["u"].effbase
+        if (player.u.unlocked) return "Uncoater base:"+format(ueff)
+        }],
+        "blank",
+        ["display-text", function() {
+        let seff = tmp["s"].effbase
+        if (player.s.unlocked) return "Symptom base:"+format(seff)
+        }],
+        "blank",
+        ["display-text", function() {if (hasSUpg(31) || player.d.unlocked) return "'Smell Loss' autobuy:"+formatWhole(tmp.s.bulk)+"/" + format(1/tmp.s.speed)+"s (" + format(Decimal.mul(tmp.s.bulk,tmp.s.speed)) + "/s)"}],
+        "blank",
+        ["display-text", function() {if (hasFUpg(25)) return "'More Fatal' autobuy:"+formatWhole(tmp.d.bulk)+"/" + format(1/tmp.d.speed)+"s (" + format(Decimal.mul(tmp.d.bulk,tmp.d.speed)) + "/s)"}],
+        "blank",
+        ["display-text", function() {if (player.s.unlocked) return "Multiplier per Fatality Dimension:"+format(tmp.f.multpd)}],
+    ],
     },
     },
     row: "otherside"

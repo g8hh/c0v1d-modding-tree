@@ -187,6 +187,8 @@ addLayer("v", {
                 v13 = v13.pow(1/2)
                 if(hasUUpg(12)) v13sf = v13sf.mul(getUUpgEff(12))
                 if(hasUUpg(12)) v13sf2 = v13sf2.mul(getUUpgEff(12)).add(1)
+                if(hasUUpg(12)) v13sf3 = v13sf3.mul(getUUpgEff(12)).add(1)
+                if(hasUUpg(12)) v13sf4 = v13sf4.mul(getUUpgEff(12)).add(1)
                 if (inChallenge("u", 22)) v13sf = new Decimal(1)
                 if (inChallenge("u", 22)) v13sf2 = new Decimal(1)
                 if (hasChallenge("u", 22)) v13sff = v13sff.pow(challengeEffect("u", 22).pow(-1))
@@ -377,7 +379,7 @@ addLayer("i", {
         return eff
     },
     effectDescription() {
-        let dis = "which boost cases gain by "+format(this.effect())
+        let dis = "which boost cases gain by "+layerText("h2", "i", format(this.effect()))
         if (this.effect().gte("ee16")) dis += " (softcapped)"
         return dis
     },
@@ -575,7 +577,9 @@ addLayer("i", {
             return i33
             },
             effectDisplay(){
-            return "^"+format(getIUpgEff(33))
+                let dis = "^"+format(getIUpgEff(33))
+                if (this.effect().gte(1e17)) dis += " (softcapped)"
+                return dis
             },
             unlocked(){
                 return hasIUpg(32)
@@ -647,7 +651,7 @@ addLayer("r", {
         return eff2
     },
     effectDescription() {
-        return "which boost cases gain by "+format(this.effect())+" and increasing 'Infection' base by "+format(this.effect2())
+        return "which boost cases gain by "+layerText("h2", "r", format(this.effect()))+" and increasing 'Infection' base by "+layerText("h2", "r", format(this.effect2()))
     },
     gainMult() {
         rmult = new Decimal(1)
@@ -777,11 +781,14 @@ addLayer("r", {
             r23 = Decimal.log10(r23).pow(2.4).add(1)
             if (hasChallenge("u", 22)) r23 = r23.mul(challengeEffect("u", 22))
             if (hasUUpg(24)) r23 = r23.pow(getUUpgEff(24))
+            if (r23.gte(1e25)) r23 = r23.div(1e25).pow(0.3).mul(1e25)
             if (inChallenge("u", 21)) r23 = new Decimal(1)
             return r23
             },
             effectDisplay(){
-            return "^"+format(getRUpgEff(23))
+                let dis = "^"+format(getRUpgEff(23))
+                if (this.effect().gte(1e25)) dis += " (softcapped)"
+                return dis
             },
             unlocked(){
                 return hasRUpg(22)
@@ -877,6 +884,7 @@ addLayer("u", {
     effect(){
         let eff = this.effbase()
         eff = eff.pow(player.u.points)
+        if(hasFUpg(54)) eff = eff.pow(getFUpgEff(54))
         if (inChallenge("u", 11)) eff = new Decimal(1)
         return eff
     },
@@ -889,7 +897,7 @@ addLayer("u", {
         return eff2
     },
     effectDescription() {
-        return "which boost cases and infectivity by "+format(this.effect())+", and boosts 'Uncoating' by "+format(this.effect2())
+        return "which boost cases and infectivity by "+layerText("h2", "u", format(this.effect()))+", and boosts 'Uncoating' by "+layerText("h2", "u", format(this.effect2()))
     },
     gainMult() {
         umult = new Decimal(1)
@@ -976,6 +984,7 @@ addLayer("u", {
             if (inChallenge("u", 11) || inChallenge("u", 21) || inChallenge("s", 21)) u12 = new Decimal(1)
             if (u12.gte(new Decimal("e1500"))) u12 = u12.div(new Decimal("e1500")).pow(0.3).mul(new Decimal("e1500"))
             if (u12.gte(new Decimal("e15000"))) u12 = Decimal.pow(10,u12.div(new Decimal("e1500")).log10().pow(2/3)).mul(new Decimal("e15000"))
+            if (u12.gte(new Decimal("ee17"))) u12 = Decimal.pow(10,u12.div(new Decimal("ee17")).log10().pow(0.93)).mul(new Decimal("ee17"))
             return u12
             },
             effectDisplay(){
@@ -1336,7 +1345,7 @@ addLayer("s", {
         return recov
     },
     effectDescription() {
-        let desc = "which produces " + format(this.effect()) + " severity "
+        let desc = "which produces " + layerText("h2", "s", format(this.effect())) + " severity "
         if (this.effect().gte("e2e6")) desc += " (softcapped) "
         if (player.s.severity.gte(new Decimal("1.8e308"))) desc = desc + "and " + format(this.recoveryGain()) + " recoveries"
         desc = desc + " per second."
@@ -1360,6 +1369,7 @@ addLayer("s", {
         if (hasDUpg(33)) buymult = buymult.mul(2)
         if (hasSUpg(55)) buymult = buymult.mul(25)
         if (hasMilestone("f", 8)) buymult = buymult.mul(100)
+        if (hasFUpg(73)) buymult = buymult.mul(1000)
         return buymult
     },
     speed() {
@@ -1368,6 +1378,7 @@ addLayer("s", {
         if (hasMilestone("a", 0)) speed *= 2
         if (hasAchievement("a", 41)) speed *= 2
         if (hasDUpg(33)) speed *= 2
+        if (hasFUpg(73)) speed *= 2
         return speed
     },
     update(diff) {
@@ -1402,9 +1413,7 @@ addLayer("s", {
     tabFormat: ["main-display",
     "prestige-button",
     "blank",
-    ["display-text",
-        function() {return 'You have ' + format(player.s.severity) + ' severity, which boosts cases, VP, and infectivity by ' + format(tmp.s.severityEff)},
-    ],
+    ["raw-html", function() {return "You have " + layerText("h2", "s", format(player.s.severity)) +  ' severity, which boosts cases, VP, and infectivity by ' + layerText("h2", "s", format(tmp.s.severityEff))}],
     ["display-text",
     function() {
         if (player.s.severity.gte(new Decimal("1.8e308"))) 
@@ -1908,6 +1917,7 @@ addLayer("s", {
                 let s = player.s.severity.add(10)
                 b = Decimal.pow(10,b.log10().pow(1.25)).pow(0.03).pow(s.log10().pow(0.17)).div(20)
                 if (b.gte("e300")) b = b.div("e300").pow(0.1).mul("e300")
+                if (b.gte("ee4")) b = Decimal.pow(10,b.div("ee4").log10().pow(0.8)).mul("ee4")
                 return b
             },
             extra() {
@@ -2680,7 +2690,7 @@ addLayer("d", {
     hotkeys: [
         {
             key:"d", description: "D:Reset for deaths", onPress() {
-                if (canReset(this.layer))
+                if (canReset(this.layer) && !hasMilestone("d",10))
                     doReset(this.layer)
             }
         },
@@ -2689,11 +2699,13 @@ addLayer("d", {
         let bulk = new Decimal(100)
         if (hasAchievement("a", 53)) bulk = bulk.mul(5)
         if (hasMilestone("f", 8)) bulk = bulk.mul(100)
+        if (hasFUpg(73)) bulk = bulk.mul(1000)
         return bulk
     },
     speed() {
         let speed = 1
         if (hasAchievement("a", 53)) speed *=2
+        if (hasFUpg(73)) speed *=2
         return speed
     },
     update(diff) {
@@ -2722,7 +2734,7 @@ addLayer("d", {
         return eff
     },
     effectDescription() {
-        return "which boost cases, VP, infectivity, and severity gain by "+format(this.effect()) + " (based on best)."
+        return "which boost cases, VP, infectivity, and severity gain by "+layerText("h2", "d", format(this.effect())) + " (based on best)."
     },
     gainMult() {
         let mult = new Decimal(1)
@@ -2795,9 +2807,7 @@ addLayer("d", {
             content: [
             "main-display",
             function() {if (!hasMilestone("d", 10)) return "prestige-button"},
-            ["display-text",
-            function() {if (hasMilestone("d", 10)) return "You are gaining " + format(getResetGain("d").div(100)) + " deaths per second."},
-            ],
+            ["raw-html", function() {return "You are gaining " + layerText("h2", "d", format(getResetGain("d").div(100))) + " deaths per second"}],
             "resource-display",
             "blank",
             ["display-text",
@@ -2810,9 +2820,7 @@ addLayer("d", {
             content: [
                 "main-display",
                 function() {if (!hasMilestone("d", 10)) return "prestige-button"},
-                ["display-text",
-                function() {if (hasMilestone("d", 10)) return "You are gaining " + format(getResetGain("d").div(100)) + " deaths per second."},
-                ],
+                ["raw-html", function() {return "You are gaining " + layerText("h2", "d", format(getResetGain("d").div(100))) + " deaths per second"}],
                 "resource-display",
                 "blank",
                 ["display-text",
@@ -2826,9 +2834,7 @@ addLayer("d", {
             content: [
                 "main-display",
                 function() {if (!hasMilestone("d", 10)) return "prestige-button"},
-                ["display-text",
-                function() {if (hasMilestone("d", 10)) return "You are gaining " + format(getResetGain("d").div(100)) + " deaths per second."},
-                ],
+                ["raw-html", function() {return "You are gaining " + layerText("h2", "d", format(getResetGain("d").div(100))) + " deaths per second"}],
                 "resource-display",
                 "blank",
                 ["display-text",
@@ -3034,10 +3040,11 @@ addLayer("d", {
                 base = base.log10().add(10)
                 base = base.log10().add(10)
                 base = base.log10().pow(0.004)
-                return base.min(1.002)
+                return base.min(1.003)
             },
             extra() {
                 let extra = new Decimal(0)
+                if (hasFUpg(71)) extra = extra.add(getBuyableAmount("f",24).mul(2))
                 return extra
             },
             total() {
@@ -3053,9 +3060,12 @@ addLayer("d", {
             },
 			display() { // Everything else displayed in the buyable button after the title
                 let extra = ""
+                let eff = format(tmp[this.layer].buyables[this.id].effect)
+                if (this.total().gte(2500)) eff += " (softcapped)"
+                if (hasFUpg(71)) extra = "+" + this.extra()
                 return "Raise cases gain to "+format(this.base())+" (based on cases).\n\
                 Cost: " + format(tmp[this.layer].buyables[this.id].cost)+" deaths\n\
-                Effect: ^" + format(tmp[this.layer].buyables[this.id].effect)+"\n\
+                Effect: ^" + eff +"\n\
                 Amount: " + formatWhole(getBuyableAmount("d", 13)) + extra
             },
             unlocked() { return player.d.buyables[12].gte(1) }, 
@@ -3409,6 +3419,8 @@ addLayer("stat", {
         ["display-text", function() {if (hasSUpg(31) || player.d.unlocked) return "'Smell Loss' autobuy:"+formatWhole(tmp.s.bulk)+"/" + format(1/tmp.s.speed)+"s (" + format(Decimal.mul(tmp.s.bulk,tmp.s.speed)) + "/s)"}],
         "blank",
         ["display-text", function() {if (hasFUpg(25)) return "'More Fatal' autobuy:"+formatWhole(tmp.d.bulk)+"/" + format(1/tmp.d.speed)+"s (" + format(Decimal.mul(tmp.d.bulk,tmp.d.speed)) + "/s)"}],
+        "blank",
+        ["display-text", function() {if (player.s.unlocked) return "Multiplier per Fatality Dimension:"+format(tmp.f.multpd)}],
     ],
 })
 addLayer("a", {
@@ -3707,12 +3719,32 @@ addLayer("a", {
         },
         54: {
             name: "NG+++ INFECTED",
-            tooltip: "Get ee18 cases. Reward: 4 AP",
+            tooltip: "Get ee18 cases. Reward: 4 AP, Double Fatality Dimensions",
             done() {
                 return player.points.gte("ee18")
             },
             onComplete() {
                 addPoints("a",4)
+            }
+        },
+        55: {
+            name: "PPOOWWEERR!",
+            tooltip: "Get 1e1000 fatality power. Reward: 4 AP",
+            done() {
+                return player.f.p.gte("ee3")
+            },
+            onComplete() {
+                addPoints("a",4)
+            }
+        },
+        56: {
+            name: "The 9th Dimension is a lie",
+            tooltip: "Get exactly 99 8th Dimensions. Reward: 5 AP",
+            done() {
+                return player.f.buyables[24].eq(99)
+            },
+            onComplete() {
+                addPoints("a",5)
             }
         },
     },
@@ -3760,7 +3792,10 @@ addLayer("f", {
         d4: new Decimal(0),
         d5: new Decimal(0),
         d6: new Decimal(0),
-        resettime: new Decimal(0.001)
+        d7: new Decimal(0),
+        d8: new Decimal(0),
+        resettime: new Decimal(0.001),
+        casualty: new Decimal(0),
     }},
     color: "#f53d63",
     nodeStyle() {return {
@@ -3778,12 +3813,12 @@ addLayer("f", {
     branches: ["d","s","u"],
     row: "3",
     hotkeys: [
-        {
-            key:"f", description: "F:Reset for fatality", onPress() {
-                if (canReset(this.layer))
-                    doReset(this.layer)
-            }
-        },
+            {key:"f", description: "F:Reset for fatality", onPress() {
+                if (canReset(this.layer) && !hasMilestone("f",9)) doReset(this.layer)}
+            },
+            {key:"m", description: "M:Buy max Fatality Dimensions", onPress() {
+                if (hasMilestone("f",6)) layers.f.clickables[11].onClick()}
+            },
     ],
     powergain() {
         let pgain = tmp.f.buyables[11].gain
@@ -3794,7 +3829,12 @@ addLayer("f", {
         let mult = new Decimal(1)
         if (hasFUpg(35)) mult = mult.mul(getFUpgEff(35))
         if (hasFUpg(41)) mult = mult.mul(getFUpgEff(41))
+        if (hasFUpg(52)) mult = mult.mul(getFUpgEff(52))
+        if (hasFUpg(55)) mult = mult.mul(getFUpgEff(55))
+        if (hasFUpg(61)) mult = mult.mul(getFUpgEff(61))
         mult = mult.mul(tmp.f.buyables[31].effect)
+        mult = mult.mul(tmp.f.buyables[32].effect)
+        if (hasAchievement("a",54)) mult = mult.mul(2)
         return mult
     },
     update(diff) {
@@ -3807,6 +3847,8 @@ addLayer("f", {
         player.f.buyables[13] = player.f.buyables[13].add(tmp.f.buyables[14].gain.mul(diff))
         player.f.buyables[14] = player.f.buyables[14].add(tmp.f.buyables[21].gain.mul(diff))
         player.f.buyables[21] = player.f.buyables[21].add(tmp.f.buyables[22].gain.mul(diff))
+        player.f.buyables[22] = player.f.buyables[22].add(tmp.f.buyables[23].gain.mul(diff))
+        player.f.buyables[23] = player.f.buyables[23].add(tmp.f.buyables[24].gain.mul(diff))
     },
     canReset() {return player.d.points.gte("e10450") && !hasMilestone("f",9)},
     gainMult() {
@@ -3857,6 +3899,8 @@ addLayer("f", {
     },
     multpd() {
         let base = new Decimal(2)
+        if (hasFUpg(53)) base = base.add(getFUpgEff(53))
+        if (hasFUpg(82)) base = base.add(0.3)
         return base
     },
     effect() {
@@ -3874,20 +3918,23 @@ addLayer("f", {
     peffect() {
         let eff = player.f.p.add(1)
         eff = eff.pow(0.6)
+        if (hasFUpg(62)) eff = eff.pow(getFUpgEff(62))
         return eff
     },
+    DimScaling() {
+        let scale = new Decimal(10)
+        if (hasFUpg(65)) scale = scale.sub(1)
+        if (hasFUpg(73)) scale = scale.sub(1)
+        return scale
+    },
     effectDescription() {
-        return "which boost cases, VP, infectivity, severity by " + format(this.effect()) + ", and death gain by " +format(this.effect2()) + " (based on best)."
+        return "which boost cases, VP, infectivity, severity by " + layerText("h2", "f", format(this.effect())) + ", and death gain by " +layerText("h2", "f", format(this.effect2())) + " (based on best)."
     },
     tabFormat: {
         "Milestones": {
             content: [
                 "main-display",
-                ["display-text", 
-                function() {
-                    if (hasMilestone("f",9)) return "You are gaining " + format(tmp.f.getResetGain) + " fatality per second."
-                }
-                ],
+                ["raw-html", function() {return "You are gaining " + layerText("h2", "f", format(tmp.f.getResetGain)) + " fatality per second"}],
                 function() {if (!hasMilestone("f",9)) return "prestige-button"},
                 "resource-display",
                 ["display-text", 
@@ -3902,11 +3949,7 @@ addLayer("f", {
         "Upgrades": {
             content: [
                 "main-display",
-                ["display-text", 
-                function() {
-                    if (hasMilestone("f",9)) return "You are gaining " + format(tmp.f.getResetGain) + " fatality per second."
-                }
-                ],
+                ["raw-html", function() {return "You are gaining " + layerText("h2", "f", format(tmp.f.getResetGain)) + " fatality per second"}],
                 function() {if (!hasMilestone("f",9)) return "prestige-button"},
                 "resource-display",
                 ["display-text", 
@@ -3915,24 +3958,22 @@ addLayer("f", {
                 }
                 ],
                 "blank",
-                "upgrades",
+                ["column", [["row", [["upgrade", 11], ["upgrade", 12], ["upgrade", 13], ["upgrade", 14], ["upgrade", 15]]]]],
+                ["column", [["row", [["upgrade", 21], ["upgrade", 22], ["upgrade", 23], ["upgrade", 24], ["upgrade", 25]]]]],
+                ["column", [["row", [["upgrade", 31], ["upgrade", 32], ["upgrade", 33], ["upgrade", 34], ["upgrade", 35]]]]],
+                ["column", [["row", [["upgrade", 41], ["upgrade", 42], ["upgrade", 43], ["upgrade", 44], ["upgrade", 45]]]]],
+                ["column", [["row", [["upgrade", 51], ["upgrade", 52], ["upgrade", 53], ["upgrade", 54], ["upgrade", 55]]]]],
+                ["column", [["row", [["upgrade", 61], ["upgrade", 62], ["upgrade", 63], ["upgrade", 64], ["upgrade", 65]]]]],
+                ["column", [["row", [["upgrade", 71], ["upgrade", 72], ["upgrade", 73], ["upgrade", 74], ["upgrade", 75]]]]],
             ]
         },
         "Dimensions": {
             content: [
                 "main-display",
-                ["display-text", 
-                function() {
-                    if (hasMilestone("f",9)) return "You are gaining " + format(tmp.f.getResetGain) + " fatality per second."
-                }
-                ],
+                ["raw-html", function() {return "You are gaining " + layerText("h2", "f", format(tmp.f.getResetGain)) + " fatality per second"}],
                 function() {if (!hasMilestone("f",9)) return "prestige-button"},
                 "resource-display",
-                ["display-text", 
-                function() {
-                    return "You have " + format(player.f.p) + " fatality power, which boosts fatality gain by " + format(tmp.f.peffect)
-                }
-                ],
+                ["raw-html", function() {return "You have " + layerText("h2", "f", format(player.f.p)) + " fatality power, which boosts fatality gain by " + layerText("h2", "f", format(tmp.f.peffect))}],
                 ["display-text", 
                 function() {
                     return "You are gaining " + format(tmp.f.powergain) + " fatality power per second."
@@ -3963,13 +4004,46 @@ addLayer("f", {
                     return "You are gaining " + format(tmp.f.buyables[22].gain) + " Fatality Dimension 5 per second."
                 }
                 ],
+                ["display-text", 
+                function() {
+                    if (getBuyableAmount("f",32).gte(1)) return "You are gaining " + format(tmp.f.buyables[23].gain) + " Fatality Dimension 6 per second."
+                }
+                ],
+                ["display-text", 
+                function() {
+                    if (getBuyableAmount("f",32).gte(2)) return "You are gaining " + format(tmp.f.buyables[24].gain) + " Fatality Dimension 7 per second."
+                }
+                ],
                 "blank",
-                "clickables",
+                ["column", [["row", [["clickable", 11]]]]],
                 "buyables",
             ],
             unlocked() {return hasMilestone("f", 6)}
-        }
+        },
+        "Casualty": {
+            content: [
+                "main-display",
+                ["raw-html", function() {return "You are gaining " + layerText("h2", "f", format(tmp.f.getResetGain)) + " fatality per second"}],
+                function() {if (!hasMilestone("f",9)) return "prestige-button"},
+                "resource-display",
+                ["display-text", 
+                function() {
+                    if (!hasMilestone("f",9)) return "Fatality time: " + formatTime(player.f.resettime)
+                }
+                ],
+                "blank",
+                ["raw-html", function() {return "You have <h2 style='color:#3d2963;text-shadow:0px 0px 10px;'>" + formatWhole(player.f.casualty) +"</h2> casualty"}],
+                "blank",
+                ["column", [["row", [["clickable", 12]]]]],
+                "blank",
+                
+                ["raw-html", "<br><h2>Casualty Upgrades</h2><br>"],
+                ["column", [["row", [, ["upgrade", 82]]]]],
+            ],
+            unlocked() {return hasMilestone("f", 12)},
+        },
     },
+    
     milestones: {
         0: {
             requirementDescription() { return "2 total fatality" },
@@ -4004,24 +4078,47 @@ addLayer("f", {
         7: {
             requirementDescription() { return "3e33 total fatality" },
             effectDescription() { return "Gain 1% of fatality gain per second." },
-            done() { return player.f.total.gte(3e33) }
+            done() { return player.f.total.gte(3e33) },
+            unlocked() {return hasMilestone("f",6)}
         },
         8: {
             requirementDescription() { return "4.44e44 total fatality" },
             effectDescription() { return "Unlock Dimension Multiplier and autobuyers buy 100x more." },
-            done() { return player.f.total.gte(4.44e44) }
+            done() { return player.f.total.gte(4.44e44) },
+            unlocked() {return hasMilestone("f",6)}
         },
         9: {
             requirementDescription() { return format(Decimal.pow(2,512)) + " total fatality" },
             effectDescription() { return "Gain 100% of fatality gain per second and disable prestige." },
-            done() { return player.f.total.gte(Decimal.pow(2,512)) }
+            done() { return player.f.total.gte(Decimal.pow(2,512)) },
+            unlocked() {return hasMilestone("f",6)}
+        },
+        10: {
+            requirementDescription() { return "6.969e420 total fatality" },
+            effectDescription() { return "Unlock Dimension Shifts and dimensions cost nothing." },
+            done() { return player.f.total.gte("6.969e420") },
+            unlocked() {return hasMilestone("f",9)}
+        },
+        11: {
+            requirementDescription() { return "1.337e1,337 total fatality" },
+            effectDescription() { return "Unlock Multiplier Boosts and buy max Dimension Boosts." },
+            done() { return player.f.total.gte("1.337e1337") },
+            unlocked() {return player.f.points.gte("e1000")}
+        },
+        12: {
+            requirementDescription() { return "5.095e5,095 total fatality" },
+            effectDescription() { return "Unlock Casualty." },
+            done() { return player.f.total.gte("5.095e5095") },
+            unlocked() {return player.f.points.gte("e4000")}
         },
     },
     clickables: {
         rows: 1,
-        cols: 1,
+        cols: 3,
         11: {
-            display() {return "<h2>Max All</h2>"},
+            display() {
+                return "<h2>Max All (M)</h2>"
+            },
             canClick() {return true},
             onClick() {
                 layers.f.buyables[11].buyMax()
@@ -4030,8 +4127,65 @@ addLayer("f", {
                 layers.f.buyables[14].buyMax()
                 layers.f.buyables[21].buyMax()
                 layers.f.buyables[22].buyMax()
+                if (getBuyableAmount("f",32).gte(1)) layers.f.buyables[23].buyMax()
+                if (getBuyableAmount("f",32).gte(2)) layers.f.buyables[24].buyMax()
                 layers.f.buyables[31].buyMax()
+            },
+            style: {'height':'130px', 'width':'130px'},
+        },
+        12: {
+            gain() { //10^(666(log10(gain)+7.65)) = f
+                let f = player.f.points.add(1)
+                f = Decimal.pow(10,f.log10().div(888).sub(7)).max(1)
+                return f.floor()
+            },
+            next() {
+                let gain = this.gain().add(1)
+                let next = Decimal.pow(10,gain.log10().add(7).mul(888))
+                return next
+            },
+            display() {
+                let dis = "Reset Dimensions for +<h3>" + formatWhole(this.gain()) + "</h3> casualty<br>"
+                if (player.f.points.gte("5.095e5095")) dis += "Next at " + format(this.next()) + " fatality"
+                else dis += "Req: 5.100e5,100 fatality"
+                return dis
+            },
+            canClick() {
+                return player.f.points.gte("5.095e5095")
+            },
+            onClick() {
+                player.f.p = new Decimal(0)
+                player.f.points = new Decimal(0)
+                player.f.d1 = new Decimal(0)
+                player.f.d2 = new Decimal(0)
+                player.f.d3 = new Decimal(0)
+                player.f.d4 = new Decimal(0)
+                player.f.d5 = new Decimal(0)
+                player.f.d6 = new Decimal(0)
+                player.f.d7 = new Decimal(0)
+                player.f.d8 = new Decimal(0)
+                player.f.mult = new Decimal(0)
+                player.f.buyables[11] = new Decimal(0)
+                player.f.buyables[12] = new Decimal(0)
+                player.f.buyables[13] = new Decimal(0)
+                player.f.buyables[14] = new Decimal(0)
+                player.f.buyables[21] = new Decimal(0)
+                player.f.buyables[22] = new Decimal(0)
+                player.f.buyables[23] = new Decimal(0)
+                player.f.buyables[24] = new Decimal(0)
+                player.f.buyables[31] = new Decimal(0)
+                player.f.buyables[32] = new Decimal(0)
+                player.f.buyables[33] = new Decimal(0)
+                player.f.casualty = player.f.casualty.add(1)
+            },
+            style: {'height':'130px', 'width':'175px', 'font-size':'13px',
+            'background-color'() {
+                let points = player.f.points
+                let color = "#bf8f8f"
+                if (points.gte("5.095e5095")) color = "#3d2963"
+                return color
             }
+        }
         },
     },
     buyables: {
@@ -4041,7 +4195,12 @@ addLayer("f", {
 			title: "Fatality Dimension 1",
 			cost(x=player.f.d1) { // cost for buying xth buyable, can be an object if there are multiple currencies
                 let cost = Decimal.pow(1e3, x).mul(1e11)
+                let scale = x.sub(330)
+                if (cost.gte("e1000")) cost = cost.mul(this.multInc().pow(scale.mul(scale.add(1).div(2))))
                 return cost.floor()
+            },
+            multInc() {
+                return tmp.f.DimScaling
             },
             base() { 
                 let base = tmp.f.multpd
@@ -4076,29 +4235,38 @@ addLayer("f", {
             buy() { 
                 cost = tmp[this.layer].buyables[this.id].cost
                 if (this.canAfford()) {
-                    player.f.points = player.f.points.sub(cost).max(0)	
+                    if (!hasMilestone("f",10)) player.f.points = player.f.points.sub(cost).max(0)	
                     player.f.d1 = player.f.d1.add(1)
                     player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
                 }
             },
-            buyMax() { 
+            buyMax() { //log10(cost/1e1001)/log10(Inc) = (x^2+x)/2+3x
                 let cost = this.cost()
-                let max = player.f.points.div(1e11).log10().div(3).ceil()
+                let f = player.f.points
+                let z = this.multInc().log10()
+                let s = f.div("e1001").log10()
+                let max = f.div(1e11).log10().div(3).ceil().min(330)
+                if (max.gte(330)) max = max.add(s.mul(2).add(3).mul(4).mul(z).add(z.pow(2)).add(36).pow(0.5).sub(z).sub(6).div(z.mul(2))).ceil()
                 let diff = max.sub(player.f.d1)
                 cost = Decimal.sub(1,Decimal.pow(1e3,max)).div(-999).mul(1e11)
                 if (this.canAfford()) {
-                    player.f.points = player.f.points.sub(cost).max(0)	
+                    if (!hasMilestone("f",10)) player.f.points = player.f.points.sub(cost).max(0)	
                     player.f.d1 = player.f.d1.add(diff)
                     player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(diff)
                 }
             },
-            style: {'height':'180px', 'width':'180px'},
+            style: {'height':'180px', 'width':'180px',},
         },
         12: {
 			title: "Fatality Dimension 2",
 			cost(x=player.f.d2) { // cost for buying xth buyable, can be an object if there are multiple currencies
                 let cost = Decimal.pow(1e4, x).mul(1e14)
+                let scale = x.sub(247)
+                if (cost.gte("e1000")) cost = cost.mul(this.multInc().pow(scale.mul(scale.add(1).div(2))))
                 return cost.floor()
+            },
+            multInc() {
+                return tmp.f.DimScaling
             },
             base() { 
                 let base = tmp.f.multpd
@@ -4133,18 +4301,22 @@ addLayer("f", {
             buy() { 
                 cost = tmp[this.layer].buyables[this.id].cost
                 if (this.canAfford()) {
-                    player.f.points = player.f.points.sub(cost).max(0)
+                    if (!hasMilestone("f",10)) player.f.points = player.f.points.sub(cost).max(0)
                     player.f.d2 = player.f.d2.add(1)	
                     player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
                 }
             },
             buyMax() { 
                 let cost = this.cost()
-                let max = player.f.points.div(1e14).log10().div(4).ceil()
+                let f = player.f.points
+                let z = this.multInc().log10()
+                let s = f.div("e1001").log10()
+                let max = f.div(1e14).log10().div(4).ceil().min(247)
+                if (max.gte(247)) max = max.add(s.mul(2).add(4).mul(4).mul(z).add(z.pow(2)).add(64).pow(0.5).sub(z).sub(8).div(z.mul(2))).ceil()
                 let diff = max.sub(player.f.d2)
                 cost = Decimal.sub(1,Decimal.pow(1e4,max)).div(-9999).mul(1e14)
                 if (this.canAfford()) {
-                    player.f.points = player.f.points.sub(cost).max(0)	
+                    if (!hasMilestone("f",10)) player.f.points = player.f.points.sub(cost).max(0)	
                     player.f.d2 = player.f.d2.add(diff)
                     player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(diff)
                 }
@@ -4155,7 +4327,12 @@ addLayer("f", {
 			title: "Fatality Dimension 3",
 			cost(x=player.f.d3) { // cost for buying xth buyable, can be an object if there are multiple currencies
                 let cost = Decimal.pow(1e5, x).mul(1e15)
+                let scale = x.sub(197)
+                if (cost.gte("e1000")) cost = cost.mul(this.multInc().pow(scale.mul(scale.add(1).div(2))))
                 return cost.floor()
+            },
+            multInc() {
+                return tmp.f.DimScaling
             },
             base() { 
                 let base = tmp.f.multpd
@@ -4190,18 +4367,22 @@ addLayer("f", {
             buy() { 
                 cost = tmp[this.layer].buyables[this.id].cost
                 if (this.canAfford()) {
-                    player.f.points = player.f.points.sub(cost).max(0)
+                    if (!hasMilestone("f",10)) player.f.points = player.f.points.sub(cost).max(0)
                     player.f.d3 = player.f.d3.add(1)	
                     player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
                 }
             },
             buyMax() { 
                 let cost = this.cost()
-                let max = player.f.points.div(1e15).log10().div(5).ceil()
+                let f = player.f.points
+                let z = this.multInc().log10()
+                let s = f.div("e1000").log10()
+                let max = f.div(1e15).log10().div(5).ceil().min(197)
+                if (max.gte(197)) max = max.add(s.mul(2).add(5).mul(4).mul(z).add(z.pow(2)).add(100).pow(0.5).sub(z).sub(10).div(z.mul(2))).ceil()
                 let diff = max.sub(player.f.d3)
                 cost = Decimal.sub(1,Decimal.pow(1e5,max)).div(-99999).mul(1e15)
                 if (this.canAfford()) {
-                    player.f.points = player.f.points.sub(cost).max(0)	
+                    if (!hasMilestone("f",10)) player.f.points = player.f.points.sub(cost).max(0)	
                     player.f.d3 = player.f.d3.add(diff)
                     player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(diff)
                 }
@@ -4212,7 +4393,12 @@ addLayer("f", {
 			title: "Fatality Dimension 4",
 			cost(x=player.f.d4) { // cost for buying xth buyable, can be an object if there are multiple currencies
                 let cost = Decimal.pow(1e6, x).mul(1e18)
+                let scale = x.sub(164)
+                if (cost.gte("e1000")) cost = cost.mul(this.multInc().pow(scale.mul(scale.add(1).div(2))))
                 return cost.floor()
+            },
+            multInc() {
+                return tmp.f.DimScaling
             },
             base() { 
                 let base = tmp.f.multpd
@@ -4247,18 +4433,22 @@ addLayer("f", {
             buy() { 
                 cost = tmp[this.layer].buyables[this.id].cost
                 if (this.canAfford()) {
-                    player.f.points = player.f.points.sub(cost).max(0)
+                    if (!hasMilestone("f",10)) player.f.points = player.f.points.sub(cost).max(0)
                     player.f.d4 = player.f.d4.add(1)	
                     player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
                 }
             },
             buyMax() { 
                 let cost = this.cost()
-                let max = player.f.points.div(1e18).log10().div(6).ceil()
+                let f = player.f.points
+                let z = this.multInc().log10()
+                let s = f.div("e1002").log10()
+                let max = f.div(1e18).log10().div(6).ceil().min(164)
+                if (max.gte(164)) max = max.add(s.mul(2).add(6).mul(4).mul(z).add(z.pow(2)).add(144).pow(0.5).sub(z).sub(12).div(z.mul(2))).ceil()
                 let diff = max.sub(player.f.d4)
                 cost = Decimal.sub(1,Decimal.pow(1e6,max)).div(-999999).mul(1e18)
-                if (this.canAfford()) {
-                    player.f.points = player.f.points.sub(cost).max(0)	
+                if (this.canAfford()) { 
+                    if (!hasMilestone("f",10)) player.f.points = player.f.points.sub(cost).max(0)	
                     player.f.d4 = player.f.d4.add(diff)
                     player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(diff)
                 }
@@ -4269,7 +4459,12 @@ addLayer("f", {
 			title: "Fatality Dimension 5",
 			cost(x=player.f.d5) { // cost for buying xth buyable, can be an object if there are multiple currencies
                 let cost = Decimal.pow(1e8, x).mul(1e21)
+                let scale = x.sub(123)
+                if (cost.gte("e1000")) cost = cost.mul(this.multInc().pow(scale.mul(scale.add(1).div(2))))
                 return cost.floor()
+            },
+            multInc() {
+                return tmp.f.DimScaling
             },
             base() { 
                 let base = tmp.f.multpd
@@ -4304,18 +4499,22 @@ addLayer("f", {
             buy() { 
                 cost = tmp[this.layer].buyables[this.id].cost
                 if (this.canAfford()) {
-                    player.f.points = player.f.points.sub(cost).max(0)
+                    if (!hasMilestone("f",10)) player.f.points = player.f.points.sub(cost).max(0)
                     player.f.d5 = player.f.d5.add(1)	
                     player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
                 }
             },
             buyMax() { 
                 let cost = this.cost()
-                let max = player.f.points.div(1e21).log10().div(8).ceil()
+                let f = player.f.points
+                let z = this.multInc().log10()
+                let s = f.div("e1005").log10()
+                let max = f.div(1e21).log10().div(8).ceil().min(123)
+                if (max.gte(123)) max = max.add(s.mul(2).add(8).mul(4).mul(z).add(z.pow(2)).add(256).pow(0.5).sub(z).sub(16).div(z.mul(2))).ceil()
                 let diff = max.sub(player.f.d5)
                 cost = Decimal.sub(1,Decimal.pow(1e8,max)).div(-99999999).mul(1e21)
                 if (this.canAfford()) {
-                    player.f.points = player.f.points.sub(cost).max(0)	
+                    if (!hasMilestone("f",10)) player.f.points = player.f.points.sub(cost).max(0)	
                     player.f.d5 = player.f.d5.add(diff)
                     player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(diff)
                 }
@@ -4326,7 +4525,12 @@ addLayer("f", {
 			title: "Fatality Dimension 6",
 			cost(x=player.f.d6) { // cost for buying xth buyable, can be an object if there are multiple currencies
                 let cost = Decimal.pow(1e10, x).mul(1e26)
+                let scale = x.sub(98)
+                if (cost.gte("e1000")) cost = cost.mul(this.multInc().pow(scale.mul(scale.add(1).div(2))))
                 return cost.floor()
+            },
+            multInc() {
+                return tmp.f.DimScaling
             },
             base() { 
                 let base = tmp.f.multpd
@@ -4361,19 +4565,155 @@ addLayer("f", {
             buy() { 
                 cost = tmp[this.layer].buyables[this.id].cost
                 if (this.canAfford()) {
-                    player.f.points = player.f.points.sub(cost).max(0)
+                    if (!hasMilestone("f",10)) player.f.points = player.f.points.sub(cost).max(0)
                     player.f.d6 = player.f.d6.add(1)	
                     player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
                 }
             },
             buyMax() { 
                 let cost = this.cost()
-                let max = player.f.points.div(1e26).log10().div(10).ceil()
+                let f = player.f.points
+                let z = this.multInc().log10()
+                let s = f.div("e1006").log10()
+                let max = f.div(1e26).log10().div(10).ceil().min(98)
+                if (max.gte(98)) max = max.add(s.mul(2).add(10).mul(4).mul(z).add(z.pow(2)).add(400).pow(0.5).sub(z).sub(20).div(z.mul(2))).ceil()
                 let diff = max.sub(player.f.d6)
                 cost = Decimal.sub(1,Decimal.pow(1e10,max)).div(-9999999999).mul(1e26)
                 if (this.canAfford()) {
-                    player.f.points = player.f.points.sub(cost).max(0)	
+                    if (!hasMilestone("f",10)) player.f.points = player.f.points.sub(cost).max(0)	
                     player.f.d6 = player.f.d6.add(diff)
+                    player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(diff)
+                }
+            },
+            style: {'height':'180px', 'width':'180px'},
+        },
+        23: {
+			title: "Fatality Dimension 7",
+			cost(x=player.f.d7) { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let cost = Decimal.pow(1e12, x).mul("e435")
+                let scale = x.sub(48)
+                if (cost.gte("e1000")) cost = cost.mul(this.multInc().pow(scale.mul(scale.add(1).div(2))))
+                return cost.floor()
+            },
+            multInc() {
+                return tmp.f.DimScaling
+            },
+            base() { 
+                let base = tmp.f.multpd
+                return base
+            },
+            gain(x=player[this.layer].buyables[this.id]) {
+                let gain = this.effect().mul(x).div(10)
+                return gain
+            },
+            total() {
+                let total = getBuyableAmount("f", 23)
+                return total
+            },
+            bought() {
+                let bought = player.f.d7
+                return bought
+            },
+			effect() { // Effects of owning x of the items, x is a decimal
+                let x = this.bought()
+                let base = this.base()
+                return Decimal.pow(base, x).mul(tmp.f.fDimMult);
+            },
+			display() { // Everything else displayed in the buyable button after the title
+                return "Produces Fatality Dimension 6.\n\
+                Cost: " + format(tmp[this.layer].buyables[this.id].cost)+" fatality\n\
+                Multiplier: " + format(tmp[this.layer].buyables[this.id].effect)+"x\n\
+                Amount: " + formatWhole(this.total()) + "(" + formatWhole(this.bought()) + ")"
+            },
+            unlocked() { return player.f.buyables[32].gte(1) }, 
+            canAfford() {
+                    return player.f.points.gte(tmp[this.layer].buyables[this.id].cost)},
+            buy() { 
+                cost = tmp[this.layer].buyables[this.id].cost
+                if (this.canAfford()) {
+                    if (!hasMilestone("f",10)) player.f.points = player.f.points.sub(cost).max(0)
+                    player.f.d7 = player.f.d7.add(1)	
+                    player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
+                }
+            },
+            buyMax() { 
+                let cost = this.cost()
+                let f = player.f.points
+                let z = this.multInc().log10()
+                let s = f.div("e1011").log10()
+                let max = f.div("e435").log10().div(12).ceil().min(48)
+                if (max.gte(48)) max = max.add(s.mul(2).add(12).mul(4).mul(z).add(z.pow(2)).add(576).pow(0.5).sub(z).sub(24).div(z.mul(2))).ceil()
+                let diff = max.sub(player.f.d7)
+                cost = Decimal.sub(1,Decimal.pow(1e12,max)).div(-1e12).mul("e435")
+                if (this.canAfford()) {
+                    if (!hasMilestone("f",10)) player.f.points = player.f.points.sub(cost).max(0)	
+                    player.f.d7 = player.f.d7.add(diff)
+                    player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(diff)
+                }
+            },
+            style: {'height':'180px', 'width':'180px'},
+        },
+        24: {
+			title: "Fatality Dimension 8",
+			cost(x=player.f.d8) { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let cost = Decimal.pow(1e15, x).mul("e560")
+                let scale = x.sub(30)
+                if (cost.gte("e1000")) cost = cost.mul(this.multInc().pow(scale.mul(scale.add(1).div(2))))
+                return cost.floor()
+            },
+            multInc() {
+                return tmp.f.DimScaling
+            },
+            base() { 
+                let base = tmp.f.multpd
+                return base
+            },
+            gain(x=player[this.layer].buyables[this.id]) {
+                let gain = this.effect().mul(x).div(10)
+                return gain
+            },
+            total() {
+                let total = getBuyableAmount("f", 24)
+                return total
+            },
+            bought() {
+                let bought = player.f.d8
+                return bought
+            },
+			effect() { // Effects of owning x of the items, x is a decimal
+                let x = this.bought()
+                let base = this.base()
+                return Decimal.pow(base, x).mul(tmp.f.fDimMult);
+            },
+			display() { // Everything else displayed in the buyable button after the title
+                return "Produces Fatality Dimension 7.\n\
+                Cost: " + format(tmp[this.layer].buyables[this.id].cost)+" fatality\n\
+                Multiplier: " + format(tmp[this.layer].buyables[this.id].effect)+"x\n\
+                Amount: " + formatWhole(this.total()) + "(" + formatWhole(this.bought()) + ")"
+            },
+            unlocked() { return player.f.buyables[32].gte(2) }, 
+            canAfford() {
+                    return player.f.points.gte(tmp[this.layer].buyables[this.id].cost)},
+            buy() { 
+                cost = tmp[this.layer].buyables[this.id].cost
+                if (this.canAfford()) {
+                    if (!hasMilestone("f",10)) player.f.points = player.f.points.sub(cost).max(0)
+                    player.f.d8 = player.f.d8.add(1)	
+                    player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
+                }
+            },
+            buyMax() { 
+                let cost = this.cost()
+                let f = player.f.points
+                let z = this.multInc().log10()
+                let s = f.div("e1010").log10()
+                let max = f.div("e560").log10().div(15).ceil().min(30)
+                if (max.gte(30)) max = max.add(s.mul(2).add(15).mul(4).mul(z).add(z.pow(2)).add(900).pow(0.5).sub(z).sub(30).div(z.mul(2))).ceil()
+                let diff = max.sub(player.f.d8)
+                cost = Decimal.sub(1,Decimal.pow(1e15,max)).div(-1e15).mul("e560")
+                if (this.canAfford()) {
+                    if (!hasMilestone("f",10)) player.f.points = player.f.points.sub(cost).max(0)	
+                    player.f.d8 = player.f.d8.add(diff)
                     player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(diff)
                 }
             },
@@ -4383,10 +4723,18 @@ addLayer("f", {
 			title: "Fatality Dimension Multiplier",
 			cost(x=player.f.mult) { // cost for buying xth buyable, can be an object if there are multiple currencies
                 let cost = Decimal.pow(10, x).mul(1e45)
+                let scale = x.sub(955)
+                if (cost.gte("e1000")) cost = cost.mul(this.multInc().pow(scale.mul(scale.add(1).div(2))))
                 return cost.floor()
+            },
+            multInc() {
+                return tmp.f.DimScaling
             },
             base() { 
                 let base = new Decimal(1.1)
+                if (hasFUpg(63)) base = base.add(getFUpgEff(63))
+                if (hasFUpg(64)) base = base.add(getFUpgEff(64))
+                base = base.mul(layers.f.buyables[33].effect())
                 return base
             },
             gain(x=player[this.layer].buyables[this.id]) {
@@ -4407,7 +4755,7 @@ addLayer("f", {
                 return Decimal.pow(base, x);
             },
 			display() { // Everything else displayed in the buyable button after the title
-                return "Multiply fatality dimensions by 1.1.\n\
+                return "Multiply fatality dimensions by " + format(this.base()) + "\n\
                 Cost: " + format(tmp[this.layer].buyables[this.id].cost)+" fatality\n\
                 Multiplier: " + format(tmp[this.layer].buyables[this.id].effect)+"x\n\
                 Amount: " + formatWhole(this.total()) + "(" + formatWhole(this.bought()) + ")"
@@ -4418,28 +4766,176 @@ addLayer("f", {
             buy() { 
                 cost = tmp[this.layer].buyables[this.id].cost
                 if (this.canAfford()) {
-                    player.f.points = player.f.points.sub(cost).max(0)
+                    if (!hasMilestone("f",10)) player.f.points = player.f.points.sub(cost).max(0)
                     player.f.mult = player.f.mult.add(1)	
                     player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
                 }
             },
             buyMax() { 
                 let cost = this.cost()
-                let max = player.f.points.div(1e45).log10().ceil()
+                let f = player.f.points
+                let z = this.multInc().log10()
+                let s = f.div("e1000").log10()
+                let max = player.f.points.div(1e45).log10().ceil().min(955)
+                if (max.gte(955)) max = max.add(s.mul(2).add(1).mul(4).mul(z).add(z.pow(2)).add(4).pow(0.5).sub(z).sub(2).div(z.mul(2))).ceil()
                 let diff = max.sub(player.f.mult)
                 cost = Decimal.sub(1,Decimal.pow(10,diff)).div(-9).mul(cost)
                 if (this.canAfford()) {
-                    player.f.points = player.f.points.sub(cost).max(0)	
+                    if (!hasMilestone("f",10)) player.f.points = player.f.points.sub(cost).max(0)	
                     player.f.mult = player.f.mult.add(diff)
                     player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(diff)
                 }
             },
             style: {'height':'180px', 'width':'180px'},
         },
+        32: {
+			title() {
+                let dim = "Fatality Dimension Shift"
+                if (this.total().gte(2)) dim = "Fatality Dimension Boost"
+                return dim
+            },
+			cost() { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let cost = new Decimal(40)
+                if (this.total().gte(1)) cost = new Decimal(10)
+                if (this.total().gte(2)) cost = Decimal.add(10,this.total().sub(2).mul(this.scale()))
+                return cost.floor()
+            },
+            scale() {
+                let scale = new Decimal(4)
+                if (hasFUpg(65)) scale = scale.sub(1)
+                if (hasFUpg(74)) scale = scale.sub(0.5)
+                return scale
+            },
+            base() { 
+                let base = new Decimal(10)
+                if (hasFUpg(72)) base = base.mul(2)
+                if (hasFUpg(75)) base = base.mul(5)
+                return base
+            },
+            total() {
+                let total = getBuyableAmount("f", 32)
+                return total
+            },
+			effect() { // Effects of owning x of the items, x is a decimal
+                let x = this.total()
+                let base = this.base()
+                return Decimal.pow(base, x);
+            },
+            display() { // Everything else displayed in the buyable button after the title
+                let req = Decimal.add(6,this.total()).min(8)
+                let dim = "Unlock a new Dimension, and multiply fatality dimensions by "
+                if (this.total().gte(2)) dim = "Multiply fatality dimensions by "
+                return dim + format(this.base()) +".\n\
+                Requires: " + formatWhole(tmp[this.layer].buyables[this.id].cost)+" Fatality Dimension " + formatWhole(req) + "\n\
+                Multiplier: " + format(tmp[this.layer].buyables[this.id].effect)+"x\n\
+                Amount: " + formatWhole(this.total())
+            },
+            unlocked() { return hasMilestone("f", 10) }, 
+            canAfford() {
+                let req = getBuyableAmount("f", 22)
+                if (this.total().gte(2)) req = getBuyableAmount("f", 24)
+                else if (this.total().gte(1)) req = getBuyableAmount("f", 23)
+                return req.gte(tmp[this.layer].buyables[this.id].cost)},
+            buy() { //x=(cost-10)/s+2
+                let d6 = getBuyableAmount("f", 24)
+                let max = d6.sub(10).div(this.scale()).add(3).floor()
+                let diff = max.sub(this.total()).max(1)
+                if (this.total().lt(2)) diff = new Decimal(1)
+                if (this.canAfford()) {
+                    player.f.p = new Decimal(0)
+                    player.f.points = new Decimal(0)
+                    player.f.d1 = new Decimal(0)
+                    player.f.d2 = new Decimal(0)
+                    player.f.d3 = new Decimal(0)
+                    player.f.d4 = new Decimal(0)
+                    player.f.d5 = new Decimal(0)
+                    player.f.d6 = new Decimal(0)
+                    player.f.d7 = new Decimal(0)
+                    player.f.d8 = new Decimal(0)
+                    player.f.mult = new Decimal(0)
+                    player.f.buyables[11] = new Decimal(0)
+                    player.f.buyables[12] = new Decimal(0)
+                    player.f.buyables[13] = new Decimal(0)
+                    player.f.buyables[14] = new Decimal(0)
+                    player.f.buyables[21] = new Decimal(0)
+                    player.f.buyables[22] = new Decimal(0)
+                    player.f.buyables[23] = new Decimal(0)
+                    player.f.buyables[24] = new Decimal(0)
+                    player.f.buyables[31] = new Decimal(0)
+                    if (hasMilestone("f",11)) player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(diff)
+                    else player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
+                }
+            },
+            style: {'height':'180px', 'width':'180px'},
+        },
+        33: {
+			title() {
+                let dim = "Fatality Multiplier Boost"
+                return dim
+            },
+			cost() { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let cost = new Decimal(45)
+                cost = cost.add(this.total().mul(7))
+                return cost.floor()
+            },
+            base() { 
+                let base = new Decimal(1.032)
+                if (hasFUpg(75)) base = base.pow(1.125)
+                return base
+            },
+            total() {
+                let total = getBuyableAmount("f", 33)
+                return total
+            },
+			effect() { // Effects of owning x of the items, x is a decimal
+                let x = this.total()
+                let base = this.base()
+                return Decimal.pow(base, x);
+            },
+            display() { // Everything else displayed in the buyable button after the title
+                let dim = "Reset Dimension Boosts, and multiply Fatality Dimension Multiplier base by "
+                return dim + format(this.base()) +".\n\
+                Requires: " + formatWhole(tmp[this.layer].buyables[this.id].cost)+" Fatality Dimension 8 \n\
+                Multiplier: " + format(tmp[this.layer].buyables[this.id].effect)+"x\n\
+                Amount: " + formatWhole(this.total())
+            },
+            unlocked() { return hasMilestone("f", 11) }, 
+            canAfford() {
+                let req = getBuyableAmount("f", 24)
+                return req.gte(tmp[this.layer].buyables[this.id].cost)},
+            buy() { 
+                cost = tmp[this.layer].buyables[this.id].cost
+                if (this.canAfford()) {
+                    player.f.p = new Decimal(0)
+                    player.f.points = new Decimal(0)
+                    player.f.d1 = new Decimal(0)
+                    player.f.d2 = new Decimal(0)
+                    player.f.d3 = new Decimal(0)
+                    player.f.d4 = new Decimal(0)
+                    player.f.d5 = new Decimal(0)
+                    player.f.d6 = new Decimal(0)
+                    player.f.d7 = new Decimal(0)
+                    player.f.d8 = new Decimal(0)
+                    player.f.mult = new Decimal(0)
+                    player.f.buyables[11] = new Decimal(0)
+                    player.f.buyables[12] = new Decimal(0)
+                    player.f.buyables[13] = new Decimal(0)
+                    player.f.buyables[14] = new Decimal(0)
+                    player.f.buyables[21] = new Decimal(0)
+                    player.f.buyables[22] = new Decimal(0)
+                    player.f.buyables[23] = new Decimal(0)
+                    player.f.buyables[24] = new Decimal(0)
+                    player.f.buyables[31] = new Decimal(0)
+                    player.f.buyables[32] = new Decimal(0)
+                    player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
+                }
+            },
+            style: {'height':'180px', 'width':'180px'},
+        },
     },
     upgrades: {
-        rows: 6,
-        cols: 6,
+        rows: 8,
+        cols: 7,
         11: {
             title: "Lethality",
             description: "Symptoms boost severity after softcap at reduced effect.",
@@ -4475,10 +4971,13 @@ addLayer("f", {
             effect() {
                 let eff = challengeEffect("s", 11)
                 eff = eff.pow(0.2)
+                if (eff.gte("e5e12")) eff = Decimal.pow(10,eff.div("e5e12").log10().pow(0.9)).mul("e5e12")
                 return eff
             },
             effectDisplay() {
-                return format(getFUpgEff(13)) + "x"
+                let dis = format(getFUpgEff(13)) + "x"
+                if (this.effect().gte("e5e12")) dis += " (softcapped)"
+                return dis
             },
             unlocked() {
                 return hasFUpg(12)
@@ -4576,10 +5075,13 @@ addLayer("f", {
             effect() {
                 let eff = player.i.points.add(1)
                 eff = Decimal.pow(10,eff.log10().pow(0.2)).pow(0.005)
+                if (eff.gte("e1000")) eff = Decimal.pow(10,eff.div("e1000").log10().pow(0.7)).mul("e1000")
                 return eff
             },
             effectDisplay() {
-                return format(getFUpgEff(24))+"x"
+                let dis = format(getFUpgEff(24))+"x"
+                if (getFUpgEff(24).gte("e1000")) dis += " (softcapped)"
+                return dis
             },
             unlocked() {
                 return hasFUpg(23)
@@ -4708,7 +5210,7 @@ addLayer("f", {
             }
         },
         43: {
-            title: "Powerful Power",
+            title: "Powerful Cases",
             description: "Fatality power boosts cases gain.",
             cost: new Decimal(4e40),
             effect() {
@@ -4769,6 +5271,223 @@ addLayer("f", {
             },
             unlocked() {
                 return hasFUpg(45)
+            }
+        },
+        52: {
+            title: "Severity Dimension",
+            description: "Severity boosts fatality dimensions.",
+            cost: new Decimal(1.62e162),
+            effect() {
+                let eff = player.s.severity.add(10)
+                eff = eff.log10().pow(0.6)
+                return eff
+            },
+            effectDisplay() {
+                return format(getFUpgEff(52))+"x"
+            },
+            unlocked() {
+                return hasFUpg(51)
+            }
+        },
+        53: {
+            title: "Infected Dimension",
+            description: "Infectivity increases multiplier per dimension.",
+            cost: new Decimal(2.06e206),
+            effect() {
+                let eff = player.i.points.add(10)
+                eff = eff.log10().add(10)
+                eff = eff.log10().pow(0.1).div(2)
+                return eff
+            },
+            effectDisplay() {
+                return "+"+format(getFUpgEff(53))
+            },
+            unlocked() {
+                return hasFUpg(52)
+            }
+        },
+        54: {
+            title: "Uncoated Fatalities",
+            description: "Fatality boosts uncoaters 1st effect.",
+            cost: new Decimal(2.626e262),
+            effect() {
+                let eff = player.f.points.add(10)
+                eff = eff.log10().pow(2.35)
+                return eff
+            },
+            effectDisplay() {
+                return "^"+format(getFUpgEff(54))
+            },
+            unlocked() {
+                return hasFUpg(53)
+            }
+        },
+        55: {
+            title: "Uncoated Dimension",
+            description: "Uncoaters boost fatality dimensions.",
+            cost: new Decimal(2.75e275),
+            effect() {
+                let eff = player.u.points.add(1)
+                eff = eff.pow(1.7)
+                return eff
+            },
+            effectDisplay() {
+                return format(getFUpgEff(55))+"x"
+            },
+            unlocked() {
+                return hasFUpg(54)
+            }
+        },
+        61: {
+            title: "Replicated Dimension",
+            description: "Replicators boost fatality dimensions.",
+            cost: new Decimal("3.535e353"),
+            effect() {
+                let eff = player.r.points.add(1).pow(0.75)
+                return eff
+            },
+            effectDisplay() {
+                return format(getFUpgEff(61))+"x"
+            },
+            unlocked() {
+                return hasFUpg(55)
+            }
+        },
+        62: {
+            title: "Replicated Power",
+            description: "Replicators boost fatality power effect.",
+            cost: new Decimal("5.05e505"),
+            effect() {
+                let eff = player.r.points.add(10).log10().div(7.45)
+                if (eff.gte(1.2)) eff = eff.div(1.1).pow(0.5).mul(1.2)
+                return eff.max(1)
+            },
+            effectDisplay() {
+                return "^"+format(getFUpgEff(62))
+            },
+            unlocked() {
+                return hasFUpg(61)
+            }
+        },
+        63: {
+            title: "Multiplied Fatalities",
+            description: "Fatality adds to the Dimension Multiplier base.",
+            cost: new Decimal("9.111e911"),
+            effect() {
+                let eff = player.f.points.add(10)
+                eff = eff.log10().pow(0.05).div(50)
+                return eff
+            },
+            effectDisplay() {
+                return "+"+format(getFUpgEff(63))
+            },
+            unlocked() {
+                return hasFUpg(62)
+            }
+        },
+        64: {
+            title: "Multiplied Cases",
+            description: "Cases add to the Dimension Multiplier base.",
+            cost: new Decimal("1.158e1158"),
+            effect() {
+                let eff = player.points.add(10)
+                eff = eff.log10().pow(0.07).div(930)
+                if (eff.gte(0.115)) eff = eff.div(0.115).pow(0.4).mul(0.115)
+                return eff
+            },
+            effectDisplay() {
+                return "+"+format(getFUpgEff(64))
+            },
+            unlocked() {
+                return hasFUpg(63)
+            }
+        },
+        65: {
+            title: "Scaling Reduction",
+            description: "Reduce the Dimension and Dimension Boost cost scaling by 1.",
+            cost: new Decimal("1.515e1515"),
+            unlocked() {
+                return hasFUpg(64)
+            }
+        },
+        71: {
+            title: "8 Dimension Cases",
+            description: "Fatality Dimension 8 gives 2 free 'Cases Boost'.",
+            cost: new Decimal("1.731e1731"),
+            unlocked() {
+                return hasFUpg(65)
+            }
+        },
+        72: {
+            title: "Boosted Boosts",
+            description: "Multiply the Dimension Boost base by 2.",
+            cost: new Decimal("2.092e2092"),
+            unlocked() {
+                return hasFUpg(71)
+            }
+        },
+        73: {
+            title: "BULK",
+            description: "Reduce the Dimension cost scaling by 1 and autobuyers buy 1,000x more and 2x faster.",
+            cost: new Decimal("2.888e2888"),
+            unlocked() {
+                return hasFUpg(72)
+            }
+        },
+        74: {
+            title: "Boost Scaling",
+            description: "Reduce the Dimension Boost cost scaling by 0.5.",
+            cost: new Decimal("3.222e3222"),
+            unlocked() {
+                return hasFUpg(73)
+            }
+        },
+        75: {
+            title: "Boost Boosters",
+            description: "Multiply Dimension Boost base by 5 and Multiplier Boost is 1.125x stronger.",
+            cost: new Decimal("4.134e4134"),
+            unlocked() {
+                return hasFUpg(74)
+            }
+        },
+        81: {
+            title: "Boost Boosters",
+            description: "Multiply Dimensions.",
+            cost: new Decimal(1),
+            currencyDisplayName: "casualty",
+            currencyInternalName: "casualty",
+            currencyLayer: "f",
+            unlocked() {
+                return hasMilestone("f",12)
+            },
+            style: {
+                "background-color"() {
+                    if (!hasFUpg(81)) {
+                    let color = "#bf8f8f"
+                    if (player.f.casualty.gte(1)) color = "#3d2963"
+                    return color
+                    }
+                }
+            }
+        },
+        82: {
+            title: "Stronger Dimensions",
+            description: "Increase the multiplier per Dimension by +0.3.",
+            cost: new Decimal(1),
+            currencyDisplayName: "casualty",
+            currencyInternalName: "casualty",
+            currencyLayer: "f",
+            unlocked() {
+                return hasMilestone("f",12)
+            },
+            style: {
+                "background-color"() {
+                    if (!hasFUpg(82)) {
+                    let color = "#bf8f8f"
+                    if (player.f.casualty.gte(1)) color = "#3d2963"
+                    return color
+                    }
+                }
             }
         },
     },
