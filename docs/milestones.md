@@ -34,3 +34,5 @@ Milestone features:
 - layer: **assigned automagically**. It's the same value as the name of this layer, so you can do `player[this.layer].points` or similar.
 
 - id: **assigned automagically**. It's the "key" which the milestone was stored under, for convenient access. The milestone in the example's id is 0.
+
+Disaable milestone popups by adding `milestonePopups: false` to the layer.

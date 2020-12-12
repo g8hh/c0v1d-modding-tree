@@ -305,6 +305,7 @@ function load() {
 	changeTheme();
 	changeTreeQuality();
 	updateLayers()
+	setupModInfo()
 
 	setupTemp();
 	updateTemp();
@@ -312,6 +313,11 @@ function load() {
 	loadVue();
 }
 
+function setupModInfo() {
+	modInfo.changelog = changelog
+	modInfo.winText = winText ? winText : `Congratulations! You have reached the end and beaten this game, but for now...`
+
+}
 
 function fixNaNs() {
 	NaNcheck(player)
@@ -503,6 +509,7 @@ function respecBuyables(layer) {
 	if (!confirm("Are you sure you want to respec? This will force you to do a \"" + (tmp[layer].name ? tmp[layer].name : layer) + "\" reset as well!")) return
 	layers[layer].buyables.respec()
 	updateBuyableTemp(layer)
+	document.activeElement.blur()
 }
 
 function canAffordUpgrade(layer, id) {
@@ -680,8 +687,7 @@ function inChallenge(layer, id){
 var onTreeTab = true
 function showTab(name) {
 	if (LAYERS.includes(name) && !layerunlocked(name)) return
-	if (player.tab === name && player.subtabs[name] && player.subtabs[name].mainTabs) {
-		console.log("momo")
+	if (player.tab === name && isPlainObject(tmp[name].tabFormat)) {
 		player.subtabs[name].mainTabs = Object.keys(layers[name].tabFormat)[0]
 	}
 	var toTreeTab = name == "none"
@@ -689,6 +695,7 @@ function showTab(name) {
 	if (player.navTab == "none" && (tmp[name].row !== "side") && (tmp[name].row !== "otherside")) player.lastSafeTab = name
 	delete player.notify[name]
 	needCanvasUpdate = true
+	document.activeElement.blur()
 }
 
 function showNavTab(name) {
@@ -771,8 +778,10 @@ function toNumber(x) {
 
 function updateMilestones(layer){
 	for (id in layers[layer].milestones){
-		if (!(player[layer].milestones.includes(id)) && layers[layer].milestones[id].done())
+		if (!(player[layer].milestones.includes(id)) && layers[layer].milestones[id].done()){
 			player[layer].milestones.push(id)
+			if (tmp[layer].milestonePopups || tmp[layer].milestonePopups === undefined) doPopup("milestone", tmp[layer].milestones[id].requirementDescription, "Milestone Gotten!", 3, tmp[layer].color);
+		}
 	}
 }
 
@@ -781,6 +790,7 @@ function updateAchievements(layer){
 		if (isPlainObject(layers[layer].achievements[id]) && !(player[layer].achievements.includes(id)) && layers[layer].achievements[id].done()) {
 			player[layer].achievements.push(id)
 			if (layers[layer].achievements[id].onComplete) layers[layer].achievements[id].onComplete()
+			if (tmp[layer].achievementPopups || tmp[layer].achievementPopups === undefined) doPopup("achievement", tmp[layer].achievements[id].name, "Achievement Gotten!", 3, tmp[layer].color);
 		}
 	}
 }
@@ -851,3 +861,44 @@ function isPlainObject(obj) {
 }
 
 document.title = modInfo.name
+
+
+
+// Variables that must be defined to display popups
+var activePopups = [];
+var popupID = 0;
+
+// Function to show popups
+function doPopup(type="none",text="This is a test popup.",title="",timer=3, color="") {
+	switch(type) {
+		case "achievement":
+			popupTitle = "Achievement Unlocked!";
+			popupType = "achievement-popup"
+			break;
+		case "challenge":
+			popupTitle = "Challenge Complete";
+			popupType = "challenge-popup"
+			break;
+		default:
+			popupTitle = "Something Happened?";
+			popupType = "default-popup"
+			break;
+	}
+	if(title != "") popupTitle = title;
+	popupMessage = text;
+	popupTimer = timer; 
+
+	activePopups.push({"time":popupTimer,"type":popupType,"title":popupTitle,"message":(popupMessage+"\n"),"id":popupID, "color":color})
+	popupID++;
+}
+
+
+//Function to reduce time on active popups
+function adjustPopupTime(diff) {
+	for(popup in activePopups) {
+		activePopups[popup].time -= diff;
+		if(activePopups[popup]["time"] < 0) {
+			activePopups.splice(popup,1); // Remove popup when time hits 0
+		}
+	}
+}

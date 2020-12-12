@@ -40,13 +40,16 @@ function loadVue() {
 	// data = an array of Components to be displayed in a row
 	Vue.component('row', {
 		props: ['layer', 'data'],
+		computed: {
+			key() {return this.$vnode.key}
+		},
 		template: `
-		<div class="upgTable instant" >
+		<div class="upgTable instant">
 			<div class="upgRow">
-				<div v-for="item in data">
-				<div v-if="!Array.isArray(item)" v-bind:is="item" :layer= "layer" v-bind:style="tmp[layer].componentStyles[item]"></div>
-				<div v-else-if="item.length==3" v-bind:style="[tmp[layer].componentStyles[item[0]], (item[2] ? item[2] : {})]" v-bind:is="item[0]" :layer= "layer" :data= "item[1]"></div>
-				<div v-else-if="item.length==2" v-bind:is="item[0]" :layer= "layer" :data= "item[1]" v-bind:style="tmp[layer].componentStyles[item[0]]"></div>
+				<div v-for="(item, index) in data">
+				<div v-if="!Array.isArray(item)" v-bind:is="item" :layer= "layer" v-bind:style="tmp[layer].componentStyles[item]" :key="key + '-' + index"></div>
+				<div v-else-if="item.length==3" v-bind:style="[tmp[layer].componentStyles[item[0]], (item[2] ? item[2] : {})]" v-bind:is="item[0]" :layer= "layer" :data= "item[1]" :key="key + '-' + index"></div>
+				<div v-else-if="item.length==2" v-bind:is="item[0]" :layer= "layer" :data= "item[1]" v-bind:style="tmp[layer].componentStyles[item[0]]" :key="key + '-' + index"></div>
 				</div>
 			</div>
 		</div>
@@ -56,13 +59,16 @@ function loadVue() {
 	// data = an array of Components to be displayed in a column
 	Vue.component('column', {
 		props: ['layer', 'data'],
+		computed: {
+			key() {return this.$vnode.key}
+		},
 		template: `
 		<div class="upgTable instant">
 			<div class="upgCol">
-				<div v-for="item in data">
-					<div v-if="!Array.isArray(item)" v-bind:is="item" :layer= "layer" v-bind:style="tmp[layer].componentStyles[item]"></div>
-					<div v-else-if="item.length==3" v-bind:style="[tmp[layer].componentStyles[item[0]], (item[2] ? item[2] : {})]" v-bind:is="item[0]" :layer= "layer" :data= "item[1]"></div>
-					<div v-else-if="item.length==2" v-bind:is="item[0]" :layer= "layer" :data= "item[1]" v-bind:style="tmp[layer].componentStyles[item[0]]"></div>
+				<div v-for="(item, index) in data">
+					<div v-if="!Array.isArray(item)" v-bind:is="item" :layer= "layer" v-bind:style="tmp[layer].componentStyles[item]" :key="key + '-' + index"></div>
+					<div v-else-if="item.length==3" v-bind:style="[tmp[layer].componentStyles[item[0]], (item[2] ? item[2] : {})]" v-bind:is="item[0]" :layer= "layer" :data= "item[1]" :key="key + '-' + index"></div>
+					<div v-else-if="item.length==2" v-bind:is="item[0]" :layer= "layer" :data= "item[1]" v-bind:style="tmp[layer].componentStyles[item[0]]" :key="key + '-' + index"></div>
 				</div>
 			</div>
 		</div>
@@ -134,10 +140,10 @@ function loadVue() {
 	})
 
 	Vue.component('upgrades', {
-		props: ['layer'],
+		props: ['layer', 'data'],
 		template: `
 		<div v-if="tmp[layer].upgrades" class="upgTable">
-			<div v-for="row in tmp[layer].upgrades.rows" class="upgRow">
+			<div v-for="row in (data === undefined ? tmp[layer].upgrades.rows : data)" class="upgRow">
 				<div v-for="col in tmp[layer].upgrades.cols"><div v-if="tmp[layer].upgrades[row*10+col]!== undefined && tmp[layer].upgrades[row*10+col].unlocked" class="upgAlign">
 					<upgrade :layer = "layer" :data = "row*10+col" v-bind:style="tmp[layer].componentStyles.upgrade"></upgrade>
 				</div></div>
@@ -212,7 +218,7 @@ function loadVue() {
 	Vue.component('main-display', {
 		props: ['layer'],
 		template: `
-		<div><span v-if="player[layer].points.lt('1e1000')">You have </span><h2 v-bind:style="{'color': tmp[layer].color, 'text-shadow': '0px 0px 10px' + tmp[layer].color}">{{formatWhole(player[layer].points)}}</h2> {{tmp[layer].resource}}, <span v-if="tmp[layer].effectDescription" v-html="tmp[layer].effectDescription"></span><br><br></div>
+		<div><span v-if="player[layer].points.lt('1e1000')">You have </span><h2 v-bind:style="{'color': tmp[layer].color, 'text-shadow': '0px 0px 10px' + tmp[layer].color}">{{formatWhole(player[layer].points)}}</h2> {{tmp[layer].resource}}<span v-if="tmp[layer].effectDescription">, <span v-html="tmp[layer].effectDescription"></span></span><br><br></div>
 		`
 	})
 
@@ -320,7 +326,7 @@ function loadVue() {
 			<div class="upgTable instant">
 				<tab-buttons :layer="layer" :data="tmp[layer].microtabs[data]" :name="data" v-bind:style="tmp[layer].componentStyles['tab-buttons']"></tab-buttons>
 			</div>
-			<layer-tab v-if="tmp[layer].microtabs[data][player.subtabs[layer][data]].embedLayer" :layer="tmp[layer].microtabs[data][player.subtabs[layer][data]].embedLayer" ></layer-tab>
+			<layer-tab v-if="tmp[layer].microtabs[data][player.subtabs[layer][data]].embedLayer" :layer="tmp[layer].microtabs[data][player.subtabs[layer][data]].embedLayer" :embedded="true"></layer-tab>
 
 			<column v-else v-bind:style="tmp[layer].microtabs[data][player.subtabs[layer][data]].style" :layer="layer" :data="tmp[layer].microtabs[data][player.subtabs[layer][data]].content"></column>
 		</div>
@@ -367,9 +373,9 @@ function loadVue() {
 				(tmp[layer].achievements[data].tooltip == '') ? false : hasAchievement(layer, data) ? (tmp[layer].achievements[data].doneTooltip ? tmp[layer].achievements[data].doneTooltip : (tmp[layer].achievements[data].tooltip ? tmp[layer].achievements[data].tooltip : 'You did it!'))
 				: (tmp[layer].achievements[data].goalTooltip ? tmp[layer].achievements[data].goalTooltip : (tmp[layer].achievements[data].tooltip ? tmp[layer].achievements[data].tooltip : 'LOCKED'))
 			"
-
-			v-bind:style="[(!tmp[layer].achievements[data].unlocked) ? {'visibility': 'hidden'} : {}, tmp[layer].achievements[data].style,]">
-			<span v-if= "tmp[layer].achievements[data].name"><br><h3 v-html="tmp[layer].achievements[data].name"></h3><br></span>
+			
+			v-bind:style="tmp[layer].achievements[data].computedStyle">
+			<span v-if= "tmp[layer].achievements[data].name"><br><h3 v-bind:style="tmp[layer].achievements[data].textStyle" v-html="tmp[layer].achievements[data].name"></h3><br></span>
 		</div>
 		`
 	})
@@ -377,10 +383,13 @@ function loadVue() {
 	// Data is an array with the structure of the tree
 	Vue.component('tree', {
 		props: ['layer', 'data'],
+		computed: {
+			key() {return this.$vnode.key}
+		},
 		template: `<div>
-		<span v-for="row in data"><table>
-			<td v-for="node in row" style = "{width: 0px}">
-				<tree-node  :layer='node' :abb='tmp[node].symbol'></tree-node>
+		<span v-for="(row, r) in data"><table>
+			<td v-for="(node, id) in row" style = "{width: 0px}">
+				<tree-node  :layer='node' :abb='tmp[node].symbol' :key="key + '-' + r + '-' + id"></tree-node>
 			</td>
 			<tr><table><button class="treeNode hidden"></button></table></tr>
 		</span></div>
@@ -441,7 +450,8 @@ function loadVue() {
 			subtabResetNotify,
 			VERSION,
 			LAYERS,
-			hotkeys
+			hotkeys,
+			activePopups,
 		},
 	})
 }
