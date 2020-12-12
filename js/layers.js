@@ -3475,7 +3475,7 @@ addLayer("stat", {
         "blank",
         ["display-text", function() {if (player.f.total.gte("6.969e420")) return "Fatality Dimension Boost Scaling:"+format(tmp.f.buyables[32].scale)}],
         "blank",
-        ["display-text", function() {if (player.f.buyables[33].gte(11)) return "Distant Multiplier Boost Scaling Start:"+format(tmp.f.buyables[33].distantStart)}],
+        ["display-text", function() {if (player.f.buyables[33].gte(100)) return "Distant Multiplier Boost Scaling Start:"+format(tmp.f.buyables[33].distantStart)}],
     ],
 })
 addLayer("a", {
