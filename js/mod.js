@@ -17,10 +17,45 @@ let VERSION = {
 }
 
 let changelog = `<h1>Changelog:</h1><br>
-	<h3>v0.0</h3><br>
-		- Added things.<br>
-		- Added stuff.`
-
+	    <h3>v0.4.3</h3><br>
+		- Added News Button.<br>
+        - Added Casualty (Infinity in AD).<br>
+        <h3>v0.4.2</h3><br>
+		- Added News Ticker.<br>
+        - Added Fatality Dimension Shifts.<br>
+        <h3>v0.4.1</h3><br>
+		- Added Fatality.<br>
+        - Added Achievements.<br>
+        <h3>v0.4</h3><br>
+		- Added Symptom Challenges.<br>
+        - Rebalanced.<br>
+        <h3>v0.3.3</h3><br>
+        - Added Deaths.<br>
+        <h3>v0.3.2</h3><br>
+		- Added Recoveries.<br>
+        - Added more symptom upgrades.<br>
+        <h3>v0.3.1</h3><br>
+        - Added Symptoms.<br>
+        <h3>v0.3</h3><br>
+		- Added Uncoater Challenges.<br>
+        - Added more uncoater upgrades.<br>
+        <h3>v0.2.2</h3><br>
+		- Added more uncoater upgrades.<br>
+        - Made 1st uncoater upgrade based on best.<br>
+        <h3>v0.2.1</h3><br>
+		- Added Uncoaters.<br>
+        - Added (hardcapped).<br>
+        - Renamed to Plague Tree (Vorona Cirus Treesease).<br>
+        <h3>v0.2</h3><br>
+        - Added Statistics.<br>
+        - Added Replicators.<br>
+        - Added (softcapped).<br>
+        - Renamed to Vorona Cirus Treesease.<br>
+        <h3>v0.1</h3><br>
+        - Release (COVID Tree).<br>
+        - Added Virus Points.<br>
+        - Added Cases.<br>
+    `
 let winText = `Congratulations! You have reached the end and beaten this game, but for now...`
 
 // If you add new functions anywhere inside of a layer, and those functions have an effect when called, add them here.
