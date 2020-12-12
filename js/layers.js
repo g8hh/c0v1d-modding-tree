@@ -4040,7 +4040,7 @@ addLayer("f", {
         }
         let st = tmp.f.buyables[64].speed.mul(diff)
         player.f.sact = Decimal.add(player.f.sact, st)
-        if (player.f.sact.gte(1)) {
+        if (player.f.sact.gte(1) && !inChallenge("f",22)) {
             player.f.sactimes = Decimal.floor(player.f.sact).mul(-1)
             player.f.sact = Decimal.add(player.f.sact, player.f.sactimes)
             player.f.sactimes = player.f.sactimes.mul(-1)
