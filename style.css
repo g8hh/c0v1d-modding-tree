@@ -677,8 +677,17 @@ button > * {
 #treeTab td button {
     margin: 0 10px 0 10px;
 }
+#game {
+    border: 2px solid white;
+    border-radius: 4px;
+    padding: 2px;
+    width: 75%;
+    overflow: hidden;
+    margin: auto;
+	text-align: left;
+}
 #newsTicker {
-	margin: 20px;
+	margin: 10px;
 	margin-left: 50px;
 	margin-right: 50px;
 
@@ -694,3 +703,18 @@ button > * {
 #newsContent {
 	transition-duration: 0s !important;
 }
+#newsbtn {
+	font-size: 32px;
+	color: white;
+	position: absolute;
+	top: 240px;
+	left: 4px;
+	cursor: pointer;
+	width: 40px;
+	height: 40px;
+}
+
+	#newsbtn:hover {
+		transform: scale(1.2, 1.2);
+		text-shadow: 5px 0px 10px #02f2f2, -3px 0px 12px #02f2f2;
+	}

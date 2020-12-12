@@ -8,6 +8,8 @@ const TMT_VERSION = {
 	tmtName: "Uprooted"
 }
 
+
+
 function getResetGain(layer, canMax=false, useType = null) {
 	let type = useType
 	if (!useType) type = tmp[layer].type
@@ -31,6 +33,17 @@ function getResetGain(layer, canMax=false, useType = null) {
 				if (gain.gte(30)) { 
 					let umult = Decimal.pow(1e8,amt.pow(1.9))
 					gain = tmp[layer].baseAmount.div(umult).div(tmp[layer].requires).div(tmp[layer].gainMult).max(1).log(tmp[layer].base).times(tmp[layer].gainExp).pow(Decimal.pow(tmp[layer].exponent, -1)).add(30)
+				}
+			}
+		}
+		if (layer == "s") {
+			if (gain.gte(getDUpgEff(41).add(20))) {  // gain=1e10000^1.9^s
+				gain = tmp[layer].baseAmount.div(tmp[layer].requires).log("e10000").log(1.9).add(getDUpgEff(41).add(20))
+			}
+			if (player.s.points.lt(getDUpgEff(41).add(20))) { 
+				gain = tmp[layer].baseAmount.div(tmp[layer].requires).div(tmp[layer].gainMult).max(1).log(tmp[layer].base).times(tmp[layer].gainExp).pow(Decimal.pow(tmp[layer].exponent, -1))
+				if (gain.gte(getDUpgEff(41).add(20))) {  // gain=1e10000^1.9^s
+					gain = tmp[layer].baseAmount.div(tmp[layer].requires).log("e10000").log(1.9).add(getDUpgEff(41).add(20))
 				}
 			}
 		}
@@ -82,6 +95,11 @@ function getNextAt(layer, canMax=false, useType = null) {
 					extraCost = Decimal.pow(tmp[layer].base, (amt.sub(30)).pow(tmp[layer].exponent).div(tmp[layer].gainExp)).times(tmp[layer].gainMult).mul(umult)
 				}
 				cost = extraCost.times(tmp[layer].requires).max(tmp[layer].requires)
+			}
+		}
+		if (layer == "s") {
+			if (player.s.points.gte(getDUpgEff(41).add(20))) {
+				cost = Decimal.pow("e10000",Decimal.pow(1.9,amt.sub(getDUpgEff(41).add(20))))
 			}
 		}
 		if (tmp[layer].roundUpCost) cost = cost.ceil()
@@ -240,6 +258,7 @@ function doReset(layer, force=false) {
 	updateTemp()
 	updateTemp()
 }
+  
 
 function resetRow(row) {
 	if (prompt('Are you sure you want to reset this row? It is highly recommended that you wait until the end of your current run before doing this! Type "I WANT TO RESET THIS" to confirm')!="I WANT TO RESET THIS") return
@@ -328,7 +347,6 @@ function autobuyUpgrades(layer){
 
 function gameLoop(diff) {
 	if (isEndgame() || gameEnded) gameEnded = 1
-
 	if (isNaN(diff)) diff = 0
 	if (gameEnded && !player.keepGoing) {
 		diff = 0
@@ -342,8 +360,20 @@ function gameLoop(diff) {
 			diff = limit
 	}
 	addTime(diff)
+	
 	player.points = player.points.add(tmp.pointGen.times(diff)).max(0)
-
+	if (player.hideNews) {
+		document.getElementById("newsTicker").style.display = "none";
+	}
+	document.getElementById("newsbtn").onclick = function() {
+		if (!player.hideNews) {
+		  document.getElementById("newsTicker").style.display = "none";
+		  player.hideNews = true
+		} else {
+		  document.getElementById("newsTicker").style.display = "block";
+		  player.hideNews = false
+		}
+	  }
 	for (x = 0; x <= maxRow; x++){
 		for (item in TREE_LAYERS[x]) {
 			let layer = TREE_LAYERS[x][item]
@@ -382,7 +412,6 @@ function gameLoop(diff) {
 		if (layers[layer].milestones) updateMilestones(layer);
 		if (layers[layer].achievements) updateAchievements(layer)
 	}
-
 }
 
 function hardReset() {
@@ -420,5 +449,6 @@ var interval = setInterval(function() {
 	fixNaNs()
 	ticking = false
 }, 50)
+
 
 setInterval(function() {needCanvasUpdate = true}, 500)

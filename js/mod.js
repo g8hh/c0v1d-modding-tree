@@ -12,7 +12,7 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.4.2",
+	num: "0.4.3",
 	name: "Vorona Cirus Dimensions",
 }
 
@@ -52,6 +52,8 @@ function getPointGen() {
     if (hasDUpg(43)) gain = gain.pow(getDUpgEff(43))
     if (hasFUpg(43)) gain = gain.pow(getFUpgEff(43))
     if (hasFUpg(44)) gain = gain.pow(getFUpgEff(44))
+    if (hasFUpg(95)) gain = gain.pow(getFUpgEff(95))
+    if (hasFUpg(125)) gain = gain.pow(getFUpgEff(125))
     gain = gain.pow(layers.d.buyables[13].effect())
 	return gain
 }
@@ -62,11 +64,11 @@ function addedPlayerData() { return {
 }}
 
 // Display extra things at the top of the page
-var displayThings = ["Current endgame: 1 C Upgrade (v0.4.2)"]
+var displayThings = ["Current endgame: 1e2,395 casualty (v0.4.3)"]
 
 // Determines when the game "ends"
 function isEndgame() {
-	return hasFUpg(82)
+	return player.f.casualty.gte("e2395")
 }
 
 

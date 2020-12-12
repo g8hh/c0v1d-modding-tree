@@ -11,6 +11,41 @@ function scaleStaticCost(gain, row) {
     }
 	return gain;
 }
+function startCChallenge(id) {
+    player.f.p = new Decimal(0)
+    player.f.cp = new Decimal(0)
+    player.f.casuals = new Decimal(1)
+    player.f.cboosts = new Decimal(0)
+    player.f.points = new Decimal(0)
+    player.f.resettime = new Decimal(0.001)
+    player.f.sac = new Decimal(0)
+    player.f.d1 = new Decimal(0)
+    player.f.d2 = new Decimal(0)
+    player.f.d3 = new Decimal(0)
+    player.f.d4 = new Decimal(0)
+    player.f.d5 = new Decimal(0)
+    player.f.d6 = new Decimal(0)
+    player.f.d7 = new Decimal(0)
+    player.f.d8 = new Decimal(0)
+    player.f.mult = new Decimal(0)
+    player.f.buyables[11] = new Decimal(0)
+    player.f.buyables[12] = new Decimal(0)
+    player.f.buyables[13] = new Decimal(0)
+    player.f.buyables[14] = new Decimal(0)
+    player.f.buyables[21] = new Decimal(0)
+    player.f.buyables[22] = new Decimal(0)
+    player.f.buyables[23] = new Decimal(0)
+    player.f.buyables[24] = new Decimal(0)
+    player.f.buyables[31] = new Decimal(0)
+    player.f.buyables[32] = (hasFUpg(84) && id !== 22 && id !== 31) ? new Decimal(2) : new Decimal(0)
+    player.f.buyables[33] = new Decimal(0) 
+    player.f.buyables[71] = player.f.buyables[71].min(player.f.cd[0])
+    player.f.buyables[72] = player.f.buyables[72].min(player.f.cd[1])
+    player.f.buyables[73] = player.f.buyables[73].min(player.f.cd[2])
+    player.f.buyables[74] = player.f.buyables[74].min(player.f.cd[3])
+    player.f.buyables[81] = player.f.buyables[81].min(player.f.cd[4])
+    player.f.buyables[82] = player.f.buyables[82].min(player.f.cd[5])
+}
 
 function softcapStaticGain(gain, row) {
 	let start = (STATIC_SCALE_STARTS[String(row+1)]?STATIC_SCALE_STARTS[String(row+1)]():1);
@@ -62,8 +97,6 @@ function hasFUpg(id){
 function getFUpgEff(id){
     return upgradeEffect("f",id)
 }
-
-
 
 addLayer("v", {
     name: "virus",
@@ -153,10 +186,12 @@ addLayer("v", {
                 let eff = this.base()
                 let v12sf = new Decimal("e10000")
                 let v12sf2 = new Decimal("ee10")
+                let v12sf3 = new Decimal("ee50")
                 if(hasVUpg(23)) eff = eff.pow(getVUpgEff(23))
                 if(hasFUpg(33)) eff = eff.pow(getFUpgEff(33))
                 if(eff.gte(v12sf)) eff = Decimal.pow(10,Decimal.log10(eff.div(v12sf)).pow(3/4)).mul(v12sf)
                 if(eff.gte(v12sf2)) eff = Decimal.pow(10,Decimal.log10(eff.div(v12sf2)).pow(0.9)).mul(v12sf2)
+                if(eff.gte(v12sf3)) eff = Decimal.pow(10,Decimal.pow(10,eff.div(v12sf3).log10().log10().pow(0.99))).mul(v12sf3)
                 if (inChallenge("u", 12)) eff = new Decimal(1)
                 return eff
             },
@@ -180,10 +215,12 @@ addLayer("v", {
                 let v13sf2 = new Decimal("1e2370")
                 let v13sf3 = new Decimal("e25e8")
                 let v13sf4 = new Decimal("ee14")
+                let v13sf5 = new Decimal("ee50")
                 let v13sff = new Decimal(0.5)
                 let v13sff2 = new Decimal(0.8)
                 let v13sff3 = new Decimal(10/11)
                 let v13sff4 = new Decimal(5/6)
+                let v13sff5 = new Decimal(0.95)
                 v13 = v13.pow(1/2)
                 if(hasUUpg(12)) v13sf = v13sf.mul(getUUpgEff(12))
                 if(hasUUpg(12)) v13sf2 = v13sf2.mul(getUUpgEff(12)).add(1)
@@ -205,6 +242,9 @@ addLayer("v", {
                 }
                 if(v13.gte(v13sf4)) {
                     v13 = Decimal.pow(10,Decimal.log10(v13.div(v13sf4)).pow(v13sff4)).mul(v13sf4)
+                }
+                if(v13.gte(v13sf5)) {
+                    v13 = Decimal.pow(10,Decimal.pow(10,v13.div(v13sf5).log10().log10().pow(v13sff5))).mul(v13sf5)
                 }
                 return v13  
             },
@@ -376,6 +416,7 @@ addLayer("i", {
         eff = eff.pow(2)
         if (inChallenge("u", 12)) eff = new Decimal(1)
         if (eff.gte("ee16")) eff = Decimal.pow(10,eff.div("ee16").log10().pow(0.88)).mul("ee16")
+        if (eff.gte("ee32")) eff = Decimal.pow(10,eff.div("ee32").log10().pow(0.85)).mul("ee32")
         return eff
     },
     effectDescription() {
@@ -761,6 +802,7 @@ addLayer("r", {
             r22 = r22.mul(layers.u.effect2())
             if (r22.gte(4.8e6)) r22 = r22.div(4.8e6).pow(0.5).mul(4.8e6)
             if (r22.gte(3e11)) r22 = Decimal.pow(10,r22.div(3e11).log10().pow(0.5)).mul(3e11)
+            if (r22.gte(1e55)) r22 = Decimal.pow(10,r22.div(1e55).log10().pow(0.75)).mul(1e55)
             return r22
             },
             effectDisplay(){
@@ -893,6 +935,7 @@ addLayer("u", {
         eff2 = Decimal.log10(eff2).pow(3)
         if(hasSUpg(12)) eff2 = eff2.mul(getSUpgEff(12))
         if(hasUUpg(23)) eff2 = eff2.pow(getUUpgEff(23))
+        if (eff2.gte("e10000")) eff2 = Decimal.pow(10,eff2.div("e10000").log10().pow(0.5)).mul("1e10000")
         if (inChallenge("u", 11)) eff2 = new Decimal(1)
         return eff2
     },
@@ -1079,6 +1122,7 @@ addLayer("u", {
             let u23 = player.i.points.add(10)
             u23 = Decimal.log10(u23)
             u23 = u23.pow(0.0747)
+            if (u23.gte(150)) u23 = u23.div(150).pow(0.333).mul(150)
             if (inChallenge("u", 12) || inChallenge("s", 21)) u23 = new Decimal(1)
             return u23
             },
@@ -1370,6 +1414,7 @@ addLayer("s", {
         if (hasSUpg(55)) buymult = buymult.mul(25)
         if (hasMilestone("f", 8)) buymult = buymult.mul(100)
         if (hasFUpg(73)) buymult = buymult.mul(1000)
+        if (hasFUpg(123)) buymult = buymult.pow(2)
         return buymult
     },
     speed() {
@@ -1444,6 +1489,7 @@ addLayer("s", {
         if(player.s.unlocked) shown = true
         return shown
     },
+    canBuyMax() {return hasMilestone("f",12)},
     milestones: {
         0: {
             requirementDescription: "2 symptoms",
@@ -2700,6 +2746,7 @@ addLayer("d", {
         if (hasAchievement("a", 53)) bulk = bulk.mul(5)
         if (hasMilestone("f", 8)) bulk = bulk.mul(100)
         if (hasFUpg(73)) bulk = bulk.mul(1000)
+        if (hasFUpg(123)) bulk = bulk.pow(2)
         return bulk
     },
     speed() {
@@ -2709,7 +2756,7 @@ addLayer("d", {
         return speed
     },
     update(diff) {
-        if (hasMilestone("d", 10)) generatePoints("d", diff/100);
+        if (hasMilestone("d", 10) && !inChallenge("f",31)) generatePoints("d", diff/100);
         let t = diff*this.speed()
             player.d.time = Decimal.add(player.d.time, t)
             if (player.d.time.gte(1)) {
@@ -3045,6 +3092,7 @@ addLayer("d", {
             extra() {
                 let extra = new Decimal(0)
                 if (hasFUpg(71)) extra = extra.add(getBuyableAmount("f",24).mul(2))
+                if (hasFUpg(123)) extra = extra.add(getFUpgEff(123))
                 return extra
             },
             total() {
@@ -3062,7 +3110,7 @@ addLayer("d", {
                 let extra = ""
                 let eff = format(tmp[this.layer].buyables[this.id].effect)
                 if (this.total().gte(2500)) eff += " (softcapped)"
-                if (hasFUpg(71)) extra = "+" + this.extra()
+                if (hasFUpg(71)) extra = "+" + formatWhole(this.extra())
                 return "Raise cases gain to "+format(this.base())+" (based on cases).\n\
                 Cost: " + format(tmp[this.layer].buyables[this.id].cost)+" deaths\n\
                 Effect: ^" + eff +"\n\
@@ -3306,6 +3354,7 @@ addLayer("d", {
             effect(){
             let d24 = player.d.points.add(10)
             d24 = Decimal.log10(d24).pow(0.3).sub(1)
+            if (d24.gte(5000)) d24 = d24.div(5000).pow(0.5).mul(5000)
             if (inChallenge("s", 21)) d24 = new Decimal(1)
             return d24
             },
@@ -3420,7 +3469,13 @@ addLayer("stat", {
         "blank",
         ["display-text", function() {if (hasFUpg(25)) return "'More Fatal' autobuy:"+formatWhole(tmp.d.bulk)+"/" + format(1/tmp.d.speed)+"s (" + format(Decimal.mul(tmp.d.bulk,tmp.d.speed)) + "/s)"}],
         "blank",
-        ["display-text", function() {if (player.s.unlocked) return "Multiplier per Fatality Dimension:"+format(tmp.f.multpd)}],
+        ["display-text", function() {if (hasMilestone("f",6)) return "Multiplier per Fatality Dimension:"+format(tmp.f.multpd)}],
+        "blank",
+        ["display-text", function() {if (player.f.total.gte("e1000")) return "Fatality Dimension Scaling:"+format(tmp.f.DimScaling)}],
+        "blank",
+        ["display-text", function() {if (player.f.total.gte("6.969e420")) return "Fatality Dimension Boost Scaling:"+format(tmp.f.buyables[32].scale)}],
+        "blank",
+        ["display-text", function() {if (player.f.buyables[33].gte(11)) return "Distant Multiplier Boost Scaling Start:"+format(tmp.f.buyables[33].distantStart)}],
     ],
 })
 addLayer("a", {
@@ -3445,7 +3500,7 @@ addLayer("a", {
     row: "side", // Row the layer is in on the tree (0 is the first row)
     layerShown() { return true },
     achievements: {
-        rows: 5,
+        rows: 6,
         cols: 6,
         11: {
             name: "Start",
@@ -3747,6 +3802,66 @@ addLayer("a", {
                 addPoints("a",5)
             }
         },
+        61: {
+            name: "Casual",
+            tooltip: "Get 1 casualty. Reward: 5 AP",
+            done() {
+                return player.f.casualty.gte(1)
+            },
+            onComplete() {
+                addPoints("a",5)
+            }
+        },
+        62: {
+            name: "Fatally Challenged",
+            tooltip: "Complete 4 Fatality Challenges Reward: 5 AP",
+            done() {
+                return hasChallenge("f",11) && hasChallenge("f",12) && hasChallenge("f",21) && hasChallenge("f",22)
+            },
+            onComplete() {
+                addPoints("a",5)
+            }
+        },
+        63: {
+            name: "Zero Deaths",
+            tooltip: "Get 1e10000 fatality without Dimension and Multiplier Boosts. Reward: 5 AP",
+            done() {
+                return player.f.points.gte("ee4") && player.f.buyables[32].eq(0) && player.f.buyables[33].eq(0)
+            },
+            onComplete() {
+                addPoints("a",5)
+            }
+        },
+        64: {
+            name: "REPLICANTI",
+            tooltip: "Unlock Casuals. Reward: 5 AP",
+            done() {
+                return hasMilestone("f",17)
+            },
+            onComplete() {
+                addPoints("a",5)
+            }
+        },
+        65: {
+            name: "'ZERO' Deaths",
+            tooltip: "Get 6e666,666 fatality without Dimension and Multiplier Boosts in Casualty Challenge 1. Reward: 5 AP, AP boosts fatality dimensions",
+            done() {
+                return player.f.points.gte("6e666666") && player.f.buyables[32].eq(0) && player.f.buyables[33].eq(0) && inChallenge("f",31)
+            },
+            onComplete() {
+                addPoints("a",5)
+            }
+        },
+        66: {
+            name: "0 cases from Casualty",
+            tooltip: "Get 1 Casualty Dimension 8. Reward: 5 AP",
+            done() {
+                return player.f.buyables[84].gte(1)
+            },
+            onComplete() {
+                addPoints("a",5)
+            }
+        },
     },
     effect() {
         let eff = player.a.points
@@ -3784,6 +3899,7 @@ addLayer("f", {
         best: new Decimal(0),
         total: new Decimal(0),
         unlocked: false,
+        sac: new Decimal(0),
         p: new Decimal(0),
         mult: new Decimal(0),
         d1: new Decimal(0),
@@ -3795,7 +3911,33 @@ addLayer("f", {
         d7: new Decimal(0),
         d8: new Decimal(0),
         resettime: new Decimal(0.001),
+        cpm: new Decimal(0),
         casualty: new Decimal(0),
+        casualtyTotal: new Decimal(0),
+        d1auto: false,
+        d2auto: false,
+        d3auto: false,
+        d4auto: false,
+        d5auto: false,
+        d6auto: false,
+        d7auto: false,
+        d8auto: false,
+        multauto: false,
+        boostauto: false,
+        multbauto: false,
+        sacauto: false,
+        cmultauto: false,
+        t: [new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0)],
+        times: [new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0)],
+        buy: [41,42,43,44,51,52,53,54,61,62,63],
+        sact: new Decimal(0),
+        sactimes: new Decimal(0),
+        cd: [new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0)],
+        cp: new Decimal(0),
+        casuals: new Decimal(1),
+        rt: new Decimal(0),
+        rtimes: new Decimal(0),
+        cboosts: new Decimal(0),
     }},
     color: "#f53d63",
     nodeStyle() {return {
@@ -3817,12 +3959,19 @@ addLayer("f", {
                 if (canReset(this.layer) && !hasMilestone("f",9)) doReset(this.layer)}
             },
             {key:"m", description: "M:Buy max Fatality Dimensions", onPress() {
-                if (hasMilestone("f",6)) layers.f.clickables[11].onClick()}
+                if (hasMilestone("f",6)) layers.f.clickables[11].onClick()
+                if (hasMilestone("f",16)) layers.f.clickables[51].onClick()}
+            },
+            {key:"c", description: "C:Reset for casualty", onPress() {
+                if (hasMilestone("f",12) && player.f.points.gte("5.095e5095")) layers.f.clickables[12].onClick()}
             },
     ],
     powergain() {
         let pgain = tmp.f.buyables[11].gain
-        if (hasFUpg(34)) pgain = pgain.mul(getFUpgEff(34))
+        return pgain
+    },
+    cpowergain() {
+        let pgain = tmp.f.buyables[71].gain
         return pgain
     },
     fDimMult() {
@@ -3832,16 +3981,39 @@ addLayer("f", {
         if (hasFUpg(52)) mult = mult.mul(getFUpgEff(52))
         if (hasFUpg(55)) mult = mult.mul(getFUpgEff(55))
         if (hasFUpg(61)) mult = mult.mul(getFUpgEff(61))
+        if (hasFUpg(81)) mult = mult.mul(getFUpgEff(81))
+        if (hasFUpg(103)) mult = mult.mul(getFUpgEff(103))
         mult = mult.mul(tmp.f.buyables[31].effect)
         mult = mult.mul(tmp.f.buyables[32].effect)
+        mult = mult.mul(this.cpeffect())
+        if (inChallenge("f",61)) mult = tmp.f.buyables[32].effect
+        if (inChallenge("f",62)) mult = this.cpeffect()
         if (hasAchievement("a",54)) mult = mult.mul(2)
+        if (hasAchievement("a",65)) mult = mult.mul(tmp.a.effect)
+        return mult
+    },
+    cDimMult() {
+        let mult = new Decimal(1)
+        if (hasChallenge("f",31)) mult = mult.mul(challengeEffect("f",31))
+        if (hasChallenge("f",52)) mult = mult.mul(challengeEffect("f",52))
+        mult = mult.mul(this.caseffect())
         return mult
     },
     update(diff) {
         player.f.p = player.f.p.add(this.powergain().mul(diff))
+        player.f.cp = player.f.cp.add(this.cpowergain().mul(diff))
+        player.f.casualtyTotal = player.f.casualtyTotal.max(player.f.casualty)
         player.f.resettime = player.f.resettime.add(diff)
         if (hasMilestone("f",7)) generatePoints("f",diff/100)
         if (hasMilestone("f",9)) generatePoints("f",diff)
+        if (hasMilestone("f",18)) {
+            player.f.casualty = player.f.casualty.add(tmp.f.clickables[12].gain.mul(diff/100))
+            player.f.casualtyTotal = player.f.casualtyTotal.add(tmp.f.clickables[12].gain.mul(diff/100))
+        }
+        if (hasFUpg(113)) {
+            player.f.casualty = player.f.casualty.add(getFUpgEff(113).mul(diff))
+            player.f.casualtyTotal = player.f.casualtyTotal.add(getFUpgEff(113).mul(diff))
+        }
         player.f.buyables[11] = player.f.buyables[11].add(tmp.f.buyables[12].gain.mul(diff))
         player.f.buyables[12] = player.f.buyables[12].add(tmp.f.buyables[13].gain.mul(diff))
         player.f.buyables[13] = player.f.buyables[13].add(tmp.f.buyables[14].gain.mul(diff))
@@ -3849,6 +4021,43 @@ addLayer("f", {
         player.f.buyables[21] = player.f.buyables[21].add(tmp.f.buyables[22].gain.mul(diff))
         player.f.buyables[22] = player.f.buyables[22].add(tmp.f.buyables[23].gain.mul(diff))
         player.f.buyables[23] = player.f.buyables[23].add(tmp.f.buyables[24].gain.mul(diff))
+        player.f.buyables[71] = player.f.buyables[71].add(tmp.f.buyables[72].gain.mul(diff))
+        player.f.buyables[72] = player.f.buyables[72].add(tmp.f.buyables[73].gain.mul(diff))
+        player.f.buyables[73] = player.f.buyables[73].add(tmp.f.buyables[74].gain.mul(diff))
+        player.f.buyables[74] = player.f.buyables[74].add(tmp.f.buyables[81].gain.mul(diff))
+        player.f.buyables[81] = player.f.buyables[81].add(tmp.f.buyables[82].gain.mul(diff))
+        player.f.buyables[82] = player.f.buyables[82].add(tmp.f.buyables[83].gain.mul(diff))
+        player.f.buyables[83] = player.f.buyables[83].add(tmp.f.buyables[84].gain.mul(diff))
+        for (i = 0; i < player.f.t.length; i++) {
+            let t = tmp.f.buyables[player.f.buy[i]].speed.mul(diff)
+            player.f.t[i] = Decimal.add(player.f.t[i], t)
+            if (player.f.t[i].gte(1)) {
+                player.f.times[i] = Decimal.floor(player.f.t[i]).mul(-1)
+                player.f.t[i] = Decimal.add(player.f.t[i], player.f.times[i])
+                player.f.times[i] = player.f.times[i].mul(-1)
+                if (tmp.f.buyables[player.f.buy[i]].on) layers.f.buyables[player.f.buy[i]-30].buyMax(tmp.f.buyables[player.f.buy[i]].bulk)
+            }
+        }
+        let st = tmp.f.buyables[64].speed.mul(diff)
+        player.f.sact = Decimal.add(player.f.sact, st)
+        if (player.f.sact.gte(1)) {
+            player.f.sactimes = Decimal.floor(player.f.sact).mul(-1)
+            player.f.sact = Decimal.add(player.f.sact, player.f.sactimes)
+            player.f.sactimes = player.f.sactimes.mul(-1)
+            if (tmp.f.buyables[64].on && tmp.f.clickables[13].effectnext.gte(100)) layers.f.clickables[13].onClick()
+        }
+        let m = tmp.f.buyables[91].effect.pow(diff)
+        if (tmp.f.buyables[92].effect.gte(0.1)) {
+        player.f.rt = Decimal.add(player.f.rt, diff)
+            if (player.f.rt.gte(tmp.f.buyables[92].effect) && hasMilestone("f",17)) {
+                player.f.rtimes = player.f.rt.mul(-1)
+                player.f.rt = Decimal.add(player.f.rt, player.f.rtimes)
+                player.f.rtimes = player.f.rtimes.mul(-1)
+                player.f.casuals = player.f.casuals.mul(tmp.f.buyables[91].effect).min("1.798e308")
+            }
+        } 
+        else player.f.casuals = player.f.casuals.mul(m.pow(tmp.f.buyables[92].effect.pow(-1))).min("1.798e308")
+        if (player.f.cmultauto) layers.f.clickables[14].onClick()
     },
     canReset() {return player.d.points.gte("e10450") && !hasMilestone("f",9)},
     gainMult() {
@@ -3869,9 +4078,14 @@ addLayer("f", {
         return exp
     },
     getResetGain() {
-        if (tmp["f"].baseAmount.lt(tmp["f"].requires)) return new Decimal(0)
-        let gain = tmp["f"].baseAmount.div(tmp["f"].requires).mul(10).log10().pow(tmp["f"].exponent).pow(this.gainExp()).mul(this.gainMult()).floor()
-        return gain
+        let f = tmp["f"].baseAmount
+        if (inChallenge("f",31)) f = new Decimal("e10450")
+        if (f.lt(tmp["f"].requires)) return new Decimal(0)
+        let gain = f.div(tmp["f"].requires).mul(10).log10().pow(tmp["f"].exponent).pow(this.gainExp()).mul(this.gainMult())
+        if (inChallenge("f",42)) gain = gain.pow(0.1)
+        if (inChallenge("f",51)) gain = Decimal.pow(10,gain.log10().pow(0.75))
+        if (hasChallenge("f",42)) gain = gain.pow(1.05)
+        return gain.floor()
     },
     getNextAt() {
         let next = layers.f.getResetGain().add(1)
@@ -3901,30 +4115,59 @@ addLayer("f", {
         let base = new Decimal(2)
         if (hasFUpg(53)) base = base.add(getFUpgEff(53))
         if (hasFUpg(82)) base = base.add(0.3)
+        if (inChallenge("f",12)) base = new Decimal(1)
+        return base
+    },
+    cmultpd() {
+        let base = new Decimal(5)
         return base
     },
     effect() {
         let eff = player.f.best.add(1)
         eff = eff.pow(eff.log10().add(1).pow(1.7)).pow(15)
         if (hasFUpg(15)) eff = eff.pow(getFUpgEff(15))
+        if (hasFUpg(124)) eff = eff.pow(getFUpgEff(124))
         if (eff.gte("e2e6")) eff = Decimal.pow(10,eff.div("e2e6").log10().pow(0.85)).mul("e2e6")
         return eff
     },
     effect2() {
         let eff = player.f.best.add(1)
         eff = eff.pow(eff.log10().add(1).pow(1.2)).pow(2)
+        if (hasFUpg(124)) eff = eff.pow(getFUpgEff(124))
         return eff
     },
     peffect() {
         let eff = player.f.p.add(1)
         eff = eff.pow(0.6)
         if (hasFUpg(62)) eff = eff.pow(getFUpgEff(62))
+        if (inChallenge("f",52)) eff = new Decimal(1)
+        return eff
+    },
+    cpeffect() {
+        let eff = player.f.cp.add(1)
+        eff = eff.pow(50)
+        if (hasChallenge("f",42)) eff = eff.pow(1.5)
+        if (hasChallenge("f",62)) eff = eff.pow(challengeEffect("f",62))
+        return eff
+    },
+    caseffect() {
+        let eff = player.f.casuals
+        eff = eff.log10().add(1).pow(30) 
+        if (eff.gte(1e30)) eff = eff.div(1e30).pow(0.2).mul(1e30)
         return eff
     },
     DimScaling() {
         let scale = new Decimal(10)
+        if (inChallenge("f",21)) scale = new Decimal(100)
+        if (inChallenge("f",41)) scale = new Decimal("1.8e308")
         if (hasFUpg(65)) scale = scale.sub(1)
         if (hasFUpg(73)) scale = scale.sub(1)
+        if (hasFUpg(111)) scale = scale.sub(1)
+        if (hasFUpg(84)) scale = scale.sub(1)
+        if (hasFUpg(115)) scale = scale.sub(1)
+        if (hasFUpg(122)) scale = scale.sub(1)
+        if (hasFUpg(134)) scale = scale.sub(0.5)
+        if (hasChallenge("f",41)) scale = scale.sub(1)
         return scale
     },
     effectDescription() {
@@ -4015,17 +4258,17 @@ addLayer("f", {
                 }
                 ],
                 "blank",
-                ["column", [["row", [["clickable", 11]]]]],
-                "buyables",
+                ["column", [["row", [["clickable", 11],["clickable", 13]]]]],
+                ["column", [["row", [["buyable", 11], ["buyable", 12], ["buyable", 13], ["buyable", 14]]]]],
+                ["column", [["row", [["buyable", 21], ["buyable", 22], ["buyable", 23], ["buyable", 24]]]]],
+                ["column", [["row", [["buyable", 31], ["buyable", 32], ["buyable", 33]]]]],
             ],
             unlocked() {return hasMilestone("f", 6)}
         },
         "Casualty": {
             content: [
                 "main-display",
-                ["raw-html", function() {if (hasMilestone("f",9)) return "You are gaining " + layerText("h2", "f", format(tmp.f.getResetGain)) + " fatality per second"}],
                 function() {if (!hasMilestone("f",9)) return "prestige-button"},
-                "resource-display",
                 ["display-text", 
                 function() {
                     if (!hasMilestone("f",9)) return "Fatality time: " + formatTime(player.f.resettime)
@@ -4034,13 +4277,198 @@ addLayer("f", {
                 "blank",
                 ["raw-html", function() {return "You have <h2 style='color:#3d2963;text-shadow:0px 0px 10px;'>" + formatWhole(player.f.casualty) +"</h2> casualty"}],
                 "blank",
-                ["column", [["row", [["clickable", 12]]]]],
+                function() {if (!hasMilestone("f",18)) return ["row", [["clickable", 12]]]},
+                ["display-text", 
+                function() {
+                    if (hasMilestone("f",18)) return "You are gaining <h2 style='color:#3d2963;text-shadow:0px 0px 10px;'>" + formatWhole(tmp.f.clickables[12].gain.div(100)) + "</h2> casualty per second."
+                }
+                ],
                 "blank",
-                
+                ["display-text", 
+                function() {
+                    return "You have made a total of " + formatWhole(player.f.casualtyTotal) + " casualty."
+                }
+                ],
+                ["display-text", 
+                function() {
+                    if (!hasMilestone("f",18)) return "Casualty time: " + formatTime(player.f.resettime)
+                }
+                ],
+                ["display-text", 
+                function() {
+                    let dis = "Best Casualty/min: "
+                    if (player.f.cpm.lt(10)) dis += format(player.f.cpm.mul(60)) + "/min"
+                    else dis += format(player.f.cpm) + "/s"
+                    if (!hasMilestone("f",18)) return dis
+                }
+                ],
                 ["raw-html", "<br><h2>Casualty Upgrades</h2><br>"],
-                ["column", [["row", [, ["upgrade", 82]]]]],
+                ["row", [["upgrade", 81], ["upgrade", 82], ["upgrade", 83], ["upgrade", 84], ["upgrade", 85]]],
+                ["row", [["upgrade", 91], ["upgrade", 92], ["upgrade", 93], ["upgrade", 94], ["upgrade", 95]]],
+                ["row", [["upgrade", 101], ["upgrade", 102], ["upgrade", 103], ["upgrade", 104], ["upgrade", 105]]],
+                ["row", [["upgrade", 111], ["upgrade", 112], ["upgrade", 113], ["upgrade", 114], ["upgrade", 115]]],
+                ["row", [["upgrade", 121], ["upgrade", 122], ["upgrade", 123], ["upgrade", 124], ["upgrade", 125]]],
+                ["row", [["upgrade", 131], ["upgrade", 132], ["upgrade", 133], ["upgrade", 134], ["upgrade", 135]]],
             ],
+            buttonStyle: {"border-color": "#3d2963"},
             unlocked() {return hasMilestone("f", 12)},
+        },
+        "Multiplier": {
+            content: [
+                ["raw-html", function() {return "You have <h2 style='color:#3d2963;text-shadow:0px 0px 10px;'>" + formatWhole(player.f.casualty) +"</h2> casualty"}],
+                "blank",
+                function() {if (!hasMilestone("f",18)) return ["row", [["clickable", 12]]]},
+                ["display-text", 
+                function() {
+                    if (hasMilestone("f",18)) return "You are gaining <h2 style='color:#3d2963;text-shadow:0px 0px 10px;'>" + formatWhole(tmp.f.clickables[12].gain.div(100)) + "</h2> casualty per second."
+                }
+                ],
+                "blank",
+                ["column", [["row", [["clickable", 14]]]]],
+                ["row", [["buyable", 34]]],
+            ],
+            buttonStyle: {"border-color": "#3d2963"},
+            unlocked() {return hasMilestone("f", 12)},
+        },
+        "Challenges": {
+            content: [
+                ["raw-html", function() {return "You have <h2 style='color:#3d2963;text-shadow:0px 0px 10px;'>" + formatWhole(player.f.casualty) +"</h2> casualty"}],
+                "blank",
+                function() {if (!hasMilestone("f",18)) return ["row", [["clickable", 12]]]},
+                ["display-text", 
+                function() {
+                    if (hasMilestone("f",18)) return "You are gaining <h2 style='color:#3d2963;text-shadow:0px 0px 10px;'>" + formatWhole(tmp.f.clickables[12].gain.div(100)) + "</h2> casualty per second."
+                }
+                ],
+                "blank",
+                ["display-text", 
+                function() {
+                    return "You have made a total of " + formatWhole(player.f.casualtyTotal) + " casualty."
+                }
+                ],
+                ["display-text", 
+                function() {
+                    return "Starting a challenge does a casualty reset. Completing a challenge gives " + formatWhole(tmp.f.buyables[34].effect) + " casualty"
+                }
+                ],
+                ["bar", "NextCC"],
+                "challenges"
+            ],
+            buttonStyle: {"border-color": "#3d2963"},
+            unlocked() {return hasMilestone("f", 12)},
+        },
+        "Autobuyers": {
+            content: [
+                ["raw-html", function() {return "You have <h2 style='color:#3d2963;text-shadow:0px 0px 10px;'>" + formatWhole(player.f.casualty) +"</h2> casualty"}],
+                "blank",
+                function() {if (!hasMilestone("f",18)) return ["row", [["clickable", 12]]]},
+                ["display-text", 
+                function() {
+                    if (hasMilestone("f",18)) return "You are gaining <h2 style='color:#3d2963;text-shadow:0px 0px 10px;'>" + formatWhole(tmp.f.clickables[12].gain.div(100)) + "</h2> casualty per second."
+                }
+                ],
+                "blank",
+                ["display-text", 
+                function() {
+                    return "You have made a total of " + formatWhole(player.f.casualtyTotal) + " casualty."
+                }
+                ],
+                ["row",[["column", [["buyable", 41],["clickable", 21]]],["column", [["buyable", 42],["clickable", 22]]],["column", [["buyable", 43],["clickable", 23]]],["column", [["buyable", 44],["clickable", 24]]]]],
+                ["row",[["column", [["buyable", 51],["clickable", 31]]],["column", [["buyable", 52],["clickable", 32]]],["column", [["buyable", 53],["clickable", 33]]],["column", [["buyable", 54],["clickable", 34]]]]],
+                ["row",[["column", [["buyable", 61],["clickable", 41]]],["column", [["buyable", 62],["clickable", 42]]],["column", [["buyable", 63],["clickable", 43]]],["column", [["buyable", 64],["clickable", 44]]]]],
+            ],
+            buttonStyle: {"border-color": "#3d2963"},
+            unlocked() {return hasChallenge("f", 11)},
+        },
+        "Casualty Dimensions": {
+            content: [
+                ["raw-html", function() {return "You have <h2 style='color:#3d2963;text-shadow:0px 0px 10px;'>" + formatWhole(player.f.casualty) +"</h2> casualty"}],
+                "blank",
+                function() {if (!hasMilestone("f",18)) return ["row", [["clickable", 12]]]},
+                ["display-text", 
+                function() {
+                    if (hasMilestone("f",18)) return "You are gaining <h2 style='color:#3d2963;text-shadow:0px 0px 10px;'>" + formatWhole(tmp.f.clickables[12].gain.div(100)) + "</h2> casualty per second."
+                }
+                ],
+                "blank",
+                ["display-text", 
+                function() {
+                    return "You have made a total of " + formatWhole(player.f.casualtyTotal) + " casualty."
+                }
+                ],
+                ["raw-html", function() {return "You have <h2 style='color:#3d2963;text-shadow:0px 0px 10px;'>" + format(player.f.cp) + "</h2> casualty power, which boosts Fatality Dimensions by <h2 style='color:#3d2963;text-shadow:0px 0px 10px;'>" + format(tmp.f.cpeffect) +"</h2>"}],
+                ["display-text", 
+                function() {
+                    return "You are gaining " + format(tmp.f.cpowergain) + " casualty power per second."
+                }
+                ],
+                ["display-text", 
+                function() {
+                    return "You are gaining " + format(tmp.f.buyables[72].gain) + " Fatality Dimension 1 per second."
+                }
+                ],
+                ["display-text", 
+                function() {
+                    if (tmp.f.buyables[73].unlocked) return "You are gaining " + format(tmp.f.buyables[73].gain) + " Fatality Dimension 2 per second."
+                }
+                ],
+                ["display-text", 
+                function() {
+                    if (tmp.f.buyables[74].unlocked) return "You are gaining " + format(tmp.f.buyables[74].gain) + " Fatality Dimension 3 per second."
+                }
+                ],
+                ["display-text", 
+                function() {
+                    if (tmp.f.buyables[81].unlocked) return "You are gaining " + format(tmp.f.buyables[81].gain) + " Fatality Dimension 4 per second."
+                }
+                ],
+                ["display-text", 
+                function() {
+                    if (tmp.f.buyables[82].unlocked) return "You are gaining " + format(tmp.f.buyables[82].gain) + " Fatality Dimension 5 per second."
+                }
+                ],
+                ["display-text", 
+                function() {
+                    if (tmp.f.buyables[83].unlocked) return "You are gaining " + format(tmp.f.buyables[83].gain) + " Fatality Dimension 6 per second."
+                }
+                ],
+                ["display-text", 
+                function() {
+                    if (tmp.f.buyables[84].unlocked) return "You are gaining " + format(tmp.f.buyables[84].gain) + " Fatality Dimension 7 per second."
+                }
+                ],
+                ["bar", "NextCD"],
+                "blank",
+                ["column", [["row", [["clickable", 51]]]]],
+                ["row", [["buyable", 71],["buyable", 72],["buyable", 73],["buyable", 74]]],
+                ["row", [["buyable", 81],["buyable", 82],["buyable", 83],["buyable", 84]]],
+                
+            ],
+            buttonStyle: {"border-color": "#3d2963"},
+            unlocked() {return hasMilestone("f", 16)},
+        },
+        "Casuals": {
+            content: [
+                ["raw-html", function() {return "You have <h2 style='color:#3d2963;text-shadow:0px 0px 10px;'>" + formatWhole(player.f.casualty) +"</h2> casualty"}],
+                "blank",
+                function() {if (!hasMilestone("f",18)) return ["row", [["clickable", 12]]]},
+                ["display-text", 
+                function() {
+                    if (hasMilestone("f",18)) return "You are gaining <h2 style='color:#3d2963;text-shadow:0px 0px 10px;'>" + formatWhole(tmp.f.clickables[12].gain.div(100)) + "</h2> casualty per second."
+                }
+                ],
+                "blank",
+                ["display-text", 
+                function() {
+                    return "You have made a total of " + formatWhole(player.f.casualtyTotal) + " casualty."
+                }
+                ],
+                ["raw-html", function() {return "You have <h2 style='color:#3d2963;text-shadow:0px 0px 10px;'>" + formatWhole(player.f.casuals) +"</h2> casuals, which boost Casualty Dimensions by <h2 style='color:#3d2963;text-shadow:0px 0px 10px;'>" + format(tmp.f.caseffect) +"</h2>"}],
+                ["row", [["buyable", 91], ["buyable", 92], ["buyable", 93]]],
+                ["row", [["clickable", 52]]]
+            ],
+            buttonStyle: {"border-color": "#3d2963"},
+            unlocked() {return hasMilestone("f", 17)},
         },
     },
     
@@ -4103,80 +4531,110 @@ addLayer("f", {
             requirementDescription() { return "1.337e1,337 total fatality" },
             effectDescription() { return "Unlock Multiplier Boosts and buy max Dimension Boosts." },
             done() { return player.f.total.gte("1.337e1337") },
-            unlocked() {return player.f.points.gte("e1000")}
+            unlocked() {return player.f.points.gte("e1000") || hasMilestone("f",11)}
         },
         12: {
             requirementDescription() { return "5.095e5,095 total fatality" },
-            effectDescription() { return "Unlock Casualty." },
+            effectDescription() { return "Unlock Casualty and buy max Multiplier Boosts." },
             done() { return player.f.total.gte("5.095e5095") },
-            unlocked() {return player.f.points.gte("e4000")}
+            unlocked() {return player.f.points.gte("e4000") || hasMilestone("f",12)}
+        },
+        13: {
+            requirementDescription() { return "50 total casualty" },
+            effectDescription() { return "Multiplier Boosts don't reset Dimension Boosts and unlock Auto Sacrifice." },
+            done() { return player.f.casualtyTotal.gte(50) },
+            unlocked() {return player.f.casualtyTotal.gte(1)}
+        },
+        14: {
+            requirementDescription() { return "10,000,000 total casualty" },
+            effectDescription() { return "Dimension Boosts and Sacrifice reset nothing." },
+            done() { return player.f.casualtyTotal.gte(1e7) },
+            unlocked() {return player.f.casualtyTotal.gte(1e6)}
+        },
+        15: {
+            requirementDescription() { return "1e12 total casualty" },
+            effectDescription() { return "Multiplier Boosts reset nothing." },
+            done() { return player.f.casualtyTotal.gte(1e12) },
+            unlocked() {return player.f.casualtyTotal.gte(1e9)}
+        },
+        16: {
+            requirementDescription() { return "1e14 total casualty" },
+            effectDescription() { return "Unlock Casualty Dimensions." },
+            done() { return player.f.casualtyTotal.gte(1e14) },
+            unlocked() {return player.f.casualtyTotal.gte(1e12)}
+        },
+        17: {
+            requirementDescription() { return "4.70e470 total casualty" },
+            effectDescription() { return "Unlock Casuals." },
+            done() { return player.f.casualtyTotal.gte("4.70e470") },
+            unlocked() {return player.f.casualtyTotal.gte(1e100)}
+        },
+        18: {
+            requirementDescription() { return "1e1000 total casualty" },
+            effectDescription() { return "Gain 1% of casualty gain per second, autobuy Casualty Multiplier, Casualty Multiplier costs nothing, and disable prestige." },
+            done() { return player.f.casualtyTotal.gte("e1000") },
+            toggles: [["f", "cmultauto"]],
+            unlocked() {return player.f.casualtyTotal.gte("e500")}
         },
     },
     clickables: {
-        rows: 1,
-        cols: 3,
+        rows: 5,
+        cols: 4,
         11: {
             display() {
                 return "<h2>Max All (M)</h2>"
             },
             canClick() {return true},
             onClick() {
-                layers.f.buyables[11].buyMax()
-                layers.f.buyables[12].buyMax()
-                layers.f.buyables[13].buyMax()
-                layers.f.buyables[14].buyMax()
-                layers.f.buyables[21].buyMax()
-                layers.f.buyables[22].buyMax()
-                if (getBuyableAmount("f",32).gte(1)) layers.f.buyables[23].buyMax()
-                if (getBuyableAmount("f",32).gte(2)) layers.f.buyables[24].buyMax()
-                layers.f.buyables[31].buyMax()
+                layers.f.buyables[11].buyMax(Decimal.tetrate(10,1.79e308))
+                layers.f.buyables[12].buyMax(Decimal.tetrate(10,1.79e308))
+                layers.f.buyables[13].buyMax(Decimal.tetrate(10,1.79e308))
+                layers.f.buyables[14].buyMax(Decimal.tetrate(10,1.79e308))
+                layers.f.buyables[21].buyMax(Decimal.tetrate(10,1.79e308))
+                layers.f.buyables[22].buyMax(Decimal.tetrate(10,1.79e308))
+                if (getBuyableAmount("f",32).gte(1)) layers.f.buyables[23].buyMax(Decimal.tetrate(10,1.79e308))
+                if (getBuyableAmount("f",32).gte(2)) layers.f.buyables[24].buyMax(Decimal.tetrate(10,1.79e308))
+                layers.f.buyables[31].buyMax(Decimal.tetrate(10,1.79e308))
             },
             style: {'height':'130px', 'width':'130px'},
         },
         12: {
-            gain() { //10^(666(log10(gain)+7.65)) = f
+            gain() { 
                 let f = player.f.points.add(1)
-                f = Decimal.pow(10,f.log10().div(888).sub(7)).max(1)
+                f = Decimal.pow(10,f.log10().div(5095).sub(1)).max(1).mul(this.gainmult())
                 return f.floor()
             },
             next() {
                 let gain = this.gain().add(1)
-                let next = Decimal.pow(10,gain.log10().add(7).mul(888))
+                let next = Decimal.pow(10,gain.div(this.gainmult()).log10().add(1).mul(5095))
                 return next
+            },
+            gainmult() {
+                let mult = tmp.f.buyables[34].effect 
+                if (hasFUpg(94)) mult = mult.mul(getFUpgEff(94))
+                if (hasFUpg(104)) mult = mult.mul(getFUpgEff(104))
+                if (hasFUpg(114)) mult = mult.mul(getFUpgEff(114))
+                if (hasFUpg(85)) mult = mult.mul(getFUpgEff(85))
+                return mult
             },
             display() {
                 let dis = "Reset Dimensions for +<h3>" + formatWhole(this.gain()) + "</h3> casualty<br>"
+                if (this.gain().lt(1000)) {
                 if (player.f.points.gte("5.095e5095")) dis += "Next at " + format(this.next()) + " fatality"
-                else dis += "Req: 5.100e5,100 fatality"
+                else dis += "Req: 5.095e5,095 fatality"
+                }
+                if (this.gain().div(player.f.resettime).gte(10)) dis += "<br>" + format(this.gain().div(player.f.resettime)) + "/s"
+                else dis += "<br>" + format(this.gain().div(player.f.resettime).mul(60)) + "/min"
                 return dis
             },
             canClick() {
-                return player.f.points.gte("5.095e5095")
+                return player.f.points.gte("5.095e5095") && !hasMilestone("f",18)
             },
             onClick() {
-                player.f.p = new Decimal(0)
-                player.f.points = new Decimal(0)
-                player.f.d1 = new Decimal(0)
-                player.f.d2 = new Decimal(0)
-                player.f.d3 = new Decimal(0)
-                player.f.d4 = new Decimal(0)
-                player.f.d5 = new Decimal(0)
-                player.f.d6 = new Decimal(0)
-                player.f.d7 = new Decimal(0)
-                player.f.d8 = new Decimal(0)
-                player.f.mult = new Decimal(0)
-                player.f.buyables[11] = new Decimal(0)
-                player.f.buyables[12] = new Decimal(0)
-                player.f.buyables[13] = new Decimal(0)
-                player.f.buyables[14] = new Decimal(0)
-                player.f.buyables[21] = new Decimal(0)
-                player.f.buyables[22] = new Decimal(0)
-                player.f.buyables[23] = new Decimal(0)
-                player.f.buyables[24] = new Decimal(0)
-                player.f.buyables[31] = new Decimal(0)
-                player.f.buyables[32] = new Decimal(0)
-                player.f.buyables[33] = new Decimal(0)
-                player.f.casualty = player.f.casualty.add(1)
+                player.f.casualty = player.f.casualty.add(this.gain())
+                player.f.casualtyTotal = player.f.casualtyTotal.add(this.gain())
+                player.f.cpm = player.f.cpm.max(this.gain().div(player.f.resettime))
+                startCChallenge(0)
             },
             style: {'height':'130px', 'width':'175px', 'font-size':'13px',
             'background-color'() {
@@ -4187,9 +4645,271 @@ addLayer("f", {
             }
         }
         },
+        14: {
+            display() {
+                return "<h2>Buy Max</h2>"
+            },
+            canClick() {return true},
+            onClick() {
+                layers.f.buyables[34].buyMax()
+            },
+            style: {'height':'130px', 'width':'130px',
+                "background-color"() {
+                    let color = "#3d2963"
+                    return color
+                }
+            },
+        },
+        13: {
+            display() {
+                let dis = "<h2>Sacrifice</h2><br>Multiply Fatality Dimension 8 by " + format(this.effectnext().max(1)) + "."
+                dis += "<br>Multiplier: " + format(this.effect()) + "x"
+                return dis
+            },
+            effect() {
+                let eff = player.f.sac.add(1).pow(0.025)
+                if (hasChallenge("f",32)) eff = eff.pow(3)
+                return eff
+            },
+            effectnext() {
+                let eff = player.f.buyables[11].pow(0.025)
+                if (hasChallenge("f",32)) eff = eff.pow(3)
+                return eff.div(this.effect())
+            },
+            canClick() {return this.effectnext().gte(1) && player.f.buyables[24].gte(1)},
+            onClick() {
+                player.f.sac = player.f.sac.add(player.f.buyables[11])
+                if (!hasMilestone("f",14)) {
+                player.f.buyables[11] = new Decimal(0)
+                player.f.buyables[12] = new Decimal(0)
+                player.f.buyables[13] = new Decimal(0)
+                player.f.buyables[14] = new Decimal(0)
+                player.f.buyables[21] = new Decimal(0)
+                player.f.buyables[22] = new Decimal(0)
+                player.f.buyables[23] = new Decimal(0)
+                }
+            },
+            unlocked() {return hasFUpg(83)},
+            style: {'height':'130px', 'width':'130px'},
+        },
+        21: {
+            display() {
+                if (player.f.d1auto) return "<h2>ON</h2>"
+                else return "<h2>OFF</h2>"
+            },
+            canClick() {return true},
+            onClick() {
+                if (player.f.d1auto) player.f.d1auto = false 
+                else player.f.d1auto = true
+            },
+            unlocked() {
+                return hasChallenge("f",11)
+            },
+            style: {'height':'50px', 'width':'50px', 'background-color':"#3d2963"},
+        },
+        22: {
+            display() {
+                if (player.f.d2auto) return "<h2>ON</h2>"
+                else return "<h2>OFF</h2>"
+            },
+            canClick() {return true},
+            onClick() {
+                if (player.f.d2auto) player.f.d2auto = false 
+                else player.f.d2auto = true
+            },
+            unlocked() {
+                return hasChallenge("f",11)
+            },
+            style: {'height':'50px', 'width':'50px', 'background-color':"#3d2963"},
+        },
+        23: {
+            display() {
+                if (player.f.d3auto) return "<h2>ON</h2>"
+                else return "<h2>OFF</h2>"
+            },
+            canClick() {return true},
+            onClick() {
+                if (player.f.d3auto) player.f.d3auto = false 
+                else player.f.d3auto = true
+            },
+            unlocked() {
+                return hasChallenge("f",11)
+            },
+            style: {'height':'50px', 'width':'50px', 'background-color':"#3d2963"},
+        },
+        24: {
+            display() {
+                if (player.f.d4auto) return "<h2>ON</h2>"
+                else return "<h2>OFF</h2>"
+            },
+            canClick() {return true},
+            onClick() {
+                if (player.f.d4auto) player.f.d4auto = false 
+                else player.f.d4auto = true
+            },
+            unlocked() {
+                return hasChallenge("f",12)
+            },
+            style: {'height':'50px', 'width':'50px', 'background-color':"#3d2963"},
+        },
+        31: {
+            display() {
+                if (player.f.d5auto) return "<h2>ON</h2>"
+                else return "<h2>OFF</h2>"
+            },
+            canClick() {return true},
+            onClick() {
+                if (player.f.d5auto) player.f.d5auto = false 
+                else player.f.d5auto = true
+            },
+            unlocked() {
+                return hasChallenge("f",12)
+            },
+            style: {'height':'50px', 'width':'50px', 'background-color':"#3d2963"},
+        },
+        32: {
+            display() {
+                if (player.f.d6auto) return "<h2>ON</h2>"
+                else return "<h2>OFF</h2>"
+            },
+            canClick() {return true},
+            onClick() {
+                if (player.f.d6auto) player.f.d6auto = false 
+                else player.f.d6auto = true
+            },
+            unlocked() {
+                return hasChallenge("f",12)
+            },
+            style: {'height':'50px', 'width':'50px', 'background-color':"#3d2963"},
+        },
+        33: {
+            display() {
+                if (player.f.d7auto) return "<h2>ON</h2>"
+                else return "<h2>OFF</h2>"
+            },
+            canClick() {return true},
+            onClick() {
+                if (player.f.d7auto) player.f.d7auto = false 
+                else player.f.d7auto = true
+            },
+            unlocked() {
+                return hasChallenge("f",21)
+            },
+            style: {'height':'50px', 'width':'50px', 'background-color':"#3d2963"},
+        },
+        34: {
+            display() {
+                if (player.f.d8auto) return "<h2>ON</h2>"
+                else return "<h2>OFF</h2>"
+            },
+            canClick() {return true},
+            onClick() {
+                if (player.f.d8auto) player.f.d8auto = false 
+                else player.f.d8auto = true
+            },
+            unlocked() {
+                return hasChallenge("f",21)
+            },
+            style: {'height':'50px', 'width':'50px', 'background-color':"#3d2963"},
+        },
+        41: {
+            display() {
+                if (player.f.multauto) return "<h2>ON</h2>"
+                else return "<h2>OFF</h2>"
+            },
+            canClick() {return true},
+            onClick() {
+                if (player.f.multauto) player.f.multauto = false 
+                else player.f.multauto = true
+            },
+            unlocked() {
+                return hasChallenge("f",21)
+            },
+            style: {'height':'50px', 'width':'50px', 'background-color':"#3d2963"},
+        },
+        42: {
+            display() {
+                if (player.f.boostauto) return "<h2>ON</h2>"
+                else return "<h2>OFF</h2>"
+            },
+            canClick() {return true},
+            onClick() {
+                if (player.f.boostauto) player.f.boostauto = false 
+                else player.f.boostauto = true
+            },
+            unlocked() {
+                return hasChallenge("f",22)
+            },
+            style: {'height':'50px', 'width':'50px', 'background-color':"#3d2963"},
+        },
+        43: {
+            display() {
+                if (player.f.multbauto) return "<h2>ON</h2>"
+                else return "<h2>OFF</h2>"
+            },
+            canClick() {return true},
+            onClick() {
+                if (player.f.multbauto) player.f.multbauto = false 
+                else player.f.multbauto = true
+            },
+            unlocked() {
+                return hasChallenge("f",22)
+            },
+            style: {'height':'50px', 'width':'50px', 'background-color':"#3d2963"},
+        },
+        44: {
+            display() {
+                if (player.f.sacauto) return "<h2>ON</h2>"
+                else return "<h2>OFF</h2>"
+            },
+            canClick() {return true},
+            onClick() {
+                if (player.f.sacauto) player.f.sacauto = false 
+                else player.f.sacauto = true
+            },
+            unlocked() {
+                return hasMilestone("f",13)
+            },
+            style: {'height':'50px', 'width':'50px', 'background-color':"#3d2963"},
+        },
+        51: {
+            display() {
+                return "<h2>Max All (M)</h2>"
+            },
+            canClick() {return true},
+            onClick() {
+                layers.f.buyables[71].buyMax(Decimal.tetrate(10,1.79e308))
+                layers.f.buyables[72].buyMax(Decimal.tetrate(10,1.79e308))
+                if (tmp.f.buyables[73].unlocked) layers.f.buyables[73].buyMax(Decimal.tetrate(10,1.79e308))
+                if (tmp.f.buyables[74].unlocked) layers.f.buyables[74].buyMax(Decimal.tetrate(10,1.79e308))
+                if (tmp.f.buyables[81].unlocked) layers.f.buyables[81].buyMax(Decimal.tetrate(10,1.79e308))
+                if (tmp.f.buyables[82].unlocked) layers.f.buyables[82].buyMax(Decimal.tetrate(10,1.79e308))
+                if (tmp.f.buyables[83].unlocked) layers.f.buyables[83].buyMax(Decimal.tetrate(10,1.79e308))
+                if (tmp.f.buyables[84].unlocked) layers.f.buyables[84].buyMax(Decimal.tetrate(10,1.79e308))
+            },
+            style: {'height':'130px', 'width':'130px', 'background-color':"#3d2963"},
+        },
+        52: {
+            display() {
+                let dis = "Reset casuals for a Replicated Boost.<br>"
+                dis += "Replicated Boosts: " + formatWhole(player.f.cboosts) + "/" + formatWhole(tmp.f.buyables[93].effect)
+                return dis
+            },
+            canClick() {return player.f.casuals.gte("1.798e308") && player.f.cboosts.lt(tmp.f.buyables[93].effect) },
+            onClick() {
+                player.f.casuals = new Decimal(1)
+                player.f.cboosts = player.f.cboosts.add(1)
+            },
+            style: {'height':'130px', 'width':'175px', 'font-size':'13px',
+            'background-color'() {
+                let color = "#bf8f8f"
+                if (tmp.f.clickables[52].canClick) color = "#3d2963"
+                return color
+            }}
+        },
     },
     buyables: {
-		rows: 3,
+		rows: 9,
         cols: 4,
         11: {
 			title: "Fatality Dimension 1",
@@ -4221,7 +4941,11 @@ addLayer("f", {
 			effect() { // Effects of owning x of the items, x is a decimal
                 let x = this.bought()
                 let base = this.base()
-                return Decimal.pow(base, x).mul(tmp.f.fDimMult);
+                let eff = Decimal.pow(base, x).mul(tmp.f.fDimMult)
+                if (hasFUpg(91) && !inChallenge("f",61) && !inChallenge("f",62)) eff = eff.mul(getFUpgEff(91))
+                if (hasFUpg(34) && !inChallenge("f",61) && !inChallenge("f",62)) eff = eff.mul(getFUpgEff(34))
+                if (inChallenge("f", 11)) eff = eff.div("1.8e308")
+                return eff;
             },
 			display() { // Everything else displayed in the buyable button after the title
                 return "Produces fatality power.\n\
@@ -4240,14 +4964,14 @@ addLayer("f", {
                     player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
                 }
             },
-            buyMax() { //log10(cost/1e1001)/log10(Inc) = (x^2+x)/2+3x
+            buyMax(b) { //log10(cost/1e1001)/log10(Inc) = (x^2+x)/2+3x
                 let cost = this.cost()
                 let f = player.f.points
                 let z = this.multInc().log10()
                 let s = f.div("e1001").log10()
                 let max = f.div(1e11).log10().div(3).ceil().min(330)
                 if (max.gte(330)) max = max.add(s.mul(2).add(3).mul(4).mul(z).add(z.pow(2)).add(36).pow(0.5).sub(z).sub(6).div(z.mul(2))).ceil()
-                let diff = max.sub(player.f.d1)
+                let diff = max.sub(player.f.d1).min(b)
                 cost = Decimal.sub(1,Decimal.pow(1e3,max)).div(-999).mul(1e11)
                 if (this.canAfford()) {
                     if (!hasMilestone("f",10)) player.f.points = player.f.points.sub(cost).max(0)	
@@ -4287,7 +5011,9 @@ addLayer("f", {
 			effect() { // Effects of owning x of the items, x is a decimal
                 let x = this.bought()
                 let base = this.base()
-                return Decimal.pow(base, x).mul(tmp.f.fDimMult);
+                let eff = Decimal.pow(base, x).mul(tmp.f.fDimMult)
+                if (hasFUpg(92) && !inChallenge("f",61) && !inChallenge("f",62)) eff = eff.mul(getFUpgEff(92))
+                return eff;
             },
 			display() { // Everything else displayed in the buyable button after the title
                 return "Produces Fatality Dimension 1.\n\
@@ -4306,14 +5032,14 @@ addLayer("f", {
                     player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
                 }
             },
-            buyMax() { 
+            buyMax(b) { 
                 let cost = this.cost()
                 let f = player.f.points
                 let z = this.multInc().log10()
                 let s = f.div("e1001").log10()
                 let max = f.div(1e14).log10().div(4).ceil().min(247)
                 if (max.gte(247)) max = max.add(s.mul(2).add(4).mul(4).mul(z).add(z.pow(2)).add(64).pow(0.5).sub(z).sub(8).div(z.mul(2))).ceil()
-                let diff = max.sub(player.f.d2)
+                let diff = max.sub(player.f.d2).min(b)
                 cost = Decimal.sub(1,Decimal.pow(1e4,max)).div(-9999).mul(1e14)
                 if (this.canAfford()) {
                     if (!hasMilestone("f",10)) player.f.points = player.f.points.sub(cost).max(0)	
@@ -4353,7 +5079,9 @@ addLayer("f", {
 			effect() { // Effects of owning x of the items, x is a decimal
                 let x = this.bought()
                 let base = this.base()
-                return Decimal.pow(base, x).mul(tmp.f.fDimMult);
+                let eff = Decimal.pow(base, x).mul(tmp.f.fDimMult)
+                if (hasFUpg(101) && !inChallenge("f",61) && !inChallenge("f",62)) eff = eff.mul(getFUpgEff(101))
+                return eff;
             },
 			display() { // Everything else displayed in the buyable button after the title
                 return "Produces Fatality Dimension 2.\n\
@@ -4372,14 +5100,14 @@ addLayer("f", {
                     player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
                 }
             },
-            buyMax() { 
+            buyMax(b) { 
                 let cost = this.cost()
                 let f = player.f.points
                 let z = this.multInc().log10()
                 let s = f.div("e1000").log10()
                 let max = f.div(1e15).log10().div(5).ceil().min(197)
                 if (max.gte(197)) max = max.add(s.mul(2).add(5).mul(4).mul(z).add(z.pow(2)).add(100).pow(0.5).sub(z).sub(10).div(z.mul(2))).ceil()
-                let diff = max.sub(player.f.d3)
+                let diff = max.sub(player.f.d3).min(b)
                 cost = Decimal.sub(1,Decimal.pow(1e5,max)).div(-99999).mul(1e15)
                 if (this.canAfford()) {
                     if (!hasMilestone("f",10)) player.f.points = player.f.points.sub(cost).max(0)	
@@ -4419,7 +5147,9 @@ addLayer("f", {
 			effect() { // Effects of owning x of the items, x is a decimal
                 let x = this.bought()
                 let base = this.base()
-                return Decimal.pow(base, x).mul(tmp.f.fDimMult);
+                let eff = Decimal.pow(base, x).mul(tmp.f.fDimMult)
+                if (hasFUpg(102) && !inChallenge("f",61) && !inChallenge("f",62)) eff = eff.mul(getFUpgEff(102))
+                return eff;
             },
 			display() { // Everything else displayed in the buyable button after the title
                 return "Produces Fatality Dimension 3.\n\
@@ -4438,14 +5168,14 @@ addLayer("f", {
                     player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
                 }
             },
-            buyMax() { 
+            buyMax(b) { 
                 let cost = this.cost()
                 let f = player.f.points
                 let z = this.multInc().log10()
                 let s = f.div("e1002").log10()
                 let max = f.div(1e18).log10().div(6).ceil().min(164)
                 if (max.gte(164)) max = max.add(s.mul(2).add(6).mul(4).mul(z).add(z.pow(2)).add(144).pow(0.5).sub(z).sub(12).div(z.mul(2))).ceil()
-                let diff = max.sub(player.f.d4)
+                let diff = max.sub(player.f.d4).min(b)
                 cost = Decimal.sub(1,Decimal.pow(1e6,max)).div(-999999).mul(1e18)
                 if (this.canAfford()) { 
                     if (!hasMilestone("f",10)) player.f.points = player.f.points.sub(cost).max(0)	
@@ -4485,7 +5215,9 @@ addLayer("f", {
 			effect() { // Effects of owning x of the items, x is a decimal
                 let x = this.bought()
                 let base = this.base()
-                return Decimal.pow(base, x).mul(tmp.f.fDimMult);
+                let eff = Decimal.pow(base, x).mul(tmp.f.fDimMult)
+                if (hasFUpg(102) && !inChallenge("f",61) && !inChallenge("f",62)) eff = eff.mul(getFUpgEff(102))
+                return eff;
             },
 			display() { // Everything else displayed in the buyable button after the title
                 return "Produces Fatality Dimension 4.\n\
@@ -4504,14 +5236,14 @@ addLayer("f", {
                     player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
                 }
             },
-            buyMax() { 
+            buyMax(b) { 
                 let cost = this.cost()
                 let f = player.f.points
                 let z = this.multInc().log10()
                 let s = f.div("e1005").log10()
                 let max = f.div(1e21).log10().div(8).ceil().min(123)
                 if (max.gte(123)) max = max.add(s.mul(2).add(8).mul(4).mul(z).add(z.pow(2)).add(256).pow(0.5).sub(z).sub(16).div(z.mul(2))).ceil()
-                let diff = max.sub(player.f.d5)
+                let diff = max.sub(player.f.d5).min(b)
                 cost = Decimal.sub(1,Decimal.pow(1e8,max)).div(-99999999).mul(1e21)
                 if (this.canAfford()) {
                     if (!hasMilestone("f",10)) player.f.points = player.f.points.sub(cost).max(0)	
@@ -4551,7 +5283,9 @@ addLayer("f", {
 			effect() { // Effects of owning x of the items, x is a decimal
                 let x = this.bought()
                 let base = this.base()
-                return Decimal.pow(base, x).mul(tmp.f.fDimMult);
+                let eff = Decimal.pow(base, x).mul(tmp.f.fDimMult)
+                if (hasFUpg(101) && !inChallenge("f",61) && !inChallenge("f",62)) eff = eff.mul(getFUpgEff(101))
+                return eff;
             },
 			display() { // Everything else displayed in the buyable button after the title
                 return "Produces Fatality Dimension 5.\n\
@@ -4570,14 +5304,14 @@ addLayer("f", {
                     player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
                 }
             },
-            buyMax() { 
+            buyMax(b) { 
                 let cost = this.cost()
                 let f = player.f.points
                 let z = this.multInc().log10()
                 let s = f.div("e1006").log10()
                 let max = f.div(1e26).log10().div(10).ceil().min(98)
                 if (max.gte(98)) max = max.add(s.mul(2).add(10).mul(4).mul(z).add(z.pow(2)).add(400).pow(0.5).sub(z).sub(20).div(z.mul(2))).ceil()
-                let diff = max.sub(player.f.d6)
+                let diff = max.sub(player.f.d6).min(b)
                 cost = Decimal.sub(1,Decimal.pow(1e10,max)).div(-9999999999).mul(1e26)
                 if (this.canAfford()) {
                     if (!hasMilestone("f",10)) player.f.points = player.f.points.sub(cost).max(0)	
@@ -4617,7 +5351,9 @@ addLayer("f", {
 			effect() { // Effects of owning x of the items, x is a decimal
                 let x = this.bought()
                 let base = this.base()
-                return Decimal.pow(base, x).mul(tmp.f.fDimMult);
+                let eff = Decimal.pow(base, x).mul(tmp.f.fDimMult)
+                if (hasFUpg(92) && !inChallenge("f",61) && !inChallenge("f",62)) eff = eff.mul(getFUpgEff(92))
+                return eff;
             },
 			display() { // Everything else displayed in the buyable button after the title
                 return "Produces Fatality Dimension 6.\n\
@@ -4627,7 +5363,7 @@ addLayer("f", {
             },
             unlocked() { return player.f.buyables[32].gte(1) }, 
             canAfford() {
-                    return player.f.points.gte(tmp[this.layer].buyables[this.id].cost)},
+                    return player.f.points.gte(tmp[this.layer].buyables[this.id].cost) && !inChallenge("f",22)},
             buy() { 
                 cost = tmp[this.layer].buyables[this.id].cost
                 if (this.canAfford()) {
@@ -4636,14 +5372,14 @@ addLayer("f", {
                     player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
                 }
             },
-            buyMax() { 
+            buyMax(b) { 
                 let cost = this.cost()
                 let f = player.f.points
                 let z = this.multInc().log10()
                 let s = f.div("e1011").log10()
                 let max = f.div("e435").log10().div(12).ceil().min(48)
                 if (max.gte(48)) max = max.add(s.mul(2).add(12).mul(4).mul(z).add(z.pow(2)).add(576).pow(0.5).sub(z).sub(24).div(z.mul(2))).ceil()
-                let diff = max.sub(player.f.d7)
+                let diff = max.sub(player.f.d7).min(b)
                 cost = Decimal.sub(1,Decimal.pow(1e12,max)).div(-1e12).mul("e435")
                 if (this.canAfford()) {
                     if (!hasMilestone("f",10)) player.f.points = player.f.points.sub(cost).max(0)	
@@ -4683,7 +5419,10 @@ addLayer("f", {
 			effect() { // Effects of owning x of the items, x is a decimal
                 let x = this.bought()
                 let base = this.base()
-                return Decimal.pow(base, x).mul(tmp.f.fDimMult);
+                let eff = Decimal.pow(base, x).mul(tmp.f.fDimMult)
+                if (hasFUpg(91) && !inChallenge("f",61) && !inChallenge("f",62)) eff = eff.mul(getFUpgEff(91))
+                if (!inChallenge("f",61)) eff = eff.mul(tmp.f.clickables[13].effect)
+                return eff;
             },
 			display() { // Everything else displayed in the buyable button after the title
                 return "Produces Fatality Dimension 7.\n\
@@ -4693,7 +5432,7 @@ addLayer("f", {
             },
             unlocked() { return player.f.buyables[32].gte(2) }, 
             canAfford() {
-                    return player.f.points.gte(tmp[this.layer].buyables[this.id].cost)},
+                    return player.f.points.gte(tmp[this.layer].buyables[this.id].cost) && !inChallenge("f",22)},
             buy() { 
                 cost = tmp[this.layer].buyables[this.id].cost
                 if (this.canAfford()) {
@@ -4702,14 +5441,14 @@ addLayer("f", {
                     player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
                 }
             },
-            buyMax() { 
+            buyMax(b) { 
                 let cost = this.cost()
                 let f = player.f.points
                 let z = this.multInc().log10()
                 let s = f.div("e1010").log10()
                 let max = f.div("e560").log10().div(15).ceil().min(30)
                 if (max.gte(30)) max = max.add(s.mul(2).add(15).mul(4).mul(z).add(z.pow(2)).add(900).pow(0.5).sub(z).sub(30).div(z.mul(2))).ceil()
-                let diff = max.sub(player.f.d8)
+                let diff = max.sub(player.f.d8).min(b)
                 cost = Decimal.sub(1,Decimal.pow(1e15,max)).div(-1e15).mul("e560")
                 if (this.canAfford()) {
                     if (!hasMilestone("f",10)) player.f.points = player.f.points.sub(cost).max(0)	
@@ -4771,14 +5510,14 @@ addLayer("f", {
                     player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
                 }
             },
-            buyMax() { 
+            buyMax(b) { 
                 let cost = this.cost()
                 let f = player.f.points
                 let z = this.multInc().log10()
                 let s = f.div("e1000").log10()
                 let max = player.f.points.div(1e45).log10().ceil().min(955)
                 if (max.gte(955)) max = max.add(s.mul(2).add(1).mul(4).mul(z).add(z.pow(2)).add(4).pow(0.5).sub(z).sub(2).div(z.mul(2))).ceil()
-                let diff = max.sub(player.f.mult)
+                let diff = max.sub(player.f.mult).min(b)
                 cost = Decimal.sub(1,Decimal.pow(10,diff)).div(-9).mul(cost)
                 if (this.canAfford()) {
                     if (!hasMilestone("f",10)) player.f.points = player.f.points.sub(cost).max(0)	
@@ -4804,12 +5543,18 @@ addLayer("f", {
                 let scale = new Decimal(4)
                 if (hasFUpg(65)) scale = scale.sub(1)
                 if (hasFUpg(74)) scale = scale.sub(0.5)
+                if (hasFUpg(84)) scale = scale.sub(0.5)
+                if (hasFUpg(122)) scale = scale.sub(0.5)
+                if (hasFUpg(134)) scale = scale.sub(0.5)
                 return scale
             },
             base() { 
                 let base = new Decimal(10)
                 if (hasFUpg(72)) base = base.mul(2)
                 if (hasFUpg(75)) base = base.mul(5)
+                if (hasFUpg(93)) base = base.mul(5)
+                if (hasFUpg(122)) base = base.mul(getFUpgEff(122))
+                if (hasChallenge("f",61)) base = base.mul(challengeEffect("f",61))
                 return base
             },
             total() {
@@ -4835,15 +5580,17 @@ addLayer("f", {
                 let req = getBuyableAmount("f", 22)
                 if (this.total().gte(2)) req = getBuyableAmount("f", 24)
                 else if (this.total().gte(1)) req = getBuyableAmount("f", 23)
-                return req.gte(tmp[this.layer].buyables[this.id].cost)},
+                return req.gte(tmp[this.layer].buyables[this.id].cost) && !inChallenge("f",22)},
             buy() { //x=(cost-10)/s+2
                 let d6 = getBuyableAmount("f", 24)
                 let max = d6.sub(10).div(this.scale()).add(3).floor()
                 let diff = max.sub(this.total()).max(1)
                 if (this.total().lt(2)) diff = new Decimal(1)
                 if (this.canAfford()) {
+                    if (!hasMilestone("f",14)) {
                     player.f.p = new Decimal(0)
                     player.f.points = new Decimal(0)
+                    player.f.sac = new Decimal(0)
                     player.f.d1 = new Decimal(0)
                     player.f.d2 = new Decimal(0)
                     player.f.d3 = new Decimal(0)
@@ -4862,8 +5609,41 @@ addLayer("f", {
                     player.f.buyables[23] = new Decimal(0)
                     player.f.buyables[24] = new Decimal(0)
                     player.f.buyables[31] = new Decimal(0)
+                    }
                     if (hasMilestone("f",11)) player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(diff)
                     else player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
+                }
+            },
+            buyMax(b) { //x=(cost-10)/s+2
+                let d6 = getBuyableAmount("f", 24)
+                let max = d6.sub(10).div(this.scale()).add(3).floor().min(b)
+                let diff = max.sub(this.total()).max(1)
+                if (this.total().lt(2)) diff = new Decimal(1)
+                if (this.canAfford()) {
+                    if (!hasMilestone("f",14)) {
+                        player.f.p = new Decimal(0)
+                        player.f.points = new Decimal(0)
+                        player.f.sac = new Decimal(0)
+                        player.f.d1 = new Decimal(0)
+                        player.f.d2 = new Decimal(0)
+                        player.f.d3 = new Decimal(0)
+                        player.f.d4 = new Decimal(0)
+                        player.f.d5 = new Decimal(0)
+                        player.f.d6 = new Decimal(0)
+                        player.f.d7 = new Decimal(0)
+                        player.f.d8 = new Decimal(0)
+                        player.f.mult = new Decimal(0)
+                        player.f.buyables[11] = new Decimal(0)
+                        player.f.buyables[12] = new Decimal(0)
+                        player.f.buyables[13] = new Decimal(0)
+                        player.f.buyables[14] = new Decimal(0)
+                        player.f.buyables[21] = new Decimal(0)
+                        player.f.buyables[22] = new Decimal(0)
+                        player.f.buyables[23] = new Decimal(0)
+                        player.f.buyables[24] = new Decimal(0)
+                        player.f.buyables[31] = new Decimal(0)
+                        }
+                    player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(diff)
                 }
             },
             style: {'height':'180px', 'width':'180px'},
@@ -4871,16 +5651,43 @@ addLayer("f", {
         33: {
 			title() {
                 let dim = "Fatality Multiplier Boost"
+                if (this.total().gte(100)) dim = "Distant Fatality Multiplier Boost"
                 return dim
             },
 			cost() { // cost for buying xth buyable, can be an object if there are multiple currencies
                 let cost = new Decimal(45)
-                cost = cost.add(this.total().mul(7))
+                let distant = this.distantStart()
+                if (inChallenge("f",22)) cost = cost = new Decimal(100)
+                cost = cost.add(this.total().mul(this.scale()))
+                if (this.total().gte(distant)) cost = cost.add(this.total().sub(distant).pow(2).add(this.total()).sub(distant).div(10))
                 return cost.floor()
+            },
+            scale() {
+                let scale = new Decimal(7)
+                if (inChallenge("f",22)) scale = new Decimal(11)
+                if (hasFUpg(111)) scale = scale.sub(1)
+                if (hasFUpg(115)) scale = scale.sub(1)
+                return scale
+            },
+            distantStart() {
+                let distant = new Decimal(100)
+                if (hasFUpg(133)) distant = distant.add(20)
+                return distant
+            },
+            distantScale() {
+                let distant = new Decimal(10)
+                return distant
             },
             base() { 
                 let base = new Decimal(1.032)
                 if (hasFUpg(75)) base = base.pow(1.125)
+                if (hasFUpg(112)) base = base.pow(1.3)
+                if (hasFUpg(105)) base = base.pow(getFUpgEff(105))
+                if (hasFUpg(121)) base = base.pow(1.35)
+                if (hasFUpg(132)) base = base.pow(tmp.f.upgrades[132].effect2)
+                if (hasChallenge("f",51)) base = base.pow(1.2)
+                if (inChallenge("f",22)) base = base.pow(1.5)
+                if (inChallenge("f",32)) base = new Decimal(1)
                 return base
             },
             total() {
@@ -4888,26 +5695,42 @@ addLayer("f", {
                 return total
             },
 			effect() { // Effects of owning x of the items, x is a decimal
-                let x = this.total()
+                let x = this.total().add(player.f.cboosts.mul(5))
                 let base = this.base()
                 return Decimal.pow(base, x);
             },
             display() { // Everything else displayed in the buyable button after the title
                 let dim = "Reset Dimension Boosts, and multiply Fatality Dimension Multiplier base by "
+                let req = "8"
+                if (inChallenge("f",22)) req = "6"
                 return dim + format(this.base()) +".\n\
-                Requires: " + formatWhole(tmp[this.layer].buyables[this.id].cost)+" Fatality Dimension 8 \n\
+                Requires: " + formatWhole(tmp[this.layer].buyables[this.id].cost)+" Fatality Dimension " +req+"\n\
                 Multiplier: " + format(tmp[this.layer].buyables[this.id].effect)+"x\n\
                 Amount: " + formatWhole(this.total())
             },
             unlocked() { return hasMilestone("f", 11) }, 
             canAfford() {
                 let req = getBuyableAmount("f", 24)
+                if (inChallenge("f",22)) req = getBuyableAmount("f", 22)
                 return req.gte(tmp[this.layer].buyables[this.id].cost)},
-            buy() { 
-                cost = tmp[this.layer].buyables[this.id].cost
+            buy() { //cost = 45+sx+((x-y)^2+x-y)/10         cost-45 = sx+((x-y)^2+x-y)/10
+                let d8 = getBuyableAmount("f", 24)
+                let sub = new Decimal(45)
+                let d = this.distantStart()
+                let b = this.distantScale()
+                let s = this.scale()
+                if (inChallenge("f",22)) {
+                    d8 = getBuyableAmount("f", 22)
+                    sub = new Decimal(100)
+                }
+                let max = d8.sub(sub).div(this.scale()).add(1).floor()
+                if (max.gte(d)) max = b.pow(2).mul(s.pow(2)).add(d8.mul(2).sub(s.mul(2).mul(d)).add(s).sub(90).mul(b.mul(2))).add(1).pow(0.5).sub(b.mul(s)).add(d.mul(2)).sub(1).div(2).add(1).floor()
+                let diff = max.sub(this.total()).max(1)
                 if (this.canAfford()) {
+                    if (!hasMilestone("f",15)) {
                     player.f.p = new Decimal(0)
                     player.f.points = new Decimal(0)
+                    player.f.sac = new Decimal(0)
                     player.f.d1 = new Decimal(0)
                     player.f.d2 = new Decimal(0)
                     player.f.d3 = new Decimal(0)
@@ -4926,15 +5749,1457 @@ addLayer("f", {
                     player.f.buyables[23] = new Decimal(0)
                     player.f.buyables[24] = new Decimal(0)
                     player.f.buyables[31] = new Decimal(0)
-                    player.f.buyables[32] = new Decimal(0)
-                    player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
+                    if (!hasMilestone("f",13)) player.f.buyables[32] = (hasFUpg(84) && !inChallenge("f", 22)) ? new Decimal(2) : new Decimal(0)
+                    }
+                    if (hasMilestone("f",12)) player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(diff)
+                    else player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
+                }
+            },
+            buyMax(m) { //(cost-45)/s = x
+                let d8 = getBuyableAmount("f", 24)
+                let sub = new Decimal(45)
+                let d = this.distantStart()
+                let b = this.distantScale()
+                let s = this.scale()
+                if (inChallenge("f",22)) {
+                    d8 = getBuyableAmount("f", 22)
+                    sub = new Decimal(100)
+                }
+                let max = d8.sub(sub).div(this.scale()).add(1).floor()
+                if (max.gte(d)) max = b.pow(2).mul(s.pow(2)).add(d8.mul(2).sub(s.mul(2).mul(d)).add(s).sub(90).mul(b.mul(2))).add(1).pow(0.5).sub(b.mul(s)).add(d.mul(2)).sub(1).div(2).add(1).floor()
+                max = max.min(m)
+                let diff = max.sub(this.total()).max(1)
+                if (this.canAfford()) {
+                    if (!hasMilestone("f",15)) {
+                        player.f.p = new Decimal(0)
+                        player.f.points = new Decimal(0)
+                        player.f.sac = new Decimal(0)
+                        player.f.d1 = new Decimal(0)
+                        player.f.d2 = new Decimal(0)
+                        player.f.d3 = new Decimal(0)
+                        player.f.d4 = new Decimal(0)
+                        player.f.d5 = new Decimal(0)
+                        player.f.d6 = new Decimal(0)
+                        player.f.d7 = new Decimal(0)
+                        player.f.d8 = new Decimal(0)
+                        player.f.mult = new Decimal(0)
+                        player.f.buyables[11] = new Decimal(0)
+                        player.f.buyables[12] = new Decimal(0)
+                        player.f.buyables[13] = new Decimal(0)
+                        player.f.buyables[14] = new Decimal(0)
+                        player.f.buyables[21] = new Decimal(0)
+                        player.f.buyables[22] = new Decimal(0)
+                        player.f.buyables[23] = new Decimal(0)
+                        player.f.buyables[24] = new Decimal(0)
+                        player.f.buyables[31] = new Decimal(0)
+                        if (!hasMilestone("f",13)) player.f.buyables[32] = (hasFUpg(84) && !inChallenge("f", 22)) ? new Decimal(2) : new Decimal(0)
+                        }
+                    if (hasMilestone("f",12)) player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(diff)
                 }
             },
             style: {'height':'180px', 'width':'180px'},
         },
+        34: {
+			title: "Casualty Multiplier",
+			cost(x=this.total()) { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let cost = Decimal.pow(10, x).mul(5)
+                return cost.floor()
+            },
+            base() { 
+                let base = new Decimal(2)
+                if (hasFUpg(135)) base = base.add(0.1)
+                return base
+            },
+            total() {
+                let total = getBuyableAmount("f", 34)
+                return total
+            },
+			effect() { // Effects of owning x of the items, x is a decimal
+                let x = this.total()
+                let base = this.base()
+                return Decimal.pow(base, x);
+            },
+			display() { // Everything else displayed in the buyable button after the title
+                return "Multiply Casualty gain by " + format(this.base()) + "\n\
+                Cost: " + format(tmp[this.layer].buyables[this.id].cost)+" casualty\n\
+                Multiplier: " + format(tmp[this.layer].buyables[this.id].effect)+"x\n\
+                Amount: " + formatWhole(this.total())
+            },
+            unlocked() { return hasMilestone("f", 8) }, 
+            canAfford() {
+                    return player.f.casualty.gte(tmp[this.layer].buyables[this.id].cost)},
+            buy() { 
+                cost = tmp[this.layer].buyables[this.id].cost
+                if (this.canAfford()) {
+                    if (!hasMilestone("f",18)) player.f.casualty = player.f.casualty.sub(cost).max(0)
+                    player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
+                }
+            },
+            buyMax() { 
+                let cost = this.cost()
+                let f = player.f.casualty
+                let max = f.div(5).log10().ceil()
+                let diff = max.sub(this.total())
+                cost = Decimal.sub(1,Decimal.pow(10,diff)).div(-9).mul(cost)
+                if (this.canAfford()) {
+                    if (!hasMilestone("f",18)) player.f.casualty = player.f.casualty.sub(cost).max(0)	
+                    player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(diff)
+                }
+            },
+            style: {'height':'180px', 'width':'180px',
+                "background-color"() {
+                    let color = "#bf8f8f"
+                    if (tmp.f.buyables[34].canAfford) color = "#3d2963"
+                    return color
+                }
+            },
+        },
+        41: {
+			title() {
+                let dim = "Fatality Dimension 1 Autobuyer"
+                return dim
+            },
+			cost(x=player[this.layer].buyables[this.id]) { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let cost = Decimal.pow(2.8,x)
+                return cost.floor()
+            },
+            on() {
+                return player.f.d1auto
+            },
+            speedbase() { 
+                let base = new Decimal(2.5)
+                return base
+            },
+            bulkbase() { 
+                let base = new Decimal(2)
+                return base
+            },
+            total() {
+                let total = getBuyableAmount("f", 41)
+                return total
+            },
+			speed() { 
+                let x = this.total()
+                let base = this.speedbase()
+                return Decimal.pow(base, x).div(1.25).min(10);
+            },
+            bulk() { 
+                let x = this.total()
+                let base = this.bulkbase()
+                return Decimal.pow(base, x);
+            },
+            display() { // Everything else displayed in the buyable button after the title
+                let dim = "Autobuys Fatality Dimension 1."
+                if (this.total().gte(15)) dim += "(MAXED)"
+                return dim + "\n\
+                Cost: " + formatWhole(tmp[this.layer].buyables[this.id].cost)+" casualty\n\
+                Interval: " + formatTime(Decimal.div(1,this.speed()))+"\n\
+                Bulk: " + formatWhole(this.bulk())
+            },
+            canAfford() {
+                return player.f.casualty.gte(tmp[this.layer].buyables[this.id].cost) && this.total().lt(15)},
+            unlocked() { return hasChallenge("f", 11) }, 
+            buy() { 
+                cost = tmp[this.layer].buyables[this.id].cost
+                if (this.canAfford()) {
+                    player.f.casualty = player.f.casualty.sub(cost).max(0)	
+                    player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
+                }
+            },
+            style: {'height':'180px', 'width':'180px',
+                "background-color"() {
+                    let color = "#bf8f8f"
+                    if (tmp.f.buyables[41].canAfford) color = "#3d2963"
+                    return color
+                }
+            },
+        },
+        42: {
+			title() {
+                let dim = "Fatality Dimension 2 Autobuyer"
+                return dim
+            },
+			cost(x=player[this.layer].buyables[this.id]) { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let cost = Decimal.pow(2.8,x)
+                return cost.floor()
+            },
+            on() {
+                return player.f.d2auto
+            },
+            speedbase() { 
+                let base = new Decimal(2.5)
+                return base
+            },
+            bulkbase() { 
+                let base = new Decimal(2)
+                return base
+            },
+            total() {
+                let total = getBuyableAmount("f", 42)
+                return total
+            },
+			speed() { 
+                let x = this.total()
+                let base = this.speedbase()
+                return Decimal.pow(base, x).div(1.5).min(10);
+            },
+            bulk() { 
+                let x = this.total()
+                let base = this.bulkbase()
+                return Decimal.pow(base, x);
+            },
+            display() { // Everything else displayed in the buyable button after the title
+                let dim = "Autobuys Fatality Dimension 2."
+                if (this.total().gte(15)) dim += "(MAXED)"
+                return dim + "\n\
+                Cost: " + formatWhole(tmp[this.layer].buyables[this.id].cost)+" casualty\n\
+                Interval: " + formatTime(Decimal.div(1,this.speed()))+"\n\
+                Bulk: " + formatWhole(this.bulk())
+            },
+            canAfford() {
+                return player.f.casualty.gte(tmp[this.layer].buyables[this.id].cost) && this.total().lt(15)},
+            unlocked() { return hasChallenge("f", 11) }, 
+            buy() { 
+                cost = tmp[this.layer].buyables[this.id].cost
+                if (this.canAfford()) {
+                    player.f.casualty = player.f.casualty.sub(cost).max(0)	
+                    player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
+                }
+            },
+            style: {'height':'180px', 'width':'180px',
+                "background-color"() {
+                    let color = "#bf8f8f"
+                    if (tmp.f.buyables[42].canAfford) color = "#3d2963"
+                    return color
+                }
+            },
+        },
+        43: {
+			title() {
+                let dim = "Fatality Dimension 3 Autobuyer"
+                return dim
+            },
+			cost(x=player[this.layer].buyables[this.id]) { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let cost = Decimal.pow(2.8,x)
+                return cost.floor()
+            },
+            on() {
+                return player.f.d3auto
+            },
+            speedbase() { 
+                let base = new Decimal(2.5)
+                return base
+            },
+            bulkbase() { 
+                let base = new Decimal(2)
+                return base
+            },
+            total() {
+                let total = getBuyableAmount("f", 43)
+                return total
+            },
+			speed() { 
+                let x = this.total()
+                let base = this.speedbase()
+                return Decimal.pow(base, x).div(1.75).min(10);
+            },
+            bulk() { 
+                let x = this.total()
+                let base = this.bulkbase()
+                return Decimal.pow(base, x);
+            },
+            display() { // Everything else displayed in the buyable button after the title
+                let dim = "Autobuys Fatality Dimension 3."
+                if (this.total().gte(15)) dim += "(MAXED)"
+                return dim + "\n\
+                Cost: " + formatWhole(tmp[this.layer].buyables[this.id].cost)+" casualty\n\
+                Interval: " + formatTime(Decimal.div(1,this.speed()))+"\n\
+                Bulk: " + formatWhole(this.bulk())
+            },
+            canAfford() {
+                return player.f.casualty.gte(tmp[this.layer].buyables[this.id].cost) && this.total().lt(15)},
+            unlocked() { return hasChallenge("f", 11) }, 
+            buy() { 
+                cost = tmp[this.layer].buyables[this.id].cost
+                if (this.canAfford()) {
+                    player.f.casualty = player.f.casualty.sub(cost).max(0)	
+                    player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
+                }
+            },
+            style: {'height':'180px', 'width':'180px',
+                "background-color"() {
+                    let color = "#bf8f8f"
+                    if (tmp.f.buyables[43].canAfford) color = "#3d2963"
+                    return color
+                }
+            },
+        },
+        44: {
+			title() {
+                let dim = "Fatality Dimension 4 Autobuyer"
+                return dim
+            },
+			cost(x=player[this.layer].buyables[this.id]) { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let cost = Decimal.pow(2.8,x)
+                return cost.floor()
+            },
+            on() {
+                return player.f.d4auto
+            },
+            speedbase() { 
+                let base = new Decimal(2.5)
+                return base
+            },
+            bulkbase() { 
+                let base = new Decimal(2)
+                return base
+            },
+            total() {
+                let total = getBuyableAmount("f", 44)
+                return total
+            },
+			speed() { 
+                let x = this.total()
+                let base = this.speedbase()
+                return Decimal.pow(base, x).div(2).min(10);
+            },
+            bulk() { 
+                let x = this.total()
+                let base = this.bulkbase()
+                return Decimal.pow(base, x);
+            },
+            display() { // Everything else displayed in the buyable button after the title
+                let dim = "Autobuys Fatality Dimension 4."
+                if (this.total().gte(15)) dim += "(MAXED)"
+                return dim + "\n\
+                Cost: " + formatWhole(tmp[this.layer].buyables[this.id].cost)+" casualty\n\
+                Interval: " + formatTime(Decimal.div(1,this.speed()))+"\n\
+                Bulk: " + formatWhole(this.bulk())
+            },
+            canAfford() {
+                return player.f.casualty.gte(tmp[this.layer].buyables[this.id].cost) && this.total().lt(15)},
+            unlocked() { return hasChallenge("f", 12) }, 
+            buy() { 
+                cost = tmp[this.layer].buyables[this.id].cost
+                if (this.canAfford()) {
+                    player.f.casualty = player.f.casualty.sub(cost).max(0)	
+                    player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
+                }
+            },
+            style: {'height':'180px', 'width':'180px',
+                "background-color"() {
+                    let color = "#bf8f8f"
+                    if (tmp.f.buyables[44].canAfford) color = "#3d2963"
+                    return color
+                }
+            },
+        },
+        51: {
+			title() {
+                let dim = "Fatality Dimension 5 Autobuyer"
+                return dim
+            },
+			cost(x=player[this.layer].buyables[this.id]) { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let cost = Decimal.pow(2.8,x)
+                return cost.floor()
+            },
+            on() {
+                return player.f.d5auto
+            },
+            speedbase() { 
+                let base = new Decimal(2.5)
+                return base
+            },
+            bulkbase() { 
+                let base = new Decimal(2)
+                return base
+            },
+            total() {
+                let total = getBuyableAmount("f", 51)
+                return total
+            },
+			speed() { 
+                let x = this.total()
+                let base = this.speedbase()
+                return Decimal.pow(base, x).div(2.25).min(10);
+            },
+            bulk() { 
+                let x = this.total()
+                let base = this.bulkbase()
+                return Decimal.pow(base, x);
+            },
+            display() { // Everything else displayed in the buyable button after the title
+                let dim = "Autobuys Fatality Dimension 5."
+                if (this.total().gte(15)) dim += "(MAXED)"
+                return dim + "\n\
+                Cost: " + formatWhole(tmp[this.layer].buyables[this.id].cost)+" casualty\n\
+                Interval: " + formatTime(Decimal.div(1,this.speed()))+"\n\
+                Bulk: " + formatWhole(this.bulk())
+            },
+            canAfford() {
+                return player.f.casualty.gte(tmp[this.layer].buyables[this.id].cost) && this.total().lt(15)},
+            unlocked() { return hasChallenge("f", 12) }, 
+            buy() { 
+                cost = tmp[this.layer].buyables[this.id].cost
+                if (this.canAfford()) {
+                    player.f.casualty = player.f.casualty.sub(cost).max(0)	
+                    player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
+                }
+            },
+            style: {'height':'180px', 'width':'180px',
+                "background-color"() {
+                    let color = "#bf8f8f"
+                    if (tmp.f.buyables[51].canAfford) color = "#3d2963"
+                    return color
+                }
+            },
+        },
+        52: {
+			title() {
+                let dim = "Fatality Dimension 6 Autobuyer"
+                return dim
+            },
+			cost(x=player[this.layer].buyables[this.id]) { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let cost = Decimal.pow(2.8,x)
+                return cost.floor()
+            },
+            on() {
+                return player.f.d6auto
+            },
+            speedbase() { 
+                let base = new Decimal(2.5)
+                return base
+            },
+            bulkbase() { 
+                let base = new Decimal(2)
+                return base
+            },
+            total() {
+                let total = getBuyableAmount("f", 52)
+                return total
+            },
+			speed() { 
+                let x = this.total()
+                let base = this.speedbase()
+                return Decimal.pow(base, x).div(2.5).min(10);
+            },
+            bulk() { 
+                let x = this.total()
+                let base = this.bulkbase()
+                return Decimal.pow(base, x);
+            },
+            display() { // Everything else displayed in the buyable button after the title
+                let dim = "Autobuys Fatality Dimension 6."
+                if (this.total().gte(15)) dim += "(MAXED)"
+                return dim + "\n\
+                Cost: " + formatWhole(tmp[this.layer].buyables[this.id].cost)+" casualty\n\
+                Interval: " + formatTime(Decimal.div(1,this.speed()))+"\n\
+                Bulk: " + formatWhole(this.bulk())
+            },
+            canAfford() {
+                return player.f.casualty.gte(tmp[this.layer].buyables[this.id].cost) && this.total().lt(15)},
+            unlocked() { return hasChallenge("f", 12) }, 
+            buy() { 
+                cost = tmp[this.layer].buyables[this.id].cost
+                if (this.canAfford()) {
+                    player.f.casualty = player.f.casualty.sub(cost).max(0)	
+                    player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
+                }
+            },
+            style: {'height':'180px', 'width':'180px',
+                "background-color"() {
+                    let color = "#bf8f8f"
+                    if (tmp.f.buyables[52].canAfford) color = "#3d2963"
+                    return color
+                }
+            },
+        },
+        53: {
+			title() {
+                let dim = "Fatality Dimension 7 Autobuyer"
+                return dim
+            },
+			cost(x=player[this.layer].buyables[this.id]) { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let cost = Decimal.pow(2.8,x)
+                return cost.floor()
+            },
+            on() {
+                return player.f.d7auto
+            },
+            speedbase() { 
+                let base = new Decimal(2.5)
+                return base
+            },
+            bulkbase() { 
+                let base = new Decimal(2)
+                return base
+            },
+            total() {
+                let total = getBuyableAmount("f", 53)
+                return total
+            },
+			speed() { 
+                let x = this.total()
+                let base = this.speedbase()
+                return Decimal.pow(base, x).div(2.75).min(10);
+            },
+            bulk() { 
+                let x = this.total()
+                let base = this.bulkbase()
+                return Decimal.pow(base, x);
+            },
+            display() { // Everything else displayed in the buyable button after the title
+                let dim = "Autobuys Fatality Dimension 7."
+                if (this.total().gte(15)) dim += "(MAXED)"
+                return dim + "\n\
+                Cost: " + formatWhole(tmp[this.layer].buyables[this.id].cost)+" casualty\n\
+                Interval: " + formatTime(Decimal.div(1,this.speed()))+"\n\
+                Bulk: " + formatWhole(this.bulk())
+            },
+            canAfford() {
+                return player.f.casualty.gte(tmp[this.layer].buyables[this.id].cost) && this.total().lt(15)},
+            unlocked() { return hasChallenge("f", 21) }, 
+            buy() { 
+                cost = tmp[this.layer].buyables[this.id].cost
+                if (this.canAfford()) {
+                    player.f.casualty = player.f.casualty.sub(cost).max(0)	
+                    player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
+                }
+            },
+            style: {'height':'180px', 'width':'180px',
+                "background-color"() {
+                    let color = "#bf8f8f"
+                    if (tmp.f.buyables[53].canAfford) color = "#3d2963"
+                    return color
+                }
+            },
+        },
+        54: {
+			title() {
+                let dim = "Fatality Dimension 8 Autobuyer"
+                return dim
+            },
+			cost(x=player[this.layer].buyables[this.id]) { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let cost = Decimal.pow(2.8,x)
+                return cost.floor()
+            },
+            on() {
+                return player.f.d8auto
+            },
+            speedbase() { 
+                let base = new Decimal(2.5)
+                return base
+            },
+            bulkbase() { 
+                let base = new Decimal(2)
+                return base
+            },
+            total() {
+                let total = getBuyableAmount("f", 54)
+                return total
+            },
+			speed() { 
+                let x = this.total()
+                let base = this.speedbase()
+                return Decimal.pow(base, x).div(3).min(10);
+            },
+            bulk() { 
+                let x = this.total()
+                let base = this.bulkbase()
+                return Decimal.pow(base, x);
+            },
+            display() { // Everything else displayed in the buyable button after the title
+                let dim = "Autobuys Fatality Dimension 8."
+                if (this.total().gte(15)) dim += "(MAXED)"
+                return dim + "\n\
+                Cost: " + formatWhole(tmp[this.layer].buyables[this.id].cost)+" casualty\n\
+                Interval: " + formatTime(Decimal.div(1,this.speed()))+"\n\
+                Bulk: " + formatWhole(this.bulk())
+            },
+            canAfford() {
+                return player.f.casualty.gte(tmp[this.layer].buyables[this.id].cost) && this.total().lt(15)},
+            unlocked() { return hasChallenge("f", 21) }, 
+            buy() { 
+                cost = tmp[this.layer].buyables[this.id].cost
+                if (this.canAfford()) {
+                    player.f.casualty = player.f.casualty.sub(cost).max(0)	
+                    player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
+                }
+            },
+            style: {'height':'180px', 'width':'180px',
+                "background-color"() {
+                    let color = "#bf8f8f"
+                    if (tmp.f.buyables[54].canAfford) color = "#3d2963"
+                    return color
+                }
+            },
+        },
+        61: {
+			title() {
+                let dim = "Fatality Dimension Multiplier Autobuyer"
+                return dim
+            },
+			cost(x=player[this.layer].buyables[this.id]) { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let cost = Decimal.pow(2.8,x)
+                return cost.floor()
+            },
+            on() {
+                return player.f.multauto
+            },
+            speedbase() { 
+                let base = new Decimal(2.5)
+                return base
+            },
+            bulkbase() { 
+                let base = new Decimal(2)
+                return base
+            },
+            total() {
+                let total = getBuyableAmount("f", 61)
+                return total
+            },
+			speed() { 
+                let x = this.total()
+                let base = this.speedbase()
+                return Decimal.pow(base, x).div(1.5).min(10);
+            },
+            bulk() { 
+                let x = this.total()
+                let base = this.bulkbase()
+                return Decimal.pow(base, x);
+            },
+            display() { // Everything else displayed in the buyable button after the title
+                let dim = "Autobuys Fatality Dimension Multiplier."
+                if (this.total().gte(15)) dim += "(MAXED)"
+                return dim + "\n\
+                Cost: " + formatWhole(tmp[this.layer].buyables[this.id].cost)+" casualty\n\
+                Interval: " + formatTime(Decimal.div(1,this.speed()))+"\n\
+                Bulk: " + formatWhole(this.bulk())
+            },
+            canAfford() {
+                return player.f.casualty.gte(tmp[this.layer].buyables[this.id].cost) && this.total().lt(15)},
+            unlocked() { return hasChallenge("f", 21) }, 
+            buy() { 
+                cost = tmp[this.layer].buyables[this.id].cost
+                if (this.canAfford()) {
+                    player.f.casualty = player.f.casualty.sub(cost).max(0)	
+                    player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
+                }
+            },
+            style: {'height':'180px', 'width':'180px',
+                "background-color"() {
+                    let color = "#bf8f8f"
+                    if (tmp.f.buyables[61].canAfford) color = "#3d2963"
+                    return color
+                }
+            },
+        },
+        62: {
+			title() {
+                let dim = "Fatality Dimension Boost Autobuyer"
+                return dim
+            },
+			cost(x=player[this.layer].buyables[this.id]) { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let cost = Decimal.pow(3.5,x)
+                return cost.floor()
+            },
+            on() {
+                return player.f.boostauto
+            },
+            speedbase() { 
+                let base = new Decimal(1.8)
+                return base
+            },
+            total() {
+                let total = getBuyableAmount("f", 62)
+                return total
+            },
+			speed() { 
+                let x = this.total()
+                let base = this.speedbase()
+                return Decimal.pow(base, x).div(15).min(10);
+            },
+            bulk() { 
+                return Decimal.pow(10, 10);
+            },
+            display() { // Everything else displayed in the buyable button after the title
+                let dim = "Autobuys Fatality Dimension Boost."
+                if (this.speed().gte(10)) dim += "(MAXED)"
+                return dim + "\n\
+                Cost: " + formatWhole(tmp[this.layer].buyables[this.id].cost)+" casualty\n\
+                Interval: " + formatTime(Decimal.div(1,this.speed()))
+            },
+            canAfford() {
+                return player.f.casualty.gte(tmp[this.layer].buyables[this.id].cost) && this.speed().lt(10)},
+            unlocked() { return hasChallenge("f", 22) }, 
+            buy() { 
+                cost = tmp[this.layer].buyables[this.id].cost
+                if (this.canAfford()) {
+                    player.f.casualty = player.f.casualty.sub(cost).max(0)	
+                    player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
+                }
+            },
+            style: {'height':'180px', 'width':'180px',
+                "background-color"() {
+                    let color = "#bf8f8f"
+                    if (tmp.f.buyables[62].canAfford) color = "#3d2963"
+                    return color
+                }
+            },
+        },
+        63: {
+			title() {
+                let dim = "Fatality Multiplier Boost Autobuyer"
+                return dim
+            },
+			cost(x=player[this.layer].buyables[this.id]) { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let cost = Decimal.pow(3.5,x)
+                return cost.floor()
+            },
+            on() {
+                return player.f.multbauto
+            },
+            speedbase() { 
+                let base = new Decimal(1.7)
+                return base
+            },
+            total() {
+                let total = getBuyableAmount("f", 63)
+                return total
+            },
+			speed() { 
+                let x = this.total()
+                let base = this.speedbase()
+                return Decimal.pow(base, x).div(60).min(10);
+            },
+            bulk() { 
+                return Decimal.pow(10, 10);
+            },
+            display() { // Everything else displayed in the buyable button after the title
+                let dim = "Autobuys Fatality Multiplier Boost."
+                if (this.speed().gte(10)) dim += "(MAXED)"
+                return dim + "\n\
+                Cost: " + formatWhole(tmp[this.layer].buyables[this.id].cost)+" casualty\n\
+                Interval: " + formatTime(Decimal.div(1,this.speed()))
+            },
+            canAfford() {
+                return player.f.casualty.gte(tmp[this.layer].buyables[this.id].cost) && this.speed().lt(10)},
+            unlocked() { return hasChallenge("f", 22) }, 
+            buy() { 
+                cost = tmp[this.layer].buyables[this.id].cost
+                if (this.canAfford()) {
+                    player.f.casualty = player.f.casualty.sub(cost).max(0)	
+                    player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
+                }
+            },
+            style: {'height':'180px', 'width':'180px',
+                "background-color"() {
+                    let color = "#bf8f8f"
+                    if (tmp.f.buyables[63].canAfford) color = "#3d2963"
+                    return color
+                }
+            },
+        },
+        64: {
+			title() {
+                let dim = "Automatic Sacrifice"
+                return dim
+            },
+			cost(x=player[this.layer].buyables[this.id]) { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let cost = Decimal.pow(3.5,x)
+                return cost.floor()
+            },
+            on() {
+                return player.f.sacauto
+            },
+            speedbase() { 
+                let base = new Decimal(1.7)
+                return base
+            },
+            total() {
+                let total = getBuyableAmount("f", 64)
+                return total
+            },
+			speed() { 
+                let x = this.total()
+                let base = this.speedbase()
+                return Decimal.pow(base, x).div(10).min(10);
+            },
+            display() { // Everything else displayed in the buyable button after the title
+                let dim = "Automatically Sacrifice at 100x."
+                if (this.speed().gte(10)) dim += "(MAXED)"
+                return dim + "\n\
+                Cost: " + formatWhole(tmp[this.layer].buyables[this.id].cost)+" casualty\n\
+                Interval: " + formatTime(Decimal.div(1,this.speed()))
+            },
+            canAfford() {
+                return player.f.casualty.gte(tmp[this.layer].buyables[this.id].cost) && this.speed().lt(10)},
+            unlocked() { return hasMilestone("f", 13) }, 
+            buy() { 
+                cost = tmp[this.layer].buyables[this.id].cost
+                if (this.canAfford()) {
+                    player.f.casualty = player.f.casualty.sub(cost).max(0)	
+                    player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
+                }
+            },
+            style: {'height':'180px', 'width':'180px',
+                "background-color"() {
+                    let color = "#bf8f8f"
+                    if (tmp.f.buyables[64].canAfford) color = "#3d2963"
+                    return color
+                }
+            },
+        },
+        71: {
+			title: "Casualty Dimension 1",
+			cost(x=player.f.cd[0]) { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let cost = Decimal.pow(1e5, x).mul(1e14)
+                return cost.floor()
+            },
+            base() { 
+                let base = tmp.f.cmultpd.mul(15)
+                return base
+            },
+            gain(x=player[this.layer].buyables[this.id]) {
+                let gain = this.effect().mul(x)
+                return gain
+            },
+            total() {
+                let total = getBuyableAmount("f", 71)
+                return total
+            },
+            bought() {
+                let bought = player.f.cd[0]
+                return bought
+            },
+			effect() { // Effects of owning x of the items, x is a decimal
+                let x = this.bought()
+                let base = this.base()
+                let eff = Decimal.pow(base, x).mul(tmp.f.cDimMult)
+                return eff;
+            },
+			display() { // Everything else displayed in the buyable button after the title
+                return "Produces casualty power.\n\
+                Cost: " + format(tmp[this.layer].buyables[this.id].cost)+" casualty\n\
+                Multiplier: " + format(tmp[this.layer].buyables[this.id].effect)+"x\n\
+                Amount: " + formatWhole(this.total()) + "(" + formatWhole(this.bought()) + ")"
+            },
+            unlocked() { return hasMilestone("f", 16) }, 
+            canAfford() {
+                    return player.f.casualty.gte(tmp[this.layer].buyables[this.id].cost)},
+            buy() { 
+                cost = tmp[this.layer].buyables[this.id].cost
+                if (this.canAfford()) {
+                    player.f.casualty = player.f.casualty.sub(cost).max(0)	
+                    player.f.cd[0] = player.f.cd[0].add(1)
+                    player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
+                }
+            },
+            buyMax(b) { 
+                let cost = this.cost()
+                let f = player.f.casualty
+                let max = f.div(1e14).log10().div(5).ceil()
+                let diff = max.sub(player.f.cd[0]).min(b)
+                cost = Decimal.sub(1,Decimal.pow(1e5,max)).div(-99999).mul(1e14)
+                if (this.canAfford()) {
+                    player.f.casualty = player.f.casualty.sub(cost).max(0)	
+                    player.f.cd[0] = player.f.cd[0].add(diff)
+                    player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(diff)
+                }
+            },
+            style: {'height':'180px', 'width':'180px',
+                "background-color"() {
+                    let color = "#bf8f8f"
+                    if (tmp.f.buyables[71].canAfford) color = "#3d2963"
+                    return color
+                }
+            },
+        },
+        72: {
+			title: "Casualty Dimension 2",
+			cost(x=player.f.cd[1]) { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let cost = Decimal.pow(1e9, x).mul(1e16)
+                return cost.floor()
+            },
+            base() { 
+                let base = tmp.f.cmultpd.mul(10)
+                return base
+            },
+            gain(x=player[this.layer].buyables[this.id]) {
+                let gain = this.effect().mul(x).div(10)
+                return gain
+            },
+            total() {
+                let total = getBuyableAmount("f", 72)
+                return total
+            },
+            bought() {
+                let bought = player.f.cd[1]
+                return bought
+            },
+			effect() { // Effects of owning x of the items, x is a decimal
+                let x = this.bought()
+                let base = this.base()
+                let eff = Decimal.pow(base, x).mul(tmp.f.cDimMult)
+                return eff;
+            },
+			display() { // Everything else displayed in the buyable button after the title
+                return "Produces Casualty Dimension 1.\n\
+                Cost: " + format(tmp[this.layer].buyables[this.id].cost)+" casualty\n\
+                Multiplier: " + format(tmp[this.layer].buyables[this.id].effect)+"x\n\
+                Amount: " + formatWhole(this.total()) + "(" + formatWhole(this.bought()) + ")"
+            },
+            unlocked() { return hasMilestone("f", 16) }, 
+            canAfford() {
+                    return player.f.casualty.gte(tmp[this.layer].buyables[this.id].cost)},
+            buy() { 
+                cost = tmp[this.layer].buyables[this.id].cost
+                if (this.canAfford()) {
+                    player.f.casualty = player.f.casualty.sub(cost).max(0)	
+                    player.f.cd[1] = player.f.cd[1].add(1)
+                    player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
+                }
+            },
+            buyMax(b) { 
+                let cost = this.cost()
+                let f = player.f.casualty
+                let max = f.div(1e16).log10().div(9).ceil()
+                let diff = max.sub(player.f.cd[1]).min(b)
+                cost = Decimal.sub(1,Decimal.pow(1e9,max)).div(-999999999).mul(1e16)
+                if (this.canAfford()) {
+                    player.f.casualty = player.f.casualty.sub(cost).max(0)	
+                    player.f.cd[1] = player.f.cd[1].add(diff)
+                    player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(diff)
+                }
+            },
+            style: {'height':'180px', 'width':'180px',
+                "background-color"() {
+                    let color = "#bf8f8f"
+                    if (tmp.f.buyables[72].canAfford) color = "#3d2963"
+                    return color
+                }
+            },
+        },
+        73: {
+			title: "Casualty Dimension 3",
+			cost(x=player.f.cd[2]) { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let cost = Decimal.pow(1e13, x).mul(1e29)
+                return cost.floor()
+            },
+            base() { 
+                let base = tmp.f.cmultpd.mul(4)
+                return base
+            },
+            gain(x=player[this.layer].buyables[this.id]) {
+                let gain = this.effect().mul(x).div(10)
+                return gain
+            },
+            total() {
+                let total = getBuyableAmount("f", 73)
+                return total
+            },
+            bought() {
+                let bought = player.f.cd[2]
+                return bought
+            },
+			effect() { // Effects of owning x of the items, x is a decimal
+                let x = this.bought()
+                let base = this.base()
+                let eff = Decimal.pow(base, x).mul(tmp.f.cDimMult)
+                return eff;
+            },
+			display() { // Everything else displayed in the buyable button after the title
+                return "Produces Casualty Dimension 2.\n\
+                Cost: " + format(tmp[this.layer].buyables[this.id].cost)+" casualty\n\
+                Multiplier: " + format(tmp[this.layer].buyables[this.id].effect)+"x\n\
+                Amount: " + formatWhole(this.total()) + "(" + formatWhole(this.bought()) + ")"
+            },
+            unlocked() { return player.f.best.gte("e120000") || getBuyableAmount("f", 74).gte(1) }, 
+            canAfford() {
+                    return player.f.casualty.gte(tmp[this.layer].buyables[this.id].cost)},
+            buy() { 
+                cost = tmp[this.layer].buyables[this.id].cost
+                if (this.canAfford()) {
+                    player.f.casualty = player.f.casualty.sub(cost).max(0)	
+                    player.f.cd[2] = player.f.cd[2].add(1)
+                    player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
+                }
+            },
+            buyMax(b) { 
+                let cost = this.cost()
+                let f = player.f.casualty
+                let max = f.div(1e29).log10().div(13).ceil()
+                let diff = max.sub(player.f.cd[2]).min(b)
+                cost = Decimal.sub(1,Decimal.pow(1e13,max)).div(-1e13).mul(1e29)
+                if (this.canAfford()) {
+                    player.f.casualty = player.f.casualty.sub(cost).max(0)	
+                    player.f.cd[2] = player.f.cd[2].add(diff)
+                    player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(diff)
+                }
+            },
+            style: {'height':'180px', 'width':'180px',
+                "background-color"() {
+                    let color = "#bf8f8f"
+                    if (tmp.f.buyables[73].canAfford) color = "#3d2963"
+                    return color
+                }
+            },
+        },
+        74: {
+			title: "Casualty Dimension 4",
+			cost(x=player.f.cd[3]) { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let cost = Decimal.pow(1e17, x).mul(1e50)
+                return cost.floor()
+            },
+            base() { 
+                let base = tmp.f.cmultpd.mul(2)
+                return base
+            },
+            gain(x=player[this.layer].buyables[this.id]) {
+                let gain = this.effect().mul(x).div(10)
+                return gain
+            },
+            total() {
+                let total = getBuyableAmount("f", 74)
+                return total
+            },
+            bought() {
+                let bought = player.f.cd[3]
+                return bought
+            },
+			effect() { // Effects of owning x of the items, x is a decimal
+                let x = this.bought()
+                let base = this.base()
+                let eff = Decimal.pow(base, x).mul(tmp.f.cDimMult)
+                return eff;
+            },
+			display() { // Everything else displayed in the buyable button after the title
+                return "Produces Casualty Dimension 3.\n\
+                Cost: " + format(tmp[this.layer].buyables[this.id].cost)+" casualty\n\
+                Multiplier: " + format(tmp[this.layer].buyables[this.id].effect)+"x\n\
+                Amount: " + formatWhole(this.total()) + "(" + formatWhole(this.bought()) + ")"
+            },
+            unlocked() { return player.f.best.gte("e300000") || getBuyableAmount("f", 74).gte(1) }, 
+            canAfford() {
+                    return player.f.casualty.gte(tmp[this.layer].buyables[this.id].cost)},
+            buy() { 
+                cost = tmp[this.layer].buyables[this.id].cost
+                if (this.canAfford()) {
+                    player.f.casualty = player.f.casualty.sub(cost).max(0)	
+                    player.f.cd[3] = player.f.cd[3].add(1)
+                    player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
+                }
+            },
+            buyMax(b) { 
+                let cost = this.cost()
+                let f = player.f.casualty
+                let max = f.div(1e50).log10().div(17).ceil()
+                let diff = max.sub(player.f.cd[3]).min(b)
+                cost = Decimal.sub(1,Decimal.pow(1e17,max)).div(-1e17).mul(1e50)
+                if (this.canAfford()) {
+                    player.f.casualty = player.f.casualty.sub(cost).max(0)	
+                    player.f.cd[3] = player.f.cd[3].add(diff)
+                    player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(diff)
+                }
+            },
+            style: {'height':'180px', 'width':'180px',
+                "background-color"() {
+                    let color = "#bf8f8f"
+                    if (tmp.f.buyables[74].canAfford) color = "#3d2963"
+                    return color
+                }
+            },
+        },
+        81: {
+			title: "Casualty Dimension 5",
+			cost(x=player.f.cd[4]) { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let cost = Decimal.pow(1e20, x).mul("1e460")
+                return cost.floor()
+            },
+            base() { 
+                let base = tmp.f.cmultpd
+                return base
+            },
+            gain(x=player[this.layer].buyables[this.id]) {
+                let gain = this.effect().mul(x).div(10)
+                return gain
+            },
+            total() {
+                let total = getBuyableAmount("f", 81)
+                return total
+            },
+            bought() {
+                let bought = player.f.cd[4]
+                return bought
+            },
+			effect() { // Effects of owning x of the items, x is a decimal
+                let x = this.bought()
+                let base = this.base()
+                let eff = Decimal.pow(base, x).mul(tmp.f.cDimMult)
+                return eff;
+            },
+			display() { // Everything else displayed in the buyable button after the title
+                return "Produces Casualty Dimension 4.\n\
+                Cost: " + format(tmp[this.layer].buyables[this.id].cost)+" casualty\n\
+                Multiplier: " + format(tmp[this.layer].buyables[this.id].effect)+"x\n\
+                Amount: " + formatWhole(this.total()) + "(" + formatWhole(this.bought()) + ")"
+            },
+            unlocked() { return player.f.best.gte("e1600000") || getBuyableAmount("f", 81).gte(1) }, 
+            canAfford() {
+                    return player.f.casualty.gte(tmp[this.layer].buyables[this.id].cost)},
+            buy() { 
+                cost = tmp[this.layer].buyables[this.id].cost
+                if (this.canAfford()) {
+                    player.f.casualty = player.f.casualty.sub(cost).max(0)	
+                    player.f.cd[4] = player.f.cd[4].add(1)
+                    player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
+                }
+            },
+            buyMax(b) { 
+                let cost = this.cost()
+                let f = player.f.casualty
+                let max = f.div("1e460").log10().div(20).ceil()
+                let diff = max.sub(player.f.cd[4]).min(b)
+                cost = Decimal.sub(1,Decimal.pow(1e20,max)).div(-1e20).mul("1e460")
+                if (this.canAfford()) {
+                    player.f.casualty = player.f.casualty.sub(cost).max(0)	
+                    player.f.cd[4] = player.f.cd[4].add(diff)
+                    player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(diff)
+                }
+            },
+            style: {'height':'180px', 'width':'180px',
+                "background-color"() {
+                    let color = "#bf8f8f"
+                    if (tmp.f.buyables[81].canAfford) color = "#3d2963"
+                    return color
+                }
+            },
+        },
+        82: {
+			title: "Casualty Dimension 6",
+			cost(x=player.f.cd[5]) { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let cost = Decimal.pow(1e25, x).mul("1e575")
+                return cost.floor()
+            },
+            base() { 
+                let base = tmp.f.cmultpd
+                return base
+            },
+            gain(x=player[this.layer].buyables[this.id]) {
+                let gain = this.effect().mul(x).div(10)
+                return gain
+            },
+            total() {
+                let total = getBuyableAmount("f", 82)
+                return total
+            },
+            bought() {
+                let bought = player.f.cd[5]
+                return bought
+            },
+			effect() { // Effects of owning x of the items, x is a decimal
+                let x = this.bought()
+                let base = this.base()
+                let eff = Decimal.pow(base, x).mul(tmp.f.cDimMult)
+                return eff;
+            },
+			display() { // Everything else displayed in the buyable button after the title
+                return "Produces Casualty Dimension 5.\n\
+                Cost: " + format(tmp[this.layer].buyables[this.id].cost)+" casualty\n\
+                Multiplier: " + format(tmp[this.layer].buyables[this.id].effect)+"x\n\
+                Amount: " + formatWhole(this.total()) + "(" + formatWhole(this.bought()) + ")"
+            },
+            unlocked() { return player.f.best.gte("e2000000") || getBuyableAmount("f", 82).gte(1) }, 
+            canAfford() {
+                    return player.f.casualty.gte(tmp[this.layer].buyables[this.id].cost)},
+            buy() { 
+                cost = tmp[this.layer].buyables[this.id].cost
+                if (this.canAfford()) {
+                    player.f.casualty = player.f.casualty.sub(cost).max(0)	
+                    player.f.cd[5] = player.f.cd[5].add(1)
+                    player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
+                }
+            },
+            buyMax(b) { 
+                let cost = this.cost()
+                let f = player.f.casualty
+                let max = f.div("1e575").log10().div(25).ceil()
+                let diff = max.sub(player.f.cd[5]).min(b)
+                cost = Decimal.sub(1,Decimal.pow(1e25,max)).div(-1e25).mul("1e575")
+                if (this.canAfford()) {
+                    player.f.casualty = player.f.casualty.sub(cost).max(0)	
+                    player.f.cd[5] = player.f.cd[5].add(diff)
+                    player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(diff)
+                }
+            },
+            style: {'height':'180px', 'width':'180px',
+                "background-color"() {
+                    let color = "#bf8f8f"
+                    if (tmp.f.buyables[82].canAfford) color = "#3d2963"
+                    return color
+                }
+            },
+        },
+        83: {
+			title: "Casualty Dimension 7",
+			cost(x=player.f.cd[6]) { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let cost = Decimal.pow(1e30, x).mul("1e790")
+                return cost.floor()
+            },
+            base() { 
+                let base = tmp.f.cmultpd
+                return base
+            },
+            gain(x=player[this.layer].buyables[this.id]) {
+                let gain = this.effect().mul(x).div(10)
+                return gain
+            },
+            total() {
+                let total = getBuyableAmount("f", 83)
+                return total
+            },
+            bought() {
+                let bought = player.f.cd[6]
+                return bought
+            },
+			effect() { // Effects of owning x of the items, x is a decimal
+                let x = this.bought()
+                let base = this.base()
+                let eff = Decimal.pow(base, x).mul(tmp.f.cDimMult)
+                return eff;
+            },
+			display() { // Everything else displayed in the buyable button after the title
+                return "Produces Casualty Dimension 6.\n\
+                Cost: " + format(tmp[this.layer].buyables[this.id].cost)+" casualty\n\
+                Multiplier: " + format(tmp[this.layer].buyables[this.id].effect)+"x\n\
+                Amount: " + formatWhole(this.total()) + "(" + formatWhole(this.bought()) + ")"
+            },
+            unlocked() { return player.f.best.gte("e2830000") || getBuyableAmount("f", 83).gte(1) }, 
+            canAfford() {
+                    return player.f.casualty.gte(tmp[this.layer].buyables[this.id].cost)},
+            buy() { 
+                cost = tmp[this.layer].buyables[this.id].cost
+                if (this.canAfford()) {
+                    player.f.casualty = player.f.casualty.sub(cost).max(0)	
+                    player.f.cd[6] = player.f.cd[6].add(1)
+                    player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
+                }
+            },
+            buyMax(b) { 
+                let cost = this.cost()
+                let f = player.f.casualty
+                let max = f.div("1e790").log10().div(30).ceil()
+                let diff = max.sub(player.f.cd[6]).min(b)
+                cost = Decimal.sub(1,Decimal.pow(1e30,max)).div(-1e30).mul("1e790")
+                if (this.canAfford()) {
+                    player.f.casualty = player.f.casualty.sub(cost).max(0)	
+                    player.f.cd[6] = player.f.cd[6].add(diff)
+                    player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(diff)
+                }
+            },
+            style: {'height':'180px', 'width':'180px',
+                "background-color"() {
+                    let color = "#bf8f8f"
+                    if (tmp.f.buyables[83].canAfford) color = "#3d2963"
+                    return color
+                }
+            },
+        },
+        84: {
+			title: "Casualty Dimension 8",
+			cost(x=player.f.cd[7]) { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let cost = Decimal.pow(1e40, x).mul("1e1905")
+                return cost.floor()
+            },
+            base() { 
+                let base = tmp.f.cmultpd
+                return base
+            },
+            gain(x=player[this.layer].buyables[this.id]) {
+                let gain = this.effect().mul(x).div(10)
+                return gain
+            },
+            total() {
+                let total = getBuyableAmount("f", 84)
+                return total
+            },
+            bought() {
+                let bought = player.f.cd[7]
+                return bought
+            },
+			effect() { // Effects of owning x of the items, x is a decimal
+                let x = this.bought()
+                let base = this.base()
+                let eff = Decimal.pow(base, x).mul(tmp.f.cDimMult)
+                return eff;
+            },
+			display() { // Everything else displayed in the buyable button after the title
+                return "Produces Casualty Dimension 7.\n\
+                Cost: " + format(tmp[this.layer].buyables[this.id].cost)+" casualty\n\
+                Multiplier: " + format(tmp[this.layer].buyables[this.id].effect)+"x\n\
+                Amount: " + formatWhole(this.total()) + "(" + formatWhole(this.bought()) + ")"
+            },
+            unlocked() { return player.f.best.gte("e6750000") || getBuyableAmount("f", 84).gte(1) }, 
+            canAfford() {
+                    return player.f.casualty.gte(tmp[this.layer].buyables[this.id].cost)},
+            buy() { 
+                cost = tmp[this.layer].buyables[this.id].cost
+                if (this.canAfford()) {
+                    player.f.casualty = player.f.casualty.sub(cost).max(0)	
+                    player.f.cd[7] = player.f.cd[7].add(1)
+                    player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
+                }
+            },
+            buyMax(b) { 
+                let cost = this.cost()
+                let f = player.f.casualty
+                let max = f.div("1e1905").log10().div(40).ceil()
+                let diff = max.sub(player.f.cd[7]).min(b)
+                cost = Decimal.sub(1,Decimal.pow(1e40,max)).div(-1e40).mul("1e1905")
+                if (this.canAfford()) {
+                    player.f.casualty = player.f.casualty.sub(cost).max(0)	
+                    player.f.cd[7] = player.f.cd[7].add(diff)
+                    player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(diff)
+                }
+            },
+            style: {'height':'180px', 'width':'180px',
+                "background-color"() {
+                    let color = "#bf8f8f"
+                    if (tmp.f.buyables[84].canAfford) color = "#3d2963"
+                    return color
+                }
+            },
+        },
+        91: {
+			title: "Casual Replicate Multiplier",
+			cost(x=player[this.layer].buyables[this.id]) { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let cost = Decimal.pow(1e25, x).mul("1e470")
+                return cost.floor()
+            },
+            total() {
+                let total = getBuyableAmount("f", 91)
+                return total
+            },
+			effect() { // Effects of owning x of the items, x is a decimal
+                let x = this.total().div(20).add(1)
+                let eff = x
+                return eff;
+            },
+			display() { // Everything else displayed in the buyable button after the title
+                return "Increase the replicate multiplier.\n\
+                Cost: " + format(tmp[this.layer].buyables[this.id].cost)+" casualty\n\
+                Multiplier: " + format(tmp[this.layer].buyables[this.id].effect)+"x\n\
+                Amount: " + formatWhole(this.total())
+            },
+            unlocked() { return hasMilestone("f",17) }, 
+            canAfford() {
+                    return player.f.casualty.gte(tmp[this.layer].buyables[this.id].cost)},
+            buy() { 
+                cost = tmp[this.layer].buyables[this.id].cost
+                if (this.canAfford()) {
+                    player.f.casualty = player.f.casualty.sub(cost).max(0)	
+                    player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
+                }
+            },
+            style: {'height':'180px', 'width':'180px',
+                "background-color"() {
+                    let color = "#bf8f8f"
+                    if (tmp.f.buyables[91].canAfford) color = "#3d2963"
+                    return color
+                }
+            },
+        },
+        92: {
+			title: "Casual Replicate Interval",
+			cost(x=player[this.layer].buyables[this.id]) { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let cost = Decimal.pow(1e15, x).mul("1e475")
+                return cost.floor()
+            },
+            max() {
+                let max = new Decimal(0.02)
+                if (hasFUpg(133)) max = max.div(20)
+                return max
+            },
+            total() {
+                let total = getBuyableAmount("f", 92)
+                return total
+            },
+			effect() { // Effects of owning x of the items, x is a decimal
+                let x = this.total()
+                let eff = Decimal.pow(0.9,x)
+                if (hasFUpg(131)) eff = eff.div(getFUpgEff(131))
+                if (hasFUpg(132)) eff = eff.div(getFUpgEff(132))
+                return eff.max(this.max());
+            },
+            display() { // Everything else displayed in the buyable button after the title
+                let dis = "Reduce the replicate interval."
+                if (this.effect().lte(this.max())) dis += " (MAXED)"
+                return dis + "\n\
+                Cost: " + format(tmp[this.layer].buyables[this.id].cost)+" casualty\n\
+                Interval: " + formatTimeLong(tmp[this.layer].buyables[this.id].effect)+"\n\
+                Amount: " + formatWhole(this.total())
+            },
+            unlocked() { return hasMilestone("f",17) }, 
+            canAfford() {
+                    return player.f.casualty.gte(tmp[this.layer].buyables[this.id].cost) && this.effect().gt(this.max()) },
+            buy() { 
+                cost = tmp[this.layer].buyables[this.id].cost
+                if (this.canAfford()) {
+                    player.f.casualty = player.f.casualty.sub(cost).max(0)	
+                    player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
+                }
+            },
+            style: {'height':'180px', 'width':'180px',
+                "background-color"() {
+                    let color = "#bf8f8f"
+                    if (tmp.f.buyables[92].canAfford) color = "#3d2963"
+                    return color
+                }
+            },
+        },
+        93: {
+			title: "Casual Replicated Boosts",
+			cost(x=player[this.layer].buyables[this.id]) { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let cost = Decimal.pow(1e25, x).mul(Decimal.pow(1e5,(x.pow(2).add(x).div(2)))).mul("1e750")
+                return cost.floor()
+            },
+            total() {
+                let total = getBuyableAmount("f", 93)
+                return total
+            },
+			effect() { // Effects of owning x of the items, x is a decimal
+                let x = this.total()
+                let eff = x
+                return eff;
+            },
+            display() { // Everything else displayed in the buyable button after the title
+                let dis = "Increase the max Replicated Boosts."
+                return dis + "\n\
+                Cost: " + format(tmp[this.layer].buyables[this.id].cost)+" casualty\n\
+                Max: " + formatWhole(tmp[this.layer].buyables[this.id].effect)+"\n\
+                Amount: " + formatWhole(this.total())
+            },
+            unlocked() { return hasMilestone("f",17) }, 
+            canAfford() {
+                    return player.f.casualty.gte(tmp[this.layer].buyables[this.id].cost) },
+            buy() { 
+                cost = tmp[this.layer].buyables[this.id].cost
+                if (this.canAfford()) {
+                    player.f.casualty = player.f.casualty.sub(cost).max(0)	
+                    player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
+                }
+            },
+            style: {'height':'180px', 'width':'180px',
+                "background-color"() {
+                    let color = "#bf8f8f"
+                    if (tmp.f.buyables[93].canAfford) color = "#3d2963"
+                    return color
+                }
+            },
+        },
     },
     upgrades: {
-        rows: 8,
+        rows: 13,
         cols: 7,
         11: {
             title: "Lethality",
@@ -4972,6 +7237,8 @@ addLayer("f", {
                 let eff = challengeEffect("s", 11)
                 eff = eff.pow(0.2)
                 if (eff.gte("e5e12")) eff = Decimal.pow(10,eff.div("e5e12").log10().pow(0.9)).mul("e5e12")
+                if (eff.gte("ee19")) eff = Decimal.pow(10,eff.div("ee19").log10().pow(0.9)).mul("ee19")
+                if (eff.gte("ee24")) eff = Decimal.pow(10,eff.div("ee24").log10().pow(0.88)).mul("ee24")
                 return eff
             },
             effectDisplay() {
@@ -5041,6 +7308,8 @@ addLayer("f", {
                 let eff = player.s.severity.add(10)
                 eff = eff.pow("3e-7")
                 if (eff.gte(1e30)) eff = Decimal.pow(10,eff.div(1e30).log10().pow(0.4)).mul(1e30)
+                if (eff.gte("e40000")) eff = Decimal.pow(10,eff.div("e40000").log10().pow(0.8)).mul("e40000")
+                if (eff.gte("e100000")) eff = eff.log10().pow(2e4)
                 return eff
             },
             effectDisplay() {
@@ -5076,6 +7345,8 @@ addLayer("f", {
                 let eff = player.i.points.add(1)
                 eff = Decimal.pow(10,eff.log10().pow(0.2)).pow(0.005)
                 if (eff.gte("e1000")) eff = Decimal.pow(10,eff.div("e1000").log10().pow(0.7)).mul("e1000")
+                if (eff.gte("e30000")) eff = Decimal.pow(10,eff.div("e30000").log10().pow(0.8)).mul("e30000")
+                if (eff.gte("e100000")) eff = eff.log10().pow(2e4)
                 return eff
             },
             effectDisplay() {
@@ -5133,7 +7404,7 @@ addLayer("f", {
             description: "Fatality power boosts 'Infection'.",
             cost: new Decimal(3e13),
             effect() {
-                let eff = player.f.p.add(10)
+                let eff = player.f.p.max(0).add(10)
                 eff = eff.log10().pow(0.75)
                 return eff
             },
@@ -5151,10 +7422,13 @@ addLayer("f", {
             effect() {
                 let eff = player.f.points.add(1)
                 eff = eff.pow(0.07)
+                if (eff.gte("e15000")) eff = eff.div("e15000").pow(0.2).mul("e15000")
                 return eff
             },
             effectDisplay() {
-                return format(getFUpgEff(34))+"x"
+                let dis = format(getFUpgEff(34))+"x"
+                if (getFUpgEff(34).gte("e15000")) dis += " (softcapped)"
+                return dis
             },
             unlocked() {
                 return hasFUpg(33)
@@ -5264,6 +7538,7 @@ addLayer("f", {
             effect() {
                 let eff = player.d.points.add(1)
                 eff = eff.log10().pow(0.197)
+                if (eff.gte(1e6)) eff = eff.log10().add(4).pow(6)
                 return eff
             },
             effectDisplay() {
@@ -5393,6 +7668,7 @@ addLayer("f", {
                 let eff = player.points.add(10)
                 eff = eff.log10().pow(0.07).div(930)
                 if (eff.gte(0.115)) eff = eff.div(0.115).pow(0.4).mul(0.115)
+                if (eff.gte(0.3)) eff = eff.div(0.3).pow(0.1).mul(0.3)
                 return eff
             },
             effectDisplay() {
@@ -5451,12 +7727,20 @@ addLayer("f", {
             }
         },
         81: {
-            title: "Boost Boosters",
-            description: "Multiply Dimensions.",
+            title: "Virus Dimension",
+            description: "VP boosts fatality dimensions.",
             cost: new Decimal(1),
             currencyDisplayName: "casualty",
             currencyInternalName: "casualty",
             currencyLayer: "f",
+            effect() {
+                let eff = player.v.points.add(10)
+                eff = eff.log10().pow(0.5)
+                return eff
+            },
+            effectDisplay() {
+                return format(getFUpgEff(81))+"x"
+            },
             unlocked() {
                 return hasMilestone("f",12)
             },
@@ -5490,5 +7774,1175 @@ addLayer("f", {
                 }
             }
         },
+        91: {
+            title: "Casualty 18",
+            description: "Total casualty boosts Fatality Dimension 1 and 8.",
+            cost: new Decimal(1),
+            currencyDisplayName: "casualty",
+            currencyInternalName: "casualty",
+            currencyLayer: "f",
+            effect() {
+                let eff = player.f.casualtyTotal.add(1)
+                eff = eff.pow(15)
+                return eff
+            },
+            effectDisplay() {
+                return format(getFUpgEff(91))+"x"
+            },
+            unlocked() {
+                return hasFUpg(81)
+            },
+            style: {
+                "background-color"() {
+                    if (!hasFUpg(91)) {
+                    let color = "#bf8f8f"
+                    if (player.f.casualty.gte(1)) color = "#3d2963"
+                    return color
+                    }
+                }
+            }
+        },
+        92: {
+            title: "Casualty 27",
+            description: "Total casualty boosts Fatality Dimension 2 and 7.",
+            cost: new Decimal(1),
+            currencyDisplayName: "casualty",
+            currencyInternalName: "casualty",
+            currencyLayer: "f",
+            effect() {
+                let eff = player.f.casualtyTotal.add(1)
+                eff = eff.pow(15)
+                return eff
+            },
+            effectDisplay() {
+                return format(getFUpgEff(92))+"x"
+            },
+            unlocked() {
+                return hasFUpg(82)
+            },
+            style: {
+                "background-color"() {
+                    if (!hasFUpg(92)) {
+                    let color = "#bf8f8f"
+                    if (player.f.casualty.gte(1)) color = "#3d2963"
+                    return color
+                    }
+                }
+            }
+        },
+        101: {
+            title: "Casualty 36",
+            description: "Total casualty boosts Fatality Dimension 3 and 6.",
+            cost: new Decimal(1),
+            currencyDisplayName: "casualty",
+            currencyInternalName: "casualty",
+            currencyLayer: "f",
+            effect() {
+                let eff = player.f.casualtyTotal.add(1)
+                eff = eff.pow(15)
+                return eff
+            },
+            effectDisplay() {
+                return format(getFUpgEff(101))+"x"
+            },
+            unlocked() {
+                return hasFUpg(91)
+            },
+            style: {
+                "background-color"() {
+                    if (!hasFUpg(101)) {
+                    let color = "#bf8f8f"
+                    if (player.f.casualty.gte(1)) color = "#3d2963"
+                    return color
+                    }
+                }
+            }
+        },
+        102: {
+            title: "Casualty 45",
+            description: "Total casualty boosts Fatality Dimension 4 and 5.",
+            cost: new Decimal(1),
+            currencyDisplayName: "casualty",
+            currencyInternalName: "casualty",
+            currencyLayer: "f",
+            effect() {
+                let eff = player.f.casualtyTotal.add(1)
+                eff = eff.pow(15)
+                return eff
+            },
+            effectDisplay() {
+                return format(getFUpgEff(92))+"x"
+            },
+            unlocked() {
+                return hasFUpg(92)
+            },
+            style: {
+                "background-color"() {
+                    if (!hasFUpg(102)) {
+                    let color = "#bf8f8f"
+                    if (player.f.casualty.gte(1)) color = "#3d2963"
+                    return color
+                    }
+                }
+            }
+        },
+        111: {
+            title: "Scaled Dimension",
+            description: "Reduce the Dimension, and Multiplier Boost scaling by 1.",
+            cost: new Decimal(3),
+            currencyDisplayName: "casualty",
+            currencyInternalName: "casualty",
+            currencyLayer: "f",
+            unlocked() {
+                return hasFUpg(101)
+            },
+            style: {
+                "background-color"() {
+                    if (!hasFUpg(111)) {
+                    let color = "#bf8f8f"
+                    if (player.f.casualty.gte(3)) color = "#3d2963"
+                    return color
+                    }
+                }
+            }
+        },
+        112: {
+            title: "Stronger Multipliers",
+            description: "Multiplier Boosts are 1.3x stronger.",
+            cost: new Decimal(3),
+            currencyDisplayName: "casualty",
+            currencyInternalName: "casualty",
+            currencyLayer: "f",
+            unlocked() {
+                return hasFUpg(102)
+            },
+            style: {
+                "background-color"() {
+                    if (!hasFUpg(112)) {
+                    let color = "#bf8f8f"
+                    if (player.f.casualty.gte(3)) color = "#3d2963"
+                    return color
+                    }
+                }
+            }
+        },
+        83: {
+            title: "Sacrificed Fatality",
+            description: "Unlock Sacrifice.",
+            cost: new Decimal(5),
+            currencyDisplayName: "casualty",
+            currencyInternalName: "casualty",
+            currencyLayer: "f",
+            unlocked() {
+                return hasMilestone("f",12)
+            },
+            style: {
+                "background-color"() {
+                    if (!hasFUpg(83)) {
+                    let color = "#bf8f8f"
+                    if (player.f.casualty.gte(5)) color = "#3d2963"
+                    return color
+                    }
+                }
+            }
+        },
+        93: {
+            title: "Dimension 55555",
+            description: "Multiply Dimension Boost base by 5.",
+            cost: new Decimal(7),
+            currencyDisplayName: "casualty",
+            currencyInternalName: "casualty",
+            currencyLayer: "f",
+            unlocked() {
+                return hasFUpg(83)
+            },
+            style: {
+                "background-color"() {
+                    if (!hasFUpg(93)) {
+                    let color = "#bf8f8f"
+                    if (player.f.casualty.gte(7)) color = "#3d2963"
+                    return color
+                    }
+                }
+            }
+        },
+        103: {
+            title: "Casualty Boost",
+            description: "Casualty boosts Fatality Dimensions.",
+            cost: new Decimal(10),
+            currencyDisplayName: "casualty",
+            currencyInternalName: "casualty",
+            currencyLayer: "f",
+            effect() {
+                let eff = player.f.casualty.add(1)
+                eff = eff.pow(20)
+                return eff
+            },
+            effectDisplay() {
+                return format(getFUpgEff(103))+"x"
+            },
+            unlocked() {
+                return hasFUpg(93)
+            },
+            style: {
+                "background-color"() {
+                    if (!hasFUpg(103)) {
+                    let color = "#bf8f8f"
+                    if (player.f.casualty.gte(10)) color = "#3d2963"
+                    return color
+                    }
+                }
+            }
+        },
+        113: {
+            title: "Casualty Auto Gain",
+            description: "Gain 50% of best casualty/min.",
+            cost: new Decimal(15),
+            currencyDisplayName: "casualty",
+            currencyInternalName: "casualty",
+            currencyLayer: "f",
+            effect() {
+                let eff = player.f.cpm.mul(0.5)
+                return eff
+            },
+            effectDisplay() {
+                let dis = format(getFUpgEff(113))+"/s"
+                if (getFUpgEff(113).lt(10)) dis = format(getFUpgEff(113).mul(60))+"/min"
+                return dis
+            },
+            unlocked() {
+                return hasFUpg(103)
+            },
+            style: {
+                "background-color"() {
+                    if (!hasFUpg(113)) {
+                    let color = "#bf8f8f"
+                    if (player.f.casualty.gte(15)) color = "#3d2963"
+                    return color
+                    }
+                }
+            }
+        },
+        84: {
+            title: "Scaled",
+            description: "You start with 2 Dimension Shifts, Reduce Dimension scaling by 1, Dimension Boost scaling by 0.5.",
+            cost: new Decimal(30),
+            currencyDisplayName: "casualty",
+            currencyInternalName: "casualty",
+            currencyLayer: "f",
+            unlocked() {
+                return hasMilestone("f",12)
+            },
+            style: {
+                "background-color"() {
+                    if (!hasFUpg(84)) {
+                    let color = "#bf8f8f"
+                    if (player.f.casualty.gte(30)) color = "#3d2963"
+                    return color
+                    }
+                }
+            }
+        },
+        94: {
+            title: "Powerful Casualties",
+            description: "Fatality power boosts casualty gain.",
+            cost: new Decimal(110),
+            currencyDisplayName: "casualty",
+            currencyInternalName: "casualty",
+            currencyLayer: "f",
+            effect() {
+                let eff = player.f.p.add(10)
+                eff = eff.log10().pow(0.2)
+                return eff
+            },
+            effectDisplay() {
+                return format(getFUpgEff(94))+"x"
+            },
+            unlocked() {
+                return hasFUpg(84)
+            },
+            style: {
+                "background-color"() {
+                    if (!hasFUpg(94)) {
+                    let color = "#bf8f8f"
+                    if (player.f.casualty.gte(110)) color = "#3d2963"
+                    return color
+                    }
+                }
+            }
+        },
+        104: {
+            title: "Casual Cases",
+            description: "Cases boost casualty gain.",
+            cost: new Decimal(2000),
+            currencyDisplayName: "casualty",
+            currencyInternalName: "casualty",
+            currencyLayer: "f",
+            effect() {
+                let eff = player.points.add(10)
+                eff = eff.log10().pow(0.02)
+                return eff
+            },
+            effectDisplay() {
+                return format(getFUpgEff(104))+"x"
+            },
+            unlocked() {
+                return hasFUpg(94)
+            },
+            style: {
+                "background-color"() {
+                    if (!hasFUpg(104)) {
+                    let color = "#bf8f8f"
+                    if (player.f.casualty.gte(2000)) color = "#3d2963"
+                    return color
+                    }
+                }
+            }
+        },
+        114: {
+            title: "Severe Casualties",
+            description: "Severity boosts casualty gain.",
+            cost: new Decimal(15e3),
+            currencyDisplayName: "casualty",
+            currencyInternalName: "casualty",
+            currencyLayer: "f",
+            effect() {
+                let eff = player.s.severity.add(10)
+                eff = eff.log10().pow(0.1)
+                return eff
+            },
+            effectDisplay() {
+                return format(getFUpgEff(114))+"x"
+            },
+            unlocked() {
+                return hasFUpg(104)
+            },
+            style: {
+                "background-color"() {
+                    if (!hasFUpg(114)) {
+                    let color = "#bf8f8f"
+                    if (player.f.casualty.gte(15e3)) color = "#3d2963"
+                    return color
+                    }
+                }
+            }
+        },
+        85: {
+            title: "Deadly Casualties",
+            description: "Deaths boost casualty gain.",
+            cost: new Decimal(5e6),
+            currencyDisplayName: "casualty",
+            currencyInternalName: "casualty",
+            currencyLayer: "f",
+            effect() {
+                let eff = player.d.points.add(10)
+                eff = eff.log10().pow(0.15)
+                return eff
+            },
+            effectDisplay() {
+                return format(getFUpgEff(85))+"x"
+            },
+            unlocked() {
+                return hasFUpg(114)
+            },
+            style: {
+                "background-color"() {
+                    if (!hasFUpg(85)) {
+                    let color = "#bf8f8f"
+                    if (player.f.casualty.gte(5e6)) color = "#3d2963"
+                    return color
+                    }
+                }
+            }
+        },
+        95: {
+            title: "Casual Casualties",
+            description: "Casualty boosts cases gain.",
+            cost: new Decimal(3e9),
+            currencyDisplayName: "casualty",
+            currencyInternalName: "casualty",
+            currencyLayer: "f",
+            effect() {
+                let eff = player.f.casualty.add(10)
+                eff = eff.log10().add(10)
+                eff = eff.log10().pow(5)
+                return eff
+            },
+            effectDisplay() {
+                return "^"+format(getFUpgEff(95))
+            },
+            unlocked() {
+                return hasFUpg(85)
+            },
+            style: {
+                "background-color"() {
+                    if (!hasFUpg(95)) {
+                    let color = "#bf8f8f"
+                    if (player.f.casualty.gte(3e9)) color = "#3d2963"
+                    return color
+                    }
+                }
+            }
+        },
+        105: {
+            title: "Casual Multipliers",
+            description: "Casualty boosts Multiplier Boosts.",
+            cost: new Decimal(8e9),
+            currencyDisplayName: "casualty",
+            currencyInternalName: "casualty",
+            currencyLayer: "f",
+            effect() {
+                let eff = player.f.casualty.add(10)
+                eff = eff.log10().add(10)
+                eff = eff.log10().pow(1.2)
+                if (eff.gte(1.7)) eff = eff.div(1.7).pow(0.3).mul(1.7)
+                return eff
+            },
+            effectDisplay() {
+                let dis = format(getFUpgEff(105))+"x"
+                if (getFUpgEff(105).gte(1.7)) dis += " (softcapped)"
+                return dis
+            },
+            unlocked() {
+                return hasFUpg(95)
+            },
+            style: {
+                "background-color"() {
+                    if (!hasFUpg(105)) {
+                    let color = "#bf8f8f"
+                    if (player.f.casualty.gte(8e9)) color = "#3d2963"
+                    return color
+                    }
+                }
+            }
+        },
+        115: {
+            title: "Casual Scaling",
+            description: "Reduce the Dimension, and Multiplier Boost scaling by 1.",
+            cost: new Decimal(1e11),
+            currencyDisplayName: "casualty",
+            currencyInternalName: "casualty",
+            currencyLayer: "f",
+            unlocked() {
+                return hasFUpg(105)
+            },
+            style: {
+                "background-color"() {
+                    if (!hasFUpg(115)) {
+                    let color = "#bf8f8f"
+                    if (player.f.casualty.gte(1e11)) color = "#3d2963"
+                    return color
+                    }
+                }
+            }
+        },
+        121: {
+            title: "Stronger Casualties",
+            description: "Multiplier Boosts are 1.35x stronger.",
+            cost: new Decimal(2e19),
+            currencyDisplayName: "casualty",
+            currencyInternalName: "casualty",
+            currencyLayer: "f",
+            unlocked() {
+                return hasFUpg(115)
+            },
+            style: {
+                "background-color"() {
+                    if (!hasFUpg(121)) {
+                    let color = "#bf8f8f"
+                    if (player.f.casualty.gte(2e19)) color = "#3d2963"
+                    return color
+                    }
+                }
+            }
+        },
+        122: {
+            title: "Casual Boosts",
+            description: "Casualty boosts Dimension Boost base, Reduce Dimension scaling by 1, Dimension Boost scaling by 0.5.",
+            cost: new Decimal(2.828e28),
+            currencyDisplayName: "casualty",
+            currencyInternalName: "casualty",
+            currencyLayer: "f",
+            effect() {
+                let eff = player.f.casualty.add(10)
+                eff = eff.log10()
+                return eff
+            },
+            effectDisplay() {
+                return format(getFUpgEff(122))+"x"
+            },
+            unlocked() {
+                return hasFUpg(121)
+            },
+            style: {
+                "background-color"() {
+                    if (!hasFUpg(122)) {
+                    let color = "#bf8f8f"
+                    if (player.f.casualty.gte(2.828e28)) color = "#3d2963"
+                    return color
+                    }
+                }
+            }
+        },
+        123: {
+            title: "Case-ual Boosts",
+            description: "Casualty gives free 'Cases Boost' and buyable autobuyers buy ^2 more.",
+            cost: new Decimal(4.141e41),
+            currencyDisplayName: "casualty",
+            currencyInternalName: "casualty",
+            currencyLayer: "f",
+            effect() {
+                let eff = player.f.casualty.add(10)
+                eff = eff.log10().pow(0.3).mul(400)
+                return eff.floor()
+            },
+            effectDisplay() {
+                return "+"+formatWhole(getFUpgEff(123))
+            },
+            unlocked() {
+                return hasFUpg(122)
+            },
+            style: {
+                "background-color"() {
+                    if (!hasFUpg(123)) {
+                    let color = "#bf8f8f"
+                    if (player.f.casualty.gte(4.141e41)) color = "#3d2963"
+                    return color
+                    }
+                }
+            }
+        },
+        124: {
+            title: "Fatal Casualties",
+            description: "Casualty boosts fatality effect.",
+            cost: new Decimal(9.393e93),
+            currencyDisplayName: "casualty",
+            currencyInternalName: "casualty",
+            currencyLayer: "f",
+            effect() {
+                let eff = player.f.casualty.add(10)
+                eff = eff.log10().mul(50)
+                return eff
+            },
+            effectDisplay() {
+                return "^"+format(getFUpgEff(124))
+            },
+            unlocked() {
+                return hasFUpg(123)
+            },
+            style: {
+                "background-color"() {
+                    if (!hasFUpg(124)) {
+                    let color = "#bf8f8f"
+                    if (player.f.casualty.gte(9.393e93)) color = "#3d2963"
+                    return color
+                    }
+                }
+            }
+        },
+        125: {
+            title: "Case PoWeR",
+            description: "Casualty power boosts cases gain.",
+            cost: new Decimal("3.69e369"),
+            currencyDisplayName: "casualty",
+            currencyInternalName: "casualty",
+            currencyLayer: "f",
+            effect() {
+                let eff = player.f.cp.add(10)
+                eff = eff.log10().add(10)
+                eff = eff.log10().pow(5)
+                return eff
+            },
+            effectDisplay() {
+                return "^"+format(getFUpgEff(125))
+            },
+            unlocked() {
+                return hasFUpg(124)
+            },
+            style: {
+                "background-color"() {
+                    if (!hasFUpg(125)) {
+                    let color = "#bf8f8f"
+                    if (player.f.casualty.gte("3.69e369")) color = "#3d2963"
+                    return color
+                    }
+                }
+            }
+        },
+        131: {
+            title: "Casual Replication",
+            description: "Casualty reduces replicate interval.",
+            cost: new Decimal("5e500"),
+            currencyDisplayName: "casualty",
+            currencyInternalName: "casualty",
+            currencyLayer: "f",
+            effect() {
+                let eff = player.f.casualty.add(10)
+                eff = eff.log10().add(10)
+                eff = eff.log10()
+                return eff
+            },
+            effectDisplay() {
+                return format(getFUpgEff(131))+"x"
+            },
+            unlocked() {
+                return hasMilestone("f",17)
+            },
+            style: {
+                "background-color"() {
+                    if (!hasFUpg(131)) {
+                    let color = "#bf8f8f"
+                    if (player.f.casualty.gte("5e500")) color = "#3d2963"
+                    return color
+                    }
+                }
+            }
+        },
+        132: {
+            title: "Replicated Replication",
+            description: "Replicators reduce interval and boost Multiplier Boosts.",
+            cost: new Decimal("6.06e606"),
+            currencyDisplayName: "casualty",
+            currencyInternalName: "casualty",
+            currencyLayer: "f",
+            effect() {
+                let eff = player.r.points.add(10)
+                eff = eff.log10().add(10)
+                eff = eff.log10().pow(3)
+                return eff
+            },
+            effect2() {
+                let eff = player.r.points.add(10)
+                eff = eff.log10().add(10)
+                eff = eff.log10().pow(0.5)
+                return eff
+            },
+            effectDisplay() {
+                return "Interval:" + format(this.effect())+"x, Boosts:" + format(this.effect2())+"x"
+            },
+            unlocked() {
+                return hasFUpg(131)
+            },
+            style: {
+                "background-color"() {
+                    if (!hasFUpg(132)) {
+                    let color = "#bf8f8f"
+                    if (player.f.casualty.gte("6.06e606")) color = "#3d2963"
+                    return color
+                    }
+                }
+            }
+        },
+        133: {
+            title: "Distance",
+            description: "Divide the max interval by 20 and Distant scaling starts 20 later.",
+            cost: new Decimal("7.92e792"),
+            currencyDisplayName: "casualty",
+            currencyInternalName: "casualty",
+            currencyLayer: "f",
+            unlocked() {
+                return hasFUpg(132)
+            },
+            style: {
+                "background-color"() {
+                    if (!hasFUpg(133)) {
+                    let color = "#bf8f8f"
+                    if (player.f.casualty.gte("7.92e792")) color = "#3d2963"
+                    return color
+                    }
+                }
+            }
+        },
+        134: {
+            title: "Replicated Scaling",
+            description: "Reduce the Dimension and Dimension Boost scaling by 0.5.",
+            cost: new Decimal("1.107e1107"),
+            currencyDisplayName: "casualty",
+            currencyInternalName: "casualty",
+            currencyLayer: "f",
+            unlocked() {
+                return hasFUpg(133)
+            },
+            style: {
+                "background-color"() {
+                    if (!hasFUpg(134)) {
+                    let color = "#bf8f8f"
+                    if (player.f.casualty.gte("1.107e1107")) color = "#3d2963"
+                    return color
+                    }
+                }
+            }
+        },
+        135: {
+            title: "Casual Casual",
+            description: "Increase the Casualty Multiplier base by +0.1.",
+            cost: new Decimal("2.1e2100"),
+            currencyDisplayName: "casualty",
+            currencyInternalName: "casualty",
+            currencyLayer: "f",
+            unlocked() {
+                return hasFUpg(134)
+            },
+            style: {
+                "background-color"() {
+                    if (!hasFUpg(135)) {
+                    let color = "#bf8f8f"
+                    if (player.f.casualty.gte("2.1e2100")) color = "#3d2963"
+                    return color
+                    }
+                }
+            }
+        },
     },
+    
+    challenges: { 
+        rows: 6,
+        cols: 2,
+        11: {
+            name: "Fatality Challenge 1",
+            currencyDisplayName: "fatality",
+            currencyInternalName: "points",
+            currencyLayer: "f",
+            challengeDescription: function() {
+                let c11 = "Fatality power/1.8e308."
+                if (inChallenge("f", 11)) c11 = c11 + " (In Challenge)"
+                if (challengeCompletions("f", 11) == 1) c11 = c11 + " (Completed)"
+                return c11
+            },
+            goal(){
+                return new Decimal("5.095e5095")
+            },
+            rewardDescription: "Unlock Fatality Dimension 1,2,3 Autobuyer.",
+            onStart(testInput=false) { 
+                if (testInput) {
+                    startCChallenge(11)
+                }
+            },
+            onComplete() {
+                player.f.casualty = player.f.casualty.add(tmp.f.buyables[34].effect)
+                player.f.casualtyTotal = player.f.casualtyTotal.add(tmp.f.buyables[34].effect)
+            },
+            unlocked(){
+                return hasMilestone("f", 12)
+            }
+        },
+        12: {
+            name: "Fatality Challenge 2",
+            currencyDisplayName: "fatality",
+            currencyInternalName: "points",
+            currencyLayer: "f",
+            challengeDescription: function() {
+                let c11 = "Multiplier per Fatality Dimension is 1."
+                if (inChallenge("f", 12)) c11 = c11 + " (In Challenge)"
+                if (challengeCompletions("f", 12) == 1) c11 = c11 + " (Completed)"
+                return c11
+            },
+            goal(){
+                return new Decimal("5.095e5095")
+            },
+            rewardDescription: "Unlock Fatality Dimension 4,5,6 Autobuyer.",
+            onStart(testInput=false) { 
+                if (testInput) {
+                    startCChallenge(12)
+                }
+            },
+            onComplete() {
+                player.f.casualty = player.f.casualty.add(tmp.f.buyables[34].effect)
+                player.f.casualtyTotal = player.f.casualtyTotal.add(tmp.f.buyables[34].effect)
+            },
+            unlocked(){
+                return hasMilestone("f", 12)
+            }
+        },
+        21: {
+            name: "Fatality Challenge 3",
+            currencyDisplayName: "fatality",
+            currencyInternalName: "points",
+            currencyLayer: "f",
+            challengeDescription: function() {
+                let c11 = "Dimension cost scaling is 100x."
+                if (inChallenge("f", 21)) c11 = c11 + " (In Challenge)"
+                if (challengeCompletions("f", 21) == 1) c11 = c11 + " (Completed)"
+                return c11
+            },
+            goal(){
+                return new Decimal("5.095e5095")
+            },
+            rewardDescription: "Unlock Fatality Dimension 7,8, Multiplier Autobuyer.",
+            onStart(testInput=false) { 
+                if (testInput) {
+                    startCChallenge(21)
+                }
+            },
+            onComplete() {
+                player.f.casualty = player.f.casualty.add(tmp.f.buyables[34].effect)
+                player.f.casualtyTotal = player.f.casualtyTotal.add(tmp.f.buyables[34].effect)
+            },
+            unlocked(){
+                return hasMilestone("f", 12)
+            }
+        },
+        22: {
+            name: "Fatality Challenge 4",
+            currencyDisplayName: "fatality",
+            currencyInternalName: "points",
+            currencyLayer: "f",
+            challengeDescription: function() {
+                let c11 = "You can't buy Dimension Boosts. Multiplier Boosts cost Fatality Dimension 6 and they are 1.5x stronger."
+                if (inChallenge("f", 22)) c11 = c11 + " (In Challenge)"
+                if (challengeCompletions("f", 22) == 1) c11 = c11 + " (Completed)"
+                return c11
+            },
+            goal(){
+                return new Decimal("5.095e5095")
+            },
+            rewardDescription: "Unlock Dimension and Multiplier Boost Autobuyer.",
+            onStart(testInput=false) { 
+                if (testInput) {
+                    startCChallenge(22)
+                }
+            },
+            onComplete() {
+                player.f.casualty = player.f.casualty.add(tmp.f.buyables[34].effect)
+                player.f.casualtyTotal = player.f.casualtyTotal.add(tmp.f.buyables[34].effect)
+            },
+            unlocked(){
+                return hasMilestone("f", 12)
+            }
+        },
+        31: {
+            name: "Casualty Challenge 1",
+            currencyDisplayName: "fatality",
+            currencyInternalName: "points",
+            currencyLayer: "f",
+            countsAs: [11,12,21,22],
+            challengeDescription: function() {
+                let c11 = "All Fatality Challenges are applied at once. You can't gain deaths. Fatality gain is gain from 1.000e10,450 deaths"
+                if (inChallenge("f", 31)) c11 = c11 + " (In Challenge)"
+                if (challengeCompletions("f", 31) == 1) c11 = c11 + " (Completed)"
+                return c11
+            },
+            goal(){
+                return new Decimal("e26000")
+            },
+            rewardDescription() {
+                let des =  "Casualty boosts Casualty Dimensions."
+                return des
+            },
+            rewardEffect() {
+                 let c12 = player.f.casualty.add(10)
+                 c12 = c12.log10().pow(1.5)
+                 return c12
+            },
+            rewardDisplay() {return format(this.rewardEffect()) + 'x'},
+            onStart(testInput=false) { 
+                if (testInput) {
+                    startCChallenge(31)
+                }
+            },
+            onComplete() {
+                player.f.casualty = player.f.casualty.add(tmp.f.buyables[34].effect)
+                player.f.casualtyTotal = player.f.casualtyTotal.add(tmp.f.buyables[34].effect)
+            },
+            unlocked(){
+                return player.f.best.gte("1e155000")
+            }
+        },
+        32: {
+            name: "Casualty Challenge 2",
+            currencyDisplayName: "fatality",
+            currencyInternalName: "points",
+            currencyLayer: "f",
+            challengeDescription: function() {
+                let c11 = "Multiplier Boosts are useless."
+                if (inChallenge("f", 32)) c11 = c11 + " (In Challenge)"
+                if (challengeCompletions("f", 32) == 1) c11 = c11 + " (Completed)"
+                return c11
+            },
+            goal(){
+                return new Decimal("e61000")
+            },
+            rewardDescription() {
+                let des =  "More powerful Sacrifice."
+                return des
+            },
+            onStart(testInput=false) { 
+                if (testInput) {
+                    startCChallenge(32)
+                }
+            },
+            onComplete() {
+                player.f.casualty = player.f.casualty.add(tmp.f.buyables[34].effect)
+                player.f.casualtyTotal = player.f.casualtyTotal.add(tmp.f.buyables[34].effect)
+            },
+            unlocked(){
+                return player.f.best.gte("1e177000")
+            }
+        },
+        41: {
+            name: "Casualty Challenge 3",
+            currencyDisplayName: "fatality",
+            currencyInternalName: "points",
+            currencyLayer: "f",
+            challengeDescription: function() {
+                let c11 = "Dimension scaling is 1.8e308x"
+                if (inChallenge("f", 41)) c11 = c11 + " (In Challenge)"
+                if (challengeCompletions("f", 41) == 1) c11 = c11 + " (Completed)"
+                return c11
+            },
+            goal(){
+                return new Decimal("e175500")
+            },
+            rewardDescription() {
+                let des =  "Reduce the Dimension scaling by 1."
+                return des
+            },
+            onStart(testInput=false) { 
+                if (testInput) {
+                    startCChallenge(41)
+                }
+            },
+            onComplete() {
+                player.f.casualty = player.f.casualty.add(tmp.f.buyables[34].effect)
+                player.f.casualtyTotal = player.f.casualtyTotal.add(tmp.f.buyables[34].effect)
+            },
+            unlocked(){
+                return player.f.best.gte("1e350000")
+            }
+        },
+        42: {
+            name: "Casualty Challenge 4",
+            currencyDisplayName: "fatality",
+            currencyInternalName: "points",
+            currencyLayer: "f",
+            challengeDescription: function() {
+                let c11 = "Fatality gain is ^0.1."
+                if (inChallenge("f", 42)) c11 = c11 + " (In Challenge)"
+                if (challengeCompletions("f", 42) == 1) c11 = c11 + " (Completed)"
+                return c11
+            },
+            goal(){
+                return new Decimal("e20000")
+            },
+            rewardDescription() {
+                let des =  "Fatality gain is ^1.05 and casualty power effect is ^1.5."
+                return des
+            },
+            onStart(testInput=false) { 
+                if (testInput) {
+                    startCChallenge(42)
+                }
+            },
+            onComplete() {
+                player.f.casualty = player.f.casualty.add(tmp.f.buyables[34].effect)
+                player.f.casualtyTotal = player.f.casualtyTotal.add(tmp.f.buyables[34].effect)
+            },
+            unlocked(){
+                return player.f.best.gte("1e410000")
+            }
+        },
+        51: {
+            name: "Casualty Challenge 5",
+            currencyDisplayName: "fatality",
+            currencyInternalName: "points",
+            currencyLayer: "f",
+            challengeDescription: function() {
+                let c11 = "Fatality gain exp is ^0.75."
+                if (inChallenge("f", 51)) c11 = c11 + " (In Challenge)"
+                if (challengeCompletions("f", 51) == 1) c11 = c11 + " (Completed)"
+                return c11
+            },
+            goal(){
+                return new Decimal("e11850")
+            },
+            rewardDescription() {
+                let des =  "Multiplier Boosts are 1.2x stronger."
+                return des
+            },
+            onStart(testInput=false) { 
+                if (testInput) {
+                    startCChallenge(51)
+                }
+            },
+            onComplete() {
+                player.f.casualty = player.f.casualty.add(tmp.f.buyables[34].effect)
+                player.f.casualtyTotal = player.f.casualtyTotal.add(tmp.f.buyables[34].effect)
+            },
+            unlocked(){
+                return player.f.best.gte("1e550000")
+            }
+        },
+        52: {
+            name: "Casualty Challenge 6",
+            currencyDisplayName: "fatality",
+            currencyInternalName: "points",
+            currencyLayer: "f",
+            challengeDescription: function() {
+                let c11 = "Fatality power is useless."
+                if (inChallenge("f", 52)) c11 = c11 + " (In Challenge)"
+                if (challengeCompletions("f", 52) == 1) c11 = c11 + " (Completed)"
+                return c11
+            },
+            goal(){
+                return new Decimal("e130000")
+            },
+            rewardDescription() {
+                let des =  "Fatality Dimension Multiplier boosts Casualty Dimensions."
+                return des
+            },
+            rewardEffect() {
+                let c12 = tmp.f.buyables[31].effect
+                c12 = c12.pow(2e-4)
+                return c12
+           },
+           rewardDisplay() {return format(this.rewardEffect()) + 'x'},
+            onStart(testInput=false) { 
+                if (testInput) {
+                    startCChallenge(52)
+                }
+            },
+            onComplete() {
+                player.f.casualty = player.f.casualty.add(tmp.f.buyables[34].effect)
+                player.f.casualtyTotal = player.f.casualtyTotal.add(tmp.f.buyables[34].effect)
+            },
+            unlocked(){
+                return player.f.best.gte("1e720000")
+            }
+        },
+        61: {
+            name: "Casualty Challenge 7",
+            currencyDisplayName: "fatality",
+            currencyInternalName: "points",
+            currencyLayer: "f",
+            countsAs: [12],
+            challengeDescription: function() {
+                let c11 = "Dimension Boosts are the only thing that boosts dimensions."
+                if (inChallenge("f", 61)) c11 = c11 + " (In Challenge)"
+                if (challengeCompletions("f", 61) == 1) c11 = c11 + " (Completed)"
+                return c11
+            },
+            goal(){
+                return new Decimal("e157630")
+            },
+            rewardDescription() {
+                let des =  "Fatality boosts Dimension Boosts."
+                return des
+            },
+            rewardEffect() {
+                let c12 = player.f.points.add(10)
+                c12 = c12.log10().pow(0.7)
+                return c12
+           },
+           rewardDisplay() {return format(this.rewardEffect()) + 'x'},
+            onStart(testInput=false) { 
+                if (testInput) {
+                    startCChallenge(61)
+                }
+            },
+            onComplete() {
+                player.f.casualty = player.f.casualty.add(tmp.f.buyables[34].effect)
+                player.f.casualtyTotal = player.f.casualtyTotal.add(tmp.f.buyables[34].effect)
+            },
+            unlocked(){
+                return player.f.best.gte("1e800000")
+            }
+        },
+        62: {
+            name: "Casualty Challenge 8",
+            currencyDisplayName: "fatality",
+            currencyInternalName: "points",
+            currencyLayer: "f",
+            countsAs: [12],
+            challengeDescription: function() {
+                let c11 = "Casualty power is the only thing that boosts dimensions."
+                if (inChallenge("f", 62)) c11 = c11 + " (In Challenge)"
+                if (challengeCompletions("f", 62) == 1) c11 = c11 + " (Completed)"
+                return c11
+            },
+            goal(){
+                return new Decimal("e360000")
+            },
+            rewardDescription() {
+                let des =  "Fatality boosts casualty power effect."
+                return des
+            },
+            rewardEffect() {
+                let c12 = player.f.points.add(10)
+                c12 = c12.log10().add(10)
+                c12 = c12.log10().pow(0.1)
+                return c12
+           },
+           rewardDisplay() {return "^"+format(this.rewardEffect())},
+           onStart(testInput=false) { 
+                if (testInput) {
+                    startCChallenge(62)
+                }
+            },
+            onComplete() {
+                player.f.casualty = player.f.casualty.add(tmp.f.buyables[34].effect)
+                player.f.casualtyTotal = player.f.casualtyTotal.add(tmp.f.buyables[34].effect)
+            },
+            unlocked(){
+                return player.f.best.gte("1e1137000")
+            }
+        },
+    },
+    bars: {
+        NextCD: {
+            direction: RIGHT,
+            width: 700,
+            height: 30,
+            fillStyle: {'background-color' : "#3d2963"},
+            req() {
+                let req =tmp.f.buyables[84].unlocked ? new Decimal("10")
+                :tmp.f.buyables[83].unlocked ? new Decimal("e6750000")
+                :tmp.f.buyables[82].unlocked ? new Decimal("e2830000")
+                :tmp.f.buyables[81].unlocked ? new Decimal("e2000000")  
+                :tmp.f.buyables[74].unlocked ? new Decimal("e1600000") 
+                :tmp.f.buyables[73].unlocked ? new Decimal("e300000")
+                :new Decimal("e120000")
+                return req
+            },
+            display() {
+                let f = player.f.points.add(1)
+                let r = "Get " + format(this.req()) + " fatality to unlock a new Dimension. (" + format(f.log10().div(this.req().log10()).mul(100).min(100)) + "%)"
+                if (tmp.f.buyables[84].unlocked ) r = "All Dimensions Unlocked"
+                return r
+            },
+            progress() { 
+                let f = player.f.points.add(1)
+                let p = tmp.f.buyables[84].unlocked ? 1 :f.log10().div(this.req().log10())
+                return p
+            },
+        },
+        NextCC: {
+            direction: RIGHT,
+            width: 700,
+            height: 30,
+            fillStyle: {'background-color' : "#3d2963"},
+            req() {
+                let req = tmp.f.challenges[62].unlocked ? new Decimal("10")
+                :tmp.f.challenges[61].unlocked ? new Decimal("e1137000") 
+                :tmp.f.challenges[52].unlocked ? new Decimal("e800000") 
+                :tmp.f.challenges[51].unlocked ? new Decimal("e720000")
+                :tmp.f.challenges[42].unlocked ? new Decimal("e550000") 
+                :tmp.f.challenges[41].unlocked ? new Decimal("e410000")
+                :tmp.f.challenges[32].unlocked ? new Decimal("e350000") 
+                :tmp.f.challenges[31].unlocked ? new Decimal("e177000") 
+                :new Decimal("e155000")
+                return req
+            },
+            display() {
+                let f = player.f.points.add(1)
+                let r = "Get " + format(this.req()) + " fatality to unlock a new Challenge. (" + format(f.log10().div(this.req().log10()).mul(100).min(100)) + "%)"
+                if (tmp.f.challenges[62].unlocked) r = "All Challenges Unlocked"
+                return r
+            },
+            progress() { 
+                let f = player.f.points.add(1)
+                let p = tmp.f.challenges[62].unlocked ? 1 : f.log10().div(this.req().log10())
+                return p
+            },
+        },
+    }
 })
