@@ -4214,7 +4214,7 @@ addLayer("f", {
         return eff
     },
     caseffect() {
-        let eff = player.f.casuals
+        let eff = player.f.casuals.max(1)
         eff = eff.log10().add(1).pow(30) 
         if (eff.gte(1e30)) eff = eff.div(1e30).pow(0.2).mul(1e30)
         return eff
