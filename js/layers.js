@@ -4113,6 +4113,7 @@ addLayer("f", {
             }
         } 
         else player.f.casuals = player.f.casuals.mul(m.pow(tmp.f.buyables[92].interval.pow(-1))).min("1.798e308")
+        player.f.casuals = player.f.casuals.max(1)
         if (player.f.cmultauto) layers.f.clickables[14].onClick()
         if (player.f.cdauto) layers.f.clickables[51].onClick()
         if (player.f.crbauto) layers.f.buyables[93].buy()
