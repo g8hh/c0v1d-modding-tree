@@ -4109,7 +4109,7 @@ addLayer("f", {
                 player.f.rtimes = player.f.rt.mul(-1)
                 player.f.rt = Decimal.add(player.f.rt, player.f.rtimes)
                 player.f.rtimes = player.f.rtimes.mul(-1)
-                player.f.casuals = player.f.casuals.mul(tmp.f.buyables[91].interval).min("1.798e308")
+                player.f.casuals = player.f.casuals.mul(tmp.f.buyables[91].effect).min("1.798e308")
             }
         } 
         else player.f.casuals = player.f.casuals.mul(m.pow(tmp.f.buyables[92].interval.pow(-1))).min("1.798e308")
@@ -7390,7 +7390,7 @@ addLayer("f", {
 			display() { // Everything else displayed in the buyable button after the title
                 let extra = ""
                 return "Multiply Casual Virus gain by "+format(this.base())+".\n\
-                Cost: " + format(tmp[this.layer].buyables[this.id].cost)+" severity\n\
+                Cost: " + format(tmp[this.layer].buyables[this.id].cost)+" casual viruses\n\
                 Effect: " + format(tmp[this.layer].buyables[this.id].effect)+"x\n\
                 Amount: " + formatWhole(getBuyableAmount("f",101)) + extra
             },
@@ -7438,7 +7438,7 @@ addLayer("f", {
 			display() { // Everything else displayed in the buyable button after the title
                 let extra = ""
                 return "Increase Casual Virus gain exponent by "+format(this.base())+".\n\
-                Cost: " + format(tmp[this.layer].buyables[this.id].cost)+" severity\n\
+                Cost: " + format(tmp[this.layer].buyables[this.id].cost)+" casual viruses\n\
                 Effect: +" + format(tmp[this.layer].buyables[this.id].effect)+"\n\
                 Amount: " + formatWhole(getBuyableAmount("f",102)) + extra
             },
@@ -7488,7 +7488,7 @@ addLayer("f", {
 			display() { // Everything else displayed in the buyable button after the title
                 let extra = ""
                 return "Raise 'Self Casual Boost' to (1+"+format(this.base())+"x) (based on Casual Viruses).\n\
-                Cost: " + format(tmp[this.layer].buyables[this.id].cost)+" severity\n\
+                Cost: " + format(tmp[this.layer].buyables[this.id].cost)+" casual viruses\n\
                 Effect: ^" + format(tmp[this.layer].buyables[this.id].effect)+"\n\
                 Amount: " + formatWhole(getBuyableAmount("f",103)) + extra
             },
