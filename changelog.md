@@ -1,5 +1,20 @@
 # The Modding Tree changelog:
 
+## v2.3.3 - 12/13/20
+- Fixed the first node in a row always taking up space.
+- layerShown is now optional.
+- All prestige types can now use features for custom prestige types.
+
+## v2.3.2 - 12/13/20
+- Fixed achievement/milestone popups.
+
+## v2.3.1 - 12/12/20
+- Another attempt to fix flickering tooltips.
+- The "this" keyword should work everywhere except tabFormat arrays (although I may have missed some things).
+- Fixed tree branches not updating when scrolling on the right-side tab.
+- Fixed a spacing issue when a node's symbol is ""
+- Removed some old, unneeded files.
+
 ## v2.3: Cooler and Newer Edition - 12/10/20
 - Added achievement/milestone popups (thank you to Jacorb for this contribution!)
 - The changelog tab is back, and can be set in mod.js.
