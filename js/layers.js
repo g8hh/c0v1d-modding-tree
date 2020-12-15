@@ -220,12 +220,13 @@ addLayer("v", {
                 let v13sff2 = new Decimal(0.8)
                 let v13sff3 = new Decimal(10/11)
                 let v13sff4 = new Decimal(5/6)
-                let v13sff5 = new Decimal(0.95)
+                let v13sff5 = new Decimal(0.8)
                 v13 = v13.pow(1/2)
                 if(hasUUpg(12)) v13sf = v13sf.mul(getUUpgEff(12))
                 if(hasUUpg(12)) v13sf2 = v13sf2.mul(getUUpgEff(12)).add(1)
                 if(hasUUpg(12)) v13sf3 = v13sf3.mul(getUUpgEff(12)).add(1)
                 if(hasUUpg(12)) v13sf4 = v13sf4.mul(getUUpgEff(12)).add(1)
+                if(hasUUpg(12)) v13sf5 = v13sf5.mul(getUUpgEff(12)).add(1)
                 if (inChallenge("u", 22)) v13sf = new Decimal(1)
                 if (inChallenge("u", 22)) v13sf2 = new Decimal(1)
                 if (hasChallenge("u", 22)) v13sff = v13sff.pow(challengeEffect("u", 22).pow(-1))
@@ -244,7 +245,7 @@ addLayer("v", {
                     v13 = Decimal.pow(10,Decimal.log10(v13.div(v13sf4)).pow(v13sff4)).mul(v13sf4)
                 }
                 if(v13.gte(v13sf5)) {
-                    v13 = Decimal.pow(10,Decimal.pow(10,v13.div(v13sf5).log10().log10().pow(v13sff5))).mul(v13sf5)
+                    v13 = Decimal.pow(10,Decimal.pow(10,v13.div(v13sf5).log10().add(1).log10().pow(v13sff5))).mul(v13sf5)
                 }
                 return v13  
             },
@@ -267,11 +268,13 @@ addLayer("v", {
                 let v21 = player.points.add(1)
                 let v21sf = new Decimal("ee5")
                 let v21sf2 = new Decimal("ee16")
+                let v21sf3 = new Decimal("ee90")
                 v21 = Decimal.log10(v21).pow(2).add(2)
                 if(hasVUpg(32)) v21 = v21.pow(getVUpgEff(32))
                 if(hasRUpg(23)) v21 = v21.pow(getRUpgEff(23))
                 if(v21.gte(v21sf)) v21 = Decimal.pow(10,Decimal.log10(v21.div(v21sf)).pow(0.8)).mul(v21sf)
                 if(v21.gte(v21sf2)) v21 = Decimal.pow(10,Decimal.log10(v21.div(v21sf2)).pow(0.88)).mul(v21sf2)
+                if(v21.gte(v21sf3)) v21 = Decimal.pow(10,Decimal.pow(10,Decimal.log10(v21.div(v21sf3)).log10().pow(0.95))).mul(v21sf3)
                 return v21
             },
             effectDisplay(){
@@ -417,6 +420,7 @@ addLayer("i", {
         if (inChallenge("u", 12)) eff = new Decimal(1)
         if (eff.gte("ee16")) eff = Decimal.pow(10,eff.div("ee16").log10().pow(0.88)).mul("ee16")
         if (eff.gte("ee32")) eff = Decimal.pow(10,eff.div("ee32").log10().pow(0.85)).mul("ee32")
+        if (eff.gte("ee63")) eff = eff.log10().div(1e13).pow(2e61)
         return eff
     },
     effectDescription() {
@@ -615,6 +619,7 @@ addLayer("i", {
             if (inChallenge("u", 12)) i33 = new Decimal(1)
             if (hasChallenge("u", 12)) i33 = i33.pow(challengeEffect("u", 12))
             if (i33.gte(1e17)) i33 = i33.div(1e17).pow(0.5).mul(1e17)
+            if (i33.gte(1e130)) i33 = Decimal.pow(10,i33.div(1e130).log10().pow(0.75)).mul(1e130)
             return i33
             },
             effectDisplay(){
@@ -824,6 +829,7 @@ addLayer("r", {
             if (hasChallenge("u", 22)) r23 = r23.mul(challengeEffect("u", 22))
             if (hasUUpg(24)) r23 = r23.pow(getUUpgEff(24))
             if (r23.gte(1e25)) r23 = r23.div(1e25).pow(0.3).mul(1e25)
+            if (r23.gte(1e80)) r23 = Decimal.pow(10,r23.div(1e80).log10().pow(0.75)).mul(1e80)
             if (inChallenge("u", 21)) r23 = new Decimal(1)
             return r23
             },
@@ -1028,6 +1034,7 @@ addLayer("u", {
             if (u12.gte(new Decimal("e1500"))) u12 = u12.div(new Decimal("e1500")).pow(0.3).mul(new Decimal("e1500"))
             if (u12.gte(new Decimal("e15000"))) u12 = Decimal.pow(10,u12.div(new Decimal("e1500")).log10().pow(2/3)).mul(new Decimal("e15000"))
             if (u12.gte(new Decimal("ee17"))) u12 = Decimal.pow(10,u12.div(new Decimal("ee17")).log10().pow(0.93)).mul(new Decimal("ee17"))
+            if (u12.gte(new Decimal("ee70"))) u12 = Decimal.pow(10,u12.div(new Decimal("ee70")).log10().pow(0.9)).mul(new Decimal("ee70"))
             return u12
             },
             effectDisplay(){
@@ -1415,6 +1422,7 @@ addLayer("s", {
         if (hasMilestone("f", 8)) buymult = buymult.mul(100)
         if (hasFUpg(73)) buymult = buymult.mul(1000)
         if (hasFUpg(123)) buymult = buymult.pow(2)
+        if (hasFUpg(143)) buymult = buymult.pow(10)
         return buymult
     },
     speed() {
@@ -2166,6 +2174,7 @@ addLayer("s", {
             effect(){
             let s15 = player.s.severity.add(1)
             s15 = s15.pow(0.3)
+            if (s15.gte("ee45")) s15 = Decimal.pow(10,s15.div("ee45").log10().pow(0.8)).mul("ee45")
             if (inChallenge("s", 11) || inChallenge("s", 21)) s15 = new Decimal(1)
             return s15
             },
@@ -2747,6 +2756,7 @@ addLayer("d", {
         if (hasMilestone("f", 8)) bulk = bulk.mul(100)
         if (hasFUpg(73)) bulk = bulk.mul(1000)
         if (hasFUpg(123)) bulk = bulk.pow(2)
+        if (hasFUpg(143)) bulk = bulk.pow(10)
         return bulk
     },
     speed() {
@@ -3076,22 +3086,32 @@ addLayer("d", {
         13: {
             title: "Cases Boost",
             scalebase() {
-                return new Decimal(1.007)
+                let base = new Decimal(1.007)
+                if (hasFUpg(142)) base = base.div(getFUpgEff(142))
+                return base
             },
 			cost(x=player[this.layer].buyables[this.id]) { // cost for buying xth buyable, can be an object if there are multiple currencies
                 let cost = Decimal.pow(10, Decimal.pow(this.scalebase(),x).mul(1000)).mul("e17000")
                 return cost.floor()
+            },
+            scStart() {
+                let sc = new Decimal(2500)
+                if (hasFUpg(174)) sc = sc.add(getFUpgEff(174))
+                if (hasFUpg(175)) sc = sc.add(getFUpgEff(175))
+                return sc
             },
             base() { 
                 let base = player.points.add(10)
                 base = base.log10().add(10)
                 base = base.log10().add(10)
                 base = base.log10().pow(0.004)
-                return base.min(1.003)
+                if (hasFUpg(141)) base = base.add(getFUpgEff(141))
+                if (hasFUpg(152)) base = base.add(getFUpgEff(152))
+                return base
             },
             extra() {
                 let extra = new Decimal(0)
-                if (hasFUpg(71)) extra = extra.add(getBuyableAmount("f",24).mul(2))
+                if (hasFUpg(71)) extra = extra.add(getFUpgEff(71))
                 if (hasFUpg(123)) extra = extra.add(getFUpgEff(123))
                 return extra
             },
@@ -3103,7 +3123,7 @@ addLayer("d", {
                 let x = this.total()
                 let base = this.base()
                 let eff = Decimal.pow(base, x)
-                if (x.gte(2500)) eff = Decimal.pow(base, x.mul(2500).pow(0.5))
+                if (x.gte(this.scStart())) eff = Decimal.pow(base, x.mul(this.scStart()).pow(0.5))
                 return eff;
             },
 			display() { // Everything else displayed in the buyable button after the title
@@ -3469,6 +3489,8 @@ addLayer("stat", {
         "blank",
         ["display-text", function() {if (hasFUpg(25)) return "'More Fatal' autobuy:"+formatWhole(tmp.d.bulk)+"/" + format(1/tmp.d.speed)+"s (" + format(Decimal.mul(tmp.d.bulk,tmp.d.speed)) + "/s)"}],
         "blank",
+        ["display-text", function() {if (player.d.buyables[13].gte(2500)) return "'Cases Boost' softcap start:"+format(tmp.d.buyables[13].scStart)}],
+        "blank",
         ["display-text", function() {if (hasMilestone("f",6)) return "Multiplier per Fatality Dimension:"+format(tmp.f.multpd)}],
         "blank",
         ["display-text", function() {if (player.f.total.gte("e1000")) return "Fatality Dimension Scaling:"+format(tmp.f.DimScaling)}],
@@ -3500,7 +3522,7 @@ addLayer("a", {
     row: "side", // Row the layer is in on the tree (0 is the first row)
     layerShown() { return true },
     achievements: {
-        rows: 6,
+        rows: 7,
         cols: 6,
         11: {
             name: "Start",
@@ -3862,6 +3884,16 @@ addLayer("a", {
                 addPoints("a",5)
             }
         },
+        71: {
+            name: "GoogolPlex",
+            tooltip: "Get ee100 cases. Reward: 5 AP",
+            done() {
+                return player.points.gte("ee100")
+            },
+            onComplete() {
+                addPoints("a",5)
+            }
+        },
     },
     effect() {
         let eff = player.a.points
@@ -3927,6 +3959,9 @@ addLayer("f", {
         multbauto: false,
         sacauto: false,
         cmultauto: false,
+        cdauto: false,
+        crbauto: false,
+        rbauto: false,
         t: [new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0)],
         times: [new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0)],
         buy: [41,42,43,44,51,52,53,54,61,62,63],
@@ -3937,7 +3972,12 @@ addLayer("f", {
         casuals: new Decimal(1),
         rt: new Decimal(0),
         rtimes: new Decimal(0),
+        crb: new Decimal(0),
+        crbtimes: new Decimal(0),
+        rb: new Decimal(0),
+        rbtimes: new Decimal(0),
         cboosts: new Decimal(0),
+        virus: new Decimal(0),
     }},
     color: "#f53d63",
     nodeStyle() {return {
@@ -3997,11 +4037,27 @@ addLayer("f", {
         if (hasChallenge("f",31)) mult = mult.mul(challengeEffect("f",31))
         if (hasChallenge("f",52)) mult = mult.mul(challengeEffect("f",52))
         mult = mult.mul(this.caseffect())
+        if (hasFUpg(153)) mult = mult.mul(getFUpgEff(153))
         return mult
+    },
+    virusGain() {
+        let exp = new Decimal(2)
+        if (hasFUpg(163)) exp = exp.add(1)
+        if (hasFUpg(164)) exp = exp.add(getFUpgEff(164))
+        if (hasFUpg(165)) exp = exp.add(getFUpgEff(165))
+        if (hasFUpg(166)) exp = exp.add(getFUpgEff(166))
+        exp = exp.add(tmp.f.buyables[102].effect)
+        let gain = player.f.casualty.div("ee4").add(1).log10().pow(exp).div(10000)
+        if (hasFUpg(155)) gain = gain.mul(getFUpgEff(155))
+        if (hasFUpg(157)) gain = gain.mul(tmp.f.upgrades[157].effect)
+        if (hasFUpg(162)) gain = gain.mul(getFUpgEff(162))
+        gain = gain.mul(tmp.f.buyables[101].effect)
+        return gain
     },
     update(diff) {
         player.f.p = player.f.p.add(this.powergain().mul(diff))
         player.f.cp = player.f.cp.add(this.cpowergain().mul(diff))
+        if (hasMilestone("f",20)) player.f.virus = player.f.virus.add(this.virusGain().mul(diff)).min(this.virusGain().mul(60))
         player.f.casualtyTotal = player.f.casualtyTotal.max(player.f.casualty)
         player.f.resettime = player.f.resettime.add(diff)
         if (hasMilestone("f",7)) generatePoints("f",diff/100)
@@ -4047,17 +4103,20 @@ addLayer("f", {
             if (tmp.f.buyables[64].on && tmp.f.clickables[13].effectnext.gte(100)) layers.f.clickables[13].onClick()
         }
         let m = tmp.f.buyables[91].effect.pow(diff)
-        if (tmp.f.buyables[92].effect.gte(0.1)) {
+        if (tmp.f.buyables[92].interval.gte(0.1)) {
         player.f.rt = Decimal.add(player.f.rt, diff)
-            if (player.f.rt.gte(tmp.f.buyables[92].effect) && hasMilestone("f",17)) {
+            if (player.f.rt.gte(tmp.f.buyables[92].interval) && hasMilestone("f",17)) {
                 player.f.rtimes = player.f.rt.mul(-1)
                 player.f.rt = Decimal.add(player.f.rt, player.f.rtimes)
                 player.f.rtimes = player.f.rtimes.mul(-1)
-                player.f.casuals = player.f.casuals.mul(tmp.f.buyables[91].effect).min("1.798e308")
+                player.f.casuals = player.f.casuals.mul(tmp.f.buyables[91].interval).min("1.798e308")
             }
         } 
-        else player.f.casuals = player.f.casuals.mul(m.pow(tmp.f.buyables[92].effect.pow(-1))).min("1.798e308")
+        else player.f.casuals = player.f.casuals.mul(m.pow(tmp.f.buyables[92].interval.pow(-1))).min("1.798e308")
         if (player.f.cmultauto) layers.f.clickables[14].onClick()
+        if (player.f.cdauto) layers.f.clickables[51].onClick()
+        if (player.f.crbauto) layers.f.buyables[93].buy()
+        if (player.f.rbauto && tmp.f.clickables[52].canClick) layers.f.clickables[52].onClick()
     },
     canReset() {return player.d.points.gte("e10450") && !hasMilestone("f",9)},
     gainMult() {
@@ -4085,6 +4144,7 @@ addLayer("f", {
         if (inChallenge("f",42)) gain = gain.pow(0.1)
         if (inChallenge("f",51)) gain = Decimal.pow(10,gain.log10().pow(0.75))
         if (hasChallenge("f",42)) gain = gain.pow(1.05)
+        if (hasFUpg(171)) gain = gain.pow(getFUpgEff(171))
         return gain.floor()
     },
     getNextAt() {
@@ -4140,6 +4200,8 @@ addLayer("f", {
         let eff = player.f.p.add(1)
         eff = eff.pow(0.6)
         if (hasFUpg(62)) eff = eff.pow(getFUpgEff(62))
+        if (hasFUpg(161)) eff = eff.pow(getFUpgEff(161))
+        if (eff.gte("ee8")) eff = Decimal.pow(10,eff.div("ee8").log10().pow(0.8)).mul("ee8")
         if (inChallenge("f",52)) eff = new Decimal(1)
         return eff
     },
@@ -4148,6 +4210,7 @@ addLayer("f", {
         eff = eff.pow(50)
         if (hasChallenge("f",42)) eff = eff.pow(1.5)
         if (hasChallenge("f",62)) eff = eff.pow(challengeEffect("f",62))
+        if (hasFUpg(167)) eff = eff.pow(getFUpgEff(167))
         return eff
     },
     caseffect() {
@@ -4167,6 +4230,7 @@ addLayer("f", {
         if (hasFUpg(115)) scale = scale.sub(1)
         if (hasFUpg(122)) scale = scale.sub(1)
         if (hasFUpg(134)) scale = scale.sub(0.5)
+        if (hasFUpg(154)) scale = scale.sub(getFUpgEff(154))
         if (hasChallenge("f",41)) scale = scale.sub(1)
         return scale
     },
@@ -4216,7 +4280,11 @@ addLayer("f", {
                 ["raw-html", function() {if (hasMilestone("f",9)) return "You are gaining " + layerText("h2", "f", format(tmp.f.getResetGain)) + " fatality per second"}],
                 function() {if (!hasMilestone("f",9)) return "prestige-button"},
                 "resource-display",
-                ["raw-html", function() {return "You have " + layerText("h2", "f", format(player.f.p)) + " fatality power, which boosts fatality gain by " + layerText("h2", "f", format(tmp.f.peffect))}],
+                ["raw-html", function() {
+                    let dis = "You have " + layerText("h2", "f", format(player.f.p)) + " fatality power, which boosts fatality gain by " + layerText("h2", "f", format(tmp.f.peffect))
+                    if (tmp.f.peffect.gte("ee8")) dis += " (softcapped)"
+                    return dis
+                }],
                 ["display-text", 
                 function() {
                     return "You are gaining " + format(tmp.f.powergain) + " fatality power per second."
@@ -4309,6 +4377,7 @@ addLayer("f", {
                 ["row", [["upgrade", 111], ["upgrade", 112], ["upgrade", 113], ["upgrade", 114], ["upgrade", 115]]],
                 ["row", [["upgrade", 121], ["upgrade", 122], ["upgrade", 123], ["upgrade", 124], ["upgrade", 125]]],
                 ["row", [["upgrade", 131], ["upgrade", 132], ["upgrade", 133], ["upgrade", 134], ["upgrade", 135]]],
+                ["row", [["upgrade", 141], ["upgrade", 142], ["upgrade", 143], ["upgrade", 144], ["upgrade", 145]]],
             ],
             buttonStyle: {"border-color": "#3d2963"},
             unlocked() {return hasMilestone("f", 12)},
@@ -4464,11 +4533,40 @@ addLayer("f", {
                 }
                 ],
                 ["raw-html", function() {return "You have <h2 style='color:#3d2963;text-shadow:0px 0px 10px;'>" + formatWhole(player.f.casuals) +"</h2> casuals, which boost Casualty Dimensions by <h2 style='color:#3d2963;text-shadow:0px 0px 10px;'>" + format(tmp.f.caseffect) +"</h2>"}],
-                ["row", [["buyable", 91], ["buyable", 92], ["buyable", 93]]],
-                ["row", [["clickable", 52]]]
+                "blank",
+                ["row", [["buyable", 91], ["buyable", 92], ["column", [["buyable", 93],["clickable", 53]]]]],
+                ["row", [["column", [["clickable", 52],["clickable", 54]]]]]
             ],
             buttonStyle: {"border-color": "#3d2963"},
             unlocked() {return hasMilestone("f", 17)},
+        },
+        "Casual Virus": {
+            content: [
+                ["raw-html", function() {return "You have <h2 style='color:#3d2963;text-shadow:0px 0px 10px;'>" + formatWhole(player.f.casualty) +"</h2> casualty"}],
+                "blank",
+                function() {if (!hasMilestone("f",18)) return ["row", [["clickable", 12]]]},
+                ["display-text", 
+                function() {
+                    if (hasMilestone("f",18)) return "You are gaining <h2 style='color:#3d2963;text-shadow:0px 0px 10px;'>" + formatWhole(tmp.f.clickables[12].gain.div(100)) + "</h2> casualty per second."
+                }
+                ],
+                "blank",
+                ["display-text", 
+                function() {
+                    return "You have made a total of " + formatWhole(player.f.casualtyTotal) + " casualty."
+                }
+                ],
+                "blank",
+                ["raw-html", function() {return "You have <h2 style='color:#3d2963;text-shadow:0px 0px 10px;'>" + format(player.f.virus) +"</h2> casual viruses"}],
+                "blank",
+                ["raw-html", function() {return "You are gaining <h2 style='color:#3d2963;text-shadow:0px 0px 10px;'>" + format(tmp.f.virusGain) +"</h2> casual viruses per second, with a limit of <h2 style='color:#3d2963;text-shadow:0px 0px 10px;'>" + format(tmp.f.virusGain.mul(60)) + "</h2> casual viruses"}],
+                ["row", [["upgrade", 151], ["upgrade", 152], ["upgrade", 153], ["upgrade", 154], ["upgrade", 155], ["upgrade", 156], ["upgrade", 157]]],
+                ["row", [["upgrade", 161], ["upgrade", 162], ["upgrade", 163], ["upgrade", 164], ["upgrade", 165], ["upgrade", 166], ["upgrade", 167]]],
+                ["row", [["upgrade", 171], ["upgrade", 172], ["upgrade", 173], ["upgrade", 174], ["upgrade", 175], ["upgrade", 176], ["upgrade", 177]]],
+                ["row", [["buyable", 101], ["buyable", 102], ["buyable", 103]]]
+            ],
+            buttonStyle: {"border-color": "#3d2963"},
+            unlocked() {return hasMilestone("f", 20)},
         },
     },
     
@@ -4576,9 +4674,28 @@ addLayer("f", {
             toggles: [["f", "cmultauto"]],
             unlocked() {return player.f.casualtyTotal.gte("e500")}
         },
+        19: {
+            requirementDescription() { return "5.555e5,555 total casualty" },
+            effectDescription() { return "Autobuy Casualty Dimensions and they cost nothing." },
+            done() { return player.f.casualtyTotal.gte("e5555") },
+            toggles: [["f", "cdauto"]],
+            unlocked() {return player.f.casualtyTotal.gte("e1000")}
+        },
+        20: {
+            requirementDescription() { return "1e10,000 total casualty" },
+            effectDescription() { return "Unlock Casual Virus and Replicated Boost Autobuyer." },
+            done() { return player.f.casualtyTotal.gte("ee4") },
+            unlocked() {return player.f.casualtyTotal.gte("e5000")}
+        },
+        21: {
+            requirementDescription() { return "1e100,000 total casualty" },
+            effectDescription() { return "Unlock Casual Virus buyables." },
+            done() { return player.f.casualtyTotal.gte("ee5") },
+            unlocked() {return player.f.casualtyTotal.gte("ee4")}
+        },
     },
     clickables: {
-        rows: 5,
+        rows: 6,
         cols: 4,
         11: {
             display() {
@@ -4669,11 +4786,13 @@ addLayer("f", {
             effect() {
                 let eff = player.f.sac.add(1).pow(0.025)
                 if (hasChallenge("f",32)) eff = eff.pow(3)
+                if (eff.gte("ee8")) eff = eff.div("ee8").pow(0.2).mul("ee8")
                 return eff
             },
             effectnext() {
                 let eff = player.f.buyables[11].pow(0.025)
                 if (hasChallenge("f",32)) eff = eff.pow(3)
+                if (eff.gte("ee8")) eff = eff.div("ee8").pow(0.2).mul("ee8")
                 return eff.div(this.effect())
             },
             canClick() {return this.effectnext().gte(1) && player.f.buyables[24].gte(1)},
@@ -4907,9 +5026,39 @@ addLayer("f", {
                 return color
             }}
         },
+        53: {
+            display() {
+                if (player.f.crbauto) return "<h2>ON</h2>"
+                else return "<h2>OFF</h2>"
+            },
+            canClick() {return true},
+            onClick() {
+                if (player.f.crbauto) player.f.crbauto = false 
+                else player.f.crbauto = true
+            },
+            unlocked() {
+                return hasMilestone("f",20)
+            },
+            style: {'height':'50px', 'width':'50px', 'background-color':"#3d2963"},
+        },
+        54: {
+            display() {
+                if (player.f.rbauto) return "<h2>ON</h2>"
+                else return "<h2>OFF</h2>"
+            },
+            canClick() {return true},
+            onClick() {
+                if (player.f.rbauto) player.f.rbauto = false 
+                else player.f.rbauto = true
+            },
+            unlocked() {
+                return hasMilestone("f",20)
+            },
+            style: {'height':'50px', 'width':'50px', 'background-color':"#3d2963"},
+        },
     },
     buyables: {
-		rows: 9,
+		rows: 10,
         cols: 4,
         11: {
 			title: "Fatality Dimension 1",
@@ -5672,6 +5821,7 @@ addLayer("f", {
             distantStart() {
                 let distant = new Decimal(100)
                 if (hasFUpg(133)) distant = distant.add(20)
+                if (hasFUpg(145)) distant = distant.add(getFUpgEff(145))
                 return distant
             },
             distantScale() {
@@ -5683,6 +5833,7 @@ addLayer("f", {
                 if (hasFUpg(75)) base = base.pow(1.125)
                 if (hasFUpg(112)) base = base.pow(1.3)
                 if (hasFUpg(105)) base = base.pow(getFUpgEff(105))
+                if (hasFUpg(172)) base = base.pow(getFUpgEff(172))
                 if (hasFUpg(121)) base = base.pow(1.35)
                 if (hasFUpg(132)) base = base.pow(tmp.f.upgrades[132].effect2)
                 if (hasChallenge("f",51)) base = base.pow(1.2)
@@ -5808,6 +5959,8 @@ addLayer("f", {
             base() { 
                 let base = new Decimal(2)
                 if (hasFUpg(135)) base = base.add(0.1)
+                if (hasFUpg(151)) base = base.add(getFUpgEff(151))
+                if (hasFUpg(173)) base = base.add(getFUpgEff(173))
                 return base
             },
             total() {
@@ -6590,7 +6743,7 @@ addLayer("f", {
             buy() { 
                 cost = tmp[this.layer].buyables[this.id].cost
                 if (this.canAfford()) {
-                    player.f.casualty = player.f.casualty.sub(cost).max(0)	
+                    if (!hasMilestone("f",19)) player.f.casualty = player.f.casualty.sub(cost).max(0)	
                     player.f.cd[0] = player.f.cd[0].add(1)
                     player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
                 }
@@ -6602,7 +6755,7 @@ addLayer("f", {
                 let diff = max.sub(player.f.cd[0]).min(b)
                 cost = Decimal.sub(1,Decimal.pow(1e5,max)).div(-99999).mul(1e14)
                 if (this.canAfford()) {
-                    player.f.casualty = player.f.casualty.sub(cost).max(0)	
+                    if (!hasMilestone("f",19)) player.f.casualty = player.f.casualty.sub(cost).max(0)	
                     player.f.cd[0] = player.f.cd[0].add(diff)
                     player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(diff)
                 }
@@ -6655,7 +6808,7 @@ addLayer("f", {
             buy() { 
                 cost = tmp[this.layer].buyables[this.id].cost
                 if (this.canAfford()) {
-                    player.f.casualty = player.f.casualty.sub(cost).max(0)	
+                    if (!hasMilestone("f",19)) player.f.casualty = player.f.casualty.sub(cost).max(0)	
                     player.f.cd[1] = player.f.cd[1].add(1)
                     player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
                 }
@@ -6667,7 +6820,7 @@ addLayer("f", {
                 let diff = max.sub(player.f.cd[1]).min(b)
                 cost = Decimal.sub(1,Decimal.pow(1e9,max)).div(-999999999).mul(1e16)
                 if (this.canAfford()) {
-                    player.f.casualty = player.f.casualty.sub(cost).max(0)	
+                    if (!hasMilestone("f",19)) player.f.casualty = player.f.casualty.sub(cost).max(0)	
                     player.f.cd[1] = player.f.cd[1].add(diff)
                     player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(diff)
                 }
@@ -6720,7 +6873,7 @@ addLayer("f", {
             buy() { 
                 cost = tmp[this.layer].buyables[this.id].cost
                 if (this.canAfford()) {
-                    player.f.casualty = player.f.casualty.sub(cost).max(0)	
+                    if (!hasMilestone("f",19)) player.f.casualty = player.f.casualty.sub(cost).max(0)	
                     player.f.cd[2] = player.f.cd[2].add(1)
                     player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
                 }
@@ -6732,7 +6885,7 @@ addLayer("f", {
                 let diff = max.sub(player.f.cd[2]).min(b)
                 cost = Decimal.sub(1,Decimal.pow(1e13,max)).div(-1e13).mul(1e29)
                 if (this.canAfford()) {
-                    player.f.casualty = player.f.casualty.sub(cost).max(0)	
+                    if (!hasMilestone("f",19)) player.f.casualty = player.f.casualty.sub(cost).max(0)	
                     player.f.cd[2] = player.f.cd[2].add(diff)
                     player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(diff)
                 }
@@ -6785,7 +6938,7 @@ addLayer("f", {
             buy() { 
                 cost = tmp[this.layer].buyables[this.id].cost
                 if (this.canAfford()) {
-                    player.f.casualty = player.f.casualty.sub(cost).max(0)	
+                    if (!hasMilestone("f",19)) player.f.casualty = player.f.casualty.sub(cost).max(0)	
                     player.f.cd[3] = player.f.cd[3].add(1)
                     player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
                 }
@@ -6797,7 +6950,7 @@ addLayer("f", {
                 let diff = max.sub(player.f.cd[3]).min(b)
                 cost = Decimal.sub(1,Decimal.pow(1e17,max)).div(-1e17).mul(1e50)
                 if (this.canAfford()) {
-                    player.f.casualty = player.f.casualty.sub(cost).max(0)	
+                    if (!hasMilestone("f",19)) player.f.casualty = player.f.casualty.sub(cost).max(0)	
                     player.f.cd[3] = player.f.cd[3].add(diff)
                     player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(diff)
                 }
@@ -6850,7 +7003,7 @@ addLayer("f", {
             buy() { 
                 cost = tmp[this.layer].buyables[this.id].cost
                 if (this.canAfford()) {
-                    player.f.casualty = player.f.casualty.sub(cost).max(0)	
+                    if (!hasMilestone("f",19)) player.f.casualty = player.f.casualty.sub(cost).max(0)	
                     player.f.cd[4] = player.f.cd[4].add(1)
                     player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
                 }
@@ -6862,7 +7015,7 @@ addLayer("f", {
                 let diff = max.sub(player.f.cd[4]).min(b)
                 cost = Decimal.sub(1,Decimal.pow(1e20,max)).div(-1e20).mul("1e460")
                 if (this.canAfford()) {
-                    player.f.casualty = player.f.casualty.sub(cost).max(0)	
+                    if (!hasMilestone("f",19)) player.f.casualty = player.f.casualty.sub(cost).max(0)	
                     player.f.cd[4] = player.f.cd[4].add(diff)
                     player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(diff)
                 }
@@ -6915,7 +7068,7 @@ addLayer("f", {
             buy() { 
                 cost = tmp[this.layer].buyables[this.id].cost
                 if (this.canAfford()) {
-                    player.f.casualty = player.f.casualty.sub(cost).max(0)	
+                    if (!hasMilestone("f",19)) player.f.casualty = player.f.casualty.sub(cost).max(0)	
                     player.f.cd[5] = player.f.cd[5].add(1)
                     player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
                 }
@@ -6927,7 +7080,7 @@ addLayer("f", {
                 let diff = max.sub(player.f.cd[5]).min(b)
                 cost = Decimal.sub(1,Decimal.pow(1e25,max)).div(-1e25).mul("1e575")
                 if (this.canAfford()) {
-                    player.f.casualty = player.f.casualty.sub(cost).max(0)	
+                    if (!hasMilestone("f",19)) player.f.casualty = player.f.casualty.sub(cost).max(0)	
                     player.f.cd[5] = player.f.cd[5].add(diff)
                     player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(diff)
                 }
@@ -6980,7 +7133,7 @@ addLayer("f", {
             buy() { 
                 cost = tmp[this.layer].buyables[this.id].cost
                 if (this.canAfford()) {
-                    player.f.casualty = player.f.casualty.sub(cost).max(0)	
+                    if (!hasMilestone("f",19)) player.f.casualty = player.f.casualty.sub(cost).max(0)	
                     player.f.cd[6] = player.f.cd[6].add(1)
                     player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
                 }
@@ -6992,7 +7145,7 @@ addLayer("f", {
                 let diff = max.sub(player.f.cd[6]).min(b)
                 cost = Decimal.sub(1,Decimal.pow(1e30,max)).div(-1e30).mul("1e790")
                 if (this.canAfford()) {
-                    player.f.casualty = player.f.casualty.sub(cost).max(0)	
+                    if (!hasMilestone("f",19)) player.f.casualty = player.f.casualty.sub(cost).max(0)	
                     player.f.cd[6] = player.f.cd[6].add(diff)
                     player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(diff)
                 }
@@ -7045,7 +7198,7 @@ addLayer("f", {
             buy() { 
                 cost = tmp[this.layer].buyables[this.id].cost
                 if (this.canAfford()) {
-                    player.f.casualty = player.f.casualty.sub(cost).max(0)	
+                    if (!hasMilestone("f",19)) player.f.casualty = player.f.casualty.sub(cost).max(0)	
                     player.f.cd[7] = player.f.cd[7].add(1)
                     player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
                 }
@@ -7057,7 +7210,7 @@ addLayer("f", {
                 let diff = max.sub(player.f.cd[7]).min(b)
                 cost = Decimal.sub(1,Decimal.pow(1e40,max)).div(-1e40).mul("1e1905")
                 if (this.canAfford()) {
-                    player.f.casualty = player.f.casualty.sub(cost).max(0)	
+                    if (!hasMilestone("f",19)) player.f.casualty = player.f.casualty.sub(cost).max(0)	
                     player.f.cd[7] = player.f.cd[7].add(diff)
                     player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(diff)
                 }
@@ -7085,15 +7238,17 @@ addLayer("f", {
                 let eff = x
                 return eff;
             },
-			display() { // Everything else displayed in the buyable button after the title
-                return "Increase the replicate multiplier.\n\
+            display() { // Everything else displayed in the buyable button after the title
+                let dis = "Increase the replicate multiplier."
+                if (this.total().gte(100)) dis += " (MAXED)"
+                return dis + "\n\
                 Cost: " + format(tmp[this.layer].buyables[this.id].cost)+" casualty\n\
                 Multiplier: " + format(tmp[this.layer].buyables[this.id].effect)+"x\n\
                 Amount: " + formatWhole(this.total())
             },
             unlocked() { return hasMilestone("f",17) }, 
             canAfford() {
-                    return player.f.casualty.gte(tmp[this.layer].buyables[this.id].cost)},
+                    return player.f.casualty.gte(tmp[this.layer].buyables[this.id].cost) && this.total().lt(100)},
             buy() { 
                 cost = tmp[this.layer].buyables[this.id].cost
                 if (this.canAfford()) {
@@ -7124,19 +7279,28 @@ addLayer("f", {
                 let total = getBuyableAmount("f", 92)
                 return total
             },
-			effect() { // Effects of owning x of the items, x is a decimal
+            effect() {
                 let x = this.total()
                 let eff = Decimal.pow(0.9,x)
                 if (hasFUpg(131)) eff = eff.div(getFUpgEff(131))
                 if (hasFUpg(132)) eff = eff.div(getFUpgEff(132))
-                return eff.max(this.max());
+                return eff
+            },
+			interval() { // Effects of owning x of the items, x is a decimal
+                let eff = this.effect()
+                return eff.mul(this.scale()).max(this.max());
+            },
+            scale() {
+                let scale = new Decimal(1)
+                if (player.f.casuals.gte("1.8e308")) scale = scale.mul(Decimal.pow(1.2,player.f.casuals.log10().sub(308).div(308))).mul(10)
+                return scale
             },
             display() { // Everything else displayed in the buyable button after the title
                 let dis = "Reduce the replicate interval."
                 if (this.effect().lte(this.max())) dis += " (MAXED)"
                 return dis + "\n\
                 Cost: " + format(tmp[this.layer].buyables[this.id].cost)+" casualty\n\
-                Interval: " + formatTimeLong(tmp[this.layer].buyables[this.id].effect)+"\n\
+                Interval: " + formatTimeLong(tmp[this.layer].buyables[this.id].interval)+"\n\
                 Amount: " + formatWhole(this.total())
             },
             unlocked() { return hasMilestone("f",17) }, 
@@ -7161,6 +7325,8 @@ addLayer("f", {
 			title: "Casual Replicated Boosts",
 			cost(x=player[this.layer].buyables[this.id]) { // cost for buying xth buyable, can be an object if there are multiple currencies
                 let cost = Decimal.pow(1e25, x).mul(Decimal.pow(1e5,(x.pow(2).add(x).div(2)))).mul("1e750")
+                let s = x.sub(100)
+                if (x.gte(100)) cost = Decimal.pow("e775", s).mul(Decimal.pow(1e55,(s.pow(2).add(s).div(2)))).mul("e28500")
                 return cost.floor()
             },
             total() {
@@ -7197,9 +7363,156 @@ addLayer("f", {
                 }
             },
         },
+        101: {
+			title: "Virus Gain",
+			cost(x=player[this.layer].buyables[this.id]) { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let cost = Decimal.pow(10, x.pow(1.2)).mul(1e45)
+                return cost.floor()
+            },
+            base() { 
+                let base = new Decimal(10)
+                if (hasFUpg(177)) base = base.add(getFUpgEff(177))
+                return base
+            },
+            extra() {
+                let extra = new Decimal(0)
+                return extra
+            },
+            total() {
+                let total = getBuyableAmount("f", 101).add(this.extra())
+                return total
+            },
+			effect() { // Effects of owning x of the items, x is a decimal
+                let x = this.total()
+                let base = this.base()
+                return Decimal.pow(base, x);
+            },
+			display() { // Everything else displayed in the buyable button after the title
+                let extra = ""
+                return "Multiply Casual Virus gain by "+format(this.base())+".\n\
+                Cost: " + format(tmp[this.layer].buyables[this.id].cost)+" severity\n\
+                Effect: " + format(tmp[this.layer].buyables[this.id].effect)+"x\n\
+                Amount: " + formatWhole(getBuyableAmount("f",101)) + extra
+            },
+            unlocked() { return hasMilestone("f", 21) }, 
+            canAfford() {
+                    return player.f.virus.gte(tmp[this.layer].buyables[this.id].cost)},
+            buy() { 
+                cost = tmp[this.layer].buyables[this.id].cost
+                if (this.canAfford()) {
+                    player.f.virus = player.f.virus.sub(cost).max(0)	
+                    player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
+                }
+            },
+            style: {'height':'180px', 'width':'180px',
+                "background-color"() {
+                    let color = "#bf8f8f"
+                    if (tmp.f.buyables[101].canAfford) color = "#3d2963"
+                    return color
+                }
+            },
+        },
+        102: {
+			title: "Virus Exponent",
+			cost(x=player[this.layer].buyables[this.id]) { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let cost = Decimal.pow(30, x.pow(1.3)).mul(1e55)
+                return cost.floor()
+            },
+            base() { 
+                let base = new Decimal(0.15)
+                return base
+            },
+            extra() {
+                let extra = new Decimal(0)
+                return extra
+            },
+            total() {
+                let total = getBuyableAmount("f", 102).add(this.extra())
+                return total
+            },
+			effect() { // Effects of owning x of the items, x is a decimal
+                let x = this.total()
+                let base = this.base()
+                return Decimal.mul(base, x);
+            },
+			display() { // Everything else displayed in the buyable button after the title
+                let extra = ""
+                return "Increase Casual Virus gain exponent by "+format(this.base())+".\n\
+                Cost: " + format(tmp[this.layer].buyables[this.id].cost)+" severity\n\
+                Effect: +" + format(tmp[this.layer].buyables[this.id].effect)+"\n\
+                Amount: " + formatWhole(getBuyableAmount("f",102)) + extra
+            },
+            unlocked() { return hasFUpg(173) }, 
+            canAfford() {
+                    return player.f.virus.gte(tmp[this.layer].buyables[this.id].cost)},
+            buy() { 
+                cost = tmp[this.layer].buyables[this.id].cost
+                if (this.canAfford()) {
+                    player.f.virus = player.f.virus.sub(cost).max(0)	
+                    player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
+                }
+            },
+            style: {'height':'180px', 'width':'180px',
+                "background-color"() {
+                    let color = "#bf8f8f"
+                    if (tmp.f.buyables[102].canAfford) color = "#3d2963"
+                    return color
+                }
+            },
+        },
+        103: {
+			title: "Self Booster",
+			cost(x=player[this.layer].buyables[this.id]) { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let cost = Decimal.pow(1e6, x.pow(1.5)).mul(4e72)
+                return cost.floor()
+            },
+            base() { 
+                let base = player.f.virus.add(10)
+                base = base.log10().add(10)
+                base = base.log10().div(10)
+                return base
+            },
+            extra() {
+                let extra = new Decimal(0)
+                return extra
+            },
+            total() {
+                let total = getBuyableAmount("f", 103).add(this.extra())
+                return total
+            },
+			effect() { // Effects of owning x of the items, x is a decimal
+                let x = this.total()
+                let base = this.base()
+                return Decimal.mul(base, x).add(1);
+            },
+			display() { // Everything else displayed in the buyable button after the title
+                let extra = ""
+                return "Raise 'Self Casual Boost' to (1+"+format(this.base())+"x) (based on Casual Viruses).\n\
+                Cost: " + format(tmp[this.layer].buyables[this.id].cost)+" severity\n\
+                Effect: ^" + format(tmp[this.layer].buyables[this.id].effect)+"\n\
+                Amount: " + formatWhole(getBuyableAmount("f",103)) + extra
+            },
+            unlocked() { return hasFUpg(176) }, 
+            canAfford() {
+                    return player.f.virus.gte(tmp[this.layer].buyables[this.id].cost)},
+            buy() { 
+                cost = tmp[this.layer].buyables[this.id].cost
+                if (this.canAfford()) {
+                    player.f.virus = player.f.virus.sub(cost).max(0)	
+                    player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
+                }
+            },
+            style: {'height':'180px', 'width':'180px',
+                "background-color"() {
+                    let color = "#bf8f8f"
+                    if (tmp.f.buyables[103].canAfford) color = "#3d2963"
+                    return color
+                }
+            },
+        },
     },
     upgrades: {
-        rows: 13,
+        rows: 17,
         cols: 7,
         11: {
             title: "Lethality",
@@ -7239,6 +7552,7 @@ addLayer("f", {
                 if (eff.gte("e5e12")) eff = Decimal.pow(10,eff.div("e5e12").log10().pow(0.9)).mul("e5e12")
                 if (eff.gte("ee19")) eff = Decimal.pow(10,eff.div("ee19").log10().pow(0.9)).mul("ee19")
                 if (eff.gte("ee24")) eff = Decimal.pow(10,eff.div("ee24").log10().pow(0.88)).mul("ee24")
+                if (eff.gte("ee45")) eff = Decimal.pow(10,eff.div("ee45").log10().pow(0.85)).mul("ee45")
                 return eff
             },
             effectDisplay() {
@@ -7257,10 +7571,15 @@ addLayer("f", {
             effect() {
                 let eff = player.points.add(10)
                 eff = eff.log10().pow(0.075)
+                if (hasFUpg(143)) eff = eff.tetrate(getFUpgEff(143))
+                if (eff.gte("ee8")) eff = Decimal.pow(10,eff.div("ee8").log10().pow(0.8)).mul("ee8")
+                if (eff.gte("ee9")) eff = eff.log10().mul(10).pow(1e8)
                 return eff
             },
             effectDisplay() {
-                return format(getFUpgEff(14)) + "x"
+                let dis = format(getFUpgEff(14)) + "x"
+                if (this.effect().gte("ee8")) dis += " (softcapped)"
+                return dis
             },
             unlocked() {
                 return hasFUpg(13)
@@ -7690,6 +8009,16 @@ addLayer("f", {
             title: "8 Dimension Cases",
             description: "Fatality Dimension 8 gives 2 free 'Cases Boost'.",
             cost: new Decimal("1.731e1731"),
+            effect() {
+                let eff = getBuyableAmount("f",24).mul(2)
+                if (eff.gte(1e5)) eff = eff.div(1e5).pow(0.33).mul(1e5)
+                return eff.floor()
+            },
+            effectDisplay() {
+                let dis = "+"+formatWhole(getFUpgEff(71))
+                if (this.effect().gte(1e5)) dis += " (softcapped)"
+                return dis
+            },
             unlocked() {
                 return hasFUpg(65)
             }
@@ -8493,8 +8822,751 @@ addLayer("f", {
                 }
             }
         },
+        141: {
+            title: "Cases MultiBoost",
+            description: "Multiplier Boosts increase 'Cases Boost' base by +5e-7.",
+            cost: new Decimal("2.395e2395"),
+            currencyDisplayName: "casualty",
+            currencyInternalName: "casualty",
+            currencyLayer: "f",
+            effect() {
+                let eff = getBuyableAmount("f",33).div(2e6)
+                return eff
+            },
+            effectDisplay() {
+                return "+"+format(getFUpgEff(141))
+            },
+            unlocked() {
+                return hasFUpg(135)
+            },
+            style: {
+                "background-color"() {
+                    if (!hasFUpg(141)) {
+                    let color = "#bf8f8f"
+                    if (player.f.casualty.gte("2.395e2395")) color = "#3d2963"
+                    return color
+                    }
+                }
+            }
+        },
+        142: {
+            title: "Case Scaling",
+            description: "Casualty reduces 'Cases Boost' scaling.",
+            cost: new Decimal("2.787e2787"),
+            currencyDisplayName: "casualty",
+            currencyInternalName: "casualty",
+            currencyLayer: "f",
+            effect() {
+                let eff = player.f.casualty.add(10)
+                eff = eff.log10().add(10)
+                eff = eff.log10().add(10)
+                eff = eff.log10().pow(0.03)
+                return eff.min(1.006)
+            },
+            effectDisplay() {
+                return format(getFUpgEff(142))+"x"
+            },
+            unlocked() {
+                return hasFUpg(141)
+            },
+            style: {
+                "background-color"() {
+                    if (!hasFUpg(142)) {
+                    let color = "#bf8f8f"
+                    if (player.f.casualty.gte("2.787e2787")) color = "#3d2963"
+                    return color
+                    }
+                }
+            }
+        },
+        143: {
+            title: "Fatal Synergy",
+            description: "Cases and 'Fatally' boost each other, buyable autobuyers buy ^10 more.",
+            cost: new Decimal("3.958e3958"),
+            currencyDisplayName: "casualty",
+            currencyInternalName: "casualty",
+            currencyLayer: "f",
+            effect() {
+                let eff = player.points.add(1).slog().pow(0.47)
+                return eff
+            },
+            effect2() {
+                let eff = getFUpgEff(14).add(10)
+                eff = eff.log10().pow(0.15)
+                return eff
+            },
+            effectDisplay() {
+                return "Fatally: ^^"+format(this.effect()) + ", Cases: ^" + format(this.effect2())
+            },
+            unlocked() {
+                return hasFUpg(142)
+            },
+            style: {
+                "background-color"() {
+                    if (!hasFUpg(143)) {
+                    let color = "#bf8f8f"
+                    if (player.f.casualty.gte("3.958e3958")) color = "#3d2963"
+                    return color
+                    }
+                }
+            }
+        },
+        144: {
+            title: "Fatal Cases",
+            description: "Fatality boosts cases exponent.",
+            cost: new Decimal("5.75e5750"),
+            currencyDisplayName: "casualty",
+            currencyInternalName: "casualty",
+            currencyLayer: "f",
+            effect() {
+                let eff = player.f.points.add(10)
+                eff = eff.log10().add(10)
+                eff = eff.log10().add(10)
+                eff = eff.log10().pow(0.07)
+                return eff
+            },
+            effectDisplay() {
+                return "^"+format(getFUpgEff(144))
+            },
+            unlocked() {
+                return hasFUpg(143)
+            },
+            style: {
+                "background-color"() {
+                    if (!hasFUpg(144)) {
+                    let color = "#bf8f8f"
+                    if (player.f.casualty.gte("5.75e5750")) color = "#3d2963"
+                    return color
+                    }
+                }
+            }
+        },
+        145: {
+            title: "Distant Fatalities",
+            description: "Fatality makes Distant scaling start later.",
+            cost: new Decimal("7.272e7272"),
+            currencyDisplayName: "casualty",
+            currencyInternalName: "casualty",
+            currencyLayer: "f",
+            effect() {
+                let eff = player.f.points.add(10)
+                eff = eff.log10().pow(0.2355)
+                return eff
+            },
+            effectDisplay() {
+                return "+"+format(getFUpgEff(145))
+            },
+            unlocked() {
+                return hasFUpg(144)
+            },
+            style: {
+                "background-color"() {
+                    if (!hasFUpg(145)) {
+                    let color = "#bf8f8f"
+                    if (player.f.casualty.gte("7.272e7272")) color = "#3d2963"
+                    return color
+                    }
+                }
+            }
+        },
+        151: {
+            title: "MultiVirus",
+            description: "Casual viruses add to Casualty Multiplier base.",
+            cost: new Decimal(1),
+            currencyDisplayName: "casual viruses",
+            currencyInternalName: "virus",
+            currencyLayer: "f",
+            effect() {
+                let eff = player.f.virus.add(10)
+                eff = eff.log10().pow(0.2).div(15)
+                return eff
+            },
+            effectDisplay() {
+                return "+"+format(getFUpgEff(151))
+            },
+            unlocked() {
+                return hasMilestone("f",20)
+            },
+            style: {
+                "background-color"() {
+                    if (!hasFUpg(151)) {
+                    let color = "#bf8f8f"
+                    if (player.f.virus.gte(1)) color = "#3d2963"
+                    return color
+                    }
+                }
+            }
+        },
+        152: {
+            title: "Boosted Virus",
+            description: "Casual viruses add to 'Cases Boost' base.",
+            cost: new Decimal(22650),
+            currencyDisplayName: "casual viruses",
+            currencyInternalName: "virus",
+            currencyLayer: "f",
+            effect() {
+                let eff = player.f.virus.add(10)
+                eff = eff.log10().add(10)
+                eff = eff.log10().pow(0.5).div(7e3)
+                return eff
+            },
+            effectDisplay() {
+                return "+"+format(getFUpgEff(152))
+            },
+            unlocked() {
+                return hasFUpg(151)
+            },
+            style: {
+                "background-color"() {
+                    if (!hasFUpg(152)) {
+                    let color = "#bf8f8f"
+                    if (player.f.virus.gte(22650)) color = "#3d2963"
+                    return color
+                    }
+                }
+            }
+        },
+        153: {
+            title: "Casual Vimension",
+            description: "Casual viruses boost Casualty Dimensions.",
+            cost: new Decimal(220300),
+            currencyDisplayName: "casual viruses",
+            currencyInternalName: "virus",
+            currencyLayer: "f",
+            effect() {
+                let eff = player.f.virus.add(1)
+                eff = eff.pow(17)
+                return eff
+            },
+            effectDisplay() {
+                return format(getFUpgEff(153))+"x"
+            },
+            unlocked() {
+                return hasFUpg(152)
+            },
+            style: {
+                "background-color"() {
+                    if (!hasFUpg(153)) {
+                    let color = "#bf8f8f"
+                    if (player.f.virus.gte(220300)) color = "#3d2963"
+                    return color
+                    }
+                }
+            }
+        },
+        154: {
+            title: "Scaled Virus",
+            description: "Casual viruses reduce Dimension scaling.",
+            cost: new Decimal(675200),
+            currencyDisplayName: "casual viruses",
+            currencyInternalName: "virus",
+            currencyLayer: "f",
+            effect() {
+                let eff = player.f.virus.add(10)
+                eff = eff.log10().pow(0.08).div(13)
+                return eff.min(0.3)
+            },
+            effectDisplay() {
+                return "-"+format(getFUpgEff(154))
+            },
+            unlocked() {
+                return hasFUpg(153)
+            },
+            style: {
+                "background-color"() {
+                    if (!hasFUpg(154)) {
+                    let color = "#bf8f8f"
+                    if (player.f.virus.gte(675200)) color = "#3d2963"
+                    return color
+                    }
+                }
+            }
+        },
+        155: {
+            title: "Case-ual Virus",
+            description: "Cases boost casual virus gain.",
+            cost: new Decimal(1926500),
+            currencyDisplayName: "casual viruses",
+            currencyInternalName: "virus",
+            currencyLayer: "f",
+            effect() {
+                let eff = player.points.add(10)
+                eff = eff.log10().pow(0.03)
+                return eff
+            },
+            effectDisplay() {
+                return format(getFUpgEff(155))+"x"
+            },
+            unlocked() {
+                return hasFUpg(154)
+            },
+            style: {
+                "background-color"() {
+                    if (!hasFUpg(155)) {
+                    let color = "#bf8f8f"
+                    if (player.f.virus.gte(1926500)) color = "#3d2963"
+                    return color
+                    }
+                }
+            }
+        },
+        156: {
+            title: "Case-ual Upgrades",
+            description: "Raise cases to ^1.2 per Casual Virus upgrade.",
+            cost: new Decimal(2.599e9),
+            currencyDisplayName: "casual viruses",
+            currencyInternalName: "virus",
+            currencyLayer: "f",
+            effect() {
+                let eff = player.f.upgrades.length-70
+                eff = Decimal.pow(1.2,eff)
+                return eff.max(1)
+            },
+            effectDisplay() {
+                return "^"+format(getFUpgEff(156))
+            },
+            unlocked() {
+                return hasFUpg(155)
+            },
+            style: {
+                "background-color"() {
+                    if (!hasFUpg(156)) {
+                    let color = "#bf8f8f"
+                    if (player.f.virus.gte(2.599e9)) color = "#3d2963"
+                    return color
+                    }
+                }
+            }
+        },
+        157: {
+            title: "Self Casual Boost",
+            description: "Casual viruses boosts itself and cases gain.",
+            cost: new Decimal(4.0874e9),
+            currencyDisplayName: "casual viruses",
+            currencyInternalName: "virus",
+            currencyLayer: "f",
+            effect() {
+                let eff = player.f.virus.add(10)
+                eff = eff.log10().pow(4)
+                eff = eff.pow(tmp.f.buyables[103].effect)
+                return eff.max(1)
+            },
+            effect2() {
+                let eff = player.f.virus.add(10)
+                eff = eff.log10().add(10)
+                eff = eff.log10().pow(4)
+                eff = eff.pow(tmp.f.buyables[103].effect)
+                return eff.max(1)
+            },
+            effectDisplay() {
+                return format(this.effect())+"x, ^"+format(this.effect2())
+            },
+            unlocked() {
+                return hasFUpg(156)
+            },
+            style: {
+                "background-color"() {
+                    if (!hasFUpg(157)) {
+                    let color = "#bf8f8f"
+                    if (player.f.virus.gte(4.0874e9)) color = "#3d2963"
+                    return color
+                    }
+                }
+            }
+        },
+        161: {
+            title: "Powerful Viruses",
+            description: "Casual viruses boost fatality power effect.",
+            cost: new Decimal(8.2995e14),
+            currencyDisplayName: "casual viruses",
+            currencyInternalName: "virus",
+            currencyLayer: "f",
+            effect() {
+                let eff = player.f.virus.add(10)
+                eff = eff.log10().pow(0.6)
+                return eff.max(1)
+            },
+            effectDisplay() {
+                return "^"+format(getFUpgEff(161))
+            },
+            unlocked() {
+                return hasFUpg(157)
+            },
+            style: {
+                "background-color"() {
+                    if (!hasFUpg(161)) {
+                    let color = "#bf8f8f"
+                    if (player.f.virus.gte(8.2995e14)) color = "#3d2963"
+                    return color
+                    }
+                }
+            }
+        },
+        162: {
+            title: "Fatal Virus",
+            description: "Fatality boosts casual virus gain.",
+            cost: new Decimal(1.4627e15),
+            currencyDisplayName: "casual viruses",
+            currencyInternalName: "virus",
+            currencyLayer: "f",
+            effect() {
+                let eff = player.f.points.add(10)
+                eff = eff.log10().pow(0.6)
+                return eff.max(1)
+            },
+            effectDisplay() {
+                return format(getFUpgEff(162))+'x'
+            },
+            unlocked() {
+                return hasFUpg(161)
+            },
+            style: {
+                "background-color"() {
+                    if (!hasFUpg(162)) {
+                    let color = "#bf8f8f"
+                    if (player.f.virus.gte(1.4627e15)) color = "#3d2963"
+                    return color
+                    }
+                }
+            }
+        },
+        163: {
+            title: "Virus Virus",
+            description: "Add 1 to base casual virus gain exponent.",
+            cost: new Decimal(6.2435e20),
+            currencyDisplayName: "casual viruses",
+            currencyInternalName: "virus",
+            currencyLayer: "f",
+            unlocked() {
+                return hasFUpg(162)
+            },
+            style: {
+                "background-color"() {
+                    if (!hasFUpg(163)) {
+                    let color = "#bf8f8f"
+                    if (player.f.virus.gte(6.2435e20)) color = "#3d2963"
+                    return color
+                    }
+                }
+            }
+        },
+        164: {
+            title: "Infected Casual",
+            description: "Infectivity adds to casual virus exponent.",
+            cost: new Decimal(1.0085e26),
+            currencyDisplayName: "casual viruses",
+            currencyInternalName: "virus",
+            currencyLayer: "f",
+            effect() {
+                let eff = player.i.points.add(10)
+                eff = eff.log10().add(10)
+                eff = eff.log10().pow(0.3).div(4)
+                return eff
+            },
+            effectDisplay() {
+                return "+"+format(getFUpgEff(164))
+            },
+            unlocked() {
+                return hasFUpg(163)
+            },
+            style: {
+                "background-color"() {
+                    if (!hasFUpg(164)) {
+                    let color = "#bf8f8f"
+                    if (player.f.virus.gte(1.0085e26)) color = "#3d2963"
+                    return color
+                    }
+                }
+            }
+        },
+        165: {
+            title: "Severe Casual",
+            description: "Severity adds to casual virus exponent.",
+            cost: new Decimal(3.0174e31),
+            currencyDisplayName: "casual viruses",
+            currencyInternalName: "virus",
+            currencyLayer: "f",
+            effect() {
+                let eff = player.s.severity.add(10)
+                eff = eff.log10().add(10)
+                eff = eff.log10().pow(0.4).div(4)
+                return eff
+            },
+            effectDisplay() {
+                return "+"+format(getFUpgEff(165))
+            },
+            unlocked() {
+                return hasFUpg(164)
+            },
+            style: {
+                "background-color"() {
+                    if (!hasFUpg(165)) {
+                    let color = "#bf8f8f"
+                    if (player.f.virus.gte(3.0174e31)) color = "#3d2963"
+                    return color
+                    }
+                }
+            }
+        },
+        166: {
+            title: "Replicated Casual",
+            description: "Replicators add to casual virus exponent.",
+            cost: new Decimal(2.7224e37),
+            currencyDisplayName: "casual viruses",
+            currencyInternalName: "virus",
+            currencyLayer: "f",
+            effect() {
+                let eff = player.r.points.add(10)
+                eff = eff.log10().pow(0.25).div(2)
+                return eff
+            },
+            effectDisplay() {
+                return "+"+format(getFUpgEff(166))
+            },
+            unlocked() {
+                return hasFUpg(165)
+            },
+            style: {
+                "background-color"() {
+                    if (!hasFUpg(166)) {
+                    let color = "#bf8f8f"
+                    if (player.f.virus.gte(2.7224e37)) color = "#3d2963"
+                    return color
+                    }
+                }
+            }
+        },
+        167: {
+            title: "Powerful Casuals",
+            description: "Casual virus boosts casualty power effect.",
+            cost: new Decimal(2.1969e44),
+            currencyDisplayName: "casual viruses",
+            currencyInternalName: "virus",
+            currencyLayer: "f",
+            effect() {
+                let eff = player.f.virus.add(10)
+                eff = eff.log10().pow(0.403425)
+                return eff
+            },
+            effectDisplay() {
+                return "^"+format(getFUpgEff(167))
+            },
+            unlocked() {
+                return hasFUpg(166)
+            },
+            style: {
+                "background-color"() {
+                    if (!hasFUpg(167)) {
+                    let color = "#bf8f8f"
+                    if (player.f.virus.gte(2.1969e44)) color = "#3d2963"
+                    return color
+                    }
+                }
+            }
+        },
+        171: {
+            title: "fatal Casual",
+            description: "Casual viruses boost fatality gain.",
+            cost: new Decimal(3.111e48),
+            currencyDisplayName: "casual viruses",
+            currencyInternalName: "virus",
+            currencyLayer: "f",
+            effect() {
+                let eff = player.f.virus.add(10)
+                eff = eff.log10().add(10)
+                eff = eff.log10().pow(0.3)
+                return eff
+            },
+            effectDisplay() {
+                return "^"+format(getFUpgEff(171))
+            },
+            unlocked() {
+                return hasFUpg(167)
+            },
+            style: {
+                "background-color"() {
+                    if (!hasFUpg(171)) {
+                    let color = "#bf8f8f"
+                    if (player.f.virus.gte(3.111e48)) color = "#3d2963"
+                    return color
+                    }
+                }
+            }
+        },
+        172: {
+            title: "Casual MultiVoost",
+            description: "Casual viruses boost Multiplier Boosts.",
+            cost: new Decimal(1.2197e53),
+            currencyDisplayName: "casual viruses",
+            currencyInternalName: "virus",
+            currencyLayer: "f",
+            effect() {
+                let eff = player.f.virus.add(10)
+                eff = eff.log10().add(10)
+                eff = eff.log10().pow(2)
+                return eff
+            },
+            effectDisplay() {
+                return format(getFUpgEff(172))+"x"
+            },
+            unlocked() {
+                return hasFUpg(171)
+            },
+            style: {
+                "background-color"() {
+                    if (!hasFUpg(172)) {
+                    let color = "#bf8f8f"
+                    if (player.f.virus.gte(1.2197e53)) color = "#3d2963"
+                    return color
+                    }
+                }
+            }
+        },
+        173: {
+            title: "Case-ual Multipliers",
+            description: "Cases add to Casualty Multiplier base and unlock a buyable.",
+            cost: new Decimal(5.98e54),
+            currencyDisplayName: "casual viruses",
+            currencyInternalName: "virus",
+            currencyLayer: "f",
+            effect() {
+                let eff = player.points.add(10)
+                eff = eff.log10().add(10)
+                eff = eff.log10().pow(0.1).div(10)
+                return eff
+            },
+            effectDisplay() {
+                return "+"+format(getFUpgEff(173))
+            },
+            unlocked() {
+                return hasFUpg(172)
+            },
+            style: {
+                "background-color"() {
+                    if (!hasFUpg(173)) {
+                    let color = "#bf8f8f"
+                    if (player.f.virus.gte(5.98e54)) color = "#3d2963"
+                    return color
+                    }
+                }
+            }
+        },
+        174: {
+            title: "Infected Softcaps",
+            description: "Cases make 'Cases Boost' softcap start later.",
+            cost: new Decimal(6.196e60),
+            currencyDisplayName: "casual viruses",
+            currencyInternalName: "virus",
+            currencyLayer: "f",
+            effect() {
+                let eff = player.points.add(10)
+                eff = eff.log10().add(10)
+                eff = eff.log10().pow(0.3).mul(100)
+                return eff.floor()
+            },
+            effectDisplay() {
+                return "+"+formatWhole(getFUpgEff(174))
+            },
+            unlocked() {
+                return hasFUpg(173)
+            },
+            style: {
+                "background-color"() {
+                    if (!hasFUpg(174)) {
+                    let color = "#bf8f8f"
+                    if (player.f.virus.gte(6.196e60)) color = "#3d2963"
+                    return color
+                    }
+                }
+            }
+        },
+        175: {
+            title: "Casual Softcaps",
+            description: "Casual viruses make 'Cases Boost' softcap start later.",
+            cost: new Decimal(1.533e66),
+            currencyDisplayName: "casual viruses",
+            currencyInternalName: "virus",
+            currencyLayer: "f",
+            effect() {
+                let eff = player.f.virus.add(10)
+                eff = eff.log10().add(10)
+                eff = eff.log10().pow(1.5).mul(200)
+                return eff.floor()
+            },
+            effectDisplay() {
+                return "+"+formatWhole(getFUpgEff(175))
+            },
+            unlocked() {
+                return hasFUpg(174)
+            },
+            style: {
+                "background-color"() {
+                    if (!hasFUpg(175)) {
+                    let color = "#bf8f8f"
+                    if (player.f.virus.gte(1.533e66)) color = "#3d2963"
+                    return color
+                    }
+                }
+            }
+        },
+        176: {
+            title: "Exponent Exponent",
+            description: "Casual viruses boost cases exponent and unlock a buyable.",
+            cost: new Decimal(7.316e69),
+            currencyDisplayName: "casual viruses",
+            currencyInternalName: "virus",
+            currencyLayer: "f",
+            effect() {
+                let eff = player.f.virus.add(10)
+                eff = eff.log10().add(10)
+                eff = eff.log10().pow(0.03)
+                return eff
+            },
+            effectDisplay() {
+                return "^"+format(getFUpgEff(176))
+            },
+            unlocked() {
+                return hasFUpg(175)
+            },
+            style: {
+                "background-color"() {
+                    if (!hasFUpg(176)) {
+                    let color = "#bf8f8f"
+                    if (player.f.virus.gte(7.316e69)) color = "#3d2963"
+                    return color
+                    }
+                }
+            }
+        },
+        177: {
+            title: "Casualer Virus",
+            description: "Casualty adds to 'Virus Gain' base.",
+            cost: new Decimal(1.02e88),
+            currencyDisplayName: "casual viruses",
+            currencyInternalName: "virus",
+            currencyLayer: "f",
+            effect() {
+                let eff = player.f.casualty.add(10)
+                eff = eff.log10().pow(0.1)
+                return eff
+            },
+            effectDisplay() {
+                return "+"+format(getFUpgEff(177))
+            },
+            unlocked() {
+                return hasFUpg(176)
+            },
+            style: {
+                "background-color"() {
+                    if (!hasFUpg(177)) {
+                    let color = "#bf8f8f"
+                    if (player.f.virus.gte(1.02e88)) color = "#3d2963"
+                    return color
+                    }
+                }
+            }
+        },
     },
-    
     challenges: { 
         rows: 6,
         cols: 2,

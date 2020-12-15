@@ -50,7 +50,10 @@ const newsArray = [
   ["This statement is false."],
   ["read homestuck plz"],
   ["IRON 308.25"],
+  ["First death : First death from Vorona Cirus has been confirmed. Bad luck or the beginning of something terrible?"],
   ["screw this, im touching virus"],
+  ["Vorona Cirus placed on Watch List: Vorona Cirus has been placed on watchlist. Already dangerous, governments are warned that it could become unstoppable"],
+  ["Rio Olympics infect Brazil!: People infected with Vorona Cirus came to Rio and spread their disease. It should have never went on!"],
   [
     "'are the newsticker messages all going to be dumb, like the ones in AD?' - gapples2"
   ],

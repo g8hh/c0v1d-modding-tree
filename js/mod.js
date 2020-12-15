@@ -12,11 +12,14 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.4.3",
+	num: "0.4.4",
 	name: "Vorona Cirus Dimensions",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+        <h3>v0.4.4</h3><br>
+        - Added Casual Virus.<br>
+        - Added more Casualty upgrades.<br>
 	    <h3>v0.4.3</h3><br>
 		- Added News Button.<br>
         - Added Casualty (Infinity in AD).<br>
@@ -96,7 +99,12 @@ function getPointGen() {
     if (hasFUpg(44)) gain = gain.pow(getFUpgEff(44))
     if (hasFUpg(95)) gain = gain.pow(getFUpgEff(95))
     if (hasFUpg(125)) gain = gain.pow(getFUpgEff(125))
+    if (hasFUpg(143)) gain = gain.pow(tmp.f.upgrades[143].effect2)
     gain = gain.pow(layers.d.buyables[13].effect())
+    if (hasFUpg(156)) gain = gain.pow(getFUpgEff(156))
+    if (hasFUpg(157)) gain = gain.pow(tmp.f.upgrades[157].effect2)
+    if (hasFUpg(144)) gain = Decimal.pow(10,gain.add(10).max(1).log10().pow(getFUpgEff(144)))
+    if (hasFUpg(176)) gain = Decimal.pow(10,gain.add(10).max(1).log10().pow(getFUpgEff(176)))
 	return gain
 }
 
@@ -106,11 +114,11 @@ function addedPlayerData() { return {
 }}
 
 // Display extra things at the top of the page
-var displayThings = ["Current endgame: 1e2,395 casualty (v0.4.3)"]
+var displayThings = ["Current endgame: 1e1,505,090 casualty (v0.4.4)"]
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.f.casualty.gte("e2395")
+	return player.f.casualty.gte("e1505090")
 }
 
 
