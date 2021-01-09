@@ -981,7 +981,7 @@ addLayer("u", {
             "blank",
                 "challenges"
             ],
-            unlocked() {return hasMilestone("s",2)}
+            unlocked() {return hasMilestone("u",5)}
         },
     },
     effbase() {
