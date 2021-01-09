@@ -12,11 +12,15 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.4.4",
-	name: "Vorona Cirus Dimensions",
+	num: "0.5",
+	name: "Vorona Cirus GAS GAS GAS",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+        <h2 style = color:#93d281;>v0.5</h2><br>
+        - Added Infecters.<br>
+        - Added 7 more CV upgrades.<br>
+        - Added 11 more Achievements.<br>
         <h3>v0.4.4</h3><br>
         - Added Casual Virus.<br>
         - Added more Casualty upgrades.<br>
@@ -29,7 +33,7 @@ let changelog = `<h1>Changelog:</h1><br>
         <h3>v0.4.1</h3><br>
 		- Added Fatality.<br>
         - Added Achievements.<br>
-        <h3>v0.4</h3><br>
+        <h2 style = color:#93d281;>v0.4</h2><br>
 		- Added Symptom Challenges.<br>
         - Rebalanced.<br>
         <h3>v0.3.3</h3><br>
@@ -39,7 +43,7 @@ let changelog = `<h1>Changelog:</h1><br>
         - Added more symptom upgrades.<br>
         <h3>v0.3.1</h3><br>
         - Added Symptoms.<br>
-        <h3>v0.3</h3><br>
+        <h2 style = color:#93d281;>v0.3</h2><br>
 		- Added Uncoater Challenges.<br>
         - Added more uncoater upgrades.<br>
         <h3>v0.2.2</h3><br>
@@ -49,12 +53,12 @@ let changelog = `<h1>Changelog:</h1><br>
 		- Added Uncoaters.<br>
         - Added (hardcapped).<br>
         - Renamed to Plague Tree (Vorona Cirus Treesease).<br>
-        <h3>v0.2</h3><br>
+        <h2 style = color:#93d281;>v0.2</h2><br>
         - Added Statistics.<br>
         - Added Replicators.<br>
         - Added (softcapped).<br>
         - Renamed to Vorona Cirus Treesease.<br>
-        <h3>v0.1</h3><br>
+        <h2 style = color:#93d281;>v0.1</h2><br>
         - Release (COVID Tree).<br>
         - Added Virus Points.<br>
         - Added Cases.<br>
@@ -83,12 +87,12 @@ function getPointGen() {
     if(hasVUpg(12)) gain = gain.mul(getVUpgEff(12))
     if(hasVUpg(13)) gain = gain.mul(getVUpgEff(13))
     if(hasVUpg(21)) gain = gain.mul(getVUpgEff(21))
-    gain = gain.mul(layers.i.effect())
-    gain = gain.mul(layers.r.effect())
-    gain = gain.mul(layers.u.effect())
-    gain = gain.mul(layers.d.effect())
-    gain = gain.mul(layers.f.effect())
-    gain = gain.mul(layers.a.effect())
+    gain = gain.mul(tmp.i.effect)
+    gain = gain.mul(tmp.r.effect)
+    gain = gain.mul(tmp.u.effect)
+    gain = gain.mul(tmp.d.effect)
+    gain = gain.mul(tmp.f.effect)
+    gain = gain.mul(tmp.a.effect)
     if (player.s.unlocked) gain = gain.mul(tmp.s.severityEff);
     if (inChallenge("u", 22)) gain = Decimal.mul(gain ,c22c)
     if (inChallenge("s", 11)) gain = gain.pow(0.1)
@@ -101,11 +105,17 @@ function getPointGen() {
     if (hasFUpg(125)) gain = gain.pow(getFUpgEff(125))
     if (hasFUpg(143)) gain = gain.pow(tmp.f.upgrades[143].effect2)
     gain = gain.pow(layers.d.buyables[13].effect())
+    gain = gain.pow(tmp.e.peffect)
     if (hasFUpg(156)) gain = gain.pow(getFUpgEff(156))
     if (hasFUpg(157)) gain = gain.pow(tmp.f.upgrades[157].effect2)
     if (hasFUpg(144)) gain = Decimal.pow(10,gain.add(10).max(1).log10().pow(getFUpgEff(144)))
     if (hasFUpg(176)) gain = Decimal.pow(10,gain.add(10).max(1).log10().pow(getFUpgEff(176)))
-	return gain
+    if (hasUpgrade("e",133)) gain = Decimal.pow(10,gain.add(10).max(1).log10().pow(upgradeEffect("e",133)))
+    if (hasUpgrade("e",153)) gain = Decimal.pow(10,gain.add(10).max(1).log10().pow(upgradeEffect("e",153)))
+    if (hasUpgrade("e",43)) gain = Decimal.pow(10,gain.add(10).max(1).log10().pow(upgradeEffect("e",43)))
+    if (inChallenge("e",12) || player.e.inC) gain = gain.add(1).log10()
+    if (player.e.inC) gain = Decimal.pow(10,gain.max(1).log10().pow(tmp.e.qExp))
+	return gain.min(tmp.e.icap)
 }
 
 // You can add non-layer related variables that should to into "player" and be saved here, along with default values
@@ -114,11 +124,11 @@ function addedPlayerData() { return {
 }}
 
 // Display extra things at the top of the page
-var displayThings = ["Current endgame: 1e1,505,090 casualty (v0.4.4)"]
+var displayThings = ["Current endgame: e312,750 UC (v0.5)"]
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.f.casualty.gte("e1505090")
+	return player.e.qc.gte("e312750")
 }
 
 

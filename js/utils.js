@@ -67,11 +67,11 @@ function format(decimal, precision=3) {
 		if (slog.gte(1e4)) return Decimal.pow(10, slog.sub(slog.floor())).toStringWithDecimalPlaces(0) + "F" + commaFormat(slog.floor(), 0)
 		if (slog.gte(100)) return Decimal.pow(10, slog.sub(slog.floor())).toStringWithDecimalPlaces(2) + "F" + commaFormat(slog.floor(), 0)
 		else return Decimal.pow(10, slog.sub(slog.floor())).toStringWithDecimalPlaces(4) + "F" + commaFormat(slog.floor(), 0)
-	} else if (decimal.gte("ee20")) return "e" + format(decimal.log10(), precision)
-	else if (decimal.gte("ee12")) return "e" + format(decimal.log10(), 4)
-	else if (decimal.gte("1e10000000")) return exponentialFormat(decimal, 0)
-	else if (decimal.gte("1e1000000")) return exponentialFormat(decimal, 1)
-	else if (decimal.gte("1e100000")) return exponentialFormat(decimal, 2)
+	} else if (decimal.gte("ee20") || (decimal.lt("e-1e20") && decimal.gt(0))) return "e" + format(decimal.log10(), precision)
+	else if (decimal.gte("ee12") || (decimal.lt("e-1e12") && decimal.gt(0))) return "e" + format(decimal.log10(), 4)
+	else if (decimal.gte("1e10000000") || (decimal.lt("1e-10000000") && decimal.gt(0))) return exponentialFormat(decimal, 0)
+	else if (decimal.gte("1e1000000") || (decimal.lt("1e-1000000") && decimal.gt(0))) return exponentialFormat(decimal, 1)
+	else if (decimal.gte("1e100000") || (decimal.lt("1e-100000") && decimal.gt(0))) return exponentialFormat(decimal, 2)
 	else if (decimal.gte(1e9)) return exponentialFormat(decimal, precision)
 	else if (decimal.gte(1e3)) return commaFormat(decimal, 0)
 	else if (decimal.lt(0.001) && decimal.gt(0)) return exponentialFormat(decimal, 3)
@@ -150,6 +150,8 @@ function startPlayerBase() {
 		hideChallenges: false,
 		hideNews: false,
 		showStory: true,
+		anim: true,
+		grad: true,
 		points: modInfo.initialStartPoints,
 		subtabs: {},
 		lastSafeTab: (layoutInfo.showTree ? "none" : layoutInfo.startTab)
@@ -506,7 +508,7 @@ function milestoneShown(layer, id) {
 function respecBuyables(layer) {
 	if (!layers[layer].buyables) return
 	if (!layers[layer].buyables.respec) return
-	if (!confirm("Are you sure you want to respec? This will force you to do a \"" + (tmp[layer].name ? tmp[layer].name : layer) + "\" reset as well!")) return
+	if (!confirm("Are you sure you want to respec? This will force you to do a \"" + (tmp[layer].resource ? tmp[layer].resource : layer) + "\" reset and reset Multiplier Boosts as well!")) return
 	run(layers[layer].buyables.respec, layers[layer].buyables)
 	updateBuyableTemp(layer)
 	document.activeElement.blur()

@@ -25,21 +25,25 @@ function getResetGain(layer, canMax=false, useType = null) {
 		let exp = new Decimal(1.9)
 		if ((!tmp[layer].canBuyMax) || tmp[layer].baseAmount.lt(tmp[layer].requires)) return new Decimal(1)
 		let gain = tmp[layer].baseAmount.div(tmp[layer].requires).div(tmp[layer].gainMult).max(1).log(tmp[layer].base).times(tmp[layer].gainExp).pow(Decimal.pow(tmp[layer].exponent, -1))
-		if (layer == "r"  || layer == "u") gain = softcapStaticGain(gain, tmp[layer].row)
+		if (layer == "r"  || layer == "u" || layer == "e") gain = softcapStaticGain(gain, tmp[layer].row)
 		if (layer == "u" && player.u.points.lt(320)) {
 			let amt = player[layer].points.plus((canMax&&tmp[layer].baseAmount.gte(tmp[layer].nextAt))?tmp[layer].resetGain:0)
 			if (player.u.points.gte(30)) {
 				let umult = Decimal.pow(1e8,amt.pow(1.9))
 				gain = tmp[layer].baseAmount.div(umult).div(tmp[layer].requires).div(tmp[layer].gainMult).max(1).log(tmp[layer].base).times(tmp[layer].gainExp).pow(Decimal.pow(tmp[layer].exponent, -1)).add(30)
+				gain = softcapStaticGain(gain, tmp[layer].row)
 			}
 			if (player.u.points.lt(30)) { 
 				gain = Decimal.div(tmp["u"].baseAmount,tmp[layer].requires).div(tmp[layer].gainMult).max(1).log(base).times(tmp[layer].gainExp).pow(Decimal.pow(exp, -1))
 				if (gain.gte(30)) { 
 					let umult = Decimal.pow(1e8,amt.pow(1.9))
 					gain = tmp[layer].baseAmount.div(umult).div(tmp[layer].requires).div(tmp[layer].gainMult).max(1).log(tmp[layer].base).times(tmp[layer].gainExp).pow(Decimal.pow(tmp[layer].exponent, -1)).add(30)
+					gain = softcapStaticGain(gain, tmp[layer].row)
+					
 				}
 			}
 		}
+		if (layer == "u" && gain.gte(1e34)) gain = gain.div(1e34).pow(0.2).mul(1e34)
 		if (layer == "s") {
 			if (gain.gte(getDUpgEff(41).add(20))) {  // gain=1e10000^1.9^s
 				gain = tmp[layer].baseAmount.div(tmp[layer].requires).log("e10000").log(1.9).add(getDUpgEff(41).add(20))
@@ -86,7 +90,7 @@ function getNextAt(layer, canMax=false, useType = null) {
 		let base = new Decimal(1e8)
 		let exp = new Decimal(1.9)
 		let amt = player[layer].points.plus((canMax&&tmp[layer].baseAmount.gte(tmp[layer].nextAt))?tmp[layer].resetGain:0)
-		if (layer == "r" || layer == "u") amt = scaleStaticCost(amt, tmp[layer].row)
+		if (layer == "r" || layer == "u" || layer == "e") amt = scaleStaticCost(amt, tmp[layer].row)
 		let extraCost = Decimal.pow(tmp[layer].base, amt.pow(tmp[layer].exponent).div(tmp[layer].gainExp)).times(tmp[layer].gainMult)
 		let cost = extraCost.times(tmp[layer].requires).max(tmp[layer].requires)
 		if (layer == "u") {

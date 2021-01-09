@@ -5,13 +5,15 @@ let tickerContainer = document.getElementById("newsTicker"); // ticker is the te
 let newsPosition = -1e100; // hopefully noones screen is this big
 
 function tickNews() {
+  if (!player.hideNews) {
   newsPosition -= 3;
   ticker.style.left = `${newsPosition}px`;
 
-  if (newsPosition < -ticker.offsetWidth) newNewsMessage();
+  if (newsPosition < -ticker.offsetWidth) newNewsMessage()};
 }
 
 function newNewsMessage() {
+  if (!player.hideNews) {
   const newsCandidates = [];
   for (const i in newsArray)
     if (newsArray[i][1] === undefined || newsArray[i][1]())
@@ -20,7 +22,7 @@ function newNewsMessage() {
   ticker.innerHTML =
     newsCandidates[Math.floor(newsCandidates.length * Math.random())];
   newsPosition = tickerContainer.offsetWidth;
-  ticker.style.left = `${newsPosition}px`;
+  ticker.style.left = `${newsPosition}px`};
 }
 // you can add a second element to each message's array
 // the second element is a function that returns a boolean of whether to shown it

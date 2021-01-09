@@ -709,7 +709,7 @@ button > * {
 }
 #newsbtn {
 	font-size: 32px;
-	color: white;
+	color: rgb(255, 255, 255);
 	position: absolute;
 	top: 240px;
 	left: 4px;
@@ -718,7 +718,25 @@ button > * {
 	height: 40px;
 }
 
-	#newsbtn:hover {
-		transform: scale(1.2, 1.2);
-		text-shadow: 5px 0px 10px #02f2f2, -3px 0px 12px #02f2f2;
+#newsbtn:hover {
+	transform: scale(1.2, 1.2);
+	text-shadow: 5px 0px 10px #02f2f2, -3px 0px 12px #02f2f2;
+}
+
+.e.grad:not(.locked):not(.bought) {
+	background: radial-gradient(#34c29a, #00f0ac, #34c29a,#00f0ac);
+	background-size: 50% 100%;
+}
+	
+.e.anim:not(.locked):not(.bought) {
+	animation: e 10s linear infinite;
+}
+
+@keyframes e {
+	0% {
+		background-position: 0% 0%;
 	}
+	100% {
+		background-position: 400% 0%;
+	}
+}
