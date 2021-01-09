@@ -44,10 +44,8 @@ var systemComponents = {
 				anim: player.anim,
 				grad: player.grad
 			}"
-			v-bind:style="[(tmp[layer].isLayer && layerunlocked(layer)) || (!tmp[layer].isLayer && tmp[layer].canClick) ? {
-				'background-color': tmp[layer].color,
-			} : {}, tmp[layer].nodeStyle]">
-			{{(abb !== '' ? abb : '&nbsp;')}}
+			v-bind:style="tmp[layer].computedNodeStyle">
+			{{(abb !== '' && tmp[layer].image === undefined) ? abb : '&nbsp;'}}
 		</button>
 		`
 	},
