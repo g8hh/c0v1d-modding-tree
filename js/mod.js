@@ -12,11 +12,15 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.5",
+	num: "0.5.1",
 	name: "Vorona Cirus GAS GAS GAS",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+        <h3>v0.5.1</h3><br>
+        - Added 6 Infecter and Quarantine Upgrades.<br>
+        - Added a buyable.<br>
+        - Made the game less laggy<br>
         <h2 style = color:#93d281;>v0.5</h2><br>
         - Added Infecters.<br>
         - Added 7 more CV upgrades.<br>
@@ -104,7 +108,7 @@ function getPointGen() {
     if (hasFUpg(95)) gain = gain.pow(getFUpgEff(95))
     if (hasFUpg(125)) gain = gain.pow(getFUpgEff(125))
     if (hasFUpg(143)) gain = gain.pow(tmp.f.upgrades[143].effect2)
-    gain = gain.pow(layers.d.buyables[13].effect())
+    gain = gain.pow(tmp.d.buyables[13].effect)
     gain = gain.pow(tmp.e.peffect)
     if (hasFUpg(156)) gain = gain.pow(getFUpgEff(156))
     if (hasFUpg(157)) gain = gain.pow(tmp.f.upgrades[157].effect2)
@@ -113,6 +117,8 @@ function getPointGen() {
     if (hasUpgrade("e",133)) gain = Decimal.pow(10,gain.add(10).max(1).log10().pow(upgradeEffect("e",133)))
     if (hasUpgrade("e",153)) gain = Decimal.pow(10,gain.add(10).max(1).log10().pow(upgradeEffect("e",153)))
     if (hasUpgrade("e",43)) gain = Decimal.pow(10,gain.add(10).max(1).log10().pow(upgradeEffect("e",43)))
+    if (hasUpgrade("e",181)) gain = Decimal.pow(10,gain.add(10).max(1).log10().pow(upgradeEffect("e",181)))
+    if (hasUpgrade("e",196)) gain = Decimal.pow(10,gain.add(10).max(1).log10().pow(upgradeEffect("e",196)))
     if (inChallenge("e",12) || player.e.inC) gain = gain.add(1).log10()
     if (player.e.inC) gain = Decimal.pow(10,gain.max(1).log10().pow(tmp.e.qExp))
 	return gain.min(tmp.e.icap)
@@ -124,11 +130,11 @@ function addedPlayerData() { return {
 }}
 
 // Display extra things at the top of the page
-var displayThings = ["Current endgame: e312,750 UC (v0.5)"]
+var displayThings = ["Current endgame: e664,400,000,000 IP (v0.5.1)"]
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.e.qc.gte("e312750")
+	return player.e.p.gte("e6644e8")
 }
 
 

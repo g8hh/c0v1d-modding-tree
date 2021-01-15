@@ -51,31 +51,36 @@ function sumValues(x) {
 	return x.reduce((a, b) => Decimal.add(a, b))
 }
 
-function format(decimal, precision=3) {
+function format(decimal, precision=3,) {
 	decimal = new Decimal(decimal)
 	if (isNaN(decimal.sign)||isNaN(decimal.layer)||isNaN(decimal.mag)) {
 		player.hasNaN = true;
+		console.log(decimal)
 		Decimal(0)
 		
 		return "NaN"
 	}
-	if (decimal.sign<0) return "-"+format(decimal.neg(), precision)
+	if (decimal.sign < 0) return "-"+format(decimal.neg(), precision)
 	if (decimal.mag == Number.POSITIVE_INFINITY) return "Infinity"
-	if (decimal.gte("eeee10")) {
+	if (decimal.layer > 3) {
 		var slog = decimal.slog()
 		if (slog.gte(1e5)) return "F" + formatWhole(slog.floor())
 		if (slog.gte(1e4)) return Decimal.pow(10, slog.sub(slog.floor())).toStringWithDecimalPlaces(0) + "F" + commaFormat(slog.floor(), 0)
 		if (slog.gte(100)) return Decimal.pow(10, slog.sub(slog.floor())).toStringWithDecimalPlaces(2) + "F" + commaFormat(slog.floor(), 0)
 		else return Decimal.pow(10, slog.sub(slog.floor())).toStringWithDecimalPlaces(4) + "F" + commaFormat(slog.floor(), 0)
-	} else if (decimal.gte("ee20") || (decimal.lt("e-1e20") && decimal.gt(0))) return "e" + format(decimal.log10(), precision)
-	else if (decimal.gte("ee12") || (decimal.lt("e-1e12") && decimal.gt(0))) return "e" + format(decimal.log10(), 4)
-	else if (decimal.gte("1e10000000") || (decimal.lt("1e-10000000") && decimal.gt(0))) return exponentialFormat(decimal, 0)
-	else if (decimal.gte("1e1000000") || (decimal.lt("1e-1000000") && decimal.gt(0))) return exponentialFormat(decimal, 1)
-	else if (decimal.gte("1e100000") || (decimal.lt("1e-100000") && decimal.gt(0))) return exponentialFormat(decimal, 2)
-	else if (decimal.gte(1e9)) return exponentialFormat(decimal, precision)
-	else if (decimal.gte(1e3)) return commaFormat(decimal, 0)
-	else if (decimal.lt(0.001) && decimal.gt(0)) return exponentialFormat(decimal, 3)
-	else return regularFormat(decimal, precision)
+	} else if (decimal.layer > 2 || (decimal.mag > 308 && decimal.layer == 2)) {
+		return "e" + format(decimal.log10(), precision)
+	} else if (decimal.layer > 1 || (decimal.mag > 1e12 && decimal.layer == 1)) {
+		return "e" + format(decimal.log10(), 4)
+	} else if (decimal.layer > 0 || decimal.mag > 1e12) {
+		return exponentialFormat(decimal, precision)
+	} else if (decimal.mag > 1000) {
+		return commaFormat(decimal, 0)
+	} else if (decimal.mag>0.001) {
+		return regularFormat(decimal, precision)
+	} else if (decimal.mag>0) {
+		return exponentialFormat(decimal, precision)
+	} else return regularFormat(decimal, precision)
 }
 
 function formatWhole(decimal) {
