@@ -2,7 +2,6 @@
 
 function addCommas(s){
 	let l = 3
-	if (s.includes("-")) l = 4
 	if (s.length <= l) return s
 	let rem = s.length % 3
 	if (rem == 0) rem = 3
@@ -22,7 +21,8 @@ function exponentialFormat(num, precision) {
 		e = e.sub(1)
 	}
 	let end = e.toStringWithDecimalPlaces(0)
-	if (!end.includes("e")) end = addCommas(end)
+	if (!end.includes("e")) end = addCommas(end.replace(/-/g, ''))
+	if (e.lt(0)) end = "-"+end
 	let start = ""
 	if (e.lt(1e9)) start = m.toStringWithDecimalPlaces(precision)
 	return start + "e" + end

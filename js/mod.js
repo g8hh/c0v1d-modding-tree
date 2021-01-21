@@ -7,16 +7,20 @@ let modInfo = {
 	discordLink: "",
 	changelogLink: "https://github.com/Acamaeda/The-Modding-Tree/blob/master/changelog.md",
 	initialStartPoints: new Decimal (1), // Used for hard resets and new players
-	offlineLimit: 0.16666,  // In hours
+	offlineLimit: 0.05,  // In hours
 }
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.5.1",
+	num: "0.5.2",
 	name: "Vorona Cirus GAS GAS GAS",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+        <h3>v0.5.2</h3><br>
+        - Added RNA.<br>
+        - Added 2 Achievements.<br>
+        - Added 2 Milestones.<br>
         <h3>v0.5.1</h3><br>
         - Added 6 Infecter and Quarantine Upgrades.<br>
         - Added a buyable.<br>
@@ -112,6 +116,8 @@ function getPointGen() {
     gain = gain.pow(tmp.e.peffect)
     if (hasFUpg(156)) gain = gain.pow(getFUpgEff(156))
     if (hasFUpg(157)) gain = gain.pow(tmp.f.upgrades[157].effect2)
+    if (hasUpgrade("e",221)) gain = gain.pow(upgradeEffect("e",221))
+    if (player.e.c.gt(0)) gain = Decimal.pow(10,gain.add(10).max(1).log10().pow(tmp.e.Ceffect))
     if (hasFUpg(144)) gain = Decimal.pow(10,gain.add(10).max(1).log10().pow(getFUpgEff(144)))
     if (hasFUpg(176)) gain = Decimal.pow(10,gain.add(10).max(1).log10().pow(getFUpgEff(176)))
     if (hasUpgrade("e",133)) gain = Decimal.pow(10,gain.add(10).max(1).log10().pow(upgradeEffect("e",133)))
@@ -119,6 +125,9 @@ function getPointGen() {
     if (hasUpgrade("e",43)) gain = Decimal.pow(10,gain.add(10).max(1).log10().pow(upgradeEffect("e",43)))
     if (hasUpgrade("e",181)) gain = Decimal.pow(10,gain.add(10).max(1).log10().pow(upgradeEffect("e",181)))
     if (hasUpgrade("e",196)) gain = Decimal.pow(10,gain.add(10).max(1).log10().pow(upgradeEffect("e",196)))
+    if (hasUpgrade("e",222)) gain = Decimal.pow(10,gain.add(10).max(1).log10().pow(upgradeEffect("e",222)))
+    if (hasUpgrade("e",223)) gain = Decimal.pow(10,gain.add(10).max(1).log10().pow(upgradeEffect("e",223)))
+    if (hasUpgrade("e",211)) gain = Decimal.pow(10,gain.add(10).max(1).log10().pow(tmp.e.upgrades[211].effect2))
     if (inChallenge("e",12) || player.e.inC) gain = gain.add(1).log10()
     if (player.e.inC) gain = Decimal.pow(10,gain.max(1).log10().pow(tmp.e.qExp))
 	return gain.min(tmp.e.icap)
@@ -130,11 +139,11 @@ function addedPlayerData() { return {
 }}
 
 // Display extra things at the top of the page
-var displayThings = ["Current endgame: e664,400,000,000 IP (v0.5.1)"]
+var displayThings = ["Current endgame: 1e265 RNA (v0.5.2)"]
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.e.p.gte("e6644e8")
+	return player.e.rna.gte(1e265)
 }
 
 
@@ -143,7 +152,7 @@ function isEndgame() {
 
 // You can change this if you have things that can be messed up by long tick lengths
 function maxTickLength() {
-	return(600) // Default is 1 hour which is just arbitrarily large
+	return(180) // Default is 1 hour which is just arbitrarily large
 }
 
 // Use this if you need to undo inflation from an older version. If the version is older than the version that fixed the issue,
