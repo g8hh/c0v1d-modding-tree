@@ -3255,6 +3255,7 @@ addLayer("d", {
                 if (hasUpgrade("e",203)) d = d.mul(upgradeEffect("e",203))
                 if (hasUpgrade("e",213)) d = d.mul(upgradeEffect("e",213))
                 if (hasUpgrade("e",234)) d = d.mul(upgradeEffect("e",234))
+                if (hasUpgrade("e",241)) d = d.mul(tmp.e.upgrades[241].effect)
                 return d
             },
             scalebase() {
@@ -3585,7 +3586,7 @@ addLayer("d", {
             cost: new Decimal("1.5e9101"),
             effect(){
             let d24 = player.d.points.add(10).max(10).log10().pow(0.025)
-            if (d24.gte("ee57")) d24 = d24.div("ee57").log10().pow(0.88).mul("ee57")
+            if (d24.gte("ee57")) d24 = d24.div("ee57").log10().pow(0.85).pow10().mul("ee57")
             if (inChallenge("s", 21)) d24 = new Decimal(1)
             return d24
             },
@@ -4221,10 +4222,41 @@ addLayer("a", {
                 addPoints("a",9)
             }
         },
+        93: {
+            name: "Molecular Virus",
+            tooltip: "Get 1 Molecule. Reward: 9 AP",
+            done() {
+                return player.e.ad.gte(1) || player.e.ur.gte(1)
+            },
+            onComplete() {
+                addPoints("a",9)
+            }
+        },
+        94: {
+            name: "Phospate",
+            tooltip: "Get 1 Phosphorus. Reward: 9 AP",
+            done() {
+                return player.e.ph.gte(1)
+            },
+            onComplete() {
+                addPoints("a",9)
+            }
+        },
+        95: {
+            name: "Phospate Virus",
+            tooltip: "Get 1 Ribose-Phosphate. Reward: 9 AP",
+            done() {
+                return player.e.rp.gte(1)
+            },
+            onComplete() {
+                addPoints("a",9)
+            }
+        },
     },
     effect() {
         let eff = player.a.points
-        if (hasAchievement("a", 42)) eff = Decimal.pow(1.2, eff.pow(1.5))
+        let x = Decimal.add(1.2,tmp.e.Gueffect)
+        if (hasAchievement("a", 42)) eff = Decimal.pow(x, eff.pow(1.5))
         else eff = Decimal.pow(1.07, eff)
         return eff
     },
@@ -10917,7 +10949,13 @@ addLayer("e", {
         c: new Decimal(0),
         n: new Decimal(0),
         o: new Decimal(0),
+        ph: new Decimal(0),
         at: new Decimal(0),
+        ad: new Decimal(0),
+        ur: new Decimal(0),
+        gu: new Decimal(0),
+        cy: new Decimal(0),
+        rp: new Decimal(0),
         unlocked: false,
         autob: false,
         autoq: false,
@@ -10925,6 +10963,7 @@ addLayer("e", {
         autoa: false,
         path: 1,
         ct: 0,
+        m: 0,
         c11: new Decimal(0),
         c12: new Decimal(0),
         rna: new Decimal(0),
@@ -11034,7 +11073,10 @@ addLayer("e", {
         if (i.gte(4.065)) i = i.div(4.065).pow(0.05).mul(4.065)
         if (hasUpgrade("e",95)) i = i.add(0.005)
         i = Decimal.tetrate(10,i)
-        if (i.gte("eee16") && hasUpgrade("e",101)) i = player.e.i.pow(-1).mul(1e3).log10().pow(30).div(1e60).pow10().pow10()
+        let exp = new Decimal(30)
+        if (hasUpgrade("e",251)) exp = exp.mul(upgradeEffect("e",251))
+        if (hasUpgrade("e",252)) exp = exp.mul(upgradeEffect("e",252))
+        if (i.gte("eee16") && hasUpgrade("e",101)) i = player.e.i.pow(-1).mul(1e3).log10().pow(exp).div(1e60).pow10().pow10()
         return i
     },
     effbase() {
@@ -11083,30 +11125,88 @@ addLayer("e", {
         return eff
     },
     Heffect(){
-        let eff = player.e.h.max(10).log10().pow(0.5).sub(1).mul(tmp.e.Oeffect)
-        return eff
+        let eff = player.e.h.max(10).log10().pow(0.5)
+        if (eff.gte(9)) eff = eff.div(9).pow(0.5).mul(9)
+        if (hasUpgrade("e",242)) eff = eff.pow(upgradeEffect("e",242))
+        if (hasUpgrade("e",266)) eff = eff.pow(tmp.e.upgrades[266].effect)
+        return eff.pow(tmp.e.Pheffect).sub(1).mul(tmp.e.Oeffect)
     },
     Ceffect(){
         let eff = player.e.c.max(10).log10().pow(1.2)
         if (eff.gte(5)) eff = eff.div(5).pow(0.3).mul(5)
-        return eff.mul(tmp.e.Oeffect)
+        if (eff.gte(160)) eff = eff.div(160).pow(0.5).mul(160)
+        if (hasUpgrade("e",242)) eff = eff.pow(upgradeEffect("e",242))
+        if (hasUpgrade("e",266)) eff = eff.pow(tmp.e.upgrades[266].effect)
+        return eff.pow(tmp.e.Pheffect).mul(tmp.e.Oeffect)
     },
     Neffect(){
-        let eff = player.e.n.max(10).log10().pow(0.0333).sub(1).mul(tmp.e.Oeffect)
-        return eff
+        let eff = player.e.n.max(10).log10().pow(0.0333)
+        if (hasUpgrade("e",242)) eff = eff.pow(upgradeEffect("e",242))
+        if (hasUpgrade("e",266)) eff = eff.pow(tmp.e.upgrades[266].effect)
+        return eff.pow(tmp.e.Pheffect).sub(1).mul(tmp.e.Oeffect)
     },
     Oeffect(){
         let eff = player.e.o.max(10).log10().pow(0.1)
+        if (hasUpgrade("e",242)) eff = eff.pow(upgradeEffect("e",242))
+        if (hasUpgrade("e",266)) eff = eff.pow(tmp.e.upgrades[266].effect)
+        return eff.pow(tmp.e.Pheffect)
+    },
+    Pheffect(){
+        let eff = player.e.ph.max(10).log10().pow(0.1)
+        if (hasUpgrade("e",242)) eff = eff.pow(upgradeEffect("e",242))
+        if (hasUpgrade("e",266)) eff = eff.pow(tmp.e.upgrades[266].effect)
         return eff
     },
     Aeffect(){
-        let eff = player.e.at.add(1).max(1).pow(0.5)
+        let eff = player.e.at.add(1).max(1).pow(0.5).pow(tmp.e.Pheffect)
+        return eff
+    },
+    Adeffect(){
+        let eff = player.e.ad.add(10).div(2.2e9).max(10).log10().pow(0.333)
+        if (eff.gte(1.3)) eff = eff.div(1.3).pow(0.3333).mul(1.3)
+        if (hasUpgrade("e",243)) eff = eff.pow(tmp.e.upgrades[243].effect)
+        if (hasUpgrade("e",245)) eff = eff.pow(tmp.e.upgrades[245].effect)
+        if (hasUpgrade("e",266)) eff = eff.pow(tmp.e.upgrades[266].effect)
+        return eff.pow(tmp.e.Rpeffect)
+    },
+    Ureffect(){
+        let eff = player.e.ur.add(10).div(4e9).max(10).log10().pow(0.12)
+        if (eff.gte(1.1)) eff = eff.div(1.1).pow(0.3333).mul(1.1)
+        if (hasUpgrade("e",243)) eff = eff.pow(tmp.e.upgrades[243].effect)
+        if (hasUpgrade("e",245)) eff = eff.pow(tmp.e.upgrades[245].effect2)
+        if (hasUpgrade("e",266)) eff = eff.pow(tmp.e.upgrades[266].effect)
+        return eff.pow(tmp.e.Rpeffect).sub(1)
+    },
+    Cyeffect(){
+        let eff = player.e.cy.add(10).div(8e12).max(10).log10().pow(0.07)
+        if (eff.gte(1.07)) eff = eff.div(1.07).pow(0.3333).mul(1.07)
+        if (hasUpgrade("e",246)) eff = eff.pow(tmp.e.upgrades[246].effect)
+        if (hasUpgrade("e",254)) eff = eff.pow(tmp.e.upgrades[254].effect)
+        if (hasUpgrade("e",266)) eff = eff.pow(tmp.e.upgrades[266].effect)
+        return eff.pow(tmp.e.Rpeffect).sub(1)
+    },
+    Gueffect(){
+        let eff = player.e.gu.add(10).div(5e12).max(10).log10().pow(0.15)
+        if (eff.gte(1.15)) eff = eff.div(1.15).pow(0.3333).mul(1.15)
+        if (hasUpgrade("e",246)) eff = eff.pow(tmp.e.upgrades[246].effect2)
+        if (hasUpgrade("e",254)) eff = eff.pow(tmp.e.upgrades[254].effect)
+        if (hasUpgrade("e",266)) eff = eff.pow(tmp.e.upgrades[266].effect)
+        return eff.pow(tmp.e.Rpeffect).sub(1)
+    },
+    Rpeffect(){
+        let eff = player.e.rp.add(10).div(1e19).max(10).log10().pow(0.07)
+        if (eff.gte(1.13)) eff = eff.div(1.13).pow(0.3333).mul(1.13)
+        if (hasUpgrade("e",264)) eff = eff.pow(tmp.e.upgrades[264].effect)
+        if (hasUpgrade("e",266)) eff = eff.pow(tmp.e.upgrades[266].effect)
         return eff
     },
     Again(){
         let eff = new Decimal(1)
         if (hasUpgrade("e",232)) eff = eff.mul(tmp.e.upgrades[232].effect)
         if (hasUpgrade("e",235)) eff = eff.mul(tmp.e.upgrades[235].effect)
+        if (hasUpgrade("e",241)) eff = eff.mul(tmp.e.upgrades[241].effect2)
+        if (hasUpgrade("e",256)) eff = eff.mul(tmp.e.upgrades[256].effect)
+        if (hasUpgrade("e",261)) eff = eff.mul(tmp.e.upgrades[261].effect)
         return eff
     },
     buyCap(){
@@ -11141,6 +11241,7 @@ addLayer("e", {
     reff(){
         let eff = player.e.rna.add(1).max(1).pow(5)
         if (hasUpgrade("e",232)) eff = eff.pow(tmp.e.upgrades[232].effect2)
+        if (hasUpgrade("e",243)) eff = eff.pow(tmp.e.upgrades[243].effect)
         return eff
     },
     rgain(){
@@ -11155,12 +11256,15 @@ addLayer("e", {
         if (hasUpgrade("e",225)) eff = eff.mul(upgradeEffect("e",225))
         if (hasUpgrade("e",233)) eff = eff.mul(upgradeEffect("e",233))
         if (hasUpgrade("e",236)) eff = eff.mul(upgradeEffect("e",236))
+        if (hasUpgrade("e",244)) eff = eff.mul(upgradeEffect("e",244))
         if (player.e.p.lt("e6644e8")) eff = new Decimal(0)
         return eff.mul(tmp.e.buyables[71].effect).mul(tmp.e.Aeffect)
     },
     reff2(){
         let eff = player.e.rna.add(1).max(1).pow(0.1).max(1)
         if (hasUpgrade("e",232)) eff = eff.pow(tmp.e.upgrades[232].effect2)
+        if (hasUpgrade("e",243)) eff = eff.pow(tmp.e.upgrades[243].effect)
+        if (eff.gte(1e160)) eff = eff.div(1e160).log10().pow(0.6).pow10().mul(1e160)
         return eff
     },
     qExp(){
@@ -11202,9 +11306,17 @@ addLayer("e", {
             player.e.c = player.e.c.add(tmp.e.buyables[82].effect.times(diff))
             player.e.n = player.e.n.add(tmp.e.buyables[83].effect.times(diff))
             player.e.o = player.e.o.add(tmp.e.buyables[91].effect.times(diff))
+            player.e.ph = player.e.ph.add(tmp.e.buyables[92].effect.times(diff))
+        }
+        if (hasUpgrade("e",266)) {
+            player.e.ad = player.e.ad.add(player.e.h.div(5).min(player.e.c.div(5)).min(player.e.n.div(5)).times(diff))
+            player.e.ur = player.e.ur.add(player.e.h.div(4).min(player.e.c.div(4)).min(player.e.n.div(2)).min(player.e.o.div(2)).times(diff))
+            player.e.cy = player.e.cy.add(player.e.h.div(5).min(player.e.c.div(4)).min(player.e.n.div(3)).min(player.e.o).times(diff))
+            player.e.gu = player.e.gu.add(player.e.h.div(5).min(player.e.c.div(5)).min(player.e.n.div(5)).min(player.e.o).times(diff))
+            player.e.rp = player.e.rp.add(player.e.h.div(11).min(player.e.c.div(5)).min(player.e.o.div(8)).min(player.e.ph).times(diff))
         }
         player.e.i = tmp.e.i
-        player.e.at = player.e.h.add(1).max(1).mul(player.e.c.add(1).max(1)).mul(player.e.n.add(1).max(1)).mul(player.e.o.add(1).max(1)).sub(1)
+        player.e.at = player.e.h.add(1).max(1).mul(player.e.c.add(1).max(1)).mul(player.e.n.add(1).max(1)).mul(player.e.o.add(1).max(1)).mul(player.e.ph.add(1).max(1)).sub(1)
         if (hasUpgrade("e",46)) player.e.ins = player.e.ins.add(upgradeEffect("e",46).times(diff))
         player.e.in = tmp.e.buyables[11].total.add(tmp.e.buyables[12].total).add(tmp.e.buyables[13].total).add(tmp.e.buyables[21].total.mul(10)).add(tmp.e.buyables[22].total.mul(10)).add(tmp.e.buyables[23].total.mul(10)).add(player.e.ins).add(upgradeEffect("e",44).mul(hasUpgrade("e",44)+0))
         player.e.infections = player.e.in.sub(player.e.spent)
@@ -11249,6 +11361,7 @@ addLayer("e", {
             layers.e.buyables[82].buyMax()
             layers.e.buyables[83].buyMax()
             layers.e.buyables[91].buyMax()
+            if (hasUpgrade("e",253)) layers.e.buyables[92].buyMax()
             }
         }
         let t = 0.1
@@ -11262,7 +11375,7 @@ addLayer("e", {
         stuff: {
             "Upgrades": {
                 content: [
-                    function () {if (player.tab == "e" && player.subtabs.e.mainTabs == "RNA" && player.subtabs.e.stuff == "Upgrades") return ["upgrades",[20,21,22,23,24]]},
+                    function () {if (player.tab == "e" && player.subtabs.e.mainTabs == "RNA" && player.subtabs.e.stuff == "Upgrades") return ["upgrades",[20,21,22,23,24,25,26]]},
                     function () {if (player.tab == "e" && player.subtabs.e.mainTabs == "RNA" && player.subtabs.e.stuff == "Upgrades") return ["row",[["buyable",71],["buyable",72]]]},
                 ],
                 buttonStyle: {"border-color": "#0066cc"},
@@ -11273,12 +11386,31 @@ addLayer("e", {
                     ["raw-html", function () {if (player.tab == "e" && player.subtabs.e.mainTabs == "RNA" && player.subtabs.e.stuff == "Atoms") return "You have <h2 style='color:#00A000;text-shadow:0px 0px 10px;'>" + formatWhole(player.e.c) + "</h2> Carbon, which boosts cases exp and 'Nucleotides' by ^" + format(tmp.e.Ceffect)}],
                     ["raw-html", function () {if (player.tab == "e" && player.subtabs.e.mainTabs == "RNA" && player.subtabs.e.stuff == "Atoms") return "You have <h2 style='color:#00A0A0;text-shadow:0px 0px 10px;'>" + formatWhole(player.e.n) + "</h2> Nitrogen, which increases 'Max Buyable' base by " + format(tmp.e.Neffect)}],
                     ["raw-html", function () {if (player.tab == "e" && player.subtabs.e.mainTabs == "RNA" && player.subtabs.e.stuff == "Atoms") return "You have <h2 style='color:#0000A0;text-shadow:0px 0px 10px;'>" + formatWhole(player.e.o) + "</h2> Oxygen, which boosts previous Atom effects by " + format(tmp.e.Oeffect)}],
+                    ["raw-html", function () {if (player.tab == "e" && player.subtabs.e.mainTabs == "RNA" && player.subtabs.e.stuff == "Atoms" && hasUpgrade("e",253)) return "You have <h2 style='color:#BB5500;text-shadow:0px 0px 10px;'>" + formatWhole(player.e.ph) + "</h2> Phosphorus, which boosts previous Atom and Atomic RNA effects by ^" + format(tmp.e.Pheffect)}],
                     ["raw-html", function () {if (player.tab == "e" && player.subtabs.e.mainTabs == "RNA" && player.subtabs.e.stuff == "Atoms") return "You have <h2 style='color:#A0A000;text-shadow:0px 0px 10px;'>" + formatWhole(player.e.at) + "</h2> Atomic RNA, which boosts RNA gain by " + format(tmp.e.Aeffect)}],
-                    function () {if (player.tab == "e" && player.subtabs.e.mainTabs == "RNA" && player.subtabs.e.stuff == "Atoms") return ["row",[["buyable",81],["buyable",82],["buyable",83],["buyable",91]]]},
+                    function () {if (player.tab == "e" && player.subtabs.e.mainTabs == "RNA" && player.subtabs.e.stuff == "Atoms") return ["row",[["buyable",81],["buyable",82],["buyable",83],["buyable",91],["buyable",92]]]},
                 ],
                 buttonStyle: {"border-color": "#0066cc"},
-                shouldNotify() {return tmp.e.buyables[81].canAfford || tmp.e.buyables[82].canAfford || tmp.e.buyables[83].canAfford || tmp.e.buyables[91].canAfford},
+                shouldNotify() {return tmp.e.buyables[81].canAfford || tmp.e.buyables[82].canAfford || tmp.e.buyables[83].canAfford || tmp.e.buyables[91].canAfford || tmp.e.buyables[92].canAfford},
                 unlocked() {return hasUpgrade("e",226)}
+            },
+            "Molecules": {
+                content: [
+                    ["raw-html", function () {if (player.tab == "e" && player.subtabs.e.mainTabs == "RNA" && player.subtabs.e.stuff == "Molecules") return "You have <h2 style='color:#A00000;text-shadow:0px 0px 10px;'>" + formatWhole(player.e.h) + "</h2> Hydrogen"}],
+                    ["raw-html", function () {if (player.tab == "e" && player.subtabs.e.mainTabs == "RNA" && player.subtabs.e.stuff == "Molecules") return "You have <h2 style='color:#00A000;text-shadow:0px 0px 10px;'>" + formatWhole(player.e.c) + "</h2> Carbon"}],
+                    ["raw-html", function () {if (player.tab == "e" && player.subtabs.e.mainTabs == "RNA" && player.subtabs.e.stuff == "Molecules") return "You have <h2 style='color:#00A0A0;text-shadow:0px 0px 10px;'>" + formatWhole(player.e.n) + "</h2> Nitrogen"}],
+                    ["raw-html", function () {if (player.tab == "e" && player.subtabs.e.mainTabs == "RNA" && player.subtabs.e.stuff == "Molecules") return "You have <h2 style='color:#0000A0;text-shadow:0px 0px 10px;'>" + formatWhole(player.e.o) + "</h2> Oxygen"}],
+                    ["raw-html", function () {if (player.tab == "e" && player.subtabs.e.mainTabs == "RNA" && player.subtabs.e.stuff == "Molecules" && hasUpgrade("e",253)) return "You have <h2 style='color:#BB5500;text-shadow:0px 0px 10px;'>" + formatWhole(player.e.ph) + "</h2> Phosphorus"}],
+                    ["raw-html", function () {if (player.tab == "e" && player.subtabs.e.mainTabs == "RNA" && player.subtabs.e.stuff == "Molecules") return "You have <h2 style='color:#A000A0;text-shadow:0px 0px 10px;'>" + formatWhole(player.e.ad) + "</h2> Adenine (starts at 2.2e10), which boosts Self RNA by ^" + format(tmp.e.Adeffect)}],
+                    ["raw-html", function () {if (player.tab == "e" && player.subtabs.e.mainTabs == "RNA" && player.subtabs.e.stuff == "Molecules") return "You have <h2 style='color:#A0A000;text-shadow:0px 0px 10px;'>" + formatWhole(player.e.ur) + "</h2> Uracil (starts at 4e10), which increases 'RNA Boost' base by " + format(tmp.e.Ureffect)}],
+                    ["raw-html", function () {if (player.tab == "e" && player.subtabs.e.mainTabs == "RNA" && player.subtabs.e.stuff == "Molecules" && hasUpgrade("e",244)) return "You have <h2 style='color:#A0A0A0;text-shadow:0px 0px 10px;'>" + formatWhole(player.e.cy) + "</h2> Cytosine (starts at 8e13), which increases 'Protein Synthesis' base by " + format(tmp.e.Cyeffect)}],
+                    ["raw-html", function () {if (player.tab == "e" && player.subtabs.e.mainTabs == "RNA" && player.subtabs.e.stuff == "Molecules" && hasUpgrade("e",244)) return "You have <h2 style='color:#A05000;text-shadow:0px 0px 10px;'>" + formatWhole(player.e.gu) + "</h2> Guanine (starts at 5e13), which increases AP base by " + format(tmp.e.Gueffect)}],
+                    ["raw-html", function () {if (player.tab == "e" && player.subtabs.e.mainTabs == "RNA" && player.subtabs.e.stuff == "Molecules" && hasUpgrade("e",256)) return "You have <h2 style='color:#0055AA;text-shadow:0px 0px 10px;'>" + formatWhole(player.e.rp) + "</h2> Ribose-Phosphate (starts at 1e20), which boosts previous Molecules by ^" + format(tmp.e.Rpeffect)}],
+                    ["clickable",12],
+                    ["row",[["clickable",21],["clickable",22],["clickable",23],["clickable",24],["clickable",25]]]
+                ],
+                buttonStyle: {"border-color": "#0066cc"},
+                unlocked() {return hasUpgrade("e",242)}
             },
         },
     },
@@ -11387,7 +11519,7 @@ addLayer("e", {
                 ["raw-html", function() {if (player.tab == "e" && player.subtabs.e.mainTabs == "Quarantine") return "You have " + layerText("h2", "e", formatWhole(player.e.qt)) + " Unquarantined Infections, which produce " + layerText("h2", "e", format(tmp.e.ucGain)) + " Unquarantined Cases per second"}],
                 ["raw-html", function() {if (player.tab == "e" && player.subtabs.e.mainTabs == "Quarantine") return "You have " + layerText("h2", "e", formatWhole(player.e.qc)) + " Unquarantined Cases"}],
                 "blank",
-                function () {if (player.tab == "e" && player.subtabs.e.mainTabs == "Quarantine") return "clickables"},
+                function () {if (player.tab == "e" && player.subtabs.e.mainTabs == "Quarantine") return ["clickable",11]},
                 "blank",
                 function () {if (player.tab == "e" && player.subtabs.e.mainTabs == "Quarantine") return ["row",[["buyable",51],["buyable",52],["buyable",53]]]},
                 function () {if (player.tab == "e" && hasUpgrade("e",106) && player.subtabs.e.mainTabs == "Quarantine") return ["row",[["buyable",61],["buyable",62],["buyable",63]]]},
@@ -11413,8 +11545,8 @@ addLayer("e", {
         },
     },
     clickables: {
-        rows: 1,
-        cols: 1,
+        rows: 3,
+        cols: 5,
         11: {
             display() {
                 let dis = "'Boostless' and 'Logarithm' are applied. Cases gain exponent is ^" + format(tmp.e.qExp) + "."
@@ -11455,6 +11587,151 @@ addLayer("e", {
             },
             style: {'height':'160px', 'width':'215px', 'font-size':'13px', 'background-color': "#006633"
             }
+        },
+        12: {
+            display() {
+                let d = ["1%","10%","50%","100%"]
+                let dis = d[player.e.m % 4]
+                return dis
+            },
+            canClick() {return true},
+            onClick() {
+                player.e.m ++
+            },
+            style: {'height':'70px', 'width':'70px', 'font-size':'13px', 'background-color': "#0066cc"
+            }
+        },
+        21: {
+            title: "<h3>Adenine</h3><br><span style='color:#00A000;font-size:20px'>C5</span><span style='color:#A00000;font-size:20px'>H5</span><span style='color:#00A0A0;font-size:20px'>N5</span><br>",
+            display() {
+                let m = [0.01,0.1,0.5,1]
+                let a = player.e.h.div(5).min(player.e.c.div(5)).min(player.e.n.div(5)).mul(m[player.e.m % 4]).floor()
+                let dis = "<span style = 'font-size:13px'>Purchase Adenine (" + formatWhole(a) + ")</span>"
+                return dis
+            },
+            canClick() {return player.e.h.gte(5) && player.e.c.gte(5) && player.e.n.gte(5)},
+            onClick() {
+                let m = [0.01,0.1,0.5,1]
+                let a = player.e.h.div(5).min(player.e.c.div(5)).min(player.e.n.div(5)).mul(m[player.e.m % 4]).floor()
+                player.e.h = player.e.h.sub(a.mul(5)).max(0)
+                player.e.c = player.e.c.sub(a.mul(5)).max(0)
+                player.e.n = player.e.n.sub(a.mul(5)).max(0)
+                player.e.ad = player.e.ad.add(a)
+            },
+            style: {"width":"150px","height":"150px",
+            'background-color'() {
+                let color = "#bf8f8f"
+                if (tmp.e.clickables[21].canClick) color = "#0066cc"
+                return color
+            }
+        }
+        },
+        22: {
+            title: "<h3>Uracil</h3><br><span style='color:#00A000;font-size:20px'>C4</span><span style='color:#A00000;font-size:20px'>H4</span><span style='color:#00A0A0;font-size:20px'>N2</span></span><span style='color:#0000A0;font-size:20px'>O2</span><br>",
+            display() {
+                let m = [0.01,0.1,0.5,1]
+                let a = player.e.h.div(4).min(player.e.c.div(4)).min(player.e.n.div(2)).min(player.e.o.div(2)).mul(m[player.e.m % 4]).floor()
+                let dis = "<span style = 'font-size:13px'>Purchase Uracil (" + formatWhole(a) + ")</span>"
+                return dis
+            },
+            canClick() {return player.e.h.gte(4) && player.e.c.gte(4) && player.e.n.gte(2) && player.e.o.gte(2)},
+            onClick() {
+                let m = [0.01,0.1,0.5,1]
+                let a = player.e.h.div(4).min(player.e.c.div(4)).min(player.e.n.div(2)).min(player.e.o.div(2)).mul(m[player.e.m % 4]).floor()
+                player.e.h = player.e.h.sub(a.mul(4)).max(0)
+                player.e.c = player.e.c.sub(a.mul(4)).max(0)
+                player.e.n = player.e.n.sub(a.mul(2)).max(0)
+                player.e.o = player.e.o.sub(a.mul(2)).max(0)
+                player.e.ur = player.e.ur.add(a)
+            },
+            style: {"width":"150px","height":"150px",
+            'background-color'() {
+                let color = "#bf8f8f"
+                if (tmp.e.clickables[22].canClick) color = "#0066cc"
+                return color
+            }
+        }
+        },
+        23: {
+            title: "<h3>Cytosine</h3><br><span style='color:#00A000;font-size:20px'>C4</span><span style='color:#A00000;font-size:20px'>H5</span><span style='color:#00A0A0;font-size:20px'>N3</span></span><span style='color:#0000A0;font-size:20px'>O</span><br>",
+            display() {
+                let m = [0.01,0.1,0.5,1]
+                let a = player.e.h.div(5).min(player.e.c.div(4)).min(player.e.n.div(3)).min(player.e.o).mul(m[player.e.m % 4]).floor()
+                let dis = "<span style = 'font-size:13px'>Purchase Cytosine (" + formatWhole(a) + ")</span>"
+                return dis
+            },
+            canClick() {return player.e.h.gte(5) && player.e.c.gte(3) && player.e.n.gte(3) && player.e.o.gte(1)},
+            onClick() {
+                let m = [0.01,0.1,0.5,1]
+                let a = player.e.h.div(5).min(player.e.c.div(4)).min(player.e.n.div(3)).min(player.e.o).mul(m[player.e.m % 4]).floor()
+                player.e.h = player.e.h.sub(a.mul(5)).max(0)
+                player.e.c = player.e.c.sub(a.mul(4)).max(0)
+                player.e.n = player.e.n.sub(a.mul(3)).max(0)
+                player.e.o = player.e.o.sub(a).max(0)
+                player.e.cy = player.e.cy.add(a)
+            },
+            unlocked() {return hasUpgrade("e",244)},
+            style: {"width":"150px","height":"150px",
+            'background-color'() {
+                let color = "#bf8f8f"
+                if (tmp.e.clickables[23].canClick) color = "#0066cc"
+                return color
+            }
+        }
+        },
+        24: {
+            title: "<h3>Guanine</h3><br><span style='color:#00A000;font-size:20px'>C5</span><span style='color:#A00000;font-size:20px'>H5</span><span style='color:#00A0A0;font-size:20px'>N5</span></span><span style='color:#0000A0;font-size:20px'>O</span><br>",
+            display() {
+                let m = [0.01,0.1,0.5,1]
+                let a = player.e.h.div(5).min(player.e.c.div(5)).min(player.e.n.div(5)).min(player.e.o).mul(m[player.e.m % 4]).floor()
+                let dis = "<span style = 'font-size:13px'>Purchase Guanine (" + formatWhole(a) + ")</span>"
+                return dis
+            },
+            canClick() {return player.e.h.gte(5) && player.e.c.gte(5) && player.e.n.gte(5) && player.e.o.gte(1)},
+            onClick() {
+                let m = [0.01,0.1,0.5,1]
+                let a = player.e.h.div(5).min(player.e.c.div(5)).min(player.e.n.div(5)).min(player.e.o).mul(m[player.e.m % 4]).floor()
+                player.e.h = player.e.h.sub(a.mul(5)).max(0)
+                player.e.c = player.e.c.sub(a.mul(5)).max(0)
+                player.e.n = player.e.n.sub(a.mul(5)).max(0)
+                player.e.o = player.e.o.sub(a).max(0)
+                player.e.gu = player.e.gu.add(a)
+            },
+            unlocked() {return hasUpgrade("e",244)},
+            style: {"width":"150px","height":"150px",
+            'background-color'() {
+                let color = "#bf8f8f"
+                if (tmp.e.clickables[24].canClick) color = "#0066cc"
+                return color
+            }
+        }
+        },
+        25: {
+            title: "<h3>Ribose-Phosphate</h3><br><span style='color:#00A000;font-size:20px'>C5</span><span style='color:#A00000;font-size:20px'>H11</span><span style='color:#0000A0;font-size:20px'>O8</span></span><span style='color:#BB5500;font-size:20px'>P</span><br>",
+            display() {
+                let m = [0.01,0.1,0.5,1]
+                let a = player.e.h.div(11).min(player.e.c.div(5)).min(player.e.o.div(8)).min(player.e.ph).mul(m[player.e.m % 4]).floor()
+                let dis = "<span style = 'font-size:13px'>Purchase Ribose-Phosphate (" + formatWhole(a) + ")</span>"
+                return dis
+            },
+            canClick() {return player.e.h.gte(11) && player.e.c.gte(5) && player.e.o.gte(8) && player.e.ph.gte(1)},
+            onClick() {
+                let m = [0.01,0.1,0.5,1]
+                let a = player.e.h.div(11).min(player.e.c.div(5)).min(player.e.o.div(8)).min(player.e.ph).mul(m[player.e.m % 4]).floor()
+                player.e.h = player.e.h.sub(a.mul(11)).max(0)
+                player.e.c = player.e.c.sub(a.mul(5)).max(0)
+                player.e.o = player.e.o.sub(a.mul(8)).max(0)
+                player.e.ph = player.e.ph.sub(a).max(0)
+                player.e.rp = player.e.rp.add(a)
+            },
+            unlocked() {return hasUpgrade("e",256)},
+            style: {"width":"150px","height":"150px",
+            'background-color'() {
+                let color = "#bf8f8f"
+                if (tmp.e.clickables[25].canClick) color = "#0066cc"
+                return color
+            }
+        }
         },
     },
     buyables: {
@@ -11832,7 +12109,8 @@ addLayer("e", {
 			title: "Max Buyable",
             cost(x=player[this.layer].buyables[this.id]) { // cost for buying xth buyable, can be an object if there are multiple currencies
                 if (x.gte(6)) x = x.div(6).pow(4).mul(6)
-                let cost = Decimal.pow("e1e9",Decimal.pow(3.1,x)).mul("e10786e7")
+                let b = Decimal.sub(3.1,hasUpgrade("e",246)*0.5+hasUpgrade("e",255))
+                let cost = Decimal.pow("e1e9",Decimal.pow(b,x)).mul("e10786e7")
                 return cost.floor()
             },
             base() { 
@@ -12129,6 +12407,7 @@ addLayer("e", {
                 let x = tmp[this.layer].buyables[this.id].total
                 let base = tmp[this.layer].buyables[this.id].base
                 let eff = base.mul(x)
+                if (eff.gte(4e3)) eff = eff.div(4e3).pow(0.5).mul(4e3)
                 return eff;
             },
             display() { // Everything else displayed in the buyable button after the title
@@ -12436,7 +12715,7 @@ addLayer("e", {
             },
             base() { 
                 let base = new Decimal(0.25)
-                return base
+                return base.add(tmp.e.Ureffect)
             },
             total() {
                 let total = getBuyableAmount("e", 72)
@@ -12713,6 +12992,63 @@ addLayer("e", {
             }
         }
         },
+        92: {
+			title: "Phosphorus RNA",
+			cost(x=player[this.layer].buyables[this.id]) { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let cost = Decimal.pow(1e10, x.pow(1.25)).mul("e2270")
+                return cost.floor()
+            },
+            base() { 
+                let base = tmp.e.Again.div(1e21)
+                return base
+            },
+            total() {
+                let total = getBuyableAmount("e", 92)
+                return total
+            },
+			effect() { // Effects of owning x of the items, x is a decimal
+                let x = tmp[this.layer].buyables[this.id].total
+                let base = tmp[this.layer].buyables[this.id].base
+                return Decimal.mul(base, x);
+            },
+            display() { // Everything else displayed in the buyable button after the title
+                if (player.tab != "e" || player.subtabs.e.mainTabs != "RNA" || player.subtabs.e.stuff != "Atoms") return
+                let extra = ""
+                let dis = "Gain "+format(this.base())
+                return dis + " P/s.\n\
+                Cost: " + format(tmp[this.layer].buyables[this.id].cost)+" RNA\n\
+                Effect: +" + format(tmp[this.layer].buyables[this.id].effect)+" P/s\n\
+                Amount: " + formatWhole(getBuyableAmount("e", 92)) + extra
+            },
+            unlocked() { return hasUpgrade("e", 253) }, 
+            canAfford() {
+                    return player.e.rna.gte(tmp[this.layer].buyables[this.id].cost)},
+            buy() { 
+                cost = tmp[this.layer].buyables[this.id].cost
+                if (this.canAfford()) {
+                    if (!hasMilestone("e",6)) player.e.rna = player.e.rna.sub(cost).max(0)
+                    player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1).max(1)
+                }
+            },
+            buyMax() {
+                let s = player.e.rna
+                let target = Decimal.log10(s.div("e2270")).div(10).root(1.25)
+                target = target.ceil()
+                let cost = Decimal.pow(1e10, target.sub(1).pow(1.25)).mul("e2270")
+                let diff = target.sub(player.e.buyables[92])
+                if (this.canAfford()) {
+                    if (!hasMilestone("e",6)) player.e.rna = player.e.rna.sub(cost).max(0)
+                    player.e.buyables[92] = player.e.buyables[92].add(diff)
+                }
+            },
+            style: {"width":"170px","height":"170px",
+            'background-color'() {
+                let color = "#bf8f8f"
+                if (tmp.e.buyables[92].canAfford) color = "#BB5500"
+                return color
+            }
+        }
+        },
     },
     upgrades: {
         rows: 11,
@@ -12949,6 +13285,7 @@ addLayer("e", {
                 let eff = player.f.casuals.add(10).max(10)
                 eff = eff.log10().pow(0.2)
                 if (hasUpgrade("e",74)) eff = eff.pow(upgradeEffect("e",74))
+                if (eff.gte("ee26")) eff = eff.log10().div(10).pow(4e24)
                 return eff
             },
             effectDisplay(){
@@ -13199,6 +13536,7 @@ addLayer("e", {
                 eff = Decimal.pow(10,eff.log10().pow(0.1)).pow(0.35)
                 if (eff.gte("ee11")) eff = Decimal.pow(10,eff.div("ee11").log10().pow(0.8)).mul("ee11")
                 if (eff.gte("e2e16")) eff = Decimal.pow(10,eff.div("e2e16").log10().pow(0.8)).mul("e2e16")
+                if (eff.gte("ee18")) eff = eff.log10().mul(100).pow(5e16)
                 return eff
             },
             effectDisplay(){
@@ -14524,7 +14862,8 @@ addLayer("e", {
             effect(){
                 let eff = player.f.virus.add(1).max(1)
                 eff = Decimal.pow(10,eff.log10().pow(0.75)).pow(0.0011)
-                if (eff.gte("ee14")) eff = eff.div("ee14").log10().pow(0.7).mul("ee14")
+                if (eff.gte("ee14")) eff = eff.div("ee14").log10().pow(0.1).mul("ee14")
+                if (player.e.diseases.gte("ee18")) eff = eff.div("ee14").pow10().mul("ee14")
                 return eff
             },
             effectDisplay(){
@@ -14720,6 +15059,7 @@ addLayer("e", {
                 if (eff.gte("e8e4")) eff = Decimal.pow(10,eff.div("e8e4").log10().pow(0.7)).mul("e8e4")
                 if (eff.gte("ee12")) eff = Decimal.pow(10,eff.div("ee12").log10().pow(0.8)).mul("ee12")
                 if (eff.gte("ee18")) eff = Decimal.pow(10,eff.div("ee18").log10().pow(0.8)).mul("ee18")
+                if (eff.gte("ee26")) eff = eff.log10().div(10).pow(4e24)
                 return eff
             },
             effectDisplay(){
@@ -15630,7 +15970,7 @@ addLayer("e", {
             effect(){
                 let eff = player.e.rna.add(10).max(10).log10().pow(player.e.rna.add(10).max(10).log10().add(10).max(10).log10().pow(2).add(1).max(1)).max(1)
                 if (hasUpgrade("e",224)) eff = eff.pow(upgradeEffect("e",224))
-                return eff
+                return eff.pow(tmp.e.Adeffect)
             },
             effectDisplay(){
                 return format(upgradeEffect("e",202))+"x"
@@ -15832,14 +16172,19 @@ addLayer("e", {
         },
         214: {
             title: "Protein Synthesis",
-            description: "Multiply RNA gain by 1.05 per RNA upgrade squared.",
+            description() {
+                let exp = Decimal.add(1.05,player.e.buyables[72]*hasUpgrade("e",241)/1000).add(tmp.e.Cyeffect)
+                return "Multiply RNA gain by " + format(exp) + " per RNA upgrade squared."
+            } ,
             currencyDisplayName: "RNA",
             currencyInternalName: "rna",
             currencyLayer: "e",
             cost: new Decimal(3e13),
             effect(){
                 let eff = player.e.upgrades.filter(number => number>200).length
-                eff = Decimal.pow(1.05,Decimal.pow(eff,2))
+                let exp = Decimal.add(1.05,player.e.buyables[72]*hasUpgrade("e",241)/1000).add(tmp.e.Cyeffect)
+                let exp2 = Decimal.add(2,hasUpgrade("e",263)*upgradeEffect("e",263))
+                eff = Decimal.pow(exp,Decimal.pow(eff,exp2))
                 return eff
             },
             effectDisplay(){
@@ -15864,7 +16209,10 @@ addLayer("e", {
             currencyLayer: "e",
             cost: new Decimal(1.616e16),
             effect(){
-                let eff = Decimal.pow(1.02,player.e.points)
+                let exp = new Decimal(1)
+                if (hasUpgrade("e",253)) exp = exp.mul(1.25)
+                if (hasUpgrade("e",265)) exp = exp.mul(upgradeEffect("e",265))
+                let eff = Decimal.pow(1.02,player.e.points.pow(exp))
                 return eff
             },
             effectDisplay(){
@@ -16069,7 +16417,9 @@ addLayer("e", {
             currencyLayer: "e",
             cost: new Decimal(1e73),
             effect(){
-                let eff = tmp.e.buyables[31].effect.pow(player.e.buyables[31].pow(1.7777))
+                let exp = player.e.buyables[31].pow(1.7777)
+                if (hasUpgrade("e",255)) exp = exp.pow(upgradeEffect("e",255))
+                let eff = tmp.e.buyables[31].effect.pow(exp)
                 return eff
             },
             effectDisplay(){
@@ -16123,7 +16473,7 @@ addLayer("e", {
             currencyLayer: "e",
             cost: new Decimal(1e113),
             effect(){
-                let eff = Decimal.pow(2,player.e.buyables[81].add(player.e.buyables[82]).add(player.e.buyables[83]).add(player.e.buyables[91]))
+                let eff = Decimal.pow(2,player.e.buyables[81].add(player.e.buyables[82]).add(player.e.buyables[83]).add(player.e.buyables[91]).add(player.e.buyables[92]))
                 return eff
             },
             effectDisplay(){
@@ -16173,11 +16523,16 @@ addLayer("e", {
             currencyLayer: "e",
             cost: new Decimal(5e152),
             effect(){
-                let eff = Decimal.pow(1.075,player.e.buyables[81].add(player.e.buyables[82]).add(player.e.buyables[83]).add(player.e.buyables[91]))
+                let exp = player.e.buyables[81].add(player.e.buyables[82]).add(player.e.buyables[83]).add(player.e.buyables[91]).add(player.e.buyables[92])
+                if (exp.gte(110)) exp = exp.div(120).pow(0.5).mul(120)
+                let eff = Decimal.pow(1.075,exp)
                 return eff
             },
             effectDisplay(){
-                return format(upgradeEffect("e",235))+"x"
+                let dis = format(upgradeEffect("e",235))+"x"
+                let exp = player.e.buyables[81].add(player.e.buyables[82]).add(player.e.buyables[83]).add(player.e.buyables[91]).add(player.e.buyables[92])
+                if (exp.gte(110)) dis += " (softcapped)"
+                return dis
             },
             canAfford() {
                 return player.e.rna.gte(5e152)
@@ -16213,6 +16568,467 @@ addLayer("e", {
             },
             unlocked() {
                 return hasUpgrade("e",235)
+            }
+        },
+        241: {
+            title: "Atom Boost",
+            description: "DCB 2x later, +0.001 to Pro Syn base, Atoms x1.2 per RNA Boost.",
+            currencyDisplayName: "RNA",
+            currencyInternalName: "rna",
+            currencyLayer: "e",
+            cost: new Decimal(1e265),
+            effect(){
+                let eff = Decimal.pow(2,player.e.buyables[72])
+                return eff
+            },
+            effect2(){
+                let exp = player.e.buyables[72]
+                if (exp.gte(320)) exp = exp.div(320).pow(0.5).mul(320)
+                let eff = Decimal.pow(1.2,exp)
+                return eff
+            },
+            effectDisplay(){
+                let dis = format(tmp.e.upgrades[241].effect)+"x, "+format(tmp.e.upgrades[241].effect2)+"x"
+                let exp = player.e.buyables[72]
+                if (exp.gte(320)) dis += " (softcapped)"
+                return dis
+            },
+            canAfford() {
+                return player.e.rna.gte(1e265)
+            },
+            pay() {
+                player.e.rna = player.e.rna.sub(1e265)
+                player.e.upgg.push(241)
+            },
+            unlocked() {
+                return hasUpgrade("e",236)
+            }
+        },
+        242: {
+            title: "Nitrogenous Bases",
+            description: "Atomic RNA boosts Atom effects and unlock Molecules.",
+            currencyDisplayName: "RNA",
+            currencyInternalName: "rna",
+            currencyLayer: "e",
+            cost: new Decimal("e317"),
+            effect(){
+                let eff = player.e.at.add(10).max(10).log10().add(10).max(10).log10().pow(0.25).max(1)
+                return eff
+            },
+            effectDisplay(){
+                return "^"+format(upgradeEffect("e",242))
+            },
+            canAfford() {
+                return player.e.rna.gte("e317")
+            },
+            pay() {
+                player.e.rna = player.e.rna.sub("e317")
+                player.e.upgg.push(242)
+            },
+            unlocked() {
+                return hasUpgrade("e",241)
+            }
+        },
+        243: {
+            title: "Atomic Boost",
+            description: "Atomic RNA boosts RNA, Adenine, and Uracil effects.",
+            currencyDisplayName: "RNA",
+            currencyInternalName: "rna",
+            currencyLayer: "e",
+            cost: new Decimal("e455"),
+            effect(){
+                let eff = player.e.at.add(10).max(10).log10().add(10).max(10).log10().pow(0.2).max(1)
+                return eff
+            },
+            effectDisplay(){
+                return "^"+format(upgradeEffect("e",243))
+            },
+            canAfford() {
+                return player.e.rna.gte("e455")
+            },
+            pay() {
+                player.e.rna = player.e.rna.sub("e455")
+                player.e.upgg.push(243)
+            },
+            unlocked() {
+                return hasUpgrade("e",242)
+            }
+        },
+        244: {
+            title: "Molecular Achievement",
+            description: "AP boosts RNA gain, and unlock 2 Molecules.",
+            currencyDisplayName: "RNA",
+            currencyInternalName: "rna",
+            currencyLayer: "e",
+            cost: new Decimal("e515"),
+            effect(){
+                let eff = tmp.a.effect.pow(0.1)
+                if (hasUpgrade("e",262)) eff = eff.pow(upgradeEffect("e",262))
+                return eff
+            },
+            effectDisplay(){
+                return format(upgradeEffect("e",244))+"x"
+            },
+            canAfford() {
+                return player.e.rna.gte("e515")
+            },
+            pay() {
+                player.e.rna = player.e.rna.sub("e515")
+                player.e.upgg.push(244)
+            },
+            unlocked() {
+                return hasUpgrade("e",243)
+            }
+        },
+        245: {
+            title: "Base Pair 1",
+            description: "Adenine and Uracil boost each other.",
+            currencyDisplayName: "RNA",
+            currencyInternalName: "rna",
+            currencyLayer: "e",
+            cost: new Decimal("e770"),
+            effect(){
+                let eff = player.e.ur.add(10).log10().pow(0.05)
+                return eff
+            },
+            effect2(){
+                let eff = player.e.ad.add(10).log10().pow(0.05)
+                return eff
+            },
+            effectDisplay(){
+                return "AD: ^"+format(tmp.e.upgrades[245].effect)+", UR: ^"+format(tmp.e.upgrades[245].effect2)
+            },
+            canAfford() {
+                return player.e.rna.gte("e770")
+            },
+            pay() {
+                player.e.rna = player.e.rna.sub("e770")
+                player.e.upgg.push(245)
+            },
+            unlocked() {
+                return hasUpgrade("e",244)
+            }
+        },
+        246: {
+            title: "Base Pair 2",
+            description: "Cytosine and Guanine boost each other, and reduce 'Max Buyable' scaling base by 0.5.",
+            currencyDisplayName: "RNA",
+            currencyInternalName: "rna",
+            currencyLayer: "e",
+            cost: new Decimal("e870"),
+            effect(){
+                let eff = player.e.gu.add(10).log10().pow(0.085)
+                return eff
+            },
+            effect2(){
+                let eff = player.e.cy.add(10).log10().pow(0.085)
+                return eff
+            },
+            effectDisplay(){
+                return "CY: ^"+format(tmp.e.upgrades[246].effect)+", GU: ^"+format(tmp.e.upgrades[246].effect2)
+            },
+            canAfford() {
+                return player.e.rna.gte("e870")
+            },
+            pay() {
+                player.e.rna = player.e.rna.sub("e870")
+                player.e.upgg.push(246)
+            },
+            unlocked() {
+                return hasUpgrade("e",245)
+            }
+        },
+        251: {
+            title: "Immune RNA",
+            description: "RNA boosts immunity exponent.",
+            currencyDisplayName: "RNA",
+            currencyInternalName: "rna",
+            currencyLayer: "e",
+            cost: new Decimal("e1005"),
+            effect(){
+                let eff = player.e.rna.add(10).log10().pow(0.025)
+                return eff
+            },
+            effectDisplay(){
+                return format(upgradeEffect("e",251))+"x"
+            },
+            canAfford() {
+                return player.e.rna.gte("e1005")
+            },
+            pay() {
+                player.e.rna = player.e.rna.sub("e1005")
+                player.e.upgg.push(251)
+            },
+            unlocked() {
+                return hasUpgrade("e",246)
+            }
+        },
+        252: {
+            title: "Immune Molecules",
+            description: "Molecules boost immunity exponent.",
+            currencyDisplayName: "RNA",
+            currencyInternalName: "rna",
+            currencyLayer: "e",
+            cost: new Decimal("5.678e1234"),
+            effect(){
+                let eff = player.e.ad.add(player.e.ur).add(player.e.cy).add(player.e.gu).add(10).log10().pow(0.03)
+                return eff
+            },
+            effectDisplay(){
+                return format(upgradeEffect("e",252))+"x"
+            },
+            canAfford() {
+                return player.e.rna.gte("5.678e1234")
+            },
+            pay() {
+                player.e.rna = player.e.rna.sub("5.678e1234")
+                player.e.upgg.push(252)
+            },
+            unlocked() {
+                return hasUpgrade("e",251)
+            }
+        },
+        253: {
+            title: "Infected Acids",
+            description: "'Amino Acids' infecters is ^1.25 and unlock an Atom.",
+            currencyDisplayName: "RNA",
+            currencyInternalName: "rna",
+            currencyLayer: "e",
+            cost: new Decimal("e1950"),
+            canAfford() {
+                return player.e.rna.gte("e1950")
+            },
+            pay() {
+                player.e.rna = player.e.rna.sub("e1950")
+                player.e.upgg.push(253)
+            },
+            unlocked() {
+                return hasUpgrade("e",252)
+            }
+        },
+        254: {
+            title: "Phosphate Pair",
+            description: "Phosphorus boosts Cytosine and Guanine effects.",
+            currencyDisplayName: "RNA",
+            currencyInternalName: "rna",
+            currencyLayer: "e",
+            cost: new Decimal("e3500"),
+            effect(){
+                let eff = player.e.ph.max(10).log10().pow(0.125)
+                return eff
+            },
+            effectDisplay(){
+                return "^"+format(upgradeEffect("e",254))
+            },
+            canAfford() {
+                return player.e.rna.gte("e3500")
+            },
+            pay() {
+                player.e.rna = player.e.rna.sub("e3500")
+                player.e.upgg.push(254)
+            },
+            unlocked() {
+                return hasUpgrade("e",253)
+            }
+        },
+        255: {
+            title: "Max Atomic",
+            description: "A. RNA boosts 'Polymeric' exp and reduce 'Max B.' sc. base by 1.",
+            currencyDisplayName: "RNA",
+            currencyInternalName: "rna",
+            currencyLayer: "e",
+            cost: new Decimal("e4100"),
+            effect(){
+                let eff = player.e.at.max(10).log10().max(10).log10().pow(0.6)
+                return eff
+            },
+            effectDisplay(){
+                return "^"+format(upgradeEffect("e",255))
+            },
+            canAfford() {
+                return player.e.rna.gte("e4100")
+            },
+            pay() {
+                player.e.rna = player.e.rna.sub("e4100")
+                player.e.upgg.push(255)
+            },
+            unlocked() {
+                return hasUpgrade("e",254)
+            }
+        },
+        256: {
+            title: "Infected Atoms",
+            description: "II boosts Atom gain and unlock a Molecule.",
+            currencyDisplayName: "RNA",
+            currencyInternalName: "rna",
+            currencyLayer: "e",
+            cost: new Decimal("e4510"),
+            effect(){
+                let eff = player.e.infections.max(10).log10().pow(0.1).pow10()
+                return eff
+            },
+            effectDisplay(){
+                return format(upgradeEffect("e",256))+"x"
+            },
+            canAfford() {
+                return player.e.rna.gte("e4510")
+            },
+            pay() {
+                player.e.rna = player.e.rna.sub("e4510")
+                player.e.upgg.push(256)
+            },
+            unlocked() {
+                return hasUpgrade("e",255)
+            }
+        },
+        261: {
+            title: "Ribonucleic Atoms",
+            description: "RNA boosts Atom gain.",
+            currencyDisplayName: "RNA",
+            currencyInternalName: "rna",
+            currencyLayer: "e",
+            cost: new Decimal("e7220"),
+            effect(){
+                let eff = player.e.rna.max(10).log10().pow(0.1).pow10()
+                return eff
+            },
+            effectDisplay(){
+                return format(upgradeEffect("e",261))+"x"
+            },
+            canAfford() {
+                return player.e.rna.gte("e7220")
+            },
+            pay() {
+                player.e.rna = player.e.rna.sub("e7220")
+                player.e.upgg.push(261)
+            },
+            unlocked() {
+                return hasUpgrade("e",256)
+            }
+        },
+        262: {
+            title: "Phosphate Achievement",
+            description: "Ribose-Phosphate (R5P) boosts 'Molecular Achievement'.",
+            currencyDisplayName: "RNA",
+            currencyInternalName: "rna",
+            currencyLayer: "e",
+            cost: new Decimal("e9750"),
+            effect(){
+                let eff = player.e.rna.max(10).log10().pow(0.15)
+                return eff
+            },
+            effectDisplay(){
+                return "^"+format(upgradeEffect("e",262))
+            },
+            canAfford() {
+                return player.e.rna.gte("e9750")
+            },
+            pay() {
+                player.e.rna = player.e.rna.sub("e9750")
+                player.e.upgg.push(262)
+            },
+            unlocked() {
+                return hasUpgrade("e",261)
+            }
+        },
+        263: {
+            title: "Phosphate Synthesis",
+            description: "R5P boosts 'Protein Synthesis' exponent.",
+            currencyDisplayName: "RNA",
+            currencyInternalName: "rna",
+            currencyLayer: "e",
+            cost: new Decimal("e11500"),
+            effect(){
+                let eff = player.e.rna.max(10).log10().max(10).log10().pow(0.12).sub(1)
+                return eff
+            },
+            effectDisplay(){
+                return "+"+format(upgradeEffect("e",263))
+            },
+            canAfford() {
+                return player.e.rna.gte("e11500")
+            },
+            pay() {
+                player.e.rna = player.e.rna.sub("e11500")
+                player.e.upgg.push(263)
+            },
+            unlocked() {
+                return hasUpgrade("e",262)
+            }
+        },
+        264: {
+            title: "Atomic Phosphate",
+            description: "Atomic RNA boosts R5P effect.",
+            currencyDisplayName: "RNA",
+            currencyInternalName: "rna",
+            currencyLayer: "e",
+            cost: new Decimal("e13000"),
+            effect(){
+                let eff = player.e.at.max(10).log10().pow(0.07)
+                return eff
+            },
+            effectDisplay(){
+                return "^"+format(upgradeEffect("e",264))
+            },
+            canAfford() {
+                return player.e.rna.gte("e13000")
+            },
+            pay() {
+                player.e.rna = player.e.rna.sub("e13000")
+                player.e.upgg.push(264)
+            },
+            unlocked() {
+                return hasUpgrade("e",263)
+            }
+        },
+        265: {
+            title: "Phosphate Synthesis",
+            description: "R5P boosts infecter amount in 'Protein Synthesis' effect.",
+            currencyDisplayName: "RNA",
+            currencyInternalName: "rna",
+            currencyLayer: "e",
+            cost: new Decimal("e15000"),
+            effect(){
+                let eff = player.e.rp.max(10).log10().max(10).log10().pow(0.3)
+                return eff
+            },
+            effectDisplay(){
+                return "^"+format(upgradeEffect("e",265))
+            },
+            canAfford() {
+                return player.e.rna.gte("e15000")
+            },
+            pay() {
+                player.e.rna = player.e.rna.sub("e15000")
+                player.e.upgg.push(265)
+            },
+            unlocked() {
+                return hasUpgrade("e",264)
+            }
+        },
+        266: {
+            title: "Molecular RNA",
+            description: "RNA boosts At and Mol eff. and gain 100% of molecules per second.",
+            currencyDisplayName: "RNA",
+            currencyInternalName: "rna",
+            currencyLayer: "e",
+            cost: new Decimal("e17000"),
+            effect(){
+                let eff = player.e.rna.add(10).max(10).log10().add(10).max(10).log10().add(10).max(10).log10().pow(0.15)
+                return eff
+            },
+            effectDisplay(){
+                return "^"+format(upgradeEffect("e",266))
+            },
+            canAfford() {
+                return player.e.rna.gte("e17000")
+            },
+            pay() {
+                player.e.rna = player.e.rna.sub("e17000")
+                player.e.upgg.push(266)
+            },
+            unlocked() {
+                return hasUpgrade("e",265)
             }
         },
     },

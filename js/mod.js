@@ -12,11 +12,14 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.5.2",
+	num: "0.5.3",
 	name: "Vorona Cirus GAS GAS GAS",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+        <h3>v0.5.3</h3><br>
+        - Added Molecules.<br>
+        - Added 3 Achievements.<br>
         <h3>v0.5.2</h3><br>
         - Added RNA.<br>
         - Added 2 Achievements.<br>
@@ -139,11 +142,11 @@ function addedPlayerData() { return {
 }}
 
 // Display extra things at the top of the page
-var displayThings = ["Current endgame: 1e265 RNA (v0.5.2)"]
+var displayThings = ["Current endgame: 1e23000 RNA (v0.5.3)"]
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.e.rna.gte(1e265)
+	return player.e.rna.gte("e23000")
 }
 
 
