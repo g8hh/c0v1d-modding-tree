@@ -16982,7 +16982,7 @@ addLayer("e", {
             }
         },
         265: {
-            title: "Phosphate Synthesis",
+            title: "Infected Phosphate",
             description: "R5P boosts infecter amount in 'Protein Synthesis' effect.",
             currencyDisplayName: "RNA",
             currencyInternalName: "rna",
