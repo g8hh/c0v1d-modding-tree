@@ -3696,6 +3696,8 @@ addLayer("stat", {
         ["display-text", function() {if (player.f.buyables[33].gte(100) && player.tab == "stat") return "Distant Multiplier Boost Scaling Start:"+format(tmp.f.buyables[33].distantStart)}],
         "blank",
         ["display-text", function() {if (player.f.buyables[33].gte(10000) && player.tab == "stat") return "Social Distant Multiplier Boost Scaling Start:"+format(tmp.f.buyables[33].sStart)}],
+        "blank",
+        ["display-text", function() {if (player.e.rna.gte("e1000") && player.tab == "stat") return "Immunity exponent:"+format(tmp.e.iexp)}],
     ],
 })
 addLayer("a", {
@@ -11060,6 +11062,12 @@ addLayer("e", {
         i = i.div(tmp.e.buyables[13].effect)
         return i
     },
+    iexp() {
+        let exp = new Decimal(30)
+        if (hasUpgrade("e",251)) exp = exp.mul(upgradeEffect("e",251))
+        if (hasUpgrade("e",252)) exp = exp.mul(upgradeEffect("e",252))
+        return exp
+    },
     icap() {
         let i = player.e.i.pow(-1)
         if (i.gte(0.064)) i = i.div(0.064).pow(0.4).mul(0.064)
@@ -11073,10 +11081,7 @@ addLayer("e", {
         if (i.gte(4.065)) i = i.div(4.065).pow(0.05).mul(4.065)
         if (hasUpgrade("e",95)) i = i.add(0.005)
         i = Decimal.tetrate(10,i)
-        let exp = new Decimal(30)
-        if (hasUpgrade("e",251)) exp = exp.mul(upgradeEffect("e",251))
-        if (hasUpgrade("e",252)) exp = exp.mul(upgradeEffect("e",252))
-        if (i.gte("eee16") && hasUpgrade("e",101)) i = player.e.i.pow(-1).mul(1e3).log10().pow(exp).div(1e60).pow10().pow10()
+        if (i.gte("eee16") && hasUpgrade("e",101)) i = player.e.i.pow(-1).mul(1e3).log10().pow(tmp.e.iexp).div(1e60).pow10().pow10()
         return i
     },
     effbase() {
