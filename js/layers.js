@@ -11515,17 +11515,17 @@ addLayer("e", {
                 buttonStyle: {"border-color": "#0066cc"},
                 unlocked() {return hasUpgrade("e",242)}
             },
-            "Maa": {
+            "mRNA": {
                 content: [
-                    ["raw-html", function () {if (player.tab == "e" && player.subtabs.e.mainTabs == "RNA" && player.subtabs.e.stuff == "Maa") return "You have <h2 style='color:#A000A0;text-shadow:0px 0px 10px;'>" + formatWhole(player.e.ad) + "</h2> Adenine"}],
-                    ["raw-html", function () {if (player.tab == "e" && player.subtabs.e.mainTabs == "RNA" && player.subtabs.e.stuff == "Maa") return "You have <h2 style='color:#A0A000;text-shadow:0px 0px 10px;'>" + formatWhole(player.e.ur) + "</h2> Uracil"}],
-                    ["raw-html", function () {if (player.tab == "e" && player.subtabs.e.mainTabs == "RNA" && player.subtabs.e.stuff == "Maa" && hasUpgrade("e",244)) return "You have <h2 style='color:#A0A0A0;text-shadow:0px 0px 10px;'>" + formatWhole(player.e.cy) + "</h2> Cytosine"}],
-                    ["raw-html", function () {if (player.tab == "e" && player.subtabs.e.mainTabs == "RNA" && player.subtabs.e.stuff == "Maa" && hasUpgrade("e",244)) return "You have <h2 style='color:#A05000;text-shadow:0px 0px 10px;'>" + formatWhole(player.e.gu) + "</h2> Guanine"}],
-                    ["raw-html", function () {if (player.tab == "e" && player.subtabs.e.mainTabs == "RNA" && player.subtabs.e.stuff == "Maa" && hasUpgrade("e",256)) return "You have <h2 style='color:#0055AA;text-shadow:0px 0px 10px;'>" + formatWhole(player.e.rp) + "</h2> Ribose-Phosphate"}],
-                    ["raw-html", function () {if (player.tab == "e" && player.subtabs.e.mainTabs == "RNA" && player.subtabs.e.stuff == "Maa" && hasUpgrade("e",256)) return "You have <h2 style='color:#00AA55;text-shadow:0px 0px 10px;'>" + formatWhole(player.e.mrna) + "</h2> mRNA, which boosts atom gain by " + format(tmp.e.mreff)}],
-                    ["raw-html", function () {if (player.tab == "e" && player.subtabs.e.mainTabs == "RNA" && player.subtabs.e.stuff == "Maa" && hasUpgrade("e",256)) return "You are gaining <h2 style='color:#00AA55;text-shadow:0px 0px 10px;'>" + format(tmp.e.mrgain) + "</h2> mRNA per second (starts at 1.1e76 AD, 1.75e76 UR, 1.75e76 CY, 1.1e76 GU, 1.831e55 R5P)"}],
-                    function () {if (player.tab == "e" && player.subtabs.e.mainTabs == "RNA" && player.subtabs.e.stuff == "Maa") return ["upgrades",[27,28,29,30,31]]},
-                    function () {if (player.tab == "e" && player.subtabs.e.mainTabs == "RNA" && player.subtabs.e.stuff == "Maa") return ["row",[["buyable",93],["buyable",94],["buyable",95]]]}
+                    ["raw-html", function () {if (player.tab == "e" && player.subtabs.e.mainTabs == "RNA" && player.subtabs.e.stuff == "mRNA") return "You have <h2 style='color:#A000A0;text-shadow:0px 0px 10px;'>" + formatWhole(player.e.ad) + "</h2> Adenine"}],
+                    ["raw-html", function () {if (player.tab == "e" && player.subtabs.e.mainTabs == "RNA" && player.subtabs.e.stuff == "mRNA") return "You have <h2 style='color:#A0A000;text-shadow:0px 0px 10px;'>" + formatWhole(player.e.ur) + "</h2> Uracil"}],
+                    ["raw-html", function () {if (player.tab == "e" && player.subtabs.e.mainTabs == "RNA" && player.subtabs.e.stuff == "mRNA" && hasUpgrade("e",244)) return "You have <h2 style='color:#A0A0A0;text-shadow:0px 0px 10px;'>" + formatWhole(player.e.cy) + "</h2> Cytosine"}],
+                    ["raw-html", function () {if (player.tab == "e" && player.subtabs.e.mainTabs == "RNA" && player.subtabs.e.stuff == "mRNA" && hasUpgrade("e",244)) return "You have <h2 style='color:#A05000;text-shadow:0px 0px 10px;'>" + formatWhole(player.e.gu) + "</h2> Guanine"}],
+                    ["raw-html", function () {if (player.tab == "e" && player.subtabs.e.mainTabs == "RNA" && player.subtabs.e.stuff == "mRNA" && hasUpgrade("e",256)) return "You have <h2 style='color:#0055AA;text-shadow:0px 0px 10px;'>" + formatWhole(player.e.rp) + "</h2> Ribose-Phosphate"}],
+                    ["raw-html", function () {if (player.tab == "e" && player.subtabs.e.mainTabs == "RNA" && player.subtabs.e.stuff == "mRNA" && hasUpgrade("e",256)) return "You have <h2 style='color:#00AA55;text-shadow:0px 0px 10px;'>" + formatWhole(player.e.mrna) + "</h2> mRNA, which boosts atom gain by " + format(tmp.e.mreff)}],
+                    ["raw-html", function () {if (player.tab == "e" && player.subtabs.e.mainTabs == "RNA" && player.subtabs.e.stuff == "mRNA" && hasUpgrade("e",256)) return "You are gaining <h2 style='color:#00AA55;text-shadow:0px 0px 10px;'>" + format(tmp.e.mrgain) + "</h2> mRNA per second (starts at 1.1e76 AD, 1.75e76 UR, 1.75e76 CY, 1.1e76 GU, 1.831e55 R5P)"}],
+                    function () {if (player.tab == "e" && player.subtabs.e.mainTabs == "RNA" && player.subtabs.e.stuff == "mRNA") return ["upgrades",[27,28,29,30,31]]},
+                    function () {if (player.tab == "e" && player.subtabs.e.mainTabs == "RNA" && player.subtabs.e.stuff == "mRNA") return ["row",[["buyable",93],["buyable",94],["buyable",95]]]}
                 ],
                 buttonStyle: {"border-color": "#0066cc"},
                 unlocked() {return hasUpgrade("e",266)}
@@ -13213,7 +13213,7 @@ addLayer("e", {
                 return Decimal.pow(base, x).pow(player.e.upgrades.filter(number => number>270).length);
             },
             display() { // Everything else displayed in the buyable button after the title
-                if (player.tab != "e" || player.subtabs.e.mainTabs != "RNA" || player.subtabs.e.stuff != "Maa") return
+                if (player.tab != "e" || player.subtabs.e.mainTabs != "RNA" || player.subtabs.e.stuff != "mRNA") return
                 let extra = "+" + formatWhole(tmp.e.buyables[94].total)
                 if (player.e.buyables[94].lt(1)) extra = ""
                 let dis = "Multiply mRNA gain by "+format(this.base())
@@ -13262,7 +13262,7 @@ addLayer("e", {
                 return eff;
             },
             display() { // Everything else displayed in the buyable button after the title
-                if (player.tab != "e" || player.subtabs.e.mainTabs != "RNA" || player.subtabs.e.stuff != "Maa") return
+                if (player.tab != "e" || player.subtabs.e.mainTabs != "RNA" || player.subtabs.e.stuff != "mRNA") return
                 let extra = "+" + formatWhole(tmp.e.buyables[95].total)
                 if (player.e.buyables[95].lt(1)) extra = ""
                 let dis = "Multiply immunity exponent by "+format(this.base())
@@ -13310,7 +13310,7 @@ addLayer("e", {
                 return Decimal.pow(base, x);
             },
             display() { // Everything else displayed in the buyable button after the title
-                if (player.tab != "e" || player.subtabs.e.mainTabs != "RNA" || player.subtabs.e.stuff != "Maa") return
+                if (player.tab != "e" || player.subtabs.e.mainTabs != "RNA" || player.subtabs.e.stuff != "mRNA") return
                 let extra = ""
                 let dis = "Raise RNA eff to "+format(this.base())
                 return dis + " (based on cases).\n\
