@@ -12,11 +12,14 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.5.3",
+	num: "0.5.4",
 	name: "Vorona Cirus GAS GAS GAS",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+        <h3>v0.5.4</h3><br>
+        - Added mRNA.<br>
+        - Added 3 Achievements.<br>
         <h3>v0.5.3</h3><br>
         - Added Molecules.<br>
         - Added 3 Achievements.<br>
@@ -120,19 +123,20 @@ function getPointGen() {
     if (hasFUpg(156)) gain = gain.pow(getFUpgEff(156))
     if (hasFUpg(157)) gain = gain.pow(tmp.f.upgrades[157].effect2)
     if (hasUpgrade("e",221)) gain = gain.pow(upgradeEffect("e",221))
-    if (player.e.c.gt(0)) gain = Decimal.pow(10,gain.add(10).max(1).log10().pow(tmp.e.Ceffect))
-    if (hasFUpg(144)) gain = Decimal.pow(10,gain.add(10).max(1).log10().pow(getFUpgEff(144)))
-    if (hasFUpg(176)) gain = Decimal.pow(10,gain.add(10).max(1).log10().pow(getFUpgEff(176)))
-    if (hasUpgrade("e",133)) gain = Decimal.pow(10,gain.add(10).max(1).log10().pow(upgradeEffect("e",133)))
-    if (hasUpgrade("e",153)) gain = Decimal.pow(10,gain.add(10).max(1).log10().pow(upgradeEffect("e",153)))
-    if (hasUpgrade("e",43)) gain = Decimal.pow(10,gain.add(10).max(1).log10().pow(upgradeEffect("e",43)))
-    if (hasUpgrade("e",181)) gain = Decimal.pow(10,gain.add(10).max(1).log10().pow(upgradeEffect("e",181)))
-    if (hasUpgrade("e",196)) gain = Decimal.pow(10,gain.add(10).max(1).log10().pow(upgradeEffect("e",196)))
-    if (hasUpgrade("e",222)) gain = Decimal.pow(10,gain.add(10).max(1).log10().pow(upgradeEffect("e",222)))
-    if (hasUpgrade("e",223)) gain = Decimal.pow(10,gain.add(10).max(1).log10().pow(upgradeEffect("e",223)))
-    if (hasUpgrade("e",211)) gain = Decimal.pow(10,gain.add(10).max(1).log10().pow(tmp.e.upgrades[211].effect2))
+    if (player.e.c.gt(0)) gain = powExp(gain,tmp.e.Ceffect)
+    if (hasFUpg(144)) gain = powExp(gain,getFUpgEff(144))
+    if (hasFUpg(176)) gain = powExp(gain,getFUpgEff(176))
+    if (hasUpgrade("e",133)) gain = powExp(gain,upgradeEffect("e",133))
+    if (hasUpgrade("e",153)) gain = powExp(gain,upgradeEffect("e",153))
+    if (hasUpgrade("e",43)) gain = powExp(gain,upgradeEffect("e",43))
+    if (hasUpgrade("e",181)) gain = powExp(gain,upgradeEffect("e",181))
+    if (hasUpgrade("e",196)) gain = powExp(gain,upgradeEffect("e",196))
+    if (hasUpgrade("e",222)) gain = powExp(gain,upgradeEffect("e",222))
+    if (hasUpgrade("e",223)) gain = powExp(gain,upgradeEffect("e",223))
+    if (hasUpgrade("e",303)) gain = powExp(gain,upgradeEffect("e",303))
+    if (hasUpgrade("e",211)) gain = powExp(gain,tmp.e.upgrades[211].effect2)
     if (inChallenge("e",12) || player.e.inC) gain = gain.add(1).log10()
-    if (player.e.inC) gain = Decimal.pow(10,gain.max(1).log10().pow(tmp.e.qExp))
+    if (player.e.inC) gain = powExp(gain,tmp.e.qExp)
 	return gain.min(tmp.e.icap)
 }
 
@@ -142,11 +146,11 @@ function addedPlayerData() { return {
 }}
 
 // Display extra things at the top of the page
-var displayThings = ["Current endgame: 1e23000 RNA (v0.5.3)"]
+var displayThings = ["Current endgame: 1e219 mRNA (v0.5.4)"]
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.e.rna.gte("e23000")
+	return player.e.mrna.gte(1e219)
 }
 
 

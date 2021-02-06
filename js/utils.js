@@ -1,12 +1,12 @@
 // ************ Number formatting ************
 
 function addCommas(s){
-	let l = 3
-	if (s.length <= l) return s
+	if (s.length <= 3) return s
 	let rem = s.length % 3
 	if (rem == 0) rem = 3
 	return s.slice(0, rem) + "," + addCommas(s.slice(rem))
 }
+
 
 
 function exponentialFormat(num, precision) {
@@ -24,20 +24,20 @@ function exponentialFormat(num, precision) {
 	if (!end.includes("e")) end = addCommas(end.replace(/-/g, ''))
 	if (e.lt(0)) end = "-"+end
 	let start = ""
-	if (e.lt(1e9)) start = m.toStringWithDecimalPlaces(precision)
+	if (e.abs().lt(1e9)) start = m.toStringWithDecimalPlaces(precision)
 	return start + "e" + end
 }
 
 function commaFormat(num, precision) {
 	if (num === null || num === undefined) return "NaN"
-	if (num.mag < 0.001) return (0).toFixed(precision)
-	return num.toStringWithDecimalPlaces(precision).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,")
+	if (num.lt(Decimal.pow(10, precision * -1))) return (0).toFixed(precision)
+	return addCommas(num.toStringWithDecimalPlaces())
 }
 
 
 function regularFormat(num, precision) {
 	if (num === null || num === undefined) return "NaN"
-	if (num.mag < 0.001) return (0).toFixed(precision)
+	if (num.mag < Math.pow(10, -precision)) return (0).toFixed(precision)
 	return num.toStringWithDecimalPlaces(precision)
 }
 
@@ -57,6 +57,12 @@ function format(decimal, precision=3,) {
 		player.hasNaN = true;
 		console.log(decimal)
 		Decimal(0)
+		for (i in player){
+			if (player[i] == undefined) continue
+			if (player[i].points != undefined) {
+				if (isNaN(player[i].points.mag)) console.log(i + "'s points are NaN")
+			}
+		}
 		
 		return "NaN"
 	}
@@ -68,9 +74,9 @@ function format(decimal, precision=3,) {
 		if (slog.gte(1e4)) return Decimal.pow(10, slog.sub(slog.floor())).toStringWithDecimalPlaces(0) + "F" + commaFormat(slog.floor(), 0)
 		if (slog.gte(100)) return Decimal.pow(10, slog.sub(slog.floor())).toStringWithDecimalPlaces(2) + "F" + commaFormat(slog.floor(), 0)
 		else return Decimal.pow(10, slog.sub(slog.floor())).toStringWithDecimalPlaces(4) + "F" + commaFormat(slog.floor(), 0)
-	} else if (decimal.layer > 2 || (decimal.mag > 308 && decimal.layer == 2)) {
+	} else if (decimal.layer > 2 || (Math.abs(decimal.mag) > 308 && decimal.layer == 2)) {
 		return "e" + format(decimal.log10(), precision)
-	} else if (decimal.layer > 1 || (decimal.mag > 1e12 && decimal.layer == 1)) {
+	} else if (decimal.layer > 1 || (Math.abs(decimal.mag) > 1e12 && decimal.layer == 1)) {
 		return "e" + format(decimal.log10(), 4)
 	} else if (decimal.layer > 0 || decimal.mag > 1e9) {
 		return exponentialFormat(decimal, precision)
@@ -86,8 +92,8 @@ function format(decimal, precision=3,) {
 function formatWhole(decimal) {
 	decimal = new Decimal(decimal)
 	if (decimal.gte(1e9)) return format(decimal, 3)
-	if (decimal.lte(0.98) && !decimal.eq(0)) return format(decimal, 3)
-	return format(decimal, 0)
+	if (decimal.lt(10) && decimal.neq(decimal.floor())) return format(decimal, 3)
+	return addCommas(decimal.floor().mag.toString())
 }
 
 function formatTime(s) {
@@ -111,13 +117,13 @@ function formatTimeLong(s) {
 	if (s.gte(60)) return format(s.div(60)) + " minutes"
 	if (s.gte(1)) return format(s) + " seconds"
 	if (s.gte(0.001)) return format(s.mul(1e3)) + " milliseconds"
-	if (s.gte("1e-6")) return format(s.mul(1e6)) + " microseconds"
-	if (s.gte("1e-9")) return format(s.mul(1e9)) + " nanoseconds"
-	if (s.gte("1e-12")) return format(s.mul(1e12)) + " picoseconds"
-	if (s.gte("1e-15")) return format(s.mul(1e15)) + " femtoseconds"
-	if (s.gte("1e-18")) return format(s.mul(1e18)) + " attoseconds"
-	if (s.gte("1e-21")) return format(s.mul(1e21)) + " zeptoseconds"
-	if (s.gte("1e-24")) return format(s.mul(1e24)) + " yoctoseconds"
+	if (s.gte(1e-6)) return format(s.mul(1e6)) + " microseconds"
+	if (s.gte(1e-9)) return format(s.mul(1e9)) + " nanoseconds"
+	if (s.gte(1e-12)) return format(s.mul(1e12)) + " picoseconds"
+	if (s.gte(1e-15)) return format(s.mul(1e15)) + " femtoseconds"
+	if (s.gte(1e-18)) return format(s.mul(1e18)) + " attoseconds"
+	if (s.gte(1e-21)) return format(s.mul(1e21)) + " zeptoseconds"
+	if (s.gte(1e-24)) return format(s.mul(1e24)) + " yoctoseconds"
 	return format(s.mul(1.855e43)) + " Planck Times"
 }
 
@@ -250,16 +256,14 @@ function fixSave() {
 	defaultData = getStartPlayer()
 	fixData(defaultData, player)
 
-	for(layer in layers)
-	{
-		if (player[layer].best !== undefined) player[layer].best = new Decimal (player[layer].best)
-		if (player[layer].total !== undefined) player[layer].total = new Decimal (player[layer].total)
+	for (layer in layers) {
+		if (player[layer].best !== undefined) player[layer].best = new Decimal(player[layer].best)
+		if (player[layer].total !== undefined) player[layer].total = new Decimal(player[layer].total)
 
-		if (layers[layer].tabFormat && !Array.isArray(layers[layer].tabFormat)) {
-		
+		if (layers[layer].tabFormat != undefined && !Array.isArray(layers[layer].tabFormat)) {
 			if(!Object.keys(layers[layer].tabFormat).includes(player.subtabs[layer].mainTabs)) player.subtabs[layer].mainTabs = Object.keys(layers[layer].tabFormat)[0]
 		}
-		if (layers[layer].microtabs) {
+		if (layers[layer].microtabs != undefined) {
 			for (item in layers[layer].microtabs)
 				if(!Object.keys(layers[layer].microtabs[item]).includes(player.subtabs[layer][item])) player.subtabs[layer][item] = Object.keys(layers[layer].microtabs[item])[0]
 		}
@@ -269,30 +273,23 @@ function fixSave() {
 function fixData(defaultData, newData) {
 	for (item in defaultData){
 		if (defaultData[item] == null) {
-			if (newData[item] === undefined)
-				newData[item] = null
+			if (newData[item] === undefined) newData[item] = null
 		}
 		else if (Array.isArray(defaultData[item])) {
-			if (newData[item] === undefined)
-				newData[item] = defaultData[item]
-			else
-				fixData(defaultData[item], newData[item])
+			if (newData[item] === undefined) newData[item] = defaultData[item]
+			else fixData(defaultData[item], newData[item])
 		}
 		else if (defaultData[item] instanceof Decimal) { // Convert to Decimal
-			if (newData[item] === undefined)
-				newData[item] = defaultData[item]
-			else
-				newData[item] = new Decimal(newData[item])
+			if (newData[item] === undefined) newData[item] = defaultData[item]
+			else newData[item] = new Decimal(newData[item])
 		}
 		else if ((!!defaultData[item]) && (typeof defaultData[item] === "object")) {
-			if (newData[item] === undefined || (typeof defaultData[item] !== "object"))
+			if (newData[item] === undefined || (typeof defaultData[item] !== "object")) {
 				newData[item] = defaultData[item]
-			else
-				fixData(defaultData[item], newData[item])
+			} else fixData(defaultData[item], newData[item])
 		}
 		else {
-			if (newData[item] === undefined)
-				newData[item] = defaultData[item]
+			if (newData[item] === undefined) newData[item] = defaultData[item]
 		}
 	}	
 }
@@ -565,6 +562,10 @@ function getClickableState(layer, id){
 
 function setClickableState(layer, id, state){
 	player[layer].clickables[id] = state
+}
+
+function powExp(n, exp){
+	return Decimal.pow(10,n.add(10).max(1).log10().pow(exp))
 }
 
 function upgradeEffect(layer, id){
