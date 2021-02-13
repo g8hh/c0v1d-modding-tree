@@ -12,11 +12,14 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.5.4",
+	num: "0.5.5",
 	name: "Vorona Cirus GAS GAS GAS",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+        <h3>v0.5.5</h3><br>
+        - Added MMNA.<br>
+        - Added 2 Achievements.<br>
         <h3>v0.5.4</h3><br>
         - Added mRNA.<br>
         - Added 3 Achievements.<br>
@@ -77,7 +80,7 @@ let changelog = `<h1>Changelog:</h1><br>
         - Added Virus Points.<br>
         - Added Cases.<br>
     `
-let winText = `Congratulations! You have reached the end and beaten this game, but for now...`
+let winText = `Congratulations! You have reached the end and infected this game, but for now...`
 
 // If you add new functions anywhere inside of a layer, and those functions have an effect when called, add them here.
 // (The ones here are examples, all official functions are already taken care of)
@@ -137,22 +140,57 @@ function getPointGen() {
     if (hasUpgrade("e",211)) gain = powExp(gain,tmp.e.upgrades[211].effect2)
     if (inChallenge("e",12) || player.e.inC) gain = gain.add(1).log10()
     if (player.e.inC) gain = powExp(gain,tmp.e.qExp)
+    if (hasUpgrade("e",311)) gain = powExp2(gain,upgradeEffect("e",311))
+    if (hasUpgrade("e",325)) gain = powExp2(gain,upgradeEffect("e",325))
 	return gain.min(tmp.e.icap)
 }
 
 // You can add non-layer related variables that should to into "player" and be saved here, along with default values
 function addedPlayerData() { return {
-    newsTotal: new Decimal(0)
+    newsTotal: new Decimal(0),
+    lastSave: new Date().getTime(),
+    toggleKeys: false
 }}
+var shiftDown = false
+
+window.addEventListener('keydown', function(event) {
+	if (player.toggleKeys) {
+		if (event.keyCode == 16) shiftDown = !shiftDown;
+		if (event.keyCode == 17) controlDown = !controlDown;
+	} else {
+		if (event.keyCode == 16) shiftDown = true;
+		if (event.keyCode == 17) controlDown = true;
+	}
+}, false);
+
+window.addEventListener('keyup', function(event) {
+	if (player.toggleKeys) return 
+	if (event.keyCode == 16) shiftDown = false;
+	if (event.keyCode == 17) controlDown = false;
+}, false);
 
 // Display extra things at the top of the page
-var displayThings = ["Current endgame: 1e219 mRNA (v0.5.4)"]
+var displayThings = [
+    function(){
+		let a = "Current endgame: 1e9606 mRNA (v0.5.5)"
+		return player.autosave ? a : a + ". Warning: autosave is off"
+	},
+	function(){
+		let a = new Date().getTime() - player.lastSave
+		let b = "Last save was " + formatTime(a/1000) + " ago."
+		if (lastTenTicks.length < 10) return b
+		let c = 0
+		for (i = 0; i<10; i++){
+			c += lastTenTicks[i] / 10000
+		}
+		return b + " Average TPS = " + format(c, 3) + "s/tick."
+	}
+]
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.e.mrna.gte(1e219)
+	return player.e.mrna.gte(Decimal.pow(10,9606))
 }
-
 
 
 // Less important things beyond this point!

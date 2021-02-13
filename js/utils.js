@@ -1,4 +1,19 @@
 // ************ Big Feature related ************
+function getTimesRequired(chance, r1){
+	chance = new Decimal(chance)
+	if (chance.gte(1)) return 1
+	if (chance.lte(0)) return Infinity
+	if (r1 == undefined) r1 = Math.random()
+	//we want (1-chance)^n < r1
+	let n
+	if (chance.log10().gt(-5)){
+			n = Decimal.ln(r1).div(Math.log(1-chance))
+	} else {
+			n = Decimal.ln(1/r1).div(chance)
+	}
+	//log(1-chance) of r2
+	return n.floor().add(1)
+}
 
 function respecBuyables(layer) {
 	if (!layers[layer].buyables) return
@@ -57,7 +72,13 @@ function setClickableState(layer, id, state) {
 }
 
 function powExp(n, exp){
+	if (n.lt(10)) return n
 	return Decimal.pow(10,n.add(10).max(1).log10().pow(exp))
+}
+
+function powExp2(n, exp){
+	if (n.lt(1e10)) return n
+	return Decimal.pow(10,Decimal.pow(10,n.add(10).max(1).log10().add(10).max(1).log10().pow(exp)))
 }
 
 function upgradeEffect(layer, id){

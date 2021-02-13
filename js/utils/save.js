@@ -1,7 +1,10 @@
 
 // ************ Save stuff ************
-
+var logSave = false
 function save() {
+	let t = new Date().getTime()
+	if (logSave) console.log("saved at " + t)
+	if (!(player === null)) player.lastSave = t
 	localStorage.setItem(modInfo.id, btoa(JSON.stringify(player)))
 }
 
@@ -178,6 +181,8 @@ function load() {
 	updateTemp();
 	updateTemp();
 	loadVue();
+	updateTemp()
+	updateTemp()
 }
 
 function setupModInfo() {

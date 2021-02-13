@@ -47,12 +47,12 @@ function getResetGain(layer, canMax=false, useType = null) {
 		if (layer == "u" && gain.gte(1e34)) gain = gain.div(1e34).pow(0.2).mul(1e34)
 		if (layer == "s") {
 			if (gain.gte(getDUpgEff(41).add(20))) {  // gain=1e10000^1.9^s
-				gain = tmp[layer].baseAmount.div(tmp[layer].requires).log("e10000").log(1.9).add(getDUpgEff(41).add(20))
+				gain = tmp[layer].baseAmount.div(tmp[layer].requires).log(Decimal.pow(10,1e4)).log(1.9).add(getDUpgEff(41).add(20))
 			}
 			if (player.s.points.lt(getDUpgEff(41).add(20))) { 
 				gain = tmp[layer].baseAmount.div(tmp[layer].requires).div(tmp[layer].gainMult).max(1).log(tmp[layer].base).times(tmp[layer].gainExp).pow(Decimal.pow(tmp[layer].exponent, -1))
 				if (gain.gte(getDUpgEff(41).add(20))) {  // gain=1e10000^1.9^s
-					gain = tmp[layer].baseAmount.div(tmp[layer].requires).log("e10000").log(1.9).add(getDUpgEff(41).add(20))
+					gain = tmp[layer].baseAmount.div(tmp[layer].requires).log(Decimal.pow(10,1e4)).log(1.9).add(getDUpgEff(41).add(20))
 				}
 			}
 		}
@@ -113,7 +113,7 @@ function getNextAt(layer, canMax=false, useType = null) {
 		}
 		if (layer == "s") {
 			if (player.s.points.gte(getDUpgEff(41).add(20))) {
-				cost = Decimal.pow("e10000",Decimal.pow(1.9,amt.sub(getDUpgEff(41).add(20))))
+				cost = Decimal.pow(Decimal.pow(10,1e4),Decimal.pow(1.9,amt.sub(getDUpgEff(41).add(20))))
 			}
 		}
 		if (tmp[layer].roundUpCost) cost = cost.ceil()
@@ -237,7 +237,6 @@ function generatePoints(layer, diff) {
 var prevOnReset
 
 function doReset(layer, force=false) {
-	if (tmp[layer].type == "none") return
 	let row = tmp[layer].row
 	if (!force) {
 		if (tmp[layer].baseAmount.lt(tmp[layer].requires)) return;
@@ -250,8 +249,13 @@ function doReset(layer, force=false) {
 			if (!tmp[layer].canReset) return;
 		} 
 
+		let timesMult = 1
+
+		timesMult = Math.floor(timesMult)
+		if (player[layer].times != undefined) player[layer].times += timesMult
+
 		if (layers[layer].onPrestige)
-			run(layers[layer].onPrestige, layers[layer], gain)
+			layers[layer].onPrestige(gain)
 		
 		addPoints(layer, gain)
 		updateMilestones(layer)
@@ -267,12 +271,9 @@ function doReset(layer, force=false) {
 					if (!player[lrs[lr]].unlocked) player[lrs[lr]].unlockOrder++
 			}
 		}
-	
 		tmp[layer].baseAmount = new Decimal(0) // quick fix
 	}
-
 	if (tmp[layer].resetsNothing) return
-
 
 	for (layerResetting in layers) {
 		if (row >= layers[layerResetting].row && (!force || layerResetting != layer)) completeChallenge(layerResetting)
@@ -280,6 +281,7 @@ function doReset(layer, force=false) {
 
 	prevOnReset = {...player} //Deep Copy
 	player.points = (row == 0 ? new Decimal(0) : getStartPoints())
+
 
 	for (let x = row; x >= 0; x--) rowReset(x, layer)
 	rowReset("side", layer)
@@ -290,7 +292,10 @@ function doReset(layer, force=false) {
 	updateTemp()
 	updateTemp()
 }
-  
+
+function toggleShift() {
+	shiftDown = !shiftDown
+}
 
 function resetRow(row) {
 	if (prompt('Are you sure you want to reset this row? It is highly recommended that you wait until the end of your current run before doing this! Type "I WANT TO RESET THIS" to confirm')!="I WANT TO RESET THIS") return
@@ -382,20 +387,19 @@ function autobuyUpgrades(layer){
 
 function gameLoop(diff) {
 	if (isEndgame() || gameEnded) gameEnded = 1
+
 	if (isNaN(diff)) diff = 0
 	if (gameEnded && !player.keepGoing) {
 		diff = 0
 		player.tab = "gameEnded"
 	}
-	if (player.devSpeed) diff *= player.devSpeed
+	if (player.devSpeed != undefined) diff *= player.devSpeed
 
-	if (maxTickLength) {
-		let limit = maxTickLength()
-		if(diff > limit)
-			diff = limit
-	}
+	let limit = maxTickLength()
+	if (diff > limit) diff = limit
+
 	addTime(diff)
-	
+	adjustPopupTime(diff)
 	player.points = player.points.add(tmp.pointGen.times(diff)).max(0)
 	if (player.hideNews) {
 		document.getElementById("newsTicker").style.display = "none";
@@ -460,35 +464,43 @@ function hardReset() {
 }
 
 var ticking = false
+var devstop = false
+var perSecondCount = 0
+
+function doPerSecondStuff(){
+	updateHotkeys()
+}
+
+var lastTenTicks = []
 
 var interval = setInterval(function() {
 	if (player===undefined||tmp===undefined) return;
 	if (ticking) return;
 	if (gameEnded&&!player.keepGoing) return;
+	if (devstop) return
 	ticking = true
 	let now = Date.now()
 	let diff = (now - player.time) / 1e3
 	if (player.offTime !== undefined) {
-		if (player.offTime.remain > modInfo.offlineLimit * 3600) player.offTime.remain = modInfo.offlineLimit * 3600
+		if (player.offTime.remain > modInfo.offlineLimit * 1000) player.offTime.remain = modInfo.offlineLimit * 1000
 		if (player.offTime.remain > 0) {
 			let offlineDiff = Math.max(player.offTime.remain / 10, diff)
 			player.offTime.remain -= offlineDiff
 			diff += offlineDiff
 		}
-		if (!player.offlineProd || player.offTime.remain <= 0) player.offTime = undefined
+		if (!player.offlineProd || player.offTime.remain <= 0) delete player.offTime
 	}
-	if (player.devSpeed) diff *= player.devSpeed
 	player.time = now
-	if (needCanvasUpdate){ resizeCanvas();
-		needCanvasUpdate = false;
-	}
-	tmp.scrolled = document.getElementById('treeTab').scrollTop > 30
+	if (needCanvasUpdate) resizeCanvas();
 	updateTemp();
 	gameLoop(diff)
-	fixNaNs()
-	adjustPopupTime(0.05) 
+	perSecondCount += diff
+	if (perSecondCount > 10) perSecondCount = 10
+	if (perSecondCount > 1) {
+		perSecondCount += -1
+		doPerSecondStuff()
+	}
+	lastTenTicks.push(Date.now()-now)
+	if (lastTenTicks.length > 10) lastTenTicks = lastTenTicks.slice(1,)
 	ticking = false
 }, 50)
-
-
-setInterval(function() {needCanvasUpdate = true}, 500)

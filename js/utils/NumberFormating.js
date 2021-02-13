@@ -63,8 +63,12 @@ function format(decimal, precision=3) {
 		return "NaN"
 	}
 	if (decimal.sign < 0) return "-"+format(decimal.neg(), precision)
+	if (decimal.mag<0) {
+		if (decimal.layer > 3 || (decimal.mag < -1e10 && decimal.layer == 3)) return "1/" + format(decimal.recip(), precision)
+		else exponentialFormat(decimal, precision)
+	}
 	if (decimal.mag == Number.POSITIVE_INFINITY) return "Infinity"
-	if (decimal.layer > 3) {
+	if (decimal.layer > 3 || (decimal.mag > 1e10 && decimal.layer == 3)) {
 		var slog = decimal.slog()
 		if (slog.gte(1e5)) return "F" + formatWhole(slog.floor())
 		if (slog.gte(1e4)) return Decimal.pow(10, slog.sub(slog.floor())).toStringWithDecimalPlaces(0) + "F" + commaFormat(slog.floor(), 0)
@@ -80,7 +84,7 @@ function format(decimal, precision=3) {
 		return commaFormat(decimal, 0)
 	} else if (decimal.mag>0.001) {
 		return regularFormat(decimal, precision)
-	} else if (decimal.mag>0) {
+	} else if (decimal.sign!=0) {
 		return exponentialFormat(decimal, precision)
 	} else return regularFormat(decimal, precision)
 }
