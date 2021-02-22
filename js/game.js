@@ -397,10 +397,12 @@ function gameLoop(diff) {
 
 	let limit = maxTickLength()
 	if (diff > limit) diff = limit
-
 	addTime(diff)
 	adjustPopupTime(diff)
 	player.points = player.points.add(tmp.pointGen.times(diff)).max(0)
+	player.cases = player.points.layer>3
+	if (hasMilestone("u", 2)) generatePoints("i",diff)
+	player.infectivity = player.i.points.layer>3
 	if (player.hideNews) {
 		document.getElementById("newsTicker").style.display = "none";
 	}
