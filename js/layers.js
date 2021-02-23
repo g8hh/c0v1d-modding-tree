@@ -1563,7 +1563,7 @@ addLayer("s", {
             player.s.buyables[22] = player.s.buyables[22].add(Decimal.log10(s.div(1e37)).div(Decimal.log10(tmp.s.buyables[22].scalebase)).pow(Decimal.pow(1.5,-1)).ceil().sub(player.s.buyables[22]).min(tmp.s.bulk))
             player.s.buyables[23] = player.s.buyables[23].add(Decimal.log10(s.div(1e270)).div(Decimal.log10(tmp.s.buyables[23].scalebase)).pow(Decimal.pow(1.65,-1)).ceil().sub(player.s.buyables[23]).min(tmp.s.bulk))
             player.s.buyables[31] = player.s.buyables[31].add(Decimal.log10(s.div(Decimal.pow(10,34e5))).div(Decimal.log10(tmp.s.buyables[31].scalebase)).pow(0.5).ceil().sub(player.s.buyables[31]).min(tmp.s.bulk))
-            player.s.buyables[32] = player.s.buyables[32].add(Decimal.log10(s.div(Decimal.pow(10,35730000))).div(Decimal.log10(tmp.s.buyables[32].scalebase)).pow(0.5).ceil().sub(player.s.buyables[32]).min(tmp.s.bulk))
+            player.s.buyables[32] = player.s.buyables[32].add(Decimal.log10(s.div(Decimal.pow(10,3573000))).div(Decimal.log10(tmp.s.buyables[32].scalebase)).pow(0.5).ceil().sub(player.s.buyables[32]).min(tmp.s.bulk))
             player.s.buyables[33] = player.s.buyables[33].add(Decimal.log10(s.div(Decimal.pow(10,388e4))).div(Decimal.log10(tmp.s.buyables[33].scalebase)).pow(Decimal.pow(2.2,-1)).ceil().sub(player.s.buyables[33]).min(tmp.s.bulk))
         }
     },
@@ -2119,7 +2119,7 @@ addLayer("s", {
                 return base
             },
 			cost(x=player[this.layer].buyables[this.id]) { // cost for buying xth buyable, can be an object if there are multiple currencies
-                let cost = Decimal.pow(this.scalebase(), x.pow(2)).mul(Decimal.pow(10,35730000))
+                let cost = Decimal.pow(this.scalebase(), x.pow(2)).mul(Decimal.pow(10,3573000))
                 return cost.floor()
             },
             base() { 
