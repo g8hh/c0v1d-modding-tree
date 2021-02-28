@@ -19,7 +19,7 @@ let VERSION = {
 let changelog = `<h1>Changelog:</h1><br>
         <h3>v0.5.7</h3><br>
         - Added CRNA.<br>
-        - Added 2 Achievements.<br>
+        - Added 4 Achievements.<br>
         <h3>v0.5.6</h3><br>
         - Added Corona Mutations.<br>
         - Added 2 Achievements.<br>
