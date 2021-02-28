@@ -12,11 +12,14 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.5.6",
+	num: "0.5.7",
 	name: "Vorona Cirus GAS GAS GAS",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+        <h3>v0.5.7</h3><br>
+        - Added CRNA.<br>
+        - Added 2 Achievements.<br>
         <h3>v0.5.6</h3><br>
         - Added Corona Mutations.<br>
         - Added 2 Achievements.<br>
@@ -177,7 +180,7 @@ window.addEventListener('keyup', function(event) {
 // Display extra things at the top of the page
 var displayThings = [
     function(){
-		let a = "Current endgame: 1e6,600,000 mRNA (v0.5.6)"
+		let a = "Current endgame: e3.689e12 mRNA (v0.5.7)"
 		return player.autosave ? a : a + ". Warning: autosave is off"
 	},
 	function(){
@@ -194,7 +197,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.e.mrna.gte(Decimal.pow(10,66e5))
+	return player.e.mrna.gte(Decimal.pow(10,3689e9))
 }
 
 
