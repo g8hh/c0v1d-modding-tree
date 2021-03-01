@@ -12049,7 +12049,7 @@ addLayer("e", {
                         }
                     }],
                 "blank",
-                function () {if (player.tab == "e" && player.subtabs.e.mainTabs == "Quarantine" && !hasUpgrade("e",162)) return ["clickable",11]},
+                function () {if (player.tab == "e" && player.subtabs.e.mainTabs == "Quarantine" && (!hasUpgrade("e",162)) || !hasAchievement("a",83)) return ["clickable",11]},
                 "blank",
                 function () {if (player.tab == "e" && player.subtabs.e.mainTabs == "Quarantine") return ["row",[["buyable",51],["buyable",52],["buyable",53]]]},
                 function () {if (player.tab == "e" && hasUpgrade("e",106) && player.subtabs.e.mainTabs == "Quarantine") return ["row",[["buyable",61],["buyable",62],["buyable",63]]]},
