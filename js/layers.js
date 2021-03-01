@@ -12160,13 +12160,13 @@ addLayer("e", {
                 return dis
             },
             g() {
-                let gain = getPointGen().log10().div(920000).pow(tmp.e.clickables[11].exp).mul(100).mul(tmp.e.uiMult).max(0)
-                if (getPointGen().log10().lt(920000)) gain = new Decimal(0)
+                let gain = getPointGen().max(1).log10().div(920000).pow(tmp.e.clickables[11].exp).mul(100).mul(tmp.e.uiMult).max(0)
+                if (getPointGen().max(1).log10().lt(920000)) gain = new Decimal(0)
                 return gain.floor()
             },
             gain() {
-                let gain = getPointGen().log10().div(920000).pow(tmp.e.clickables[11].exp).mul(100).mul(tmp.e.uiMult).sub(player.e.qt).max(0)
-                if (getPointGen().log10().lt(920000)) gain = new Decimal(0)
+                let gain = getPointGen().max(1).log10().div(920000).pow(tmp.e.clickables[11].exp).mul(100).mul(tmp.e.uiMult).sub(player.e.qt).max(0)
+                if (getPointGen().max(1).log10().lt(920000)) gain = new Decimal(0)
                 return gain.floor()
             },
             exp() {
