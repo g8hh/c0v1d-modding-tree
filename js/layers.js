@@ -3719,7 +3719,7 @@ addLayer("a", {
         cols: 6,
         11: {
             name: "Start",
-            tooltip: "Get 2 cases. Reward: 1 AP",
+            tooltip: "获得 2 病例 奖励: 1 成就点",
             done() {
                 return player.points.gte(2)
             },
@@ -3729,7 +3729,7 @@ addLayer("a", {
         },
         12: {
             name: "Infect",
-            tooltip: "Get 10 cases. Reward: 1 AP",
+            tooltip: "获得 10 病例 奖励: 1 成就点",
             done() {
                 return player.points.gte(10)
             },
@@ -3739,7 +3739,7 @@ addLayer("a", {
         },
         13: {
             name: "Thousand Infected",
-            tooltip: "Get 1,000 cases. Reward: 1 AP",
+            tooltip: "获得 1,000 病例 奖励: 1 成就点",
             done() {
                 return player.points.gte(1000)
             },
@@ -3749,7 +3749,7 @@ addLayer("a", {
         },
         14: {
             name: "Million Infected",
-            tooltip: "Get 1,000,000 cases. Reward: 1 AP",
+            tooltip: "获得 1,000,000 病例 奖励: 1 成就点",
             done() {
                 return player.points.gte(1e6)
             },
@@ -3759,7 +3759,7 @@ addLayer("a", {
         },
         15: {
             name: "Covid 19",
-            tooltip: "Get 63,154,455 cases. Reward: 1 AP",
+            tooltip: "获得 63,154,455 病例 奖励: 1 成就点",
             done() {
                 return player.points.gte(63154455)
             },
@@ -3769,7 +3769,7 @@ addLayer("a", {
         },
         16: {
             name: "World Infected",
-            tooltip: "Get 7.8e9 cases. Reward: 1 AP",
+            tooltip: "获得 7.8e9 病例 奖励: 1 成就点",
             done() {
                 return player.points.gte(7.8e9)
             },
@@ -3779,7 +3779,7 @@ addLayer("a", {
         },
         21: {
             name: "Infected infections",
-            tooltip: "Get 10 infectivity. Reward: 1 AP, AP boosts VP",
+            tooltip: "获得 10 传染 奖励: 1 成就点, 成就点加成病毒点数",
             done() {
                 return player.i.points.gte(10)
             },
@@ -3789,7 +3789,7 @@ addLayer("a", {
         },
         22: {
             name: "Upgraded infections",
-            tooltip: "Get 5 infectivity upgrades. Reward: 1 AP",
+            tooltip: "获得 5 传染升级 奖励: 1 成就点",
             done() {
                 return player.i.upgrades.length>=5
             },
@@ -3799,7 +3799,7 @@ addLayer("a", {
         },
         23: {
             name: "Replicated",
-            tooltip: "Get 1 replicator. Reward: 2 AP",
+            tooltip: "获得 1 复制 奖励: 2 成就点",
             done() {
                 return player.r.points.gte(1)
             },
@@ -3809,7 +3809,7 @@ addLayer("a", {
         },
         24: {
             name: "Infected company",
-            tooltip: "Get 1e100 cases. Reward: 2 AP",
+            tooltip: "获得 1e100 病例 奖励: 2 成就点",
             done() {
                 return player.points.gte(1e100)
             },
@@ -3819,7 +3819,7 @@ addLayer("a", {
         },
         25: {
             name: "Infinite infections",
-            tooltip: "Get 1.798e308 cases. Reward: 2 AP",
+            tooltip: "获得 1.798e308 病例 奖励: 2 成就点",
             done() {
                 return player.points.gte("1.798e308")
             },
@@ -3829,7 +3829,7 @@ addLayer("a", {
         },
         26: {
             name: "SUS Upgrade",
-            tooltip: "Get 7 infectivity upgrades. Reward: 2 AP",
+            tooltip: "获得 7 传染升级 奖励: 2 成就点",
             done() {
                 return player.i.upgrades.length>=7
             },
@@ -3839,7 +3839,7 @@ addLayer("a", {
         },
         31: {
             name: "Uncoated",
-            tooltip: "Get 1 uncoater. Reward: 2 AP, AP boosts infectivity and keep virus upgrades",
+            tooltip: "获得 1 脱壳者 奖励: 2 成就点, 成就点加成传染且保留病毒升级",
             done() {
                 return player.u.points.gte(1)
             },
@@ -3849,7 +3849,7 @@ addLayer("a", {
         },
         32: {
             name: "(softcapped)",
-            tooltip: "Get 2 uncoater upgrades. Reward: 2 AP",
+            tooltip: "获得 2 脱壳者升级 奖励: 2 成就点",
             done() {
                 return player.u.upgrades.length>=2
             },
@@ -3859,7 +3859,7 @@ addLayer("a", {
         },
         33: {
             name: "(hardcapped)",
-            tooltip: "Get 5 uncoater upgrades. Reward: 2 AP",
+            tooltip: "获得 5 脱壳者升级 奖励: 2 成就点",
             done() {
                 return player.u.upgrades.length>=5
             },
@@ -3869,7 +3869,7 @@ addLayer("a", {
         },
         34: {
             name: "Challenging",
-            tooltip: "Complete an uncoater challenge. Reward: 2 AP",
+            tooltip: "完成一个脱壳者挑战 奖励: 2 成就点",
             done() {
                 return challengeCompletions("u", 11)>=1
             },
@@ -3879,7 +3879,7 @@ addLayer("a", {
         },
         35: {
             name: "Severe case",
-            tooltip: "Get 1 severity. Reward: 3 AP",
+            tooltip: "获得 1 严重性 奖励: 3 成就点",
             done() {
                 return player.s.severity.gte(1)
             },
@@ -3889,7 +3889,7 @@ addLayer("a", {
         },
         36: {
             name: "Auto",
-            tooltip: "Get 11 symptom upgrades. Reward: 3 AP",
+            tooltip: "获得 11 症状升级 奖励: 3 成就点",
             done() {
                 return player.s.upgrades.length>=11
             },
@@ -3899,7 +3899,7 @@ addLayer("a", {
         },
         41: {
             name: "Dead",
-            tooltip: "Get 1 death. Reward: 3 AP, Autobuy buyables, 'Smell Loss' buys 2x more and faster, AP boosts severity, Keep I/R upgrades",
+            tooltip: "获得 1 死亡 奖励: 3 成就点, 自动购买购买项, '嗅觉丧失' 购买量和频率 2x , 成就点加成严重性, 保留传染/复制升级",
             done() {
                 return player.d.points.gte(1)
             },
@@ -3909,7 +3909,7 @@ addLayer("a", {
         },
         42: {
             name: "Automated",
-            tooltip: "Get 8 death milestones. Reward: 3 AP, AP formula is better",
+            tooltip: "获得 8 死亡里程碑 奖励: 3 成就点, 成就点公式优化",
             done() {
                 return hasMilestone("d", 7)
             },
@@ -3919,7 +3919,7 @@ addLayer("a", {
         },
         43: {
             name: "Corona Death",
-            tooltip: "Get 1,466,925 deaths. Reward: 3 AP, Double death gain",
+            tooltip: "获得 1,466,925 死亡 奖励: 3 成就点, 翻倍死亡获取",
             done() {
                 return player.d.points.gte(1466925)
             },
@@ -3929,7 +3929,7 @@ addLayer("a", {
         },
         44: {
             name: "Coffin",
-            tooltip: "Get 1e30 deaths. Reward: 3 AP, Double death gain",
+            tooltip: "获得 1e30 死亡 奖励: 3 成就点, 翻倍死亡获取",
             done() {
                 return player.d.points.gte(1e30)
             },
@@ -3939,7 +3939,7 @@ addLayer("a", {
         },
         45: {
             name: "Coffin Dance",
-            tooltip: "Get 1e100 deaths. Reward: 4 AP",
+            tooltip: "获得 1e100 死亡 奖励: 4 成就点",
             done() {
                 return player.d.points.gte(1e100)
             },
@@ -3949,7 +3949,7 @@ addLayer("a", {
         },
         46: {
             name: "Coughin Dance",
-            tooltip: "Get 14 death upgrades. Reward: 4 AP",
+            tooltip: "获得 14 死亡升级 奖励: 4 成就点",
             done() {
                 return player.d.upgrades.length>=14
             },
@@ -3959,7 +3959,7 @@ addLayer("a", {
         },
         51: {
             name: "Mortal Kombat",
-            tooltip: "Get 1 fatality. Reward: 4 AP",
+            tooltip: "获得 1 致死性 奖励: 4 成就点",
             done() {
                 return player.f.points.gte(1)
             },
@@ -3969,7 +3969,7 @@ addLayer("a", {
         },
         52: {
             name: "Kortal Mombat",
-            tooltip: "Get 2 fatality upgrades. Reward: 4 AP, AP boosts death gain",
+            tooltip: "获得 2 致死性升级 奖励: 4 成就点, 成就点加成死亡获取",
             done() {
                 return player.f.upgrades.length>=2
             },
@@ -3979,7 +3979,7 @@ addLayer("a", {
         },
         53: {
             name: "DIMENSIONS??",
-            tooltip: "Get 6 fatality milestones. Reward: 4 AP, 'More Fatal' buys 5x more and 2x faster",
+            tooltip: "获得 6 致死性里程碑 奖励: 4 成就点, '更多致命' 购买量5x 频率2x",
             done() {
                 return player.f.milestones.length>=6
             },
@@ -3989,7 +3989,7 @@ addLayer("a", {
         },
         54: {
             name: "NG+++ INFECTED",
-            tooltip: "Get ee18 cases. Reward: 4 AP, Double Fatality Dimensions",
+            tooltip: "获得 ee18 病例 奖励: 4 成就点, 翻倍致死性维度",
             done() {
                 return player.points.gte("ee18")
             },
@@ -3999,7 +3999,7 @@ addLayer("a", {
         },
         55: {
             name: "PPOOWWEERR!",
-            tooltip: "Get 1e1000 fatality power. Reward: 4 AP",
+            tooltip: "获得 1e1000 致死性力量 奖励: 4 成就点",
             done() {
                 return player.f.p.gte("ee3")
             },
@@ -4009,7 +4009,7 @@ addLayer("a", {
         },
         56: {
             name: "The 9th Dimension is a lie",
-            tooltip: "Get exactly 99 8th Dimensions. Reward: 5 AP",
+            tooltip: "获得恰好 99 第八维度 奖励: 5 成就点",
             done() {
                 return player.f.buyables[24].eq(99)
             },
@@ -4019,7 +4019,7 @@ addLayer("a", {
         },
         61: {
             name: "Casual",
-            tooltip: "Get 1 casualty. Reward: 5 AP",
+            tooltip: "获得 1 受害者 奖励: 5 成就点",
             done() {
                 return player.f.casualty.gte(1)
             },
@@ -4029,7 +4029,7 @@ addLayer("a", {
         },
         62: {
             name: "Fatally Challenged",
-            tooltip: "Complete 4 Fatality Challenges Reward: 5 AP",
+            tooltip: "完成 4 个致死性挑战 奖励: 5 成就点",
             done() {
                 return hasChallenge("f",11) && hasChallenge("f",12) && hasChallenge("f",21) && hasChallenge("f",22)
             },
@@ -4039,7 +4039,7 @@ addLayer("a", {
         },
         63: {
             name: "Zero Deaths",
-            tooltip: "Get 1e10000 fatality without Dimension and Multiplier Boosts. Reward: 5 AP",
+            tooltip: "在没有维度和倍增器加成的情况下获得 1e10000 致死性 奖励: 5 成就点",
             done() {
                 return player.f.points.gte("ee4") && player.f.buyables[32].eq(0) && player.f.buyables[33].eq(0)
             },
@@ -4049,7 +4049,7 @@ addLayer("a", {
         },
         64: {
             name: "REPLICANTI",
-            tooltip: "Unlock Casuals. Reward: 5 AP",
+            tooltip: "解锁受害 奖励: 5 成就点",
             done() {
                 return hasMilestone("f",17)
             },
@@ -4059,7 +4059,7 @@ addLayer("a", {
         },
         65: {
             name: "'ZERO' Deaths",
-            tooltip: "Get 6e666,666 fatality without Dimension and Multiplier Boosts in Casualty Challenge 1. Reward: 5 AP, AP boosts fatality dimensions",
+            tooltip: "受害者挑战1中在没有维度和倍增器加成的情况下获得 6e666,666 致死性 奖励: 5 成就点, 成就点加成致死性维度",
             done() {
                 return player.f.points.gte("6e666666") && player.f.buyables[32].eq(0) && player.f.buyables[33].eq(0) && inChallenge("f",31)
             },
@@ -4069,7 +4069,7 @@ addLayer("a", {
         },
         66: {
             name: "0 cases from Casualty",
-            tooltip: "Get 1 Casualty Dimension 8. Reward: 5 AP",
+            tooltip: "获得 1 受害者维度8 奖励: 5 成就点",
             done() {
                 return player.f.buyables[84].gte(1)
             },
@@ -4079,7 +4079,7 @@ addLayer("a", {
         },
         71: {
             name: "GoogolPlex",
-            tooltip: "Get ee100 cases. Reward: 5 AP",
+            tooltip: "获得 ee100 病例 奖励: 5 成就点",
             done() {
                 return player.points.gte("ee100")
             },
@@ -4089,7 +4089,7 @@ addLayer("a", {
         },
         72: {
             name: "When will it be enough?",
-            tooltip: "Get 1e30000 casuals. Reward: 5 AP",
+            tooltip: "获得 1e30000 受害 奖励: 5 成就点",
             done() {
                 return player.f.casuals.gte("e30000")
             },
@@ -4099,7 +4099,7 @@ addLayer("a", {
         },
         73: {
             name: "GAS",
-            tooltip: "Get ee1000 cases. Reward: 6 AP",
+            tooltip: "获得 ee1000 病例 奖励: 6 成就点",
             done() {
                 return player.points.gte("eee3")
             },
@@ -4109,7 +4109,7 @@ addLayer("a", {
         },
         74: {
             name: "Corona GAS",
-            tooltip: "Get ee1,000,000 cases. Reward: 6 AP",
+            tooltip: "获得 ee1,000,000 病例 奖励: 6 成就点",
             done() {
                 return player.points.gte("eee6")
             },
@@ -4119,7 +4119,7 @@ addLayer("a", {
         },
         75: {
             name: "Infected Challenge",
-            tooltip: "Complete all Infecter Challenges. Reward: 6 AP",
+            tooltip: "完成所有传染挑战 奖励: 6 成就点",
             done() {
                 return player.e.c11.gte(1e6) && player.e.c12.gte(1e6)
             },
@@ -4129,7 +4129,7 @@ addLayer("a", {
         },
         76: {
             name: "Unimmune",
-            tooltip: "Get 1 'Immunity Base'. Reward: 6 AP",
+            tooltip: "获得 1 '免疫基础' 奖励: 6 成就点",
             done() {
                 return player.e.buyables[23].gte(1)
             },
@@ -4139,7 +4139,7 @@ addLayer("a", {
         },
         81: {
             name: "Diseased Diseases",
-            tooltip: "Get 1 'Disease Boost'. Reward: 7 AP",
+            tooltip: "获得 1 '疾病加成' 奖励: 7 成就点",
             done() {
                 return player.e.buyables[42].gte(1)
             },
@@ -4149,7 +4149,7 @@ addLayer("a", {
         },
         82: {
             name: "Quarantined",
-            tooltip: "Get 1 Unquarantined Infection. Reward: 7 AP",
+            tooltip: "获得 1 未隔离感染 奖励: 7 成就点",
             done() {
                 return player.e.qt.gte(1)
             },
@@ -4159,7 +4159,7 @@ addLayer("a", {
         },
         83: {
             name: "E-World Quarantine",
-            tooltip: "Get e7,800,000,000 cases in Quarantine. Reward: 8 AP",
+            tooltip: "在隔离中获得 e7,800,000,000 病例 奖励: 8 成就点",
             done() {
                 return player.e.inC && player.points.gte("e7.8e9")
             },
@@ -4169,7 +4169,7 @@ addLayer("a", {
         },
         84: {
             name: "Unquarantined Quarantine",
-            tooltip: "Get Unquarantined Infections out of Quarantine. Reward: 8 AP",
+            tooltip: "在隔离外获得未隔离感染 奖励: 8 成就点",
             done() {
                 return hasUpgrade("e",162)
             },
@@ -4179,7 +4179,7 @@ addLayer("a", {
         },
         85: {
             name: "GAS GAS",
-            tooltip: "Get eee20 cases. Reward: 8 AP",
+            tooltip: "获得 eee20 病例 奖励: 8 成就点",
             done() {
                 return player.points.gte("eee20")
             },
@@ -4189,7 +4189,7 @@ addLayer("a", {
         },
         86: {
             name: "Multi-Million",
-            tooltip: "Get 1,000,000 Multiplier Boosts. Reward: 8 AP",
+            tooltip: "获得 1,000,000 倍增器加成 奖励: 8 成就点",
             done() {
                 return player.f.buyables[33].gte(1e6)
             },
@@ -4199,7 +4199,7 @@ addLayer("a", {
         },
         91: {
             name: "Cased GAS",
-            tooltip: "Get ee8.8521e33 cases. Reward: 9 AP",
+            tooltip: "获得 ee8.8521e33 病例 奖励: 9 成就点",
             done() {
                 return player.points.gte(Decimal.pow(Math.E,Decimal.pow(Math.E,Decimal.pow(Math.E,79))))
             },
@@ -4209,7 +4209,7 @@ addLayer("a", {
         },
         92: {
             name: "Atomic Virus",
-            tooltip: "Get 1 Atom. Reward: 9 AP",
+            tooltip: "获得 1 原子 奖励: 9 成就点",
             done() {
                 return player.e.h.gte(1)
             },
@@ -4219,7 +4219,7 @@ addLayer("a", {
         },
         93: {
             name: "Molecular Virus",
-            tooltip: "Get 1 Molecule. Reward: 9 AP",
+            tooltip: "获得 1 分子 奖励: 9 成就点",
             done() {
                 return player.e.ad.gte(1) || player.e.ur.gte(1)
             },
@@ -4229,7 +4229,7 @@ addLayer("a", {
         },
         94: {
             name: "Phospate",
-            tooltip: "Get 1 Phosphorus. Reward: 9 AP",
+            tooltip: "获得 1 磷酸 奖励: 9 成就点",
             done() {
                 return player.e.ph.gte(1)
             },
@@ -4239,7 +4239,7 @@ addLayer("a", {
         },
         95: {
             name: "Phospate Virus",
-            tooltip: "Get 1 Ribose-Phosphate. Reward: 9 AP",
+            tooltip: "获得 1 磷酸核糖 奖励: 9 成就点",
             done() {
                 return player.e.rp.gte(1)
             },
@@ -4249,7 +4249,7 @@ addLayer("a", {
         },
         96: {
             name: "mRNA Virus",
-            tooltip: "Get 1 mRNA. Reward: 10 AP",
+            tooltip: "获得 1 mRNA 奖励: 10 成就点",
             done() {
                 return player.e.mrna.gte(1)
             },
@@ -4259,7 +4259,7 @@ addLayer("a", {
         },
         101: {
             name: "Corona GAS GAS",
-            tooltip: "Get eee1000 cases. Reward: 10 AP",
+            tooltip: "获得 eee1000 病例 奖励: 10 成就点",
             done() {
                 return player.points.gte("eee1000")
             },
@@ -4269,7 +4269,7 @@ addLayer("a", {
         },
         102: {
             name: "Automatic Diseases",
-            tooltip: "Get 8 Infecter milestones. Reward: 10 AP",
+            tooltip: "获得 8 感染者里程碑 奖励: 10 成就点",
             done() {
                 return player.e.points.gte(2e4)
             },
@@ -4279,7 +4279,7 @@ addLayer("a", {
         },
         103: {
             name: "Mutated",
-            tooltip: "Get 1 MMNA. Reward: 10 AP",
+            tooltip: "获得 1 MMNA 奖励: 10 成就点",
             done() {
                 return player.e.mm.gte(1)
             },
@@ -4289,7 +4289,7 @@ addLayer("a", {
         },
         104: {
             name: "Infecterrr",
-            tooltip: "Get 10 Infecter milestones. Reward: 10 AP",
+            tooltip: "获得 10 感染者里程碑 奖励: 10 成就点",
             done() {
                 return player.e.points.gte(5e4)
             },
@@ -4299,7 +4299,7 @@ addLayer("a", {
         },
         105: {
             name: "In'F'ected",
-            tooltip: "Get 1F5 cases. Reward: 10 AP",
+            tooltip: "获得 1F5 病例 奖励: 10 成就点",
             done() {
                 return player.points.gte(Decimal.tetrate(10,5))
             },
@@ -4309,7 +4309,7 @@ addLayer("a", {
         },
         106: {
             name: "COV",
-            tooltip: "Get 3 Corona Mutations. Reward: 10 AP",
+            tooltip: "获得 3 日冕突变 奖励: 10 成就点",
             done() {
                 return player.e.mu2.gte(3)
             },
@@ -4319,7 +4319,7 @@ addLayer("a", {
         },
         111: {
             name: "Mutant",
-            tooltip: "Get 300 Mutations. Reward: 15 AP",
+            tooltip: "获得 300 突变 奖励: 15 成就点",
             done() {
                 return player.e.mu.gte(300)
             },
@@ -4329,7 +4329,7 @@ addLayer("a", {
         },
         112: {
             name: "CO.RO.NA.",
-            tooltip: "Get 1 CRNA. Reward: 15 AP",
+            tooltip: "获得 1 CRNA 奖励: 15 成就点",
             done() {
                 return player.e.crna.gte(1)
             },
@@ -4339,7 +4339,7 @@ addLayer("a", {
         },
         113: {
             name: "COVI",
-            tooltip: "Get 7 Corona Mutations. Reward: 15 AP",
+            tooltip: "获得 7 日冕突变 奖励: 15 成就点",
             done() {
                 return player.e.mu2.gte(7)
             },
@@ -4349,7 +4349,7 @@ addLayer("a", {
         },
         114: {
             name: "Mutated Mutations",
-            tooltip: "Get 1000 Mutations. Reward: 15 AP",
+            tooltip: "获得 1000 突变 奖励: 15 成就点",
             done() {
                 return player.e.mu.gte(1e3)
             },
