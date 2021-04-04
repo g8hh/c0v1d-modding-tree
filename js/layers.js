@@ -5005,8 +5005,8 @@ addLayer("f", {
                     let d = tmp.f.buyables[74].unlocked?"You are gaining " + format(tmp.f.buyables[74].gain) + " Casualty Dimension 3 per second.<br>":""
                     let e = tmp.f.buyables[81].unlocked?"You are gaining " + format(tmp.f.buyables[81].gain) + " Casualty Dimension 4 per second.<br>":""
                     let f = tmp.f.buyables[82].unlocked?"You are gaining " + format(tmp.f.buyables[82].gain) + " Casualty Dimension 5 per second.<br>":""
-                    let g = tmp.f.buyables[83].unlocked?"You are gaining " + format(tmp.f.buyables[83].gain) + " Fatality Dimension 6 per second.<br>":""
-                    let h = tmp.f.buyables[84].unlocked?"You are gaining " + format(tmp.f.buyables[84].gain) + " Fatality Dimension 7 per second.<br>":""
+                    let g = tmp.f.buyables[83].unlocked?"You are gaining " + format(tmp.f.buyables[83].gain) + " Casualty Dimension 6 per second.<br>":""
+                    let h = tmp.f.buyables[84].unlocked?"You are gaining " + format(tmp.f.buyables[84].gain) + " Casualty Dimension 7 per second.<br>":""
                     return a+b+c+d+e+f+g+h
                     }
                 }],
