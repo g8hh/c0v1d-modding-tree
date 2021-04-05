@@ -11829,7 +11829,7 @@ addLayer("e", {
                         let d = "You have <h2 style='color:#A05000;text-shadow:0px 0px 10px;'>" + formatWhole(player.e.gu) + "</h2> Guanine<br>"
                         let e = "You have <h2 style='color:#0055AA;text-shadow:0px 0px 10px;'>" + formatWhole(player.e.rp) + "</h2> Ribose-Phosphate<br>"
                         let f = "You have <h2 style='color:#00AA55;text-shadow:0px 0px 10px;'>" + formatWhole(player.e.mrna) + "</h2> mRNA, which boosts atom gain by " + format(tmp.e.mreff)+"<br>"
-                        let g = "You are gaining <h2 style='color:#00AA55;text-shadow:0px 0px 10px;'>" + format(tmp.e.mrgain) + "</h2> mRNA per second (starts at 1.1e76 AD, 1.75e76 UR, 1.75e76 CY, 1.1e76 GU, 1.831e55 R5P)<br>"
+                        let g = "You are gaining <h2 style='color:#00AA55;text-shadow:0px 0px 10px;'>" + format(tmp.e.mrgain) + "</h2> mRNA per second (starts at 1.1e76 AD, 1.75e76 UR, 1.75e76 CY, 1.1e76 GU, 1.831e55 磷酸核糖)<br>"
                         return a+b+c+d+e+f+g
                         }
                     }],
