@@ -1713,6 +1713,8 @@ var cnRegReplace = new Map([
     [/^You have (.+) infectivity$/, '你有$1传染'],
     [/^Reset Dimensions for(.+)$/, '重置维度以获得$1'],
     [/^You have (.+) severity$/, '你有$1严重性'],
+    [/^Interval(.+)Boosts$/, '间隔$1加成'],
+    [/^Interval(.+)Boosts(.+)$/, '间隔$1加成$2'],
     [/^You have (.+) deaths$/, '你有$1死亡'],
     [/^Attempt amount:(.+)$/, '尝试数量:$1'],
     [/^Casualty time:(.+)$/, '受害者时间:$1'],
