@@ -107,6 +107,7 @@ var cnItems = {
     'Fatality Dimension Boost': '致死性维度加成',
     'Fatality Dimension Multiplier': '致死性维度倍增器',
     'Social Distant Multiplier Boost': '远距离倍增器加成',
+    'Distant Fatality Multiplier Boost': '距离致死性倍增器加成',
     'casualty': '受害者',
     'casualty per second.': '受害者每秒',
     'casual viruses': '受害病毒',
