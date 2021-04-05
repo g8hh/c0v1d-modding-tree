@@ -1660,6 +1660,7 @@ var cnRegReplace = new Map([
     [/^(.+) fatality$/, '$1 致死性'],
     [/^(.+) cases per second$/, '$1 病例每秒'],
     [/^Get (.+) fatality to unlock a new Challenge(.+)$/, '到达$1致死性以解锁一个新的挑战$2'],
+    [/^Get (.+) fatality to unlock a new Dimension(.+)$/, '到达$1致死性以解锁一个新的维度$2'],
     [/^You have (.+) cases$/, '你有$1病例'],
     [/^Your best virus points is(.+)$/, '你的最大病毒点数为$1'],
     [/^Multiply RNA gain by(.+)per RNA upgrade squared.$/, 'RNA升级每到达一个平方使RNA获取乘以$1'],
