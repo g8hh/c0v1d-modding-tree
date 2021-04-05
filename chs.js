@@ -946,6 +946,7 @@ var cnItems = {
     'Casualty Dimension': '受害者维度',
     'Casual Replicate Multiplier': '受害复制倍增器',
     'Casual Replicate Interval': '受害复制间隔',
+    'Casual Replicated Boosts': '受害复制加成',
     'Social Distant Casual Replicated Boosts': '远距离受害复制加成',
     'MultiVirus': '复杂病毒',
     'Boosted Virus': '病毒增强',
