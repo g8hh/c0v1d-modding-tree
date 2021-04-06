@@ -757,7 +757,7 @@ var cnItems = {
     'Corona Mutations, which gives': '日冕突变，可以提供',
     'CRNA per second \(Base Gain': 'CRNA每秒(基础获取',
     'MMNA per second': 'MMNA每秒',
-    '': '',
+    'Remove \'Self Booster\' softcap.': '移除"自身加成"软上限',
     '': '',
     
     //标题
@@ -1297,7 +1297,7 @@ var cnItems = {
     'CGMR': 'CRNA获取mRNA',
     'Casual Cases': '受害病例',
     'Challenge Points': '挑战点数',
-    '': '',
+    '\{Self Capped\}': '{自身上限}',
     '': '',
     '': '',
     '': '',
