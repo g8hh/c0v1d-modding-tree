@@ -1296,7 +1296,7 @@ var cnItems = {
     'CGMM': 'CRNAMMNA',
     'CGMR': 'CRNA获取mRNA',
     'Casual Cases': '受害病例',
-    '': '',
+    'Challenge Points': '挑战点数',
     '': '',
     '': '',
     '': '',
