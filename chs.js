@@ -758,7 +758,7 @@ var cnItems = {
     'CRNA per second \(Base Gain': 'CRNA每秒(基础获取',
     'MMNA per second': 'MMNA每秒',
     'Remove \'Self Booster\' softcap.': '移除"自身加成"软上限',
-    '': '',
+    '\'Boostless\' and \'Logarithm\' are applied. Cases gain exponent is \^': '"无加成"和"对数"同时生效，病例获取^',
     
     //标题
     'Start': '开始',
@@ -1696,6 +1696,7 @@ var cnRegReplace = new Map([
     [/^Ribose-Phosphate \(starts at (.+)\), which boosts previous Molecules by$/, '磷酸核糖(开始于$1)，可以加成前面的分子'],
     [/^mRNA per second \(starts at (.+) AD, (.+) UR, (.+) CY, (.+) GU, (.+) 磷酸核糖$/, 'mRNA每秒(开始于$1腺嘌呤，$2尿嘧啶，$3胞嘧啶，$4鸟嘌呤，$5磷酸核糖'],
     [/^Atomic RNA, which boosts RNA gain by$/, '原子化RNA，可以加成RNA获取'],
+    [/^\'Boostless\' and \'Logarithm\' are applied. Cases gain exponent is(.+)$/, '"无加成"和"对数"同时生效，病例获取$1'],
     [/^Your best virus points is$/, '你的最大病毒点数为'],
     [/^Your best infectivity is(.+)$/, '你的最大传染为$1'],
     [/^Your best replicators is(.+)$/, '你的最大复制为$1'],
