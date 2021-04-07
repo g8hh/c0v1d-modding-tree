@@ -1665,6 +1665,7 @@ var cnRegReplace = new Map([
     [/^(.+) total casualty$/, '$1 总受害者'],
     [/^(.+) \(softcapped$/, '$1 (已达软上限'],
     [/^(.+) fatality$/, '$1 致死性'],
+    [/^Get (.+) cases per second$/, '获得 $1 病例每秒'],
     [/^(.+) cases per second$/, '$1 病例每秒'],
     [/^Get (.+) fatality to unlock a new Challenge(.+)$/, '到达$1致死性以解锁一个新的挑战$2'],
     [/^Get (.+) fatality to unlock a new Dimension(.+)$/, '到达$1致死性以解锁一个新的维度$2'],
