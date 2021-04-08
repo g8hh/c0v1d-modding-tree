@@ -454,7 +454,7 @@ var cnItems = {
     'Casual viruses make \'Cases Boost\' softcap start later.': '基于受害病毒延缓"病例加成"软上限',
     'Casual viruses boost cases exponent and unlock a buyable.': '基于受害病毒加成病例指数并解锁一个购买项',
     'Casualty adds to \'Virus Gain\' base.': '基于受害者增加"病毒获取"基础',
-    'Remove cas. lim.,its form. is better,it boosts CV gain,RBs reset nothing.': '移除受害病毒上限，公式更好，加成受害病毒获取，不再重置任何东西',
+    'Remove cas. lim.,its form. is better,it boosts CV gain,RBs reset nothing.': '移除受害上限，公式更好，加成受害病毒获取，不再重置任何东西',
     'Remove the interval limit, and unlock autobuy interval.': '移除间隔并解锁自动购买间隔',
     'Remove the rep mult limit,unlock auto mult, and it boosts itself.': '移除复制倍增器上限，解锁自动倍增器，且它加成自身',
     'Casual viruses slow interval scaling.': '基于受害病毒延缓间隔价格膨胀',
