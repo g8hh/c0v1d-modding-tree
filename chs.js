@@ -760,6 +760,8 @@ var cnItems = {
     'Remove \'Self Booster\' softcap.': '移除"自身加成"软上限',
     '\'Boostless\' and \'Logarithm\' are applied. Cases gain exponent is \^': '"无加成"和"对数"同时生效，病例获取^',
     '\'Chance Boost\' reduces Chance scaling.': '"概率加成"降低概率膨胀',
+    '\'Mutation Scaling\' boosts \'Chance Boost base\' based on Mutations.': '"突变膨胀"基于突变加成"概率加成基础"',
+    '': '',
     
     //标题
     'Start': '开始',
