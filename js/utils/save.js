@@ -5,7 +5,7 @@ function save() {
 	let t = new Date().getTime()
 	if (logSave) console.log("saved at " + t)
 	if (!(player === null)) player.lastSave = t
-	localStorage.setItem(modInfo.id, btoa(JSON.stringify(player)))
+	localStorage.setItem(modInfo.id, btoa(unescape(encodeURIComponent(JSON.stringify(player)))));
 }
 
 function startPlayerBase() {
