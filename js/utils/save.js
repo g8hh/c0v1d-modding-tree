@@ -246,6 +246,7 @@ function importSave(imported=undefined, forced=false) {
 		versionCheck()
 		save()
 		window.location.reload()
+		updateTemp();
 	} catch(e) {
 		return;
 	}
