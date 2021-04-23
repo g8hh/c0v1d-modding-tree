@@ -4332,7 +4332,7 @@ addLayer("a", {
         },
         115: {
             name: "CoTona",
-            tooltip: "Get 1 CTNA. Reward: 15 AP",
+            tooltip: "获得 1 CTNA. 奖励: 15 成就点",
             done() {
                 return player.ct.total.gte(1)
             },
@@ -4342,7 +4342,7 @@ addLayer("a", {
         },
         116: {
             name: "CoMutated",
-            tooltip: "Get 20 Corona Mutations. Reward: 15 AP",
+            tooltip: "获得 20 日冕突变. 奖励: 15 成就点",
             done() {
                 return player.e.mu2.gte(20)
             },
@@ -4352,7 +4352,7 @@ addLayer("a", {
         },
         121: {
             name: "CRPonent",
-            tooltip: "Get 1 'CRNA Exponent'. Reward: 15 AP",
+            tooltip: "获得 1 'CRNA 指数'. 奖励: 15 成就点",
             done() {
                 return player.ct.buyables[11].gte(1)
             },
@@ -4362,7 +4362,7 @@ addLayer("a", {
         },
         122: {
             name: "CorVutated",
-            tooltip: "Get 100 Corona Mutations. Reward: 15 AP",
+            tooltip: "获得 100 日冕突变. 奖励: 15 成就点",
             done() {
                 return player.e.mu2.gte(100)
             },
@@ -4372,7 +4372,7 @@ addLayer("a", {
         },
         123: {
             name: "CrowBird 19",
-            tooltip: "Get 1 CorVid. Reward: 20 AP",
+            tooltip: "获得 1 CorVid. 奖励: 20 成就点",
             done() {
                 return player.ct.corona.gte(1)
             },
@@ -4382,7 +4382,7 @@ addLayer("a", {
         },
         124: {
             name: "UnLogged",
-            tooltip: "Get less than 0 log. Reward: 20 AP",
+            tooltip: "获得少于 0 对数. 奖励: 20 成就点",
             done() {
                 return tmp.e.crlog.lt(0)
             },
@@ -4392,7 +4392,7 @@ addLayer("a", {
         },
         125: {
             name: "VoCiMutation",
-            tooltip: "Get 30,000 Corona Mutations. Reward: 20 AP",
+            tooltip: "获得 30,000 日冕突变. 奖励: 20 成就点",
             done() {
                 return player.e.mu2.gte(3e4)
             },
@@ -4402,7 +4402,7 @@ addLayer("a", {
         },
         126: {
             name: "Outside",
-            tooltip: "Get 1e100 LaBas. Reward: 20 AP",
+            tooltip: "获得 1e100 LaBas. 奖励: 20 成就点",
             done() {
                 return player.ct.LaBas.gte(1e100)
             },

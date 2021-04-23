@@ -235,10 +235,10 @@ function exportSave() {
 }
 
 function importSave(imported=undefined, forced=false) {
-	if (imported===undefined) imported = prompt("Paste your save here")
+	if (imported===undefined) imported = prompt("将你的存档粘贴到这里")
 	try {
 		tempPlr = Object.assign(getStartPlayer(), JSON.parse(atob(imported)))
-		if(tempPlr.versionType != modInfo.id && !forced && !confirm("This save appears to be for a different mod! Are you sure you want to import?")) // Wrong save (use "Forced" to force it to accept.)
+		if(tempPlr.versionType != modInfo.id && !forced && !confirm("这个存档看起来是另一个不同的mod!您确定要导入吗?")) // Wrong save (use "Forced" to force it to accept.)
 			return
 		player = tempPlr;
 		player.versionType = modInfo.id
