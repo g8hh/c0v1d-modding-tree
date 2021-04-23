@@ -12,11 +12,15 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.5.7",
+	num: "0.6",
 	name: "Vorona Cirus GAS GAS GAS",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+        <h2 style = color:#93d281;>v0.6</h2><br>
+        - Added CTNA.<br>
+        - Added 3 more mRNA upgrades.<br>
+        - Added 8 more Achievements.<br>
         <h3>v0.5.7</h3><br>
         - Added CRNA.<br>
         - Added 4 Achievements.<br>
@@ -148,7 +152,7 @@ function getPointGen() {
     if (player.e.inC) gain = powExp(gain,tmp.e.qExp)
     if (hasUpgrade("e",311)) gain = powExp2(gain,upgradeEffect("e",311))
     if (hasUpgrade("e",325)) gain = powExp2(gain,upgradeEffect("e",325))
-	return gain.min(tmp.e.icap)
+	return gain.mul(tmp.ct.effect).min(tmp.e.icap)
 }
 
 // You can add non-layer related variables that should to into "player" and be saved here, along with default values
@@ -157,6 +161,7 @@ function addedPlayerData() { return {
     lastSave: new Date().getTime(),
     toggleKeys: false,
     cases: false,
+    ca:0,
     infectivity: false
 }}
 var shiftDown = false
@@ -180,7 +185,7 @@ window.addEventListener('keyup', function(event) {
 // Display extra things at the top of the page
 var displayThings = [
     function(){
-		let a = "Current endgame: e3.689e12 mRNA (v0.5.7)"
+		let a = "Current endgame: e1e50 CTNA (v0.6)"
 		return player.autosave ? a : a + ". Warning: autosave is off"
 	},
 	function(){
@@ -197,7 +202,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.e.mrna.gte(Decimal.pow(10,3689e9))
+	return player.ct.points.gte(Decimal.pow(10,1e50))
 }
 
 

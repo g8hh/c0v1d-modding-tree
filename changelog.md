@@ -1,5 +1,11 @@
 # The Modding Tree changelog:
 
+# v2.π.1 - 4/7/21
+- Fixed formatting for some larger numbers.
+- Upgrades will expand if there is too much text to display. 
+- Fixed styling challenges.
+- No longer attempts to display a base currency when there is none.
+
 ## v2.π: Incrementally Updated - 2/5/21
 - Performance improvements.
 - Fixed tooltips overlapping with the top display.
@@ -8,6 +14,7 @@
 - "Best" is updated automatically.
 - Fixed keeping Decimal values on reset.
 - Code reorganization and style improvements by fudo.
+
 
 ## v2.3.5 - 12/21/20
 - Added resetTime, which tracks the time since a layer prestiged or was reset.

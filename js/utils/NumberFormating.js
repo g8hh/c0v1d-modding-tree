@@ -76,13 +76,13 @@ function format(decimal, precision=3) {
 		else return Decimal.pow(10, slog.sub(slog.floor())).toStringWithDecimalPlaces(4) + "F" + commaFormat(slog.floor(), 0)
 	} else if (decimal.layer > 2 || (Math.abs(decimal.mag) > 308 && decimal.layer == 2)) {
 		return "e" + format(decimal.log10(), precision)
-	} else if (decimal.layer > 1 || (Math.abs(decimal.mag) > 1e12 && decimal.layer == 1)) {
+	} else if (decimal.layer > 1 || (Math.abs(decimal.mag) >= 1e12 && decimal.layer == 1)) {
 		return "e" + format(decimal.log10(), 4)
-	} else if (decimal.layer > 0 || decimal.mag > 1e9) {
+	} else if (decimal.layer > 0 || decimal.mag >= 1e9) {
 		return exponentialFormat(decimal, precision)
-	} else if (decimal.mag > 1000) {
+	} else if (decimal.mag >= 1000) {
 		return commaFormat(decimal, 0)
-	} else if (decimal.mag>0.001) {
+	} else if (decimal.mag>=0.001) {
 		return regularFormat(decimal, precision)
 	} else if (decimal.sign!=0) {
 		return exponentialFormat(decimal, precision)

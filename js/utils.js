@@ -73,12 +73,12 @@ function setClickableState(layer, id, state) {
 
 function powExp(n, exp){
 	if (n.lt(10)) return n
-	return Decimal.pow(10,n.add(10).max(1).log10().pow(exp))
+	return Decimal.pow(10,n.log10().pow(exp))
 }
 
 function powExp2(n, exp){
 	if (n.lt(1e10)) return n
-	return Decimal.pow(10,Decimal.pow(10,n.add(10).max(1).log10().add(10).max(1).log10().pow(exp)))
+	return Decimal.pow(10,Decimal.pow(10,n.log10().log10().pow(exp)))
 }
 
 function upgradeEffect(layer, id){

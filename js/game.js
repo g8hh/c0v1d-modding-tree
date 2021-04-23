@@ -5,7 +5,7 @@ var scrolled = false;
 
 // Don't change this
 const TMT_VERSION = {
-	tmtNum: "2.π",
+	tmtNum: "2.π.1",
 	tmtName: "Incrementally Updated"
 }
 
@@ -27,6 +27,7 @@ function getResetGain(layer, canMax=false, useType = null) {
 		if ((!tmp[layer].canBuyMax) || tmp[layer].baseAmount.lt(tmp[layer].requires)) return new Decimal(1)
 		let gain = tmp[layer].baseAmount.div(tmp[layer].requires).div(tmp[layer].gainMult).max(1).log(tmp[layer].base).times(tmp[layer].gainExp).pow(Decimal.pow(tmp[layer].exponent, -1))
 		if (layer == "r"  || layer == "u" || layer == "e") gain = softcapStaticGain(gain, tmp[layer].row)
+		if (layer=="e") gain = gain.mul(tmp.e.infDiv)
 		if (layer == "u" && player.u.points.lt(320)) {
 			let amt = player[layer].points.plus((canMax&&tmp[layer].baseAmount.gte(tmp[layer].nextAt))?tmp[layer].resetGain:0)
 			if (player.u.points.gte(30)) {
@@ -91,7 +92,9 @@ function getNextAt(layer, canMax=false, useType = null) {
 		let base = new Decimal(1e8)
 		let exp = new Decimal(1.9)
 		let amt = player[layer].points.plus((canMax&&tmp[layer].baseAmount.gte(tmp[layer].nextAt))?tmp[layer].resetGain:0)
-		if (layer == "r" || layer == "u" || layer == "e") amt = scaleStaticCost(amt, tmp[layer].row)
+		let g = amt
+		if (layer == "e") g = g.div(tmp.e.infDiv)
+		if (layer == "r" || layer == "u" || layer == "e") amt = scaleStaticCost(g, tmp[layer].row)
 		let extraCost = Decimal.pow(tmp[layer].base, amt.pow(tmp[layer].exponent).div(tmp[layer].gainExp)).times(tmp[layer].gainMult)
 		let cost = extraCost.times(tmp[layer].requires).max(tmp[layer].requires)
 		if (layer == "u") {
@@ -291,6 +294,8 @@ function doReset(layer, force=false) {
 
 	updateTemp()
 	updateTemp()
+	updateTemp()
+	updateTemp()
 }
 
 function toggleShift() {
@@ -400,6 +405,7 @@ function gameLoop(diff) {
 	addTime(diff)
 	adjustPopupTime(diff)
 	player.points = player.points.add(tmp.pointGen.times(diff)).max(0)
+	player.ca = player.points.layer
 	player.cases = player.points.layer>3
 	if (hasMilestone("u", 2)) generatePoints("i",diff)
 	player.infectivity = player.i.points.layer>3
