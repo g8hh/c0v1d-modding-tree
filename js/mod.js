@@ -189,7 +189,7 @@ window.addEventListener('keyup', function(event) {
 // Display extra things at the top of the page
 var displayThings = [
     function(){
-		let a = "Current endgame: ee10,000 CTNA (v0.6)"
+		let a = "Current endgame: ee10,000 CTNA (v0.6.1)"
 		return player.autosave ? a : a + ". Warning: autosave is off"
 	},
 	function(){
