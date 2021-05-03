@@ -12,11 +12,15 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.6",
+	num: "0.6.1",
 	name: "Vorona Cirus GAS GAS GAS",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+        <h3>v0.6.1</h3><br>
+        - Added 5 Milestones.<br>
+        - Added 6 Buyables.<br>
+        - Added 4 Achievements.<br>
         <h2 style = color:#93d281;>v0.6</h2><br>
         - Added CTNA.<br>
         - Added 3 more mRNA upgrades.<br>
@@ -185,7 +189,7 @@ window.addEventListener('keyup', function(event) {
 // Display extra things at the top of the page
 var displayThings = [
     function(){
-		let a = "Current endgame: e1e50 CTNA (v0.6)"
+		let a = "Current endgame: ee10,000 CTNA (v0.6.1)"
 		return player.autosave ? a : a + ". Warning: autosave is off"
 	},
 	function(){
@@ -202,7 +206,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.ct.points.gte(Decimal.pow(10,1e50))
+	return player.ct.points.gte(Decimal.pow(10,Decimal.pow(10,1e4)))
 }
 
 
