@@ -71,19 +71,27 @@ function getStartLayerData(layer){
 	if (layers[layer].startData) 
 		layerdata = layers[layer].startData()
 
-	if (layerdata.unlocked === undefined) layerdata.unlocked = true
-	if (layerdata.total === undefined) layerdata.total = new Decimal(0)
-	if (layerdata.best === undefined) layerdata.best = new Decimal(0)
-	if (layerdata.resetTime === undefined) layerdata.resetTime = 0
+	if (layerdata.unlocked === undefined)
+		layerdata.unlocked = true;
+	if (layerdata.total === undefined)
+		layerdata.total = new Decimal(0);
+	if (layerdata.best === undefined)
+		layerdata.best = new Decimal(0);
+	if (layerdata.resetTime === undefined)
+		layerdata.resetTime = 0;
+	if (layerdata.forceTooltip === undefined)
+		layerdata.forceTooltip = false;
 
-	layerdata.buyables = getStartBuyables(layer)
-	if(layerdata.clickables == undefined) layerdata.clickables = getStartClickables(layer)
-	layerdata.spentOnBuyables = new Decimal(0)
-	layerdata.upgrades = []
-	layerdata.milestones = []
-	layerdata.achievements = []
-	layerdata.challenges = getStartChallenges(layer)
-	return layerdata
+	layerdata.buyables = getStartBuyables(layer);
+	if (layerdata.noRespecConfirm === undefined) layerdata.noRespecConfirm = false
+	if (layerdata.clickables == undefined)
+		layerdata.clickables = getStartClickables(layer);
+	layerdata.spentOnBuyables = new Decimal(0);
+	layerdata.upgrades = [];
+	layerdata.milestones = [];
+	layerdata.achievements = [];
+	layerdata.challenges = getStartChallenges(layer);
+	return layerdata;
 }
 
 
@@ -161,9 +169,11 @@ function fixData(defaultData, newData) {
 
 function load() {
 	let get = localStorage.getItem(modInfo.id);
-	if (get===null || get===undefined) player = getStartPlayer()
-	else player = Object.assign(getStartPlayer(), JSON.parse(atob(get)))
-	fixSave()
+	if (get === null || get === undefined)
+		player = getStartPlayer();
+	else
+		player = Object.assign(getStartPlayer(), JSON.parse(decodeURIComponent(escape(atob(get)))));
+	fixSave();
 
 	if (player.offlineProd) {
 		if (player.offTime === undefined) player.offTime = { remain: 0 }

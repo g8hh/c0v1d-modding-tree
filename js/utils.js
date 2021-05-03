@@ -18,7 +18,7 @@ function getTimesRequired(chance, r1){
 function respecBuyables(layer) {
 	if (!layers[layer].buyables) return
 	if (!layers[layer].buyables.respec) return
-	if (!confirm("Are you sure you want to respec? This will force you to do a \"" + (tmp[layer].resource ? tmp[layer].resource : layer) + "\" reset and reset Multiplier Boosts as well!")) return
+	if (!player[layer].noRespecConfirm && !confirm(tmp[layer].buyables.respecMessage || "Are you sure you want to respec? This will force you to do a \"" + (tmp[layer].resource ? tmp[layer].resource : layer) + "\" reset as well!")) return
 	run(layers[layer].buyables.respec, layers[layer].buyables)
 	updateBuyableTemp(layer)
 	document.activeElement.blur()
@@ -253,7 +253,20 @@ function layOver(obj1, obj2) {
 
 function prestigeNotify(layer) {
 	if (layers[layer].prestigeNotify) return layers[layer].prestigeNotify()
-	else if (tmp[layer].autoPrestige || tmp[layer].passiveGeneration) return false
+	
+	if (isPlainObject(tmp[layer].tabFormat)) {
+		for (subtab in tmp[layer].tabFormat){
+			if (subtabResetNotify(layer, 'mainTabs', subtab))
+				return true
+		}
+	}
+	for (family in tmp[layer].microtabs) {
+		for (subtab in tmp[layer].microtabs[family]){
+			if (subtabResetNotify(layer, family, subtab))
+				return true
+		}
+	}
+	if (tmp[layer].autoPrestige || tmp[layer].passiveGeneration) return false
 	else if (tmp[layer].type == "static") return tmp[layer].canReset
 	else if (tmp[layer].type == "normal") return (tmp[layer].canReset && (tmp[layer].resetGain.gte(player[layer].points.div(10))))
 	else return false
@@ -278,7 +291,7 @@ function subtabResetNotify(layer, family, id) {
 	if (family == "mainTabs") subtab = tmp[layer].tabFormat[id]
 	else subtab = tmp[layer].microtabs[family][id]
 	if (subtab.embedLayer) return tmp[subtab.embedLayer].prestigeNotify
-	else return false
+	else return subtab.prestigeNotify
 }
 
 function nodeShown(layer) {
@@ -350,19 +363,29 @@ function addTime(diff, layer) {
 	else data.timePlayed = time
 }
 
+shiftDown = false
+ctrlDown = false
+
 document.onkeydown = function (e) {
 	if (player === undefined) return;
 	if (gameEnded && !player.keepGoing) return;
-	let shiftDown = e.shiftKey
-	let ctrlDown = e.ctrlKey
+	shiftDown = e.shiftKey
+	ctrlDown = e.ctrlKey
 	let key = e.key
 	if (ctrlDown) key = "ctrl+" + key
 	if (onFocused) return
 	if (ctrlDown && hotkeys[key]) e.preventDefault()
 	if (hotkeys[key]) {
-		if (player[hotkeys[key].layer].unlocked)
-			hotkeys[key].onPress()
+		let k = hotkeys[key]
+		console.log(tmp[k.layer].hotkeys)
+		if (player[k.layer].unlocked && tmp[k.layer].hotkeys[k.id].unlocked)
+			k.onPress()
 	}
+}
+
+document.onkeyup = function (e) {
+	shiftDown = e.shiftKey
+	ctrlDown = e.ctrlKey
 }
 
 var onFocused = false
@@ -394,7 +417,14 @@ function isPlainObject(obj) {
 
 document.title = modInfo.name
 
-
+// Converts a string value to whatever it's supposed to be
+function toValue(value, oldValue) {
+	if (oldValue instanceof Decimal)
+		return new Decimal (value)
+	else if (!isNaN(oldValue))
+		return value.toNumber()
+	else return value
+}
 
 // Variables that must be defined to display popups
 var activePopups = [];
