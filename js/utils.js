@@ -81,8 +81,17 @@ function powExp2(n, exp){
 	return Decimal.pow(10,Decimal.pow(10,n.log10().log10().pow(exp)))
 }
 
+function powExp3(n, exp){
+	if (n.lt(Decimal.pow(10,1e10))) return n
+	return Decimal.pow(10,Decimal.pow(10,Decimal.pow(10,n.log10().log10().log10().pow(exp))))
+}
+
 function upgradeEffect(layer, id){
 	return (tmp[layer].upgrades[id].effect)
+}
+
+function milestoneEffect(layer, id){
+	return (tmp[layer].milestones[id].effect)
 }
 
 function challengeEffect(layer, id) {
