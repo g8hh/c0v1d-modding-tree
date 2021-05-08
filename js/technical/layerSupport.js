@@ -118,7 +118,9 @@ function setupLayer(layer){
                 layers[layer].buyables[thing].layer = layer
                 if (layers[layer].buyables[thing].unlocked === undefined)
                     layers[layer].buyables[thing].unlocked = true
-            }
+                }
+                layers[layer].buyables[thing].canBuy = function() {return canBuyBuyable(this.layer, this.id)}
+                if (layers[layer].buyables[thing].purchaseLimit === undefined) layers[layer].buyables[thing].purchaseLimit = new Decimal(Infinity)
         }  
     }
 
@@ -172,6 +174,7 @@ function setupLayer(layer){
     if(layers[layer].displayRow === undefined) layers[layer].displayRow = layers[layer].row
     if(layers[layer].name === undefined) layers[layer].name = layer
     if(layers[layer].layerShown === undefined) layers[layer].layerShown = true
+    if(layers[layer].glowColor === undefined) layers[layer].glowColor = "#ff0000"
 
     let row = layers[layer].row
 

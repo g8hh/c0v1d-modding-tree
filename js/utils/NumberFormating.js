@@ -32,9 +32,10 @@ function commaFormat(num, precision) {
 
 
 function regularFormat(num, precision) {
-	if (num === null || num === undefined) return "NaN"
-	if (num.mag < Math.pow(10, -precision)) return (0).toFixed(precision)
-	return num.toStringWithDecimalPlaces(precision)
+    if (num === null || num === undefined) return "NaN"
+    if (num.mag < 0.001) return (0).toFixed(precision)
+    if (num.mag < 0.01) precision = 3
+    return num.toStringWithDecimalPlaces(precision)
 }
 
 function fixValue(x, y = 0) {
@@ -134,4 +135,18 @@ function toPlaces(x, precision, maxAccepted) {
 		result = new Decimal(maxAccepted-Math.pow(0.1, precision)).toStringWithDecimalPlaces(precision)
 	}
 	return result
+}
+
+// Will also display very small numbers
+function formatSmall(x, precision=2) { 
+    return format(x, precision, true)    
+}
+
+function invertOOM(x){
+    let e = x.log10().ceil()
+    let m = x.div(Decimal.pow(10, e))
+    e = e.neg()
+    x = new Decimal(10).pow(e).times(m)
+
+    return x
 }
