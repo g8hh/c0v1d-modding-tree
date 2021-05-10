@@ -692,7 +692,6 @@ addLayer("r", {
     resource: "replicators",
     baseResource: "cases",
     baseAmount() { 
-        if (player.cases) return tmp.e.cases
         return player.points 
     },
     type: "static",
@@ -953,7 +952,6 @@ addLayer("u", {
     resource: "uncoaters",
     baseResource: "infectivity",
     baseAmount() { 
-        if (player.infectivity) return tmp.e.infectivity
         return player.i.points
     },
     type: "static",
@@ -1413,7 +1411,6 @@ addLayer("s", {
     resource: "symptoms",
     baseResource: "infectivity",
     baseAmount() { 
-        if (player.infectivity) return tmp.e.infectivity
         return player.i.points
     },
     type: "static",
@@ -5737,7 +5734,8 @@ addLayer("f", {
         cols: 4,
         11: {
 			title: "Fatality Dimension 1",
-			cost(x=player.f.d1) { // cost for buying xth buyable, can be an object if there are multiple currencies
+			cost() { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let x=player.f.d1
                 let cost = Decimal.pow(1e3, x).mul(1e11)
                 let scale = x.sub(330)
                 if (cost.gte(Decimal.pow(10,1e3)) && !hasUpgrade("e",186)) cost = cost.mul(this.multInc().pow(scale.mul(scale.add(1).max(1).div(2))))
@@ -5809,7 +5807,8 @@ addLayer("f", {
         },
         12: {
 			title: "Fatality Dimension 2",
-			cost(x=player.f.d2) { // cost for buying xth buyable, can be an object if there are multiple currencies
+			cost() { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let x=player.f.d2
                 let cost = Decimal.pow(1e4, x).mul(1e14)
                 let scale = x.sub(247)
                 if (cost.gte(Decimal.pow(10,1e3)) && !hasUpgrade("e",186)) cost = cost.mul(this.multInc().pow(scale.mul(scale.add(1).max(1).div(2))))
@@ -5879,7 +5878,8 @@ addLayer("f", {
         },
         13: {
 			title: "Fatality Dimension 3",
-			cost(x=player.f.d3) { // cost for buying xth buyable, can be an object if there are multiple currencies
+			cost() { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let x=player.f.d3
                 let cost = Decimal.pow(1e5, x).mul(1e15)
                 let scale = x.sub(197)
                 if (cost.gte(Decimal.pow(10,1e3)) && !hasUpgrade("e",186)) cost = cost.mul(this.multInc().pow(scale.mul(scale.add(1).max(1).div(2))))
@@ -5949,7 +5949,8 @@ addLayer("f", {
         },
         14: {
 			title: "Fatality Dimension 4",
-			cost(x=player.f.d4) { // cost for buying xth buyable, can be an object if there are multiple currencies
+			cost() { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let x=player.f.d4
                 let cost = Decimal.pow(1e6, x).mul(1e18)
                 let scale = x.sub(164)
                 if (cost.gte(Decimal.pow(10,1e3)) && !hasUpgrade("e",186)) cost = cost.mul(this.multInc().pow(scale.mul(scale.add(1).max(1).div(2))))
@@ -6019,7 +6020,8 @@ addLayer("f", {
         },
         21: {
 			title: "Fatality Dimension 5",
-			cost(x=player.f.d5) { // cost for buying xth buyable, can be an object if there are multiple currencies
+			cost() { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let x=player.f.d5
                 let cost = Decimal.pow(1e8, x).mul(1e21)
                 let scale = x.sub(123)
                 if (cost.gte(Decimal.pow(10,1e3)) && !hasUpgrade("e",186)) cost = cost.mul(this.multInc().pow(scale.mul(scale.add(1).max(1).div(2))))
@@ -6089,7 +6091,8 @@ addLayer("f", {
         },
         22: {
 			title: "Fatality Dimension 6",
-			cost(x=player.f.d6) { // cost for buying xth buyable, can be an object if there are multiple currencies
+			cost() { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let x=player.f.d6
                 let cost = Decimal.pow(1e10, x).mul(1e26)
                 let scale = x.sub(98)
                 if (cost.gte(Decimal.pow(10,1e3)) && !hasUpgrade("e",186)) cost = cost.mul(this.multInc().pow(scale.mul(scale.add(1).max(1).div(2))))
@@ -6159,7 +6162,8 @@ addLayer("f", {
         },
         23: {
 			title: "Fatality Dimension 7",
-			cost(x=player.f.d7) { // cost for buying xth buyable, can be an object if there are multiple currencies
+			cost() { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let x=player.f.d7
                 let cost = Decimal.pow(1e12, x).mul("e435")
                 let scale = x.sub(48)
                 if (cost.gte(Decimal.pow(10,1e3)) && !hasUpgrade("e",186)) cost = cost.mul(this.multInc().pow(scale.mul(scale.add(1).max(1).div(2))))
@@ -6229,7 +6233,8 @@ addLayer("f", {
         },
         24: {
 			title: "Fatality Dimension 8",
-			cost(x=player.f.d8) { // cost for buying xth buyable, can be an object if there are multiple currencies
+			cost() { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let x=player.f.d8
                 let cost = Decimal.pow(1e15, x).mul("e560")
                 let scale = x.sub(30)
                 if (cost.gte(Decimal.pow(10,1e3)) && !hasUpgrade("e",186)) cost = cost.mul(this.multInc().pow(scale.mul(scale.add(1).max(1).div(2))))
@@ -7472,7 +7477,8 @@ addLayer("f", {
         },
         71: {
 			title: "Casualty Dimension 1",
-			cost(x=player.f.cd[0]) { // cost for buying xth buyable, can be an object if there are multiple currencies
+			cost() { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let x=player.f.cd[0]
                 let cost = Decimal.pow(1e5, x).mul(1e14)
                 return cost.floor()
             },
@@ -7538,7 +7544,8 @@ addLayer("f", {
         },
         72: {
 			title: "Casualty Dimension 2",
-			cost(x=player.f.cd[1]) { // cost for buying xth buyable, can be an object if there are multiple currencies
+			cost() { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let x=player.f.cd[1]
                 let cost = Decimal.pow(1e9, x).mul(1e16)
                 return cost.floor()
             },
@@ -7604,7 +7611,8 @@ addLayer("f", {
         },
         73: {
 			title: "Casualty Dimension 3",
-			cost(x=player.f.cd[2]) { // cost for buying xth buyable, can be an object if there are multiple currencies
+			cost() { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let x=player.f.cd[2]
                 let cost = Decimal.pow(1e13, x).mul(1e29)
                 return cost.floor()
             },
@@ -7670,7 +7678,8 @@ addLayer("f", {
         },
         74: {
 			title: "Casualty Dimension 4",
-			cost(x=player.f.cd[3]) { // cost for buying xth buyable, can be an object if there are multiple currencies
+			cost() { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let x=player.f.cd[3]
                 let cost = Decimal.pow(1e17, x).mul(1e50)
                 return cost.floor()
             },
@@ -7736,7 +7745,8 @@ addLayer("f", {
         },
         81: {
 			title: "Casualty Dimension 5",
-			cost(x=player.f.cd[4]) { // cost for buying xth buyable, can be an object if there are multiple currencies
+			cost() { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let x=player.f.cd[4]
                 let cost = Decimal.pow(1e20, x).mul("1e460")
                 return cost.floor()
             },
@@ -7802,7 +7812,8 @@ addLayer("f", {
         },
         82: {
 			title: "Casualty Dimension 6",
-			cost(x=player.f.cd[5]) { // cost for buying xth buyable, can be an object if there are multiple currencies
+			cost() { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let x=player.f.cd[5]
                 let cost = Decimal.pow(1e25, x).mul("1e575")
                 return cost.floor()
             },
@@ -7868,7 +7879,8 @@ addLayer("f", {
         },
         83: {
 			title: "Casualty Dimension 7",
-			cost(x=player.f.cd[6]) { // cost for buying xth buyable, can be an object if there are multiple currencies
+			cost() { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let x=player.f.cd[6]
                 let cost = Decimal.pow(1e30, x).mul("1e790")
                 return cost.floor()
             },
@@ -7934,7 +7946,8 @@ addLayer("f", {
         },
         84: {
 			title: "Casualty Dimension 8",
-			cost(x=player.f.cd[7]) { // cost for buying xth buyable, can be an object if there are multiple currencies
+			cost() { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let x=player.f.cd[7]
                 let cost = Decimal.pow(1e40, x).mul("1e1905")
                 return cost.floor()
             },
@@ -9796,7 +9809,8 @@ addLayer("f", {
             currencyInternalName: "casualty",
             currencyLayer: "f",
             effect() {
-                let eff = player.points.add(1).max(1).slog().pow(0.47)
+                let p = player.points.add(1).max(1)
+                let eff = Decimal.add(p.layer,new Decimal(p.mag).slog()).pow(0.47)
                 return eff.min(2)
             },
             effect2() {
@@ -11339,22 +11353,6 @@ addLayer("e", {
         let shown = hasFUpg(181)
         if (player.e.unlocked) shown = true
         return shown
-    },
-    cases() {
-        if (player.cases) return player.points.iteratedlog(10,(player.ca-3)*-1)
-        return player.points
-    },
-    cases2() {
-        if (player.cases) return player.points.iteratedlog(10,(player.ca-3)*-1)
-        return player.points
-    },
-    infectivit() {
-        if (player.infectivity) return player.i.points.pow10()
-        return player.i.points
-    },
-    infectivity() {
-        if (tmp.e.infectivit.layer>player.i.points.layer) return tmp.e.infectivit.log10()
-        return player.i.points
     },
     infDiv() {
         let div = new Decimal(1)
@@ -14399,7 +14397,7 @@ addLayer("e", {
                 return cost.floor()
             },
             base() { 
-                let base = tmp.e.cases.add(10).max(10).log10().add(10).max(10).log10()
+                let base = player.points.add(10).max(10).log10().add(10).max(10).log10()
                 .add(10).max(10).log10().add(10).max(10).log10().pow(0.15)
                 return base.add(tmp.e.buyables[101].effect)
             },
@@ -15311,7 +15309,7 @@ addLayer("e", {
             cost: new Decimal(2000),
             effect(){
                 let eff = player.e.p.add(1).max(1)
-                eff = eff.slog().pow(3)
+                eff = Decimal.add(eff.layer,new Decimal(eff.mag).slog()).pow(3)
                 return eff
             },
             effectDisplay(){
@@ -15336,7 +15334,7 @@ addLayer("e", {
             currencyLayer: "e",
             cost: new Decimal(3000),
             effect(){
-                let eff = tmp.e.cases2.add(10).max(10)
+                let eff = player.points.add(10).max(10)
                 eff = eff.log10().add(10).max(10)
                 eff = eff.log10().add(10).max(10)
                 eff = eff.log10().pow(2)
@@ -15344,8 +15342,8 @@ addLayer("e", {
                 return eff
             },
             effect2(){
-                let eff = tmp.e.cases2.add(1).max(1)
-                eff = eff.slog().pow(1.4)
+                let eff = player.points.add(1).max(1)
+                eff = Decimal.add(eff.layer,new Decimal(eff.mag).slog()).pow(1.4)
                 return eff.max(1)
             },
             canAfford() {
@@ -15396,7 +15394,7 @@ addLayer("e", {
             cost: new Decimal(20000),
             effect(){
                 let eff = player.i.points.add(10).max(10)
-                eff = eff.slog().pow(0.5)
+                eff = Decimal.add(eff.layer,new Decimal(eff.mag).slog()).pow(0.5)
                 return eff.max(1)
             },
             effect2(){
@@ -15820,7 +15818,7 @@ addLayer("e", {
             currencyLayer: "e",
             cost: new Decimal("6.942e688497"),
             effect(){
-                let eff = tmp.e.cases.add(10).max(10)
+                let eff = player.points.add(10).max(10)
                 eff = eff.log10().add(10).max(10)
                 eff = eff.log10().add(10).max(10)
                 eff = eff.log10().pow(0.03)
@@ -15892,7 +15890,7 @@ addLayer("e", {
             currencyLayer: "e",
             cost: new Decimal("2.69e989588"),
             effect(){
-                let eff = tmp.e.cases.add(10).max(10)
+                let eff = player.points.add(10).max(10)
                 eff = eff.log10().add(10).max(10)
                 eff = eff.log10().add(10).max(10)
                 eff = eff.log10().pow(1.5).sub(1)
@@ -16491,7 +16489,7 @@ addLayer("e", {
             currencyLayer: "e",
             cost: new Decimal(1.5e49),
             effect(){
-                let eff = tmp.e.cases.add(10).max(10)
+                let eff = player.points.add(10).max(10)
                 eff = eff.log10().add(10).max(10)
                 eff = eff.log10().pow(0.1)
                 return eff
@@ -17394,7 +17392,7 @@ addLayer("e", {
             currencyLayer: "e",
             cost: new Decimal("6.942e22801"),
             effect(){
-                let eff = tmp.e.cases.add(10).max(10)
+                let eff = player.points.add(10).max(10)
                 eff = eff.log10().add(10).max(10)
                 eff = eff.log10().pow(0.2)
                 return eff
@@ -17493,7 +17491,7 @@ addLayer("e", {
             currencyLayer: "e",
             cost: new Decimal("e125760"),
             effect(){
-                let eff = tmp.e.cases.add(10).max(10)
+                let eff = player.points.add(10).max(10)
                 eff = eff.log10().add(10).max(10)
                 eff = eff.log10().pow(0.15)
                 return eff
@@ -17520,7 +17518,7 @@ addLayer("e", {
             currencyLayer: "e",
             cost: new Decimal("e171717"),
             effect(){
-                let eff = tmp.e.cases.add(10).max(10)
+                let eff = player.points.add(10).max(10)
                 eff = eff.log10().add(10).max(10)
                 eff = eff.log10().add(10).max(10)
                 eff = eff.log10().pow(0.08)
@@ -17870,7 +17868,7 @@ addLayer("e", {
             currencyLayer: "e",
             cost: new Decimal("e337923"),
             effect(){
-                let eff = tmp.e.cases.add(10).max(10).log10().add(10).max(10).log10().add(10).max(10).log10().pow(0.5)
+                let eff = player.points.add(10).max(10).log10().add(10).max(10).log10().add(10).max(10).log10().pow(0.5)
                 return eff
             },
             effectDisplay(){
@@ -17895,7 +17893,7 @@ addLayer("e", {
             currencyLayer: "e",
             cost: new Decimal("e403270"),
             effect(){
-                let eff = tmp.e.cases.add(10).max(10).log10().add(10).max(10).log10().add(10).max(10).log10().pow(0.03)
+                let eff = player.points.add(10).max(10).log10().add(10).max(10).log10().add(10).max(10).log10().pow(0.03)
                 return eff
             },
             effectDisplay(){
@@ -17920,7 +17918,7 @@ addLayer("e", {
             currencyLayer: "e",
             cost: new Decimal("e483180"),
             effect(){
-                let eff = tmp.e.cases.add(10).max(10).log10().add(10).max(10).log10().add(10).max(10).log10().pow(0.15)
+                let eff = player.points.add(10).max(10).log10().add(10).max(10).log10().add(10).max(10).log10().pow(0.15)
                 return eff.min(4e10)
             },
             effectDisplay(){
@@ -17945,7 +17943,7 @@ addLayer("e", {
             currencyLayer: "e",
             cost: new Decimal("e629435"),
             effect(){
-                let eff = tmp.e.cases.add(10).max(10).log10().add(10).max(10).log10().add(10).max(10).log10().add(10).max(10).log10().pow(0.25)
+                let eff = player.points.add(10).max(10).log10().add(10).max(10).log10().add(10).max(10).log10().add(10).max(10).log10().pow(0.25)
                 return eff.min(1e4)
             },
             effectDisplay(){
@@ -18340,7 +18338,7 @@ addLayer("e", {
             currencyLayer: "e",
             cost: new Decimal(69420666969),
             effect(){
-                let eff = tmp.e.cases.add(10).max(10).log10().add(10).max(10).log10().add(10).max(10).log10().pow(tmp.e.Ceffect)
+                let eff = player.points.add(10).max(10).log10().add(10).max(10).log10().add(10).max(10).log10().pow(tmp.e.Ceffect)
                 if (eff.gte(Decimal.pow(10,2e4))) eff = eff.div(Decimal.pow(10,2e4)).log10().pow(0.7).pow10().mul(Decimal.pow(10,2e4))
                 if (eff.gte(Decimal.pow(10,5e6))) eff = eff.log10().div(50).pow(1e6)
                 return eff
@@ -18485,6 +18483,7 @@ addLayer("e", {
             cost: new Decimal(2e21),
             effect(){
                 let eff = getRUpgEff(12).add(10).max(10).log10().pow(0.86).pow10()
+                if (eff.gte(Decimal.tetrate(10,10))) eff = Decimal.tetrate(10,eff.slog().div(10).pow(0.8).mul(10))
                 return eff
             },
             effectDisplay(){
@@ -19550,13 +19549,13 @@ addLayer("e", {
             currencyLayer: "e",
             cost: new Decimal(25e5),
             effect(){
-                let eff = tmp.e.cases.add(10).max(10).log10().add(10).max(10).log10()
+                let eff = player.points.add(10).max(10).log10().add(10).max(10).log10()
                 .add(10).max(10).log10().pow(0.75)
                 if (eff.gte(Decimal.pow(10,Decimal.pow(10,25e4)))) eff = eff.log10().log10().div(25e4).pow(0.1).mul(25e4).pow10().pow10()
                 return eff
             },
             effect2(){
-                let eff = tmp.e.cases.add(10).max(10).log10().add(10).max(10).log10()
+                let eff = player.points.add(10).max(10).log10().add(10).max(10).log10()
                 .add(10).max(10).log10().pow(0.05)
                 return eff
             },
@@ -19747,7 +19746,7 @@ addLayer("e", {
             currencyLayer: "e",
             cost: new Decimal(3e75),
             effect(){
-                let eff = tmp.e.cases.max(10).log10().max(10).log10().max(10).log10().pow(0.05)
+                let eff = player.points.max(10).log10().max(10).log10().max(10).log10().pow(0.05)
                 if (eff.gte(Decimal.pow(10,1e12))) eff= eff.log10().log10().div(12).pow(0.3).mul(12).pow10().pow10()
                 if (eff.gte(Decimal.pow(10,1e20))) eff= eff.log10().log10().div(20).pow(0.2).mul(20).pow10().pow10()
                 if (eff.gte(Decimal.pow(10,1e23))) eff= powExp(eff.log10().mul(100).pow(4),2).pow(1e19)
@@ -19802,7 +19801,7 @@ addLayer("e", {
             currencyLayer: "e",
             cost: new Decimal(2e100),
             effect(){
-                let eff = tmp.e.cases.max(10).log10().max(10).log10().max(10).log10().pow(0.03)
+                let eff = player.points.max(10).log10().max(10).log10().max(10).log10().pow(0.03)
                 return eff
             },
             effectDisplay(){
@@ -19896,7 +19895,7 @@ addLayer("e", {
             currencyLayer: "e",
             cost: new Decimal(5e262),
             effect(){
-                let eff = tmp.e.cases.max(10).log10().max(10).log10().max(10).log10()
+                let eff = player.points.max(10).log10().max(10).log10().max(10).log10()
                 .max(10).log10().pow(0.03)
                 if (eff.gte(2.5)) eff = eff.div(2.5).pow(0.3).mul(2.5)
                 if (eff.gte(5)) eff = eff.div(5).log10().add(5)
@@ -19924,7 +19923,7 @@ addLayer("e", {
             currencyLayer: "e",
             cost: new Decimal(5e291),
             effect(){
-                let eff = tmp.e.cases.max(10).log10().max(10).log10().max(10).log10().pow(0.03)
+                let eff = player.points.max(10).log10().max(10).log10().max(10).log10().pow(0.03)
                 return eff
             },
             effectDisplay(){
@@ -19949,7 +19948,7 @@ addLayer("e", {
             currencyLayer: "e",
             cost: Decimal.pow(10,435),
             effect(){
-                let eff = tmp.e.cases.max(10).log10().max(10).log10().max(10).log10()
+                let eff = player.points.max(10).log10().max(10).log10().max(10).log10()
                 .max(10).log10().pow(0.02)
                 if (eff.gte(22)) eff = eff.div(22).pow(0.2).mul(22)
                 if (eff.gte(48)) eff= eff.log10().div(Decimal.log10(48)).pow(0.3).mul(Decimal.log10(48)).pow10()
@@ -19978,7 +19977,7 @@ addLayer("e", {
             currencyLayer: "e",
             cost: Decimal.pow(10,718).mul(3),
             effect(){
-                let eff = tmp.e.cases.max(10).log10().max(10).log10().max(10).log10().pow(0.05)
+                let eff = player.points.max(10).log10().max(10).log10().max(10).log10().pow(0.05)
                 if (eff.gte(6e4)) eff = eff.div(6).log10().mul(2).pow(1/3).mul(3e4)
                 return eff.sub(1)
             },
@@ -20004,7 +20003,7 @@ addLayer("e", {
             currencyLayer: "e",
             cost: Decimal.pow(10,921.699),
             effect(){
-                let eff = tmp.e.cases.max(10).log10().max(10).log10().max(10).log10()
+                let eff = player.points.max(10).log10().max(10).log10().max(10).log10()
                 .max(10).log10().pow(0.1)
                 if (eff.gte(1.38)) eff = eff.div(1.38).pow(0.25).mul(1.38)
                 if (eff.gte(2.7)) eff = eff.div(2.7).pow(0.1).mul(2.7)
@@ -20160,7 +20159,7 @@ addLayer("e", {
             currencyLayer: "e",
             cost: Decimal.pow(10,3065).mul(6),
             effect(){
-                let eff = tmp.e.cases.max(10).log10().max(10).log10()
+                let eff = player.points.max(10).log10().max(10).log10()
                 .max(10).log10().max(10).log10().pow(0.5)
                 return eff
             },
@@ -20575,7 +20574,7 @@ addLayer("e", {
             currencyLayer: "e",
             cost: Decimal.pow(10,27530).mul(1.5),
             effect(){
-                let eff = tmp.e.cases.max(10).log10().max(10).log10().max(10).log10()
+                let eff = player.points.max(10).log10().max(10).log10().max(10).log10()
                 .max(10).log10().pow(0.1)
                 return eff
             },
@@ -20601,7 +20600,7 @@ addLayer("e", {
             currencyLayer: "e",
             cost: Decimal.pow(10,32390).mul(3),
             effect(){
-                let eff = tmp.e.cases.max(10).log10().max(10).log10().max(10).log10()
+                let eff = player.points.max(10).log10().max(10).log10().max(10).log10()
                 .max(10).log10().pow(0.2)
                 if (eff.gte(1e3)) eff = eff.log10().add(7).mul(100)
                 return eff
@@ -20628,7 +20627,7 @@ addLayer("e", {
             currencyLayer: "e",
             cost: Decimal.pow(10,35250),
             effect(){
-                let eff = tmp.e.cases.max(10).log10().max(10).log10().max(10).log10()
+                let eff = player.points.max(10).log10().max(10).log10().max(10).log10()
                 .max(10).log10().pow(0.5)
                 if (eff.gte(10)) eff = eff.log10().mul(10)
                 return eff
@@ -21816,7 +21815,7 @@ addLayer("e", {
                 return dis
             },
             rewardEffect() {
-                let eff = tmp.e.cases.add(10).max(10)
+                let eff = player.points.add(10).max(10)
                 eff = eff.log10().add(10).max(10)
                 eff = eff.log10().pow(0.03).div(2.3).mul(player.e.c12.add(1).max(1).log10().pow(0.5))
                 if (eff.gte(7)) eff = eff.add(3).log10().add(6)

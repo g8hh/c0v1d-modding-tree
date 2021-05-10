@@ -411,15 +411,13 @@ function gameLoop(diff) {
 	addTime(diff)
 	adjustPopupTime(diff)
 	player.points = player.points.add(tmp.pointGen.times(diff)).max(0)
-	player.ca = player.points.layer
-	player.cases = player.points.layer>3
 	if (hasMilestone("u", 2)) generatePoints("i",diff)
-	player.infectivity = player.i.points.layer>3
-	if (player.hideNews) {
+	if (player.hideNews && document.getElementById("newsTicker")) {
 		document.getElementById("newsTicker").style.display = "none";
 	}
+	if (document.getElementById("newsbtn")) {
 	document.getElementById("newsbtn").onclick = function() {
-		if (!player.hideNews) {
+		if (!player.hideNews && document.getElementById("newsbtn") && document.getElementById("newsTicker")) {
 		  document.getElementById("newsTicker").style.display = "none";
 		  player.hideNews = true
 		} else {
@@ -427,7 +425,7 @@ function gameLoop(diff) {
 		  player.hideNews = false
 		}
 	  }
-
+	}
 	for (let x = 0; x <= maxRow; x++){
 		for (item in TREE_LAYERS[x]) {
 			let layer = TREE_LAYERS[x][item]
