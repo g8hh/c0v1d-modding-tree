@@ -5311,7 +5311,7 @@ addLayer("f", {
             effectDescription() { return "Gain 1% of casualty gain per second, autobuy Casualty Multiplier, Casualty Multiplier costs nothing, and disable prestige." },
             done() { return player.f.casualtyTotal.gte(Decimal.pow(10,1e3)) },
             toggles: [["f", "cmultauto"]],
-            unlocked() {return player.f.casualtyTotal.gte("e500")|| player.ct.unlocked}
+            unlocked() {return player.f.casualtyTotal.gte("e1000")|| player.ct.unlocked}
         },
         19: {
             requirementDescription() { return "5.555e5,555 total casualty" },
