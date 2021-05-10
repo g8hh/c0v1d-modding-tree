@@ -5,7 +5,7 @@ var scrolled = false;
 
 // Don't change this
 const TMT_VERSION = {
-	tmtNum: "2.5.2.1",
+	tmtNum: "2.5.3",
 	tmtName: "Dreams Really Do Come True"
 }
 
@@ -202,7 +202,7 @@ function rowReset(row, layer) {
 }
 
 function layerDataReset(layer, keep = []) {
-	let storedData = {unlocked: player[layer].unlocked, forceTooltip: player[layer].forceTooltip} // Always keep these
+	let storedData = {unlocked: player[layer].unlocked, forceTooltip: player[layer].forceTooltip, noRespecConfirm: player[layer].noRespecConfirm} // Always keep these
 
 	for (thing in keep) {
 		if (player[layer][keep[thing]] !== undefined)
@@ -511,6 +511,7 @@ var interval = setInterval(function() {
 	updateTemp();
 	updateOomps(diff);
 	updateWidth()
+	updateTabFormats()
 	gameLoop(diff)
 	perSecondCount += diff
 	if (perSecondCount > 10) perSecondCount = 10

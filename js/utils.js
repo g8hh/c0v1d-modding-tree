@@ -229,8 +229,10 @@ function showTab(name) {
 	player.tab = name
 	if (player.navTab == "none" && (tmp[name].row !== "side") && (tmp[name].row !== "otherside")) player.lastSafeTab = name
 	delete player.notify[name]
+	updateTabFormats()
 	needCanvasUpdate = true
 	document.activeElement.blur()
+
 }
 
 function showNavTab(name) {
@@ -239,6 +241,7 @@ function showNavTab(name) {
 	var toTreeTab = name == "tree"
 	player.navTab = name
 	player.notify[name] = false
+	updateTabFormats()
 	needCanvasUpdate = true
 }
 
@@ -459,7 +462,7 @@ function adjustPopupTime(diff) {
 }
 
 function run(func, target, args = null) {
-	if (!!(func && func.constructor && func.call && func.apply)) {
+	if (isFunction(func)) {
 		let bound = func.bind(target)
 		return bound(args)
 	}

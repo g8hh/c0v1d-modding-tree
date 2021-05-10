@@ -1,5 +1,11 @@
 # The Modding Tree changelog:
 
+# v2.5.3 - 5/8/21
+- Improved performance of tab formats and bars.
+- Respec confirmation settings are now kept on resets.
+- Improved compatibility with older browsers.
+- Fixed missing pixel on vertical bars.
+
 # v2.5.2.1 - 5/7/21
 - Fixed microtabs making layers highlight incorrectly.
 
