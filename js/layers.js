@@ -22337,7 +22337,8 @@ addLayer("ct", {
             description: "Infection power divides Infecter scaling.",
             cost: new Decimal(1),
             effect(){
-                let Jihyo = player.e.p.slog().pow(0.085)
+                let p = player.e.p
+                let Jihyo = Decimal.add(p.layer,new Decimal(p.mag).slog()).pow(0.085)
                 return Jihyo
             },
             effectDisplay(){
