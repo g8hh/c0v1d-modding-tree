@@ -22171,7 +22171,7 @@ addLayer("ct", {
             function () {if (player.tab == "ct" && player.subtabs.ct.mainTabs == "Anti-Maskers") return ["row",[["buyable",71],["buyable",72],["buyable",73]]]},
             function () {if (player.tab == "ct" && player.subtabs.ct.mainTabs == "Anti-Maskers") return ["upgrades",[11,12]]}
         ],
-        unlocked () {return hasMilestone("ct",13)}
+        unlocked () {return hasMilestone("ct",20)}
         },
     },
     milestones: {
