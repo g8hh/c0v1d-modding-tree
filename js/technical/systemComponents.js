@@ -52,6 +52,7 @@ var systemComponents = {
 				tmp[layer].canClick ? (tmp[layer].tooltip ? tmp[layer].tooltip : 'I am a button!')
 				: (tmp[layer].tooltipLocked ? tmp[layer].tooltipLocked : 'I am a button!')
 			)"></tooltip>
+			<node-mark :layer='layer' :data='layers[layer].marked'></node-mark></span>
 		</button>
 		`
 	},
@@ -162,10 +163,10 @@ var systemComponents = {
                 <td><button class="opt" onclick="adjustMSDisp()">Show Milestones: {{ MS_DISPLAYS[MS_SETTINGS.indexOf(player.msDisplay)]}}</button></td>
                 <td><button class="opt" onclick="toggleOpt('hqTree')">High-Quality Tree: {{ player.hqTree?"ON":"OFF" }}</button></td>
             </tr>
-                <tr>
-					<td><button class="opt" onclick="toggleOpt('hideChallenges')">Completed Challenges: {{ player.hideChallenges?"HIDDEN":"SHOWN" }}</button></td>
-                <!--	<td><button class="opt" onclick="toggleOpt('oldStyle')">Style: {{ player.oldStyle?"v1.0":"NEW" }}</button></td>-->
-            </tr> 
+            <tr>
+                <td><button class="opt" onclick="toggleOpt('hideChallenges')">Completed Challenges: {{ player.hideChallenges?"HIDDEN":"SHOWN" }}</button></td>
+                <td><button class="opt" onclick="toggleOpt('forceOneTab'); needsCanvasUpdate = true">Single-Tab Mode: {{ player.forceOneTab?"ALWAYS":"AUTO" }}</button></td>
+			</tr> 
         </table>`
     },
 
@@ -180,5 +181,16 @@ var systemComponents = {
 		props: ['text'],
 		template: `<div class="tooltip" v-html="text"></div>
 		`
+	},
+
+	'node-mark': {
+		props: ['layer', 'data'],
+		template: `<div v-if='data'>
+			<div v-if='data === true' class='star' style='position: absolute; left: -10px; top: -10px;'></div>
+			<img v-else class='mark' style='position: absolute; left: -25px; top: -10px;' v-bind:src="data"></div>
+		</div>
+		`
 	}
+
 }
+

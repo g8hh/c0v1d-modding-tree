@@ -5,6 +5,8 @@
 	font-weight: bold;
 	table-align: center;
 	margin: auto;
+	-webkit-text-size-adjust: none;
+	text-size-adjust: none;
 }
 
 *:focus {
@@ -263,6 +265,22 @@ h1, h2, h3, b, input {
 	border: 2px solid;
 	border-color: rgba(0, 0, 0, 0.125);
 	font-size: 10px;
+}
+
+.tile {
+	height: 80px;
+	width: 80px;
+	border-radius: 15%;
+	border: 2px solid;
+	border-color: rgba(0, 0, 0, 0.125);
+	font-size: 10px;
+	overflow: visible;
+}
+
+.tile.can:hover {
+	box-shadow: 0 0 10px var(--points);
+	transform: scale(1.1, 1.1);
+	z-index: 7;
 }
 
 .upgBig {
@@ -731,4 +749,52 @@ button > * {
 	100% {
 		background-position: 400% 0%;
 	}
+}
+
+.mark {
+	position: relative;
+	display: inline-block;
+	width: 30px;
+	height: 30px;
+	z-index: 10000;
+	margin-left: 0.9em;
+	margin-right: 0.9em;
+	margin-bottom: 1.2em;
+	border-right: 0.3em solid transparent;
+	border-bottom: 0.7em solid transparent;
+	border-left: 0.3em solid transparent;
+	font-size: 10px;
+	overflow:auto
+}
+
+.star {
+	position: relative;
+	display: inline-block;
+	width: 0;
+	height: 0;
+	z-index: 10000;
+	margin-left: 0.9em;
+	margin-right: 0.9em;
+	margin-bottom: 1.2em;
+	border-right: 0.3em solid transparent;
+	border-bottom: 0.7em solid #ffcc00;
+	border-left: 0.3em solid transparent;
+	font-size: 10px;
+}
+
+.star:before, .star:after {
+	content: "";
+    width: 0;
+    height: 0;
+    position: absolute;
+    top: .6em;
+    left: -1em;
+	border-right: 1em solid transparent;
+    border-bottom: 0.7em solid #ffcc00;
+    border-left: 1em solid transparent;
+	transform: rotate(-35deg);
+}
+
+.star:after {
+	transform: rotate(35deg);
 }
