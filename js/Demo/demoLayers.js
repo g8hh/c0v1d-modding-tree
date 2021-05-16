@@ -300,7 +300,7 @@ addLayer("c", {
                     ["main-display",
                     "prestige-button", "resource-display",
                     ["blank", "5px"], // Height
-                    ["raw-html", function() {return "<button onclick='console.log(`yeet`)'>'HI'</button>"}],
+                    ["raw-html", function() {return "<button onclick='console.log(`yeet`); makeParticles(textParticle)'>'HI'</button>"}],
                     ["display-text", "Name your points!"],
                     ["text-input", "thingy"],
                     ["display-text",
@@ -376,6 +376,7 @@ addLayer("c", {
                          // Layer will automatically highlight if an upgrade is purchasable.
             return (player.c.buyables[11] == 1)
         },
+        marked: "discord.png",
         resetDescription: "Melt your points into ",
 })
 
@@ -455,6 +456,7 @@ addLayer("f", {
                         player[this.layer].clickables[this.id] = "Maybe that's a bit too far..."
                         break;                        
                     case "Maybe that's a bit too far...":
+                        makeParticles(coolParticle, 4)
                         player[this.layer].clickables[this.id] = "Borkened..."
                         break;
                     default:
@@ -524,5 +526,71 @@ addLayer("a", {
                 onComplete() {console.log("Bork bork bork!")}
             },
         },
-    }, 
+        midsection: ["grid", "blank"],
+        grid: {
+            maxRows: 3,
+            rows: 2,
+            cols: 2,
+            getStartData(id) {
+                return id
+            },
+            getUnlocked(id) { // Default
+                return true
+            },
+            getCanClick(data, id) {
+                return player.points.eq(10)
+            },
+            getStyle(data, id) {
+                return {'background-color': '#'+ (data*1234%999999)}
+            },
+            onClick(data, id) { // Don't forget onHold
+                player[this.layer].grid[id]++
+            },
+            getTitle(data, id) {
+                return "Gridable #" + id
+            },
+            getDisplay(data, id) {
+                return data
+            },
+        },
+    },
 )
+
+const coolParticle = {
+    image:"options_wheel.png",
+    spread: 20,
+    gravity: 2,
+    time: 3,
+    rotation (id) {
+        return 20 * (id - 1.5) + (Math.random() - 0.5) * 10
+    },
+    dir() {
+        return (Math.random() - 0.5) * 10
+    },
+    speed() {
+        return (Math.random() + 1.2) * 8 
+    },
+    onClick() {
+        console.log("yay")
+    },
+    onMouseOver() {
+        console.log("hi")
+    },
+    onMouseLeave() {
+        console.log("bye")
+    },
+    update() {
+        //this.width += 1
+    },
+    layer: 'f',
+}
+
+const textParticle = {
+    spread: 20,
+    gravity: 0,
+    time: 3,
+    speed: 0,
+    text: function() { return "<h1 style='color:yellow'>" + format(player.points)},
+    offset: 30,
+    fadeInTime: 1,
+}

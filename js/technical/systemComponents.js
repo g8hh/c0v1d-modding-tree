@@ -190,7 +190,15 @@ var systemComponents = {
 			<img v-else class='mark' style='position: absolute; left: -25px; top: -10px;' v-bind:src="data"></div>
 		</div>
 		`
-	}
+	},
+
+	'particle': {
+		props: ['data', 'index'],
+		template: `<div class='particle instant' v-bind:style="[constructParticleStyle(data), data.style]" 
+			v-on:click="run(data.onClick, data)"  v-on:mouseenter="run(data.onMouseOver, data)" v-on:mouseleave="run(data.onMouseLeave, data)" ><span v-html="data.text"></span>
+		</div>
+		`
+	},
 
 }
 

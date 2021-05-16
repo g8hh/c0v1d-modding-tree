@@ -22,7 +22,7 @@ challenges: {
 }
 ```
 
-Each challenge should have an id where the first digit is the row and the second digit is the column.
+Usually, each challenge should have an id where the first digit is the row and the second digit is the column.
 
 Individual Challenges can have these features:
 
@@ -57,6 +57,8 @@ Individual Challenges can have these features:
 - completionLimit: **optional**. the amount of times you can complete this challenge. Default is 1 completion.
 
 - style: **optional**. Applies CSS to this challenge, in the form of an object where the keys are CSS attributes, and the values are the values for those attributes (both as strings).
+
+- marked: **optional** Adds a mark to the corner of the challenge. If it's "true" it will be a star, but it can also be an image URL. By default, if the challenge has multiple completions, it will be starred at max completions.
 
 - layer: **assigned automagically**. It's the same value as the name of this layer, so you can do player[this.layer].points or similar
 

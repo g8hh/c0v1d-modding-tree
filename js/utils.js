@@ -26,6 +26,7 @@ function respecBuyables(layer) {
 
 function canAffordUpgrade(layer, id) {
 	let upg = tmp[layer].upgrades[id]
+	if(tmp[layer].deactivated) return false
 	if (tmp[layer].upgrades[id].canAfford !== undefined) return tmp[layer].upgrades[id].canAfford
 	let cost = tmp[layer].upgrades[id].cost
 	return canAffordPurchase(layer, upg, cost)
@@ -33,7 +34,7 @@ function canAffordUpgrade(layer, id) {
 
 function canBuyBuyable(layer, id) {
 	let b = temp[layer].buyables[id]
-	return (b.unlocked && b.canAfford && player[layer].buyables[id].lt(b.purchaseLimit))
+	return (b.unlocked && run(b.canAfford, b) && player[layer].buyables[id].lt(b.purchaseLimit) && !tmp[layer].deactivated)
 }
 
 function hasUpgrade(layer, id) {
@@ -194,7 +195,7 @@ function buyUpg(layer, id) {
 function buyMaxBuyable(layer, id) {
 	if (!player[layer].unlocked) return
 	if (!tmp[layer].buyables[id].unlocked) return
-	if (!tmp[layer].buyables[id].canAfford) return
+	if (!tmp[layer].buyables[id].canBuy) return
 	if (!layers[layer].buyables[id].buyMax) return
 
 	run(layers[layer].buyables[id].buyMax, layers[layer].buyables[id])
@@ -211,7 +212,7 @@ function buyBuyable(layer, id) {
 }
 
 function clickClickable(layer, id) {
-	if (!player[layer].unlocked) return
+	if (!player[layer].unlocked || tmp[layer].deactivated) return
 	if (!tmp[layer].clickables[id].unlocked) return
 	if (!tmp[layer].clickables[id].canClick) return
 
@@ -220,7 +221,7 @@ function clickClickable(layer, id) {
 }
 
 function clickGrid(layer, id) {
-	if (!player[layer].unlocked) return
+	if (!player[layer].unlocked  || tmp[layer].deactivated) return
 	if (!run(layers[layer].grid.getUnlocked, layers[layer].grid, id)) return
 	if (!gridRun(layer, 'getCanClick', player[layer].grid[id], id)) return
 
@@ -243,6 +244,7 @@ function inChallenge(layer, id) {
 var onTreeTab = true
 function showTab(name) {
 	if (LAYERS.includes(name) && !layerunlocked(name)) return
+	if (player.tab !== name) clearParticles(function(p) {return p.layer === player.tab})
 	if (player.tab === name && isPlainObject(tmp[name].tabFormat)) {
 		player.subtabs[name].mainTabs = Object.keys(layers[name].tabFormat)[0]
 	}
@@ -258,6 +260,7 @@ function showTab(name) {
 
 function showNavTab(name) {
 	if (LAYERS.includes(name) && !layerunlocked(name)) return
+	if (player.navTab !== name) clearParticles(function(p) {return p.layer === player.navTab})
 
 	var toTreeTab = name == "tree"
 	player.navTab = name

@@ -5,7 +5,7 @@ var scrolled = false;
 
 // Don't change this
 const TMT_VERSION = {
-	tmtNum: "2.5.5.2",
+	tmtNum: "2.5.7",
 	tmtName: "Dreams Really Do Come True"
 }
 
@@ -144,7 +144,7 @@ function softcap(value, cap, power = 0.5) {
 // Return true if the layer should be highlighted. By default checks for upgrades only.
 function shouldNotify(layer){
 	for (id in tmp[layer].upgrades){
-		if (!isNaN(id)){
+		if (isPlainObject(layers[layer].upgrades[id])){
 			if (canAffordUpgrade(layer, id) && !hasUpgrade(layer, id) && tmp[layer].upgrades[id].unlocked){
 				return true
 			}
@@ -408,6 +408,7 @@ function gameLoop(diff) {
 	if (gameEnded && !player.keepGoing) {
 		diff = 0
 		player.tab = "gameEnded"
+		clearParticles()
 	}
 	if (player.devSpeed != undefined) diff *= player.devSpeed
 
@@ -499,6 +500,7 @@ var interval = setInterval(function() {
 	ticking = true
 	let now = Date.now()
 	let diff = (now - player.time) / 1e3
+	let trueDiff = diff
 	if (player.offTime !== undefined) {
 		if (player.offTime.remain > modInfo.offlineLimit * 1000) player.offTime.remain = modInfo.offlineLimit * 1000
 		if (player.offTime.remain > 0) {
@@ -526,5 +528,8 @@ var interval = setInterval(function() {
 	}
 	lastTenTicks.push(Date.now()-now)
 	if (lastTenTicks.length > 10) lastTenTicks = lastTenTicks.slice(1,)
+	fixNaNs()
+	adjustPopupTime(trueDiff)
+	updateParticles(trueDiff)
 	ticking = false
 }, 50)

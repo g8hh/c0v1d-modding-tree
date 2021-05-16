@@ -1,5 +1,16 @@
 # The Modding Tree changelog:
 
+# v2.5.7 - 5/15/21
+- Added a particle system! Not only can it be used for visual effects, but particles can interact with the mouse. They could be used to create golden cookies or collectables, for example.
+- Added marked feature to buyables, clickables, and challenges. By default, stars multi-completion challenges when maxed.
+- Added 'deactivated' feature to layers, which disables many features.
+- Improved number formatting slightly.
+
+# v2.5.6 - 5/14/21
+- You can now use non-numeric ids for upgrades, buyables, etc.
+- Fixed an exploit that let you buy an extra buyable.
+- Moved basic getter/setter functions to easyAccess.js.
+
 # v2.5.5.2 - 5/12/21
 - Fixed a major issue with buyables.
 - Fixed a variety of tabFormat-related issues.
@@ -371,11 +382,11 @@ which will break old things)
 - Added a few minor features, and updated the docs with new information.
 
 
-### v1.1.1:
+### v1.1.1 - 9/30/20
 
 - You can define hotkeys directly from layer config.
 
-## v1.1: Enhanced Edition
+## v1.1: Enhanced Edition - 9/30/20
 
 - Added "Buyables", which can function like Space Buildings or Enhancers.
 - Custom CSS can now be used on any component! Make the third argument an object with CSS
@@ -383,5 +394,5 @@ parameters.
 - Lots of minor good things.
 
 
-## v1.0:
+## v1.0 - 9/27/20
 - First release.
