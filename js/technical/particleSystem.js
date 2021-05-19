@@ -3,9 +3,9 @@ var particleID = 0;
 var mouseX = 0;
 var mouseY = 0;
 
-function makeParticles(data, amount=1) {
+function makeParticles(data, amount=1, type = "normal") {
     for (let x = 0; x < amount; x++) {
-        let particle = getNewParticle()
+        let particle = newParticles[type]()
         for (thing in data) {
 
             switch(thing) {
@@ -20,13 +20,15 @@ function makeParticles(data, amount=1) {
                     
             }
         }
-        if (data.angle === undefined) {
+        if (data.dir === undefined) {
             particle.dir = particle.angle
         }
         particle.dir = particle.dir + (particle.spread * (x- amount/2 + 0.5))
 
-        particle.x += particle.offset * sin(particle.dir)
-        particle.y += particle.offset * cos(particle.dir) * -1
+        if(particle.offset) {
+            particle.x += particle.offset * sin(particle.dir)
+            particle.y += particle.offset * cos(particle.dir) * -1
+        }
 
         particle.xVel = particle.speed * sin(particle.dir)
         particle.yVel = particle.speed * cos(particle.dir) * -1
@@ -36,13 +38,11 @@ function makeParticles(data, amount=1) {
     }
 }
 
-function sin(x) {
-    return Math.sin(x*Math.PI/180)
+// Makes a particle at a random location that stays still until it despawns
+function makeShinies(data, amount=1) {
+    makeParticles(data, amount, "shiny")
 }
 
-function cos(x) {
-    return Math.cos(x*Math.PI/180)
-}
 
 function updateParticles(diff) {
 	for (p in particles) {
@@ -58,35 +58,75 @@ function updateParticles(diff) {
             particle.angle += particle.rotation
             particle.x += particle.xVel
             particle.y += particle.yVel
+            particle.speed = Math.sqrt(Math.pow(particle.xVel, 2) + Math.pow(particle.yVel, 2))
+            particle.dir = atan(-particle.xVel/particle.yVel)
             particle.yVel += particle.gravity
-
         }
 	}
 }
 
-function getNewParticle() {
-    particleID++
-    return {
-        time: 3,
-        id: particleID,
-        x: mouseX,
-        y: mouseY,
-        width: 35,
-        height: 35,
-        image: "resources/genericParticle.png",
-        angle: 0,
-        spread: 30,
-        offset: 10,
-        speed: 15,
-        xVel: 0,
-        yVel: 0,
-        rotation: 0,
-        gravity: 0,
-        fadeOutTime: 1,
-        fadeInTimer: 0,
-        fadeIn: 0,
-    }
+function setDir(particle, dir) {
+    particle.dir = dir
+    particle.xVel = particle.speed * sin(particle.dir)
+    particle.yVel = particle.speed * cos(particle.dir) * -1
 }
+
+function setSpeed(particle, speed) {
+    particle.speed = speed
+    particle.xVel = particle.speed * sin(particle.dir)
+    particle.yVel = particle.speed * cos(particle.dir) * -1
+}
+
+const newParticles = {
+    normal() {
+        particleID++
+        return {
+            time: 3,
+            id: particleID,
+            x: mouseX,
+            y: mouseY,
+            width: 35,
+            height: 35,
+            image: "resources/genericParticle.png",
+            angle: 0,
+            spread: 30,
+            offset: 10,
+            speed: 15,
+            xVel: 0,
+            yVel: 0,
+            rotation: 0,
+            gravity: 0,
+            fadeOutTime: 1,
+            fadeInTimer: 0,
+            fadeInTime: 0,
+        }
+    },
+    shiny() {
+        particleID++
+        return {
+            time: 10,
+            id: particleID,
+            x: Math.random() * (tmp.other.screenWidth - 100) + 50,
+            y: Math.random() * (tmp.other.screenHeight - 100) + 50,
+            width: 50,
+            height: 50,
+            image: "resources/genericParticle.png",
+            angle: 0,
+            spread: 0,
+            offset: 0,
+            speed: 0,
+            xVel: 0,
+            yVel: 0,
+            rotation: 0,
+            gravity: 0,
+            fadeOutTime: 1,
+            fadeInTimer: 0,
+            fadeInTime: 0.5,
+        }
+    },
+}
+
+
 
 function updateMouse(event) {
     mouseX = event.clientX
@@ -103,7 +143,7 @@ function getOpacity(particle) {
 }   
 
 function constructParticleStyle(particle){
-    return {
+    let style =  {
         left: (particle.x  - particle.height/2) + 'px',
         top: (particle.y - particle.height/2) + 'px',
         width: particle.width + 'px',
@@ -111,8 +151,15 @@ function constructParticleStyle(particle){
         transform: "rotate(" + particle.angle + "deg)",
         opacity: getOpacity(particle),
         "pointer-events": (particle.onClick || particle.onHover) ? 'auto' : 'none',
-        "background-image": "url(" + particle.image + ")",
     }
+    if (particle.color) {
+        style["background-color"] = particle.color
+        style.mask = "url(#pmask" + particle.id + ")"
+        style["-webkit-mask-box-image"] = "url(" + particle.image + ")"
+    }
+    else 
+        style["background-image"] = "url(" + particle.image + ")"
+    return style
 }
 
 function clearParticles(check) {
@@ -124,3 +171,16 @@ function clearParticles(check) {
         }
     }
 }
+
+// Trig with degrees
+function sin(x) { return Math.sin(x*Math.PI/180)}
+
+function cos(x) {return Math.cos(x*Math.PI/180)}
+
+function tan(x) {return Math.tan(x*Math.PI/180)}
+
+function asin(x) { return Math.asin(x)*180/Math.PI}
+
+function acos(x) { return Math.acos(x)*180/Math.PI}
+
+function atan(x) { return Math.atan(x)*180/Math.PI}
