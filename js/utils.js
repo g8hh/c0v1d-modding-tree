@@ -15,6 +15,11 @@ function getTimesRequired(chance, r1){
 	return n.floor().add(1)
 }
 
+function recurse(func, startingValue, times){
+	if (times <= 0) return startingValue
+	return recurse(func, func(startingValue), times-1)
+}
+
 function respecBuyables(layer) {
 	if (!layers[layer].buyables) return
 	if (!layers[layer].buyables.respec) return
@@ -26,6 +31,7 @@ function respecBuyables(layer) {
 
 function canAffordUpgrade(layer, id) {
 	let upg = tmp[layer].upgrades[id]
+	if(tmp[layer].deactivated) return false
 	if (tmp[layer].upgrades[id].canAfford !== undefined) return tmp[layer].upgrades[id].canAfford
 	let cost = tmp[layer].upgrades[id].cost
 	return canAffordPurchase(layer, upg, cost)
@@ -33,86 +39,7 @@ function canAffordUpgrade(layer, id) {
 
 function canBuyBuyable(layer, id) {
 	let b = temp[layer].buyables[id]
-	return (b.unlocked && b.canAfford && player[layer].buyables[id].lt(b.purchaseLimit))
-}
-
-function hasUpgrade(layer, id) {
-	return (player[layer].upgrades.includes(toNumber(id)) || player[layer].upgrades.includes(id.toString()))
-}
-
-function hasMilestone(layer, id) {
-	return (player[layer].milestones.includes(toNumber(id)) || player[layer].milestones.includes(id.toString()))
-}
-
-function hasAchievement(layer, id) {
-	return (player[layer].achievements.includes(toNumber(id)) || player[layer].achievements.includes(id.toString()))
-}
-
-function hasChallenge(layer, id) {
-	return (player[layer].challenges[id])
-}
-
-function maxedChallenge(layer, id) {
-	return (player[layer].challenges[id] >= tmp[layer].challenges[id].completionLimit)
-}
-
-function challengeCompletions(layer, id) {
-	return (player[layer].challenges[id])
-}
-
-function getBuyableAmount(layer, id) {
-	return (player[layer].buyables[id])
-}
-
-function setBuyableAmount(layer, id, amt) {
-	player[layer].buyables[id] = amt
-}
-
-function getClickableState(layer, id) {
-	return (player[layer].clickables[id])
-}
-
-function setClickableState(layer, id, state) {
-	player[layer].clickables[id] = state
-}
-
-function powExp(n, exp){
-	if (n.lt(10)) return n
-	return Decimal.pow(10,n.log10().pow(exp))
-}
-
-function powExp2(n, exp){
-	if (n.lt(1e10)) return n
-	return Decimal.pow(10,Decimal.pow(10,n.log10().log10().pow(exp)))
-}
-
-function powExp3(n, exp){
-	if (n.lt(Decimal.pow(10,1e10))) return n
-	return Decimal.pow(10,Decimal.pow(10,Decimal.pow(10,n.log10().log10().log10().pow(exp))))
-}
-
-function upgradeEffect(layer, id){
-	return (tmp[layer].upgrades[id].effect)
-}
-
-function milestoneEffect(layer, id){
-	return (tmp[layer].milestones[id].effect)
-}
-
-function challengeEffect(layer, id) {
-	return (tmp[layer].challenges[id].rewardEffect)
-}
-
-function buyableEffect(layer, id) {
-	return (tmp[layer].buyables[id].effect)
-}
-
-function clickableEffect(layer, id) {
-	return (tmp[layer].clickables[id].effect)
-}
-
-function achievementEffect(layer, id) {
-	return (tmp[layer].achievements[id].effect)
+	return (b.unlocked && run(b.canAfford, b) && player[layer].buyables[id].lt(b.purchaseLimit) && !tmp[layer].deactivated)
 }
 
 function canAffordPurchase(layer, thing, cost) {
@@ -181,7 +108,7 @@ function buyUpg(layer, id) {
 function buyMaxBuyable(layer, id) {
 	if (!player[layer].unlocked) return
 	if (!tmp[layer].buyables[id].unlocked) return
-	if (!tmp[layer].buyables[id].canAfford) return
+	if (!tmp[layer].buyables[id].canBuy) return
 	if (!layers[layer].buyables[id].buyMax) return
 
 	run(layers[layer].buyables[id].buyMax, layers[layer].buyables[id])
@@ -198,12 +125,20 @@ function buyBuyable(layer, id) {
 }
 
 function clickClickable(layer, id) {
-	if (!player[layer].unlocked) return
+	if (!player[layer].unlocked || tmp[layer].deactivated) return
 	if (!tmp[layer].clickables[id].unlocked) return
 	if (!tmp[layer].clickables[id].canClick) return
 
 	run(layers[layer].clickables[id].onClick, layers[layer].clickables[id])
 	updateClickableTemp(layer)
+}
+
+function clickGrid(layer, id) {
+	if (!player[layer].unlocked  || tmp[layer].deactivated) return
+	if (!run(layers[layer].grid.getUnlocked, layers[layer].grid, id)) return
+	if (!gridRun(layer, 'getCanClick', player[layer].grid[id], id)) return
+
+	gridRun(layer, 'onClick', player[layer].grid[id], id)
 }
 
 // Function to determine if the player is in a challenge
@@ -222,6 +157,7 @@ function inChallenge(layer, id) {
 var onTreeTab = true
 function showTab(name) {
 	if (LAYERS.includes(name) && !layerunlocked(name)) return
+	if (player.tab !== name) clearParticles(function(p) {return p.layer === player.tab})
 	if (player.tab === name && isPlainObject(tmp[name].tabFormat)) {
 		player.subtabs[name].mainTabs = Object.keys(layers[name].tabFormat)[0]
 	}
@@ -229,16 +165,20 @@ function showTab(name) {
 	player.tab = name
 	if (player.navTab == "none" && (tmp[name].row !== "side") && (tmp[name].row !== "otherside")) player.lastSafeTab = name
 	delete player.notify[name]
+	updateTabFormats()
 	needCanvasUpdate = true
 	document.activeElement.blur()
+
 }
 
 function showNavTab(name) {
 	if (LAYERS.includes(name) && !layerunlocked(name)) return
+	if (player.navTab !== name) clearParticles(function(p) {return p.layer === player.navTab})
 
 	var toTreeTab = name == "tree"
 	player.navTab = name
 	player.notify[name] = false
+	updateTabFormats()
 	needCanvasUpdate = true
 }
 
@@ -412,11 +352,14 @@ document.title = modInfo.name
 
 // Converts a string value to whatever it's supposed to be
 function toValue(value, oldValue) {
-	if (oldValue instanceof Decimal)
-		return new Decimal (value)
-	else if (!isNaN(oldValue))
-		return value.toNumber()
-	else return value
+	if (oldValue instanceof Decimal) {
+		value = new Decimal (value)
+		if (value.eq(decimalNaN)) return decimalZero
+		return value
+	}
+	if (!isNaN(oldValue)) 
+		return parseFloat(value) || 0
+	return value
 }
 
 // Variables that must be defined to display popups
@@ -459,10 +402,19 @@ function adjustPopupTime(diff) {
 }
 
 function run(func, target, args = null) {
-	if (!!(func && func.constructor && func.call && func.apply)) {
+	if (isFunction(func)) {
 		let bound = func.bind(target)
 		return bound(args)
 	}
 	else
 		return func;
+}
+
+function gridRun(layer, func, data, id) {
+	if (isFunction(layers[layer].grid[func])) {
+		let bound = layers[layer].grid[func].bind(layers[layer].grid)
+		return bound(data, id)
+	}
+	else
+		return layers[layer].grid[func];
 }

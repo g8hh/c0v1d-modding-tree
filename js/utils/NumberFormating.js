@@ -25,16 +25,20 @@ function exponentialFormat(num, precision) {
 }
 
 function commaFormat(num, precision) {
-	if (num === null || num === undefined) return "NaN"
-	if (num.lt(Decimal.pow(10, precision * -1))) return (0).toFixed(precision)
-	return addCommas(num.toStringWithDecimalPlaces())
+    if (num === null || num === undefined) return "NaN"
+    if (num.mag < 0.001) return (0).toFixed(precision)
+    let init = num.toStringWithDecimalPlaces(precision)
+    let portions = init.split(".")
+    portions[0] = portions[0].replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,")
+    if (portions.length == 1) return portions[0]
+    return portions[0] + "." + portions[1]
 }
 
 
 function regularFormat(num, precision) {
     if (num === null || num === undefined) return "NaN"
-    if (num.mag < 0.001) return (0).toFixed(precision)
-    if (num.mag < 0.01) precision = 3
+    if (num.mag < 0.0001) return (0).toFixed(precision)
+    if (num.mag < 0.1 && precision !==0) precision = Math.max(precision, 4)
     return num.toStringWithDecimalPlaces(precision)
 }
 

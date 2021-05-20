@@ -5,7 +5,7 @@ var scrolled = false;
 
 // Don't change this
 const TMT_VERSION = {
-	tmtNum: "2.5.2.1",
+	tmtNum: "2.5.9.2",
 	tmtName: "Dreams Really Do Come True"
 }
 
@@ -20,12 +20,13 @@ function getResetGain(layer, canMax=false, useType = null) {
 	} 
 	if(tmp[layer].type == "none")
 		return new Decimal (0)
-	if (tmp[layer].gainExp.eq(0)) return new Decimal(0)
+	if (tmp[layer].gainExp.eq(0)) return decimalZero
 	if (type=="static") {
 		let base = new Decimal(1e8)
 		let exp = new Decimal(1.9)
-		if ((!tmp[layer].canBuyMax) || tmp[layer].baseAmount.lt(tmp[layer].requires)) return new Decimal(1)
+		if ((!tmp[layer].canBuyMax) || tmp[layer].baseAmount.lt(tmp[layer].requires)) return decimalOne
 		let gain = tmp[layer].baseAmount.div(tmp[layer].requires).div(tmp[layer].gainMult).max(1).log(tmp[layer].base).times(tmp[layer].gainExp).pow(Decimal.pow(tmp[layer].exponent, -1))
+		gain = gain.times(tmp[layer].directMult)
 		if (layer == "r"  || layer == "u" || layer == "e") gain = softcapStaticGain(gain, tmp[layer].row)
 		if (layer=="e") gain = gain.mul(tmp.e.infDiv)
 		if (layer == "u" && player.u.points.lt(320)) {
@@ -61,14 +62,15 @@ function getResetGain(layer, canMax=false, useType = null) {
 		if (player.u.points.gte(30) && layer == "u") resetgain = gain.floor().sub(player[layer].points).add(1).max(1)
 		return resetgain;
 	} else if (type=="normal"){
-		if (tmp[layer].baseAmount.lt(tmp[layer].requires)) return new Decimal(0)
+		if (tmp[layer].baseAmount.lt(tmp[layer].requires)) return decimalZero
 		let gain = tmp[layer].baseAmount.div(tmp[layer].requires).pow(tmp[layer].exponent).times(tmp[layer].gainMult).pow(tmp[layer].gainExp)
 		if (gain.gte(tmp[layer].softcap)) gain = gain.pow(tmp[layer].softcapPower).times(tmp[layer].softcap.pow(decimalOne.sub(tmp[layer].softcapPower)))
+		gain = gain.times(tmp[layer].directMult)
 		return gain.floor().max(0);
 	} else if (type=="custom"){
 		return layers[layer].getResetGain()
 	} else {
-		return new Decimal(0)
+		return decimalZero
 	}
 }
 
@@ -91,7 +93,7 @@ function getNextAt(layer, canMax=false, useType = null) {
 		if (!tmp[layer].canBuyMax) canMax = false
 		let base = new Decimal(1e8)
 		let exp = new Decimal(1.9)
-		let amt = player[layer].points.plus((canMax&&tmp[layer].baseAmount.gte(tmp[layer].nextAt))?tmp[layer].resetGain:0)
+		let amt = player[layer].points.plus((canMax&&tmp[layer].baseAmount.gte(tmp[layer].nextAt))?tmp[layer].resetGain:0).div(tmp[layer].directMult)
 		let g = amt
 		if (layer == "e") g = g.div(tmp.e.infDiv)
 		if (layer == "r" || layer == "u" || layer == "e") amt = scaleStaticCost(g, tmp[layer].row)
@@ -122,7 +124,7 @@ function getNextAt(layer, canMax=false, useType = null) {
 		if (tmp[layer].roundUpCost) cost = cost.ceil()
 		return cost;
 	} else if (type=="normal"){
-		let next = tmp[layer].resetGain.add(1)
+		let next = tmp[layer].resetGain.add(1).div(tmp[layer].directMult)
 		if (next.gte(tmp[layer].softcap)) next = next.div(tmp[layer].softcap.pow(decimalOne.sub(tmp[layer].softcapPower))).pow(decimalOne.div(tmp[layer].softcapPower))
 		next = next.root(tmp[layer].gainExp).div(tmp[layer].gainMult).root(tmp[layer].exponent).times(tmp[layer].requires).max(tmp[layer].requires)
 		if (tmp[layer].roundUpCost) next = next.ceil()
@@ -130,7 +132,7 @@ function getNextAt(layer, canMax=false, useType = null) {
 	} else if (type=="custom"){
 		return layers[layer].getNextAt(canMax)
 	} else {
-		return new Decimal(0)
+		return decimalZero
 	}}
 
 function softcap(value, cap, power = 0.5) {
@@ -142,7 +144,7 @@ function softcap(value, cap, power = 0.5) {
 // Return true if the layer should be highlighted. By default checks for upgrades only.
 function shouldNotify(layer){
 	for (id in tmp[layer].upgrades){
-		if (!isNaN(id)){
+		if (isPlainObject(layers[layer].upgrades[id])){
 			if (canAffordUpgrade(layer, id) && !hasUpgrade(layer, id) && tmp[layer].upgrades[id].unlocked){
 				return true
 			}
@@ -202,7 +204,7 @@ function rowReset(row, layer) {
 }
 
 function layerDataReset(layer, keep = []) {
-	let storedData = {unlocked: player[layer].unlocked, forceTooltip: player[layer].forceTooltip} // Always keep these
+	let storedData = {unlocked: player[layer].unlocked, forceTooltip: player[layer].forceTooltip, noRespecConfirm: player[layer].noRespecConfirm} // Always keep these
 
 	for (thing in keep) {
 		if (player[layer][keep[thing]] !== undefined)
@@ -229,7 +231,7 @@ function layerDataReset(layer, keep = []) {
 function resetBuyables(layer){
 	if (layers[layer].buyables) 
 		player[layer].buyables = getStartBuyables(layer)
-	player[layer].spentOnBuyables = new Decimal(0)
+	player[layer].spentOnBuyables = decimalZero
 }
 
 
@@ -280,7 +282,8 @@ function doReset(layer, force=false) {
 					if (!player[lrs[lr]].unlocked) player[lrs[lr]].unlockOrder++
 			}
 		}
-		tmp[layer].baseAmount = new Decimal(0) // quick fix
+	
+		tmp[layer].baseAmount = decimalZero // quick fix
 	}
 	if (tmp[layer].resetsNothing) return
 
@@ -289,7 +292,7 @@ function doReset(layer, force=false) {
 	}
 
 	prevOnReset = {...player} //Deep Copy
-	player.points = (row == 0 ? new Decimal(0) : getStartPoints())
+	player.points = (row == 0 ? decimalZero : getStartPoints())
 
 
 	for (let x = row; x >= 0; x--) rowReset(x, layer)
@@ -373,6 +376,7 @@ function completeChallenge(layer, x) {
 	let completions = canCompleteChallenge(layer, x)
 	if (!completions){
 		 player[layer].activeChallenge = null
+		 run(layers[layer].challenges[x].onExit, layers[layer].challenges[x])
 		return
 	}
 	if (player[layer].challenges[x] < tmp[layer].challenges[x].completionLimit) {
@@ -382,6 +386,7 @@ function completeChallenge(layer, x) {
 		if (layers[layer].challenges[x].onComplete) run(layers[layer].challenges[x].onComplete, layers[layer].challenges[x])
 	}
 	player[layer].activeChallenge = null
+	run(layers[layer].challenges[x].onExit, layers[layer].challenges[x])
 	updateChallengeTemp(layer)
 }
 
@@ -403,6 +408,7 @@ function gameLoop(diff) {
 	if (gameEnded && !player.keepGoing) {
 		diff = 0
 		player.tab = "gameEnded"
+		clearParticles()
 	}
 	if (player.devSpeed != undefined) diff *= player.devSpeed
 
@@ -411,15 +417,13 @@ function gameLoop(diff) {
 	addTime(diff)
 	adjustPopupTime(diff)
 	player.points = player.points.add(tmp.pointGen.times(diff)).max(0)
-	player.ca = player.points.layer
-	player.cases = player.points.layer>3
 	if (hasMilestone("u", 2)) generatePoints("i",diff)
-	player.infectivity = player.i.points.layer>3
-	if (player.hideNews) {
+	if (player.hideNews && document.getElementById("newsTicker")) {
 		document.getElementById("newsTicker").style.display = "none";
 	}
+	if (document.getElementById("newsbtn")) {
 	document.getElementById("newsbtn").onclick = function() {
-		if (!player.hideNews) {
+		if (!player.hideNews && document.getElementById("newsbtn") && document.getElementById("newsTicker")) {
 		  document.getElementById("newsTicker").style.display = "none";
 		  player.hideNews = true
 		} else {
@@ -427,7 +431,7 @@ function gameLoop(diff) {
 		  player.hideNews = false
 		}
 	  }
-
+	}
 	for (let x = 0; x <= maxRow; x++){
 		for (item in TREE_LAYERS[x]) {
 			let layer = TREE_LAYERS[x][item]
@@ -451,7 +455,7 @@ function gameLoop(diff) {
 			let layer = TREE_LAYERS[x][item]
 			if (tmp[layer].autoPrestige && tmp[layer].canReset) doReset(layer);
 			if (layers[layer].automate) layers[layer].automate();
-			if (layers[layer].autoUpgrade) autobuyUpgrades(layer)
+			if (tmp[layer].autoUpgrade) autobuyUpgrades(layer)
 		}
 	}
 
@@ -460,8 +464,8 @@ function gameLoop(diff) {
 			let layer = OTHER_LAYERS[row][item]
 			if (tmp[layer].autoPrestige && tmp[layer].canReset) doReset(layer);
 			if (layers[layer].automate) layers[layer].automate();
-			player[layer].best = player[layer].best.max(player[layer].points)
-			if (layers[layer].autoUpgrade) autobuyUpgrades(layer)
+				player[layer].best = player[layer].best.max(player[layer].points)
+			if (tmp[layer].autoUpgrade) autobuyUpgrades(layer)
 		}
 	}
 
@@ -496,6 +500,7 @@ var interval = setInterval(function() {
 	ticking = true
 	let now = Date.now()
 	let diff = (now - player.time) / 1e3
+	let trueDiff = diff
 	if (player.offTime !== undefined) {
 		if (player.offTime.remain > modInfo.offlineLimit * 1000) player.offTime.remain = modInfo.offlineLimit * 1000
 		if (player.offTime.remain > 0) {
@@ -513,6 +518,7 @@ var interval = setInterval(function() {
 	updateTemp();
 	updateOomps(diff);
 	updateWidth()
+	updateTabFormats()
 	gameLoop(diff)
 	perSecondCount += diff
 	if (perSecondCount > 10) perSecondCount = 10
@@ -522,5 +528,8 @@ var interval = setInterval(function() {
 	}
 	lastTenTicks.push(Date.now()-now)
 	if (lastTenTicks.length > 10) lastTenTicks = lastTenTicks.slice(1,)
+	fixNaNs()
+	adjustPopupTime(trueDiff)
+	updateParticles(trueDiff)
 	ticking = false
 }, 50)

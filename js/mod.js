@@ -12,11 +12,19 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.6.2",
+	num: "0.6.3",
 	name: "Vorona Cirus GAS GAS GAS",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+        v0.6.3<br>
+        - Added Anti-Roulette.<br>
+        - Added 2 Anti-Masker Buyables.<br>
+        - Added 4 Achievements.<br>
+        v0.6.2.1<br>
+        - Fixed News ticker bug.<br>
+        - Fixed OOM/s bug.<br>
+        - Fixed Dimension cost bug.<br>
         <h3>v0.6.2</h3><br>
         - Added Anti-Maskers.<br>
         - Added 3 Buyables.<br>
@@ -127,7 +135,7 @@ function getPointGen() {
     gain = gain.mul(tmp.u.effect)
     gain = gain.mul(tmp.d.effect)
     gain = gain.mul(tmp.f.effect)
-    gain = gain.mul(tmp.a.effect)
+    gain = gain.mul(tmp.a.effect).mul(tmp.ct.effect)
     if (player.s.unlocked) gain = gain.mul(tmp.s.severityEff);
     if (inChallenge("u", 22)) gain = Decimal.mul(gain ,c22c)
     if (inChallenge("s", 11)) gain = gain.pow(0.1)
@@ -160,7 +168,7 @@ function getPointGen() {
     if (player.e.inC) gain = powExp(gain,tmp.e.qExp)
     if (hasUpgrade("e",311)) gain = powExp2(gain,upgradeEffect("e",311))
     if (hasUpgrade("e",325)) gain = powExp2(gain,upgradeEffect("e",325))
-	return gain.mul(tmp.ct.effect).min(tmp.e.icap)
+	return gain.min(tmp.e.icap)
 }
 
 // You can add non-layer related variables that should to into "player" and be saved here, along with default values
@@ -193,7 +201,7 @@ window.addEventListener('keyup', function(event) {
 // Display extra things at the top of the page
 var displayThings = [
     function(){
-		let a = "Current endgame: 1e542 CorVids (v0.6.2)"
+		let a = "Current endgame: 1e8,100,000 CorVids (v0.6.3)"
 		return player.autosave ? a : a + ". Warning: autosave is off"
 	},
 	function(){
@@ -210,7 +218,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.ct.CorVid.gte(Decimal.pow(10,542))
+	return player.ct.CorVid.gte(Decimal.pow(10,81e5))
 }
 
 
