@@ -12,11 +12,15 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.6.2.1",
+	num: "0.6.3",
 	name: "Vorona Cirus GAS GAS GAS",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+        v0.6.3<br>
+        - Added Anti-Roulette.<br>
+        - Added 2 Anti-Masker Buyables.<br>
+        - Added 4 Achievements.<br>
         v0.6.2.1<br>
         - Fixed News ticker bug.<br>
         - Fixed OOM/s bug.<br>
@@ -197,7 +201,7 @@ window.addEventListener('keyup', function(event) {
 // Display extra things at the top of the page
 var displayThings = [
     function(){
-		let a = "Current endgame: 1e542 CorVids (v0.6.2)"
+		let a = "Current endgame: 1e8,100,000 CorVids (v0.6.3)"
 		return player.autosave ? a : a + ". Warning: autosave is off"
 	},
 	function(){
@@ -214,7 +218,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.ct.CorVid.gte(Decimal.pow(10,542))
+	return player.ct.CorVid.gte(Decimal.pow(10,81e5))
 }
 
 
