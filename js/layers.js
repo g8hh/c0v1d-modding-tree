@@ -4495,7 +4495,7 @@ addLayer("a", {
         },
         143: {
             name: "Lucky Player",
-            tooltip: "Win 5 times in a row. Reward: 30 AP",
+            tooltip: "Win 5 times in a row (After getting 'Streak Multiplier'). Reward: 30 AP",
             done() {
                 return player.ct.winstreak>4
             },
