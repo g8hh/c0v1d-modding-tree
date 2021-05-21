@@ -17,7 +17,7 @@ let VERSION = {
 }
 
 let changelog = `<h1>Changelog:</h1><br>
-        v0.6.3<br>
+        <h3>v0.6.3</h3><br>
         - Added Anti-Roulette.<br>
         - Added 2 Anti-Masker Buyables.<br>
         - Added 4 Achievements.<br>
