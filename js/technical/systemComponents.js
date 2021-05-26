@@ -39,7 +39,6 @@ var systemComponents = {
 				can: ((player[layer].unlocked || tmp[layer].isLayer) && tmp[layer].isLayer) || (!tmp[layer].isLayer && tmp[layer].canClick),
 				anim: player.anim,
 				grad: player.grad
-				front: !tmp.scrolled,
 			}"
 			v-bind:style="constructNodeStyle(layer)">
 			<span v-html="(abb !== '' && tmp[layer].image === undefined) ? abb : '&nbsp;'"></span>

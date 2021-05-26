@@ -595,7 +595,7 @@ ul {
 	transition: opacity 0.5s;
   
 	position: absolute;
-	z-index: 20000 ;
+	z-index: 99999999 !important;
   
 	background-color: var(--background_tooltip);
 	color: var(--points);
@@ -627,10 +627,6 @@ ul {
 .treeOverlay {
 	pointer-events:none;
 	overflow:hidden;
-}
-
-.front {
-	z-index: 30000
 }
 
 .overlayThing {

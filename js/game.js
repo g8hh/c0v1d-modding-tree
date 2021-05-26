@@ -1,10 +1,11 @@
 var player;
 var needCanvasUpdate = true;
 var gameEnded = false;
+var scrolled = false;
 
 // Don't change this
 const TMT_VERSION = {
-	tmtNum: "2.5.10.2",
+	tmtNum: "2.5.9.2",
 	tmtName: "Dreams Really Do Come True"
 }
 

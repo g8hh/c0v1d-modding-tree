@@ -22,12 +22,10 @@ function getThemeName() {
 }
 
 function switchTheme() {
-	if (player.theme === null)
-		player.theme = themes[1];
+	if (player.theme === undefined) player.theme = themes[1]
 	else {
-		player.theme = themes[Object.keys(themes)[player.theme] + 1];
-		if (!player.theme)
-			player.theme = null;
+		player.theme = themes[Object.keys(themes)[player.theme] + 1]
+		if (!player.theme) delete player.theme
 	}
 	changeTheme()
 	resizeCanvas()
