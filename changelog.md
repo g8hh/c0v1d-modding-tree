@@ -1,5 +1,17 @@
 # The Modding Tree changelog:
 
+### v2.5.10.2 - 5/24/21
+- Fixed some things in the tree tab not being clickable.
+
+### v2.5.10.1 - 5/23/21
+- Actually fixed the tooltip issue.
+
+### v2.5.10 - 5/22/21
+- Tooltips can now show over the top overlay again.
+- Tweaked number formatting (e1000's keep the decimal places on the mantissa.)
+- Fixed text on two settings buttons not changing.
+- Started making a new tutorial.
+
 ### v2.5.9.2 - 5/19/21
 - Fixed many issues with things not updating.
 

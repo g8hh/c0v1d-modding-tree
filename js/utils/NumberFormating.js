@@ -95,10 +95,10 @@ function format(decimal, precision=3) {
 }
 
 function formatWhole(decimal) {
-	decimal = new Decimal(decimal)
-	if (decimal.gte(1e9)) return format(decimal, 3)
-	if (decimal.lt(10) && decimal.neq(decimal.floor())) return format(decimal, 3)
-	return addCommas(decimal.floor().mag.toString())
+    decimal = new Decimal(decimal)
+    if (decimal.gte(1e9)) return format(decimal, 2)
+    if (decimal.lte(0.99) && !decimal.eq(0)) return format(decimal, 2)
+    return format(decimal, 0)
 }
 
 function formatTime(s) {
