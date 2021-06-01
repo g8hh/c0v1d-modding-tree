@@ -16,11 +16,17 @@ function exponentialFormat(num, precision) {
 		m = m.mul(10)
 		e = e.sub(1)
 	}
+	let start = ""
+	if (e.abs().lt(1e9)) {
+		if (m.toStringWithDecimalPlaces(precision) == 10) {
+			m = new Decimal(1)
+			e = e.add(1)
+		}
+		start = m.toStringWithDecimalPlaces(precision)
+	}
 	let end = e.toStringWithDecimalPlaces(0)
 	if (!end.includes("e")) end = addCommas(end.replace(/-/g, ''))
 	if (e.lt(0)) end = "-"+end
-	let start = ""
-	if (e.abs().lt(1e9)) start = m.toStringWithDecimalPlaces(precision)
 	return start + "e" + end
 }
 
@@ -96,8 +102,8 @@ function format(decimal, precision=3) {
 
 function formatWhole(decimal) {
     decimal = new Decimal(decimal)
-    if (decimal.gte(1e9)) return format(decimal, 2)
-    if (decimal.lte(0.99) && !decimal.eq(0)) return format(decimal, 2)
+    if (decimal.gte(1e9)) return format(decimal, 3)
+    if (decimal.lte(0.99) && !decimal.eq(0)) return format(decimal, 3)
     return format(decimal, 0)
 }
 

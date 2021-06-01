@@ -18,12 +18,10 @@ var systemComponents = {
 		<button v-if="nodeShown(layer)"
 			v-bind:id="layer"
 			v-on:click="function() {
-				if (shiftDown) player[layer].forceTooltip = !player[layer].forceTooltip
+				if (ctrlDown) player[layer].forceTooltip = !player[layer].forceTooltip
 				else if(tmp[layer].isLayer) {showTab(layer)}
 				else {run(layers[layer].onClick, layers[layer])}
 			}"
-
-
 			v-bind:class="{
 				treeNode: tmp[layer].isLayer,
 				treeButton: !tmp[layer].isLayer,
@@ -38,7 +36,7 @@ var systemComponents = {
 				resetNotify: tmp[layer].prestigeNotify,
 				can: ((player[layer].unlocked || tmp[layer].isLayer) && tmp[layer].isLayer) || (!tmp[layer].isLayer && tmp[layer].canClick),
 				anim: player.anim,
-				grad: player.grad
+				grad: player.grad,
 				front: !tmp.scrolled,
 			}"
 			v-bind:style="constructNodeStyle(layer)">
@@ -140,6 +138,7 @@ var systemComponents = {
         <a class="link" href="http://discord.gg/wwQfgPa" target="_blank" v-bind:style="{'font-size': '16px'}">Main Prestige Tree server</a><br>
 		<br>
 		<button class="opt" onclick="toggleShift()">Toggle Shift</button><br><br>
+		<br><br>
         Time Played: {{ formatTime(player.timePlayed) }}<br><br>
         <h3>Hotkeys</h3><br>
         <span v-for="key in hotkeys" v-if="player[key.layer].unlocked && tmp[key.layer].hotkeys[key.id].unlocked"><br>{{key.description}}</span></div>
@@ -208,4 +207,3 @@ var systemComponents = {
 	},
 
 }
-

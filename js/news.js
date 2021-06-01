@@ -5,11 +5,13 @@ let tickerContainer = document.getElementById("newsTicker"); // ticker is the te
 let newsPosition = -1e100; // hopefully noones screen is this big
 
 function tickNews() {
+  if (player) {
   if (!player.hideNews) {
   newsPosition -= 3;
   ticker.style.left = `${newsPosition}px`;
 
   if (newsPosition < -ticker.offsetWidth) newNewsMessage()};
+  }
 }
 
 function newNewsMessage() {

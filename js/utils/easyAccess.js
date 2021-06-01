@@ -53,6 +53,16 @@ function powExp3(n, exp){
 	return Decimal.pow(10,Decimal.pow(10,Decimal.pow(10,n.log10().log10().log10().pow(exp))))
 }
 
+function slog(n){
+	n = new Decimal(n)
+	return Decimal.add(n.layer,new Decimal(n.mag).slog())
+}
+
+function slogadd(n,add){
+	n = new Decimal(n)
+	return Decimal.tetrate(10,slog(n).add(add))
+}
+
 function getGridData(layer, id) {
 	return (player[layer].grid[id])
 }
