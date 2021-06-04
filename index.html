@@ -9,32 +9,33 @@
 	<link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet">
 
 	<script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
-	<script src="js/technical/break_eternity.js?20210520"></script>
-	<script src="js/technical/layerSupport.js?20210520"></script>
-	<script src="js/tree.js?20210520"></script>
-	<script src="js/news.js?20210520"></script>
-	<script src="js/layers.js?20210520"></script>
-	<script src="js/mod.js?20210520"></script>
-	<script src="js/technical/temp.js?20210520"></script>
-	<script src="js/technical/displays.js?20210520"></script>
+	<script src="js/technical/break_eternity.js?20210604"></script>
+	<script src="js/technical/layerSupport.js?20210604"></script>
+	<script src="js/tree.js?20210604"></script>
+	<script src="js/news.js?20210604"></script>
+	<script src="js/layers.js?20210604"></script>
+	<script src="js/mod.js?20210604"></script>
+	<script src="js/technical/temp.js?20210604"></script>
+	<script src="js/technical/displays.js?20210604"></script>
 	
-	<script src="js/game.js?20210520"></script>
-	<script src="js/utils.js?20210520"></script>
-	<script src="js/utils/easyAccess.js?20210520"></script>
-	<script src="js/technical/systemComponents.js?20210520"></script>
-	<script src="js/components.js?20210520"></script>
-	<script src="js/technical/canvas.js?20210520"></script>
-	<script src="js/technical/particleSystem.js?20210520"></script>
-	<script src="js/utils/NumberFormating.js?20210520"></script>
-	<script src="js/utils/options.js?20210520"></script>
-	<script src="js/utils/save.js?20210520"></script>
-	<script src="js/utils/themes.js?20210520"></script>
+	<script src="js/game.js?20210604"></script>
+	<script src="js/utils.js?20210604"></script>
+	<script src="js/utils/easyAccess.js?20210604"></script>
+	<script src="js/technical/systemComponents.js?20210604"></script>
+	<script src="js/components.js?20210604"></script>
+	<script src="js/technical/canvas.js?20210604"></script>
+	<script src="js/technical/particleSystem.js?20210604"></script>
+	<script src="js/utils/NumberFormating.js?20210604"></script>
+	<script src="js/utils/options.js?20210604"></script>
+	<script src="js/utils/save.js?20210604"></script>
+	<script src="js/utils/themes.js?20210604"></script>
 
 </head>
 
+
 <body onload="load()" onmousemove="updateMouse(event)">
-<script src="chs.js?20210520"></script>
-<script src="//likexia.gitee.io/game/zh/core.js"></script>
+<script src="chs.js?202106041511"></script>
+<script src="//g8hh.com/zh/core.js"></script>
 	<div id="container" class="container" style="color:#ffffff; text-align:center; font-size: 16px; display:block"></div>
 	<div id="app">
 		<canvas id="treeCanvas" class="canvas" v-if="!(gameEnded && !player.keepGoing)"></canvas>
@@ -74,8 +75,7 @@
 			<div id="version" onclick="showTab('changelog-tab')" class="overlayThing" style="margin-right: 13px">
 				{{VERSION.withoutName}}</div>
 			<button
-				v-if="player.navTab == 'none' && (tmp[player.tab].row == 'side' || tmp[player.tab].row == 'otherside')"
-				class="other-back overlayThing" onclick="goBack()">←</button>
+			v-if="((player.navTab == 'none' && (tmp[player.tab].row == 'side' || tmp[player.tab].row == 'otherside' || player[player.tab].prevTab)) || player[player.navTab]?.prevTab)"				class="other-back overlayThing" onclick="goBack(player.navTab == 'none' ? player.tab : player.navTab)">←</button>
 			<img id="optionWheel" class="overlayThing" v-if="player.tab!='options-tab'" src="options_wheel.png"
 				onclick="showTab('options-tab')"></img>
 			<div id="info" v-if="player.tab!='info-tab'" class="overlayThing" onclick="showTab('info-tab')"><br>i</div>
@@ -102,12 +102,11 @@
 			</div>
 		</div>
 		
-		<div v-if="!(gameEnded && !player.keepGoing) && (player.tab === 'none' || tmp.other.splitScreen)" id="treeTab" style="z-index: 0" onscroll="resizeCanvas()" 
+		<div v-if="!(gameEnded && !player.keepGoing) && (player.tab === 'none' || tmp.other.splitScreen)" id="treeTab"  onscroll="resizeCanvas()" 
 			v-bind:class="{ fullWidth: (player.tab == 'none' || player.navTab == 'none'), col: (player.tab !== 'none' && player.navTab !== 'none'), left: (player.tab !== 'none' && player.navTab !== 'none')}">
 			<br><br><br><br>
 			<overlay-head id="fakeHead" style="visibility: hidden;">
 			</overlay-head>
-
 			<layer-tab :layer="player.navTab == 'none' ? player.tab : player.navTab" :key="'left'"></layer-tab>
 
 		</div>
@@ -138,9 +137,9 @@
 	</div>
 </div>
 <!--客服 开始-->
-<script src="//likexia.gitee.io/game/js/jquery.min.js"></script>
-<link rel="stylesheet" href="//likexia.gitee.io/game/css/kf.css" type="text/css" media="screen" charset="utf-8">
-<script src="//likexia.gitee.io/game/js/kf.js"></script>
+<script src="//g8hh.com/static/js/jquery.min.js"></script>
+<link rel="stylesheet" href="//g8hh.com/static/css/kf.css" type="text/css" media="screen" charset="utf-8">
+<script src="//g8hh.com/static/js/kf.js"></script>
 <style>
     .treeNode{
         font-size: 28px;

@@ -12,12 +12,17 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.6.3",
+	num: "0.6.4",
 	name: "Vorona Cirus GAS GAS GAS",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
-        v0.6.3<br>
+        <h3>v0.6.4</h3><br>
+        - Added Green Bets.<br>
+        - Added 4 Anti-Roulette Buyables.<br>
+        - Added 4 Achievements.<br>
+        - Changed Shift to Ctrl to pin tooltips.<br>
+        <h3>v0.6.3</h3><br>
         - Added Anti-Roulette.<br>
         - Added 2 Anti-Masker Buyables.<br>
         - Added 4 Achievements.<br>
@@ -123,6 +128,7 @@ function canGenPoints(){
 }
 function getPointGen() {
     let gain = new Decimal(0.1)
+    let cap = tmp.e.icap
     let c22c = challengeCompletions("u", 11)+challengeCompletions("u", 12)+challengeCompletions("u", 21)+challengeCompletions("u", 22)-5
     c22c = Decimal.add(c22c, 1)
     c22c = Decimal.pow(5, c22c)
@@ -168,7 +174,7 @@ function getPointGen() {
     if (player.e.inC) gain = powExp(gain,tmp.e.qExp)
     if (hasUpgrade("e",311)) gain = powExp2(gain,upgradeEffect("e",311))
     if (hasUpgrade("e",325)) gain = powExp2(gain,upgradeEffect("e",325))
-	return gain.min(tmp.e.icap)
+	return gain.min(cap)
 }
 
 // You can add non-layer related variables that should to into "player" and be saved here, along with default values
@@ -201,7 +207,7 @@ window.addEventListener('keyup', function(event) {
 // Display extra things at the top of the page
 var displayThings = [
     function(){
-		let a = "Current endgame: 1e8,100,000 CorVids (v0.6.3)"
+		let a = "Current endgame: 1e4721 Anti-Maskers (v0.6.4)"
 		return player.autosave ? a : a + ". Warning: autosave is off"
 	},
 	function(){
@@ -218,7 +224,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.ct.CorVid.gte(Decimal.pow(10,81e5))
+	return player.ct.Am.gte(Decimal.pow(10,4721))
 }
 
 
@@ -232,4 +238,8 @@ function maxTickLength() {
 // Use this if you need to undo inflation from an older version. If the version is older than the version that fixed the issue,
 // you can cap their current resources with this.
 function fixOldSave(oldVersion){
+    if(oldVersion=="0.6.3"){
+        if (hasAchievement("a",143)) addPoints("a",5)
+        if (hasAchievement("a",144)) addPoints("a",5)
+	}
 }
