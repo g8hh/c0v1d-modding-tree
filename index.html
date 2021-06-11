@@ -1,8 +1,15 @@
 <!DOCTYPE html>
 
 <head>
-	<link rel="stylesheet" type="text/css" href="style.css" />
-	<link rel="stylesheet" type="text/css" href="popup.css" />
+
+	<link rel="stylesheet" type="text/css" href="css/system-style.css" />
+	<link rel="stylesheet" type="text/css" href="css/bars.css" />
+	<link rel="stylesheet" type="text/css" href="css/components.css" />
+	<link rel="stylesheet" type="text/css" href="css/general-style.css" />
+	<link rel="stylesheet" type="text/css" href="css/misc.css" />
+	<link rel="stylesheet" type="text/css" href="css/other-tabs.css" />
+	<link rel="stylesheet" type="text/css" href="css/popup.css" />
+	<link rel="stylesheet" type="text/css" href="css/tree-node.css" />
 	<link rel="icon" href="covid.png">
 
 	<link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet">
@@ -132,6 +139,8 @@
 			<bg :layer="player.tab" ></bg>
 
 		</div>
+		<div class = "bg2" v-bind:style = "tmp.backgroundStyle"></div>
+
 	</div>
 </div>
 </body>

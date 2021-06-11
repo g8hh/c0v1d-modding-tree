@@ -5,7 +5,7 @@ var scrolled = false;
 
 // Don't change this
 const TMT_VERSION = {
-	tmtNum: "2.6.0.1",
+	tmtNum: "2.6.2.2",
 	tmtName: "Fixed Reality"
 }
 
@@ -195,7 +195,7 @@ function rowReset(row, layer) {
 	for (lr in ROW_LAYERS[row]){
 		if(layers[lr].doReset) {
 
-			player[lr].activeChallenge = null // Exit challenges on any row reset on an equal or higher row
+			Vue.set(player[lr], "activeChallenge", null) // Exit challenges on any row reset on an equal or higher row
 			run(layers[lr].doReset, layers[lr], layer)
 		}
 		else
@@ -297,7 +297,9 @@ function doReset(layer, force=false) {
 
 
 	for (let x = row; x >= 0; x--) rowReset(x, layer)
-	rowReset("side", layer)
+	for (r in OTHER_LAYERS){
+		rowReset(r, layer)
+	}
 	prevOnReset = undefined
 
 	player[layer].resetTime = 0
@@ -333,14 +335,14 @@ function startChallenge(layer, x) {
 	if (!player[layer].unlocked) return
 	if (player[layer].activeChallenge == x) {
 		completeChallenge(layer, x)
-		player[layer].activeChallenge = null
-	} else {
+		Vue.set(player[layer], "activeChallenge", null)
+		} else {
 		enter = true
 	}	
 	doReset(layer, true)
 	if(enter) {
-		player[layer].activeChallenge = x
-		if (layers[layer].challenges[x].onStart) layers[layer].challenges[x].onStart(true);
+		Vue.set(player[layer], "activeChallenge", x)
+		run(layers[layer].challenges[x].onStart, layers[layer].challenges[x])
 	}
 	updateChallengeTemp(layer)
 }
@@ -376,8 +378,8 @@ function completeChallenge(layer, x) {
 	
 	let completions = canCompleteChallenge(layer, x)
 	if (!completions){
-		 player[layer].activeChallenge = null
-		 run(layers[layer].challenges[x].onExit, layers[layer].challenges[x])
+		Vue.set(player[layer], "activeChallenge", null)
+		run(layers[layer].challenges[x].onExit, layers[layer].challenges[x])
 		return
 	}
 	if (player[layer].challenges[x] < tmp[layer].challenges[x].completionLimit) {
@@ -386,7 +388,7 @@ function completeChallenge(layer, x) {
 		player[layer].challenges[x] = Math.min(player[layer].challenges[x], tmp[layer].challenges[x].completionLimit)
 		if (layers[layer].challenges[x].onComplete) run(layers[layer].challenges[x].onComplete, layers[layer].challenges[x])
 	}
-	player[layer].activeChallenge = null
+	Vue.set(player[layer], "activeChallenge", null)
 	run(layers[layer].challenges[x].onExit, layers[layer].challenges[x])
 	updateChallengeTemp(layer)
 }
@@ -479,10 +481,11 @@ function gameLoop(diff) {
 	}
 }
 
-function hardReset() {
+function hardReset(resetOptions) {
 	if (!confirm("Are you sure you want to do this? You will lose all your progress!")) return
 	player = null
-	save();
+	if(resetOptions) options = null
+	save(true);
 	window.location.reload();
 }
 

@@ -1,5 +1,29 @@
 # The Modding Tree changelog:
 
+# v2.6.2.2 - 6/10/21
+- Fixed an error message regarding popup.css.
+
+# v2.6.2.1 - 6/10/21
+- Fixed a visual bug with milestones.
+
+## v2.6.2 - 6/10/21
+- Broke up style.css into many files to make it easier to find and customize what matters. If you already have custom CSS, keep that and ignore the new ones maybe?
+- Added buyable and clickable trees.
+- Added optional tooltips to upgrades, buyables, clickables, milestones, and gridables.
+- Fixed the passiveGeneration display.
+- Fixed "marked" feature.
+- doReset now will function on non-numeric rows besides "side".
+
+## v2.6.1 - 6/7/21
+- Added global background style to mod.js.
+- Tree branches can have custom line widths.
+- If an upgrade has both canAfford and cost, it checks both. (So you can use canAfford for other things)
+- Releasing a held buyable/clickable with onHold doesn't click it again.
+- Fixed hard resetting while NaN'ed and exporting NaN saves for debugging.
+- Attempt to fix buttons sometimes not updating.
+- Added "instant" feature for bars. (not useful for most people)
+- Improvements to theme code, partially by Cubedey.
+
 ## v2.6.0.1 - 6/4/21
 - Removed excess NaN alerts (now only checks player, not temp).
 - Fixed background images covering up tree branches.

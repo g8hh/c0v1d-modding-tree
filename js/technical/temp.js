@@ -25,6 +25,7 @@ var traversableClasses = []
 function setupTemp() {
 	tmp = {}
 	tmp.pointGen = {}
+	tmp.backgroundStyle = {}
 	tmp.displayThings = []
 	tmp.scrolled = 0
 	funcs = {}
@@ -99,10 +100,13 @@ function updateTemp() {
 		tmp[layer].trueGlowColor = tmp[layer].glowColor
 		tmp[layer].notify = shouldNotify(layer)
 		tmp[layer].prestigeNotify = prestigeNotify(layer)
+		if (tmp[layer].passiveGeneration === true) tmp[layer].passiveGeneration = 1 // new Decimal(true) = decimalZero
 
 	}
 
 	tmp.pointGen = getPointGen()
+	tmp.backgroundStyle = readData(backgroundStyle)
+
 	tmp.displayThings = []
 	for (thing in displayThings){
 		let text = displayThings[thing]

@@ -5,8 +5,10 @@ function save() {
 	let t = new Date().getTime()
 	if (logSave) console.log("saved at " + t)
 	if (!(player === null)) player.lastSave = t
+}
+function save(force) {
 	NaNcheck(player)
-	if (NaNalert) return
+	if (NaNalert && !force) return
 	localStorage.setItem(modInfo.id, btoa(unescape(encodeURIComponent(JSON.stringify(player)))));
 	localStorage.setItem(modInfo.id+"_options", btoa(unescape(encodeURIComponent(JSON.stringify(options)))));
 
@@ -228,7 +230,7 @@ function loadOptions() {
 		options = Object.assign(getStartOptions(), JSON.parse(decodeURIComponent(escape(atob(get2)))));
 	else 
 		options = getStartOptions()
-	
+	if (themes.indexOf(options.theme) < 0) theme = "default"
 
 }
 
@@ -265,7 +267,7 @@ function NaNcheck(data) {
 	}	
 }
 function exportSave() {
-	if (NaNalert) return
+	//if (NaNalert) return
 	let str = btoa(JSON.stringify(player));
 	const el = document.createElement("textarea");
 	el.value = str;
@@ -283,13 +285,13 @@ function importSave(imported=undefined, forced=false) {
 		if(tempPlr.versionType != modInfo.id && !forced && !confirm("This save appears to be for a different mod! Are you sure you want to import?")) // Wrong save (use "Forced" to force it to accept.)
 			return
 		player = tempPlr;
-		player.versionType = modInfo.id
-		fixSave()	
-		versionCheck()
-		save()
-		window.location.reload()
-		updateTemp();
-	} catch(e) {
+		player.versionType = modInfo.id;
+		fixSave();
+		versionCheck();
+		NaNcheck(save)
+		save();
+		window.location.reload();
+	} catch (e) {
 		return;
 	}
 }
