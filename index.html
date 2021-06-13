@@ -1,22 +1,30 @@
 <!DOCTYPE html>
 
 <head>
-<meta charset="utf-8" />
-	<link rel="stylesheet" type="text/css" href="style.css" />
-	<link rel="stylesheet" type="text/css" href="popup.css" />
+
+	<link rel="stylesheet" type="text/css" href="css/system-style.css" />
+	<link rel="stylesheet" type="text/css" href="css/bars.css" />
+	<link rel="stylesheet" type="text/css" href="css/components.css" />
+	<link rel="stylesheet" type="text/css" href="css/general-style.css" />
+	<link rel="stylesheet" type="text/css" href="css/misc.css" />
+	<link rel="stylesheet" type="text/css" href="css/other-tabs.css" />
+	<link rel="stylesheet" type="text/css" href="css/popup.css" />
+	<link rel="stylesheet" type="text/css" href="css/tree-node.css" />
 	<link rel="icon" href="covid.png">
 
 	<link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet">
 
 	<script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
-	<script src="js/technical/break_eternity.js?20210604"></script>
-	<script src="js/technical/layerSupport.js?20210604"></script>
-	<script src="js/tree.js?20210604"></script>
-	<script src="js/news.js?20210604"></script>
-	<script src="js/layers.js?20210604"></script>
-	<script src="js/mod.js?20210604"></script>
-	<script src="js/technical/temp.js?20210604"></script>
-	<script src="js/technical/displays.js?20210604"></script>
+	<script src="js/technical/break_eternity.js"></script>
+	<script src="js/technical/layerSupport.js"></script>
+	<script src="js/tree.js"></script>
+	<script src="js/news.js"></script>
+	<script src="js/layers.js"></script>
+	<script src="js/mod.js"></script>
+	<script src="js/technical/loader.js"></script>
+
+	<script src="js/technical/temp.js"></script>
+	<script src="js/technical/displays.js"></script>
 	
 	<script src="js/game.js?20210604"></script>
 	<script src="js/utils.js?20210604"></script>
@@ -32,14 +40,11 @@
 
 </head>
 
-
 <body onload="load()" onmousemove="updateMouse(event)">
 <script src="chs.js?202106041511"></script>
 <script src="//g8hh.com/zh/core.js"></script>
-	<div id="container" class="container" style="color:#ffffff; text-align:center; font-size: 16px; display:block"></div>
 	<div id="app">
 		<canvas id="treeCanvas" class="canvas" v-if="!(gameEnded && !player.keepGoing)"></canvas>
-
 		<div v-if="false" id="loadingSection" class="fullWidth">
 			<h1>Loading... (If this takes too long it means there was a serious error!)←</h1>
 		</div>
@@ -108,7 +113,7 @@
 			<overlay-head id="fakeHead" style="visibility: hidden;">
 			</overlay-head>
 			<layer-tab :layer="player.navTab == 'none' ? player.tab : player.navTab" :key="'left'"></layer-tab>
-
+			<bg :layer="player.navTab == 'none' ? player.tab : player.navTab" ></bg>
 		</div>
 
 		<!-- Popups -->
@@ -127,13 +132,17 @@
 				</div>
 		</div>
 
-		<div v-if="player.navTab !== 'none' && player.tab !== 'none' && !(gameEnded && !player.keepGoing)" onscroll="resizeCanvas()" style="background-color:var(--background)" v-bind:class="{ fullWidth: player.navTab == 'none' || !tmp.other.splitScreen || !readData(layoutInfo.showTree), col: player.navTab != 'none', right: player.navTab != 'none', fast: true, tab: true}">
+		<div v-if="player.navTab !== 'none' && player.tab !== 'none' && !(gameEnded && !player.keepGoing)" onscroll="resizeCanvas()" v-bind:class="{ fullWidth: player.navTab == 'none' || !tmp.other.splitScreen || !readData(layoutInfo.showTree), col: player.navTab != 'none', right: player.navTab != 'none', fast: true, tab: true}">
 			<div v-for="layer in LAYERS">
 				<div v-if="player.tab==layer">
 					<layer-tab :layer="layer" :back="'none'" :spacing="'50px'" :key="'left'"></layer-tab>
 				</div>
 			</div>
+			<bg :layer="player.tab" ></bg>
+
 		</div>
+		<div class = "bg2" v-bind:style = "tmp.backgroundStyle"></div>
+
 	</div>
 </div>
 <!--客服 开始-->

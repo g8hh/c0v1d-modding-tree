@@ -5,8 +5,8 @@ var scrolled = false;
 
 // Don't change this
 const TMT_VERSION = {
-	tmtNum: "2.5.11.1",
-	tmtName: "Dreams Really Do Come True"
+	tmtNum: "2.6.3",
+	tmtName: "Fixed Reality"
 }
 
 
@@ -195,11 +195,11 @@ function rowReset(row, layer) {
 	for (lr in ROW_LAYERS[row]){
 		if(layers[lr].doReset) {
 
-			player[lr].activeChallenge = null // Exit challenges on any row reset on an equal or higher row
+			if (!isNaN(row)) Vue.set(player[lr], "activeChallenge", null) // Exit challenges on any row reset on an equal or higher row
 			run(layers[lr].doReset, layers[lr], layer)
 		}
 		else
-			if(tmp[layer].row > tmp[lr].row && row !== "side" && !isNaN(row)) layerDataReset(lr)
+			if(tmp[layer].row > tmp[lr].row && !isNaN(row)) layerDataReset(lr)
 	}
 }
 
@@ -285,18 +285,21 @@ function doReset(layer, force=false) {
 	
 		tmp[layer].baseAmount = decimalZero // quick fix
 	}
-	if (tmp[layer].resetsNothing) return
+
+	if (run(layers[layer].resetsNothing, layers[layer])) return
 
 	for (layerResetting in layers) {
 		if (row >= layers[layerResetting].row && (!force || layerResetting != layer)) completeChallenge(layerResetting)
 	}
 
-	prevOnReset = {...player} //Deep Copy
+	prevOnReset = {...player} 
 	player.points = (row == 0 ? decimalZero : getStartPoints())
 
 
 	for (let x = row; x >= 0; x--) rowReset(x, layer)
-	rowReset("side", layer)
+	for (r in OTHER_LAYERS){
+		rowReset(r, layer)
+	}
 	prevOnReset = undefined
 
 	player[layer].resetTime = 0
@@ -332,14 +335,14 @@ function startChallenge(layer, x) {
 	if (!player[layer].unlocked) return
 	if (player[layer].activeChallenge == x) {
 		completeChallenge(layer, x)
-		player[layer].activeChallenge = null
-	} else {
+		Vue.set(player[layer], "activeChallenge", null)
+		} else {
 		enter = true
 	}	
 	doReset(layer, true)
 	if(enter) {
-		player[layer].activeChallenge = x
-		if (layers[layer].challenges[x].onStart) layers[layer].challenges[x].onStart(true);
+		Vue.set(player[layer], "activeChallenge", x)
+		run(layers[layer].challenges[x].onStart, layers[layer].challenges[x])
 	}
 	updateChallengeTemp(layer)
 }
@@ -375,8 +378,8 @@ function completeChallenge(layer, x) {
 	
 	let completions = canCompleteChallenge(layer, x)
 	if (!completions){
-		 player[layer].activeChallenge = null
-		 run(layers[layer].challenges[x].onExit, layers[layer].challenges[x])
+		Vue.set(player[layer], "activeChallenge", null)
+		run(layers[layer].challenges[x].onExit, layers[layer].challenges[x])
 		return
 	}
 	if (player[layer].challenges[x] < tmp[layer].challenges[x].completionLimit) {
@@ -385,7 +388,7 @@ function completeChallenge(layer, x) {
 		player[layer].challenges[x] = Math.min(player[layer].challenges[x], tmp[layer].challenges[x].completionLimit)
 		if (layers[layer].challenges[x].onComplete) run(layers[layer].challenges[x].onComplete, layers[layer].challenges[x])
 	}
-	player[layer].activeChallenge = null
+	Vue.set(player[layer], "activeChallenge", null)
 	run(layers[layer].challenges[x].onExit, layers[layer].challenges[x])
 	updateChallengeTemp(layer)
 }
@@ -400,18 +403,72 @@ function autobuyUpgrades(layer){
 		if (isPlainObject(tmp[layer].upgrades[id]) && (layers[layer].upgrades[id].canAfford === undefined || layers[layer].upgrades[id].canAfford() === true))
 			buyUpg(layer, id) 
 }
-
-function gameLoop(diff) {
-	if (isEndgame() || gameEnded) gameEnded = 1
-
-	if (isNaN(diff)) diff = 0
-	if (gameEnded && !player.keepGoing) {
-		diff = 0
-		player.tab = "gameEnded"
+var m = 50
+var slider = document.getElementById("myRange");
+var output = document.getElementById("demo");
+setInterval(function() {
+	slider = document.getElementById("myRange")
+	output = document.getElementById("demo")
+	if (slider) player.ms = Number(slider.value)
+	if (output) output.innerHTML = player.ms
+	if (player) {
+		m=player.ms
+		if (player.tab == "options-tab") player.options=true
+		else player.options=false
+		if (!player.options) {
+			check()
+		}
+	}
+},1)
+function check() {
+    if (player) {
+	if(!player.options) {
+       window.setTimeout(check, 30);
+    } else {
+		if (slider) {
+			slider.value = player.up
+		}
+    }
+}
+}
+function gameLoop() {
+	if (player===undefined||tmp===undefined) return;
+	if (ticking) return;
+	if (gameEnded&&!player.keepGoing) return;
+	ticking = true
+	let now = Date.now()
+	let diff = (now - player.time) / 1e3
+	let trueDiff = diff
+	if (player.offTime !== undefined) {
+		if (player.offTime.remain > modInfo.offlineLimit * 3600) player.offTime.remain = modInfo.offlineLimit * 3600
+		if (player.offTime.remain > 0) {
+			let offlineDiff = Math.max(player.offTime.remain / 10, diff)
+			player.offTime.remain -= offlineDiff
+			diff += offlineDiff
+		}
+		if (!player.offlineProd || player.offTime.remain <= 0) player.offTime = undefined
+	}
+	if (player.devSpeed) diff *= player.devSpeed
+	player.time = now
+	if (needCanvasUpdate){ resizeCanvas();
+		needCanvasUpdate = false;
+	}
+	tmp.scrolled = document.getElementById('treeTab') && document.getElementById('treeTab').scrollTop > 30
+	updateTemp();
+	updateOomps(diff);
+	updateWidth()
+	updateTabFormats()
+	if (isEndgame() || gameEnded){
+		gameEnded = 1
 		clearParticles()
 	}
-	if (player.devSpeed != undefined) diff *= player.devSpeed
 
+	if (isNaN(diff) || diff < 0) diff = 0
+	if (gameEnded && !player.keepGoing) {
+		diff = 0
+		//player.tab = "gameEnded"
+		clearParticles()
+	}
 	let limit = maxTickLength()
 	if (diff > limit) diff = limit
 	addTime(diff)
@@ -473,63 +530,48 @@ function gameLoop(diff) {
 		if (layers[layer].milestones) updateMilestones(layer);
 		if (layers[layer].achievements) updateAchievements(layer)
 	}
-}
-
-function hardReset() {
-	if (!confirm("Are you sure you want to do this? You will lose all your progress!")) return
-	player = null
-	save();
-	window.location.reload();
-}
-
-var ticking = false
-var devstop = false
-var perSecondCount = 0
-
-function doPerSecondStuff(){
-	updateHotkeys()
-}
-
-var lastTenTicks = []
-
-var interval = setInterval(function() {
-	if (player===undefined||tmp===undefined) return;
-	if (ticking) return;
-	if (gameEnded&&!player.keepGoing) return;
-	if (devstop) return
-	ticking = true
-	let now = Date.now()
-	let diff = (now - player.time) / 1e3
-	let trueDiff = diff
-	if (player.offTime !== undefined) {
-		if (player.offTime.remain > modInfo.offlineLimit * 1000) player.offTime.remain = modInfo.offlineLimit * 1000
-		if (player.offTime.remain > 0) {
-			let offlineDiff = Math.max(player.offTime.remain / 10, diff)
-			player.offTime.remain -= offlineDiff
-			diff += offlineDiff
-		}
-		if (!player.offlineProd || player.offTime.remain <= 0) delete player.offTime
-	}
-	player.time = now
-	if (needCanvasUpdate){ resizeCanvas();
-		needCanvasUpdate = false;
-	}
-	tmp.scrolled = document.getElementById('treeTab') && document.getElementById('treeTab').scrollTop > 30
-	updateTemp();
-	updateOomps(diff);
-	updateWidth()
-	updateTabFormats()
-	gameLoop(diff)
-	perSecondCount += diff
-	if (perSecondCount > 10) perSecondCount = 10
-	if (perSecondCount > 1) {
-		perSecondCount += -1
-		doPerSecondStuff()
-	}
 	lastTenTicks.push(Date.now()-now)
 	if (lastTenTicks.length > 10) lastTenTicks = lastTenTicks.slice(1,)
 	fixNaNs()
 	adjustPopupTime(trueDiff)
 	updateParticles(trueDiff)
 	ticking = false
-}, 50)
+}
+
+function hardReset(resetOptions) {
+	if (!confirm("Are you sure you want to do this? You will lose all your progress!")) return
+	player = null
+	if(resetOptions) options = null
+	save(true);
+	window.location.reload();
+}
+var ticking = false
+var lastTenTicks = []
+var interval
+var tickWait = 0
+var tickWaitStart = 0
+function input () {
+	player.up = player.ms
+    clearInterval(interval)
+	startInterval()
+}
+function startInterval() {
+	interval = setInterval(function() {
+	tickWait = 1/0
+
+	var tickStart = new Date().getTime()
+	try {
+		gameLoop()
+	} catch (e) {
+		console.error(e)
+	}
+	var tickEnd = new Date().getTime()
+	var tickDiff = tickEnd - tickStart
+
+	tickWait = tickDiff * 2
+	tickWaitStart = tickEnd
+	}, player.ms);
+}
+
+
+setInterval(function() {needCanvasUpdate = true}, 500)

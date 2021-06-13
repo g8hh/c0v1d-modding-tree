@@ -21,7 +21,7 @@ addNode("spook", {
 // A "ghost" layer which offsets f in the tree
 addNode("g", {
     symbol: "TH",
-    branches: ["c"],
+    branches: [["c", "red", 4]],
     color: '#6d3678',
     layerShown: true,
     canClick() {return player.points.gte(10)},
@@ -50,5 +50,6 @@ addLayer("tree-tab", {
     tabFormat: [["tree", function() {return (layoutInfo.treeLayout ? layoutInfo.treeLayout : TREE_LAYERS)}]],
     previousTab: "",
     leftTab: true,
+                style() {return  {'background-color': '#222222'}},
 
 })

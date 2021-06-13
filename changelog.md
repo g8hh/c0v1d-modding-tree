@@ -1,5 +1,63 @@
 # The Modding Tree changelog:
 
+# v2.6.3 - 6/11/21
+- Added better support for using multiple layer files and similar. See modFiles in modInfo.
+- The demo now has each layer in its own file as well.
+
+# v2.6.2.2 - 6/10/21
+- Fixed an error message regarding popup.css.
+
+# v2.6.2.1 - 6/10/21
+- Fixed a visual bug with milestones.
+
+## v2.6.2 - 6/10/21
+- Broke up style.css into many files to make it easier to find and customize what matters. If you already have custom CSS, keep that and ignore the new ones maybe?
+- Added buyable and clickable trees.
+- Added optional tooltips to upgrades, buyables, clickables, milestones, and gridables.
+- Fixed the passiveGeneration display.
+- Fixed "marked" feature.
+- doReset now will function on non-numeric rows besides "side".
+
+## v2.6.1 - 6/7/21
+- Added global background style to mod.js.
+- Tree branches can have custom line widths.
+- If an upgrade has both canAfford and cost, it checks both. (So you can use canAfford for other things)
+- Releasing a held buyable/clickable with onHold doesn't click it again.
+- Fixed hard resetting while NaN'ed and exporting NaN saves for debugging.
+- Attempt to fix buttons sometimes not updating.
+- Added "instant" feature for bars. (not useful for most people)
+- Improvements to theme code, partially by Cubedey.
+
+## v2.6.0.1 - 6/4/21
+- Removed excess NaN alerts (now only checks player, not temp).
+- Fixed background images covering up tree branches.
+
+## v2.6: Fixed Reality - 6/3/21
+- Fixed issues with NaN checking. The game also will not save if the save is broken.
+- Added a drop-down menu component!
+- Added upgrade-tree component!
+- Options are now saved separately, and not affected by hard resetting or importing saves.
+- Fixed demo.html
+- Fixed branches not working on the right tab.
+- Fixed background color not working on the left tab.
+- Fixed branches not updating when tree tab is not shown.
+- You can now use "this" in tabFormat!
+- Added per-row displaying for achievements, challenges, milestones, grids, buyables, and clickables. THIS WILL BREAK BUYABLES/CLICKABLES THAT PREVIOUSLY USED THEIR TABFORMAT ARGUMENT FOR SIZE.
+- Added onComplete for milestones.
+- Added addBuyables.
+- The prestige/sec display now shows non-whole numbers.
+- resetsNothing now works immediately on a reset that enables it.
+- Made the star on maxed challenges larger.
+
+- diff can no longer be negative.
+- Fixed challenges with no currencyDisplayName using "points" instead of the mod's pointsName.
+- inChallenge no longer can return undefined.
+- Fixed certain things skipping negative rows (now they are treated like non-numeric rows, and don't appear in the tree still).
+- Things are 0.2% more optimized.
+- Fixed problems in the documentation.
+- Added more customization to the "mark" component (but not an easy way to access it)
+
+
 ### v2.5.11.1 - 5/27/21
 - Fixed issues caused when the tree tab is disabled.
 
@@ -398,7 +456,6 @@
 - Moved old changelogs to a separate place.
 - Fixed hasMilestone and incr_order.
 - Static layers now show the currency amount needed for the next one if you can buy max.
-
 
 
 ### v1.2.4 - 10/4/20

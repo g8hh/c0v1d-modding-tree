@@ -1,11 +1,15 @@
 
 // ************ Save stuff ************
 var logSave = false
-function save() {
+function save(force) {
 	let t = new Date().getTime()
 	if (logSave) console.log("saved at " + t)
 	if (!(player === null)) player.lastSave = t
+	NaNcheck(player)
+	if (NaNalert && !force) return
 	localStorage.setItem(modInfo.id, btoa(unescape(encodeURIComponent(JSON.stringify(player)))));
+	localStorage.setItem(modInfo.id+"_options", btoa(unescape(encodeURIComponent(JSON.stringify(options)))));
+
 }
 
 function startPlayerBase() {
@@ -13,12 +17,7 @@ function startPlayerBase() {
 		tab: layoutInfo.startTab,
 		navTab: (layoutInfo.showTree ? layoutInfo.startNavTab : "none"),
 		time: Date.now(),
-		autosave: true,
 		notify: {},
-		msDisplay: "always",
-		theme: null,
-		hqTree: false,
-		offlineProd: true,
 		versionType: modInfo.id,
 		version: VERSION.num,
 		beta: VERSION.beta,
@@ -189,11 +188,15 @@ function fixData(defaultData, newData) {
 
 function load() {
 	let get = localStorage.getItem(modInfo.id);
-	if (get === null || get === undefined)
+	if (get === null || get === undefined) {
 		player = getStartPlayer();
-	else
+		options = getStartOptions();
+	}
+	else {
 		player = Object.assign(getStartPlayer(), JSON.parse(decodeURIComponent(escape(atob(get)))));
-	fixSave();
+		fixSave();
+		loadOptions();
+	}
 
 	if (player.offlineProd) {
 		if (player.offTime === undefined) player.offTime = { remain: 0 }
@@ -201,13 +204,14 @@ function load() {
 	}
 	player.time = Date.now();
 	if (player.newsArray === undefined) player.newsArray = [];
+	
 	versionCheck();
 	changeTheme();
 	changeTreeQuality();
 	updateLayers()
 	setupModInfo()
-
 	setupTemp();
+	updateTemp();
 	updateTemp();
 	updateTemp();
 	updateTemp();
@@ -216,6 +220,20 @@ function load() {
 	updateTemp()
 	updateTemp()
 	updateTemp()
+	updateTemp()
+	startInterval()
+	slider = document.getElementById("myRange")
+	if (slider) slider.value = player.up
+}
+
+function loadOptions() {
+	let get2 = localStorage.getItem(modInfo.id+"_options");
+	if (get2) 
+		options = Object.assign(getStartOptions(), JSON.parse(decodeURIComponent(escape(atob(get2)))));
+	else 
+		options = getStartOptions()
+	if (themes.indexOf(options.theme) < 0) theme = "default"
+
 }
 
 function setupModInfo() {
@@ -235,15 +253,12 @@ function NaNcheck(data) {
 		else if (Array.isArray(data[item])) {
 			NaNcheck(data[item])
 		}
-		else if (data[item] !== data[item] || data[item] === decimalNaN){
-			if (NaNalert === true || confirm ("Invalid value found in player, named '" + item + "'. Please let the creator of this mod know! Would you like to try to auto-fix the save and keep going?")){
-				NaNalert = true
-				data[item] = (data[item] !== data[item] ? 0 : decimalZero)
-			}
-			else {
+		else if (data[item] !== data[item] || checkDecimalNaN(data[item])) {
+			if (!NaNalert) {
+				confirm("Invalid value found in player, named '" + item + "'. Please let the creator of this mod know! You can refresh the page, and you will be un-NaNed.")
 				clearInterval(interval);
-				player.autosave = false;
 				NaNalert = true;
+				return
 			}
 		}
 		else if (data[item] instanceof Decimal) { // Convert to Decimal
@@ -253,11 +268,9 @@ function NaNcheck(data) {
 		}
 	}	
 }
-
-
 function exportSave() {
-	let str = btoa(JSON.stringify(player))
-	
+	//if (NaNalert) return
+	let str = btoa(JSON.stringify(player));
 	const el = document.createElement("textarea");
 	el.value = str;
 	document.body.appendChild(el);
@@ -274,19 +287,23 @@ function importSave(imported=undefined, forced=false) {
 		if(tempPlr.versionType != modInfo.id && !forced && !confirm("这个存档看起来是另一个不同的mod!您确定要导入吗?")) // Wrong save (use "Forced" to force it to accept.)
 			return
 		player = tempPlr;
-		player.versionType = modInfo.id
-		fixSave()	
-		versionCheck()
-		save()
-		window.location.reload()
-		updateTemp();
-	} catch(e) {
+		player.versionType = modInfo.id;
+		fixSave();
+		versionCheck();
+		NaNcheck(save)
+		save();
+		window.location.reload();
+	} catch (e) {
 		return;
 	}
 }
 
 function layerText(elem, layer, text) {
 	return "<" + elem + " style='color:" + tmp[layer].color + ";text-shadow:0px 0px 10px;'>" + text + "</" + elem + ">"
+}
+
+function colorText(elem, color, text) {
+	return "<" + elem + " style='color:" + color + ";text-shadow:0px 0px 10px;'>" + text + "</" + elem + ">"
 }
 
 function versionCheck() {
@@ -307,9 +324,11 @@ function versionCheck() {
 		player.beta = VERSION.beta
 	}
 }
-
-var saveInterval = setInterval(function() {
-	if (player===undefined) return;
-	if (gameEnded&&!player.keepGoing) return;
-	if (player.autosave) save();
-}, 5000)
+var saveInterval = setInterval(function () {
+	if (player === undefined)
+		return;
+	if (gameEnded && !player.keepGoing)
+		return;
+	if (options.autosave)
+		save();
+}, 5000);

@@ -200,7 +200,7 @@ function setupLayer(layer){
     ROW_LAYERS[row][layer]=layer;
     let position = (layers[layer].position !== undefined ? layers[layer].position : layer)
     
-    if (!isNaN(displayRow)) TREE_LAYERS[displayRow].push({layer: layer, position: position})
+    if (!isNaN(displayRow) || displayRow < 0) TREE_LAYERS[displayRow].push({layer: layer, position: position})
     else OTHER_LAYERS[displayRow].push({layer: layer, position: position})
 
     if (maxRow < layers[layer].displayRow) maxRow = layers[layer].displayRow
@@ -281,9 +281,20 @@ addLayer("info-tab", {
 })
 
 addLayer("options-tab", {
-    tabFormat: ["options-tab"],
+    tabFormat: [
+        "options-tab",
+        ["raw-html", function() { return `
+        <div class="slidecontainer">
+        <p>Update Rate: <span id="demo"></span>ms</p>
+        <input type="range" min="33" max="200" value="50" class="slider" id="myRange" onchange="input()" oninput = "input()">
+        </div>
+        `
+        }
+    ]
+    ],
     row: "otherside"
 })
+
 
 addLayer("changelog-tab", {
     tabFormat() {return ([["raw-html", modInfo.changelog]])},

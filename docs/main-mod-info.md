@@ -10,6 +10,8 @@ Here's a breakdown of what's in it:
     - id: The id for your mod, a unique string that is used to determine savefile location. Be sure to set it when you start making a mod, and don't change it later because it will erase all saves.
     - author: The name of the author, displayed in the info tab.
     - pointsName: This changes what is displayed instead of "points" for the main currency. (It does not affect it in the code.)
+    - modFiles: An array of file addresses which will be loaded for this mod. Using smaller files makes it easier to find what you're looking for.
+    
     - discordName, discordLink: If you have a Discord server or other discussion place, you can add a link to it.
 
         "discordName" is the text on the link, and "discordLink" is the url of an invite. If you're using a Discord invite, please make sure it's set to never expire.
@@ -53,6 +55,8 @@ function addedPlayerData() { return {
 - isEndgame(): A function to determine if the player has reached the end of the game, at which point the "you win!" screen appears.
 
 Less important things beyond this point!
+
+- backgroundStyle: A CSS object containing the styling for the background of the full game. Can be a function!
 
 - maxTickLength(): Returns the maximum tick length, in milliseconds. Only really useful if you have something that reduces over time, which long ticks mess up (usually a challenge).
 
