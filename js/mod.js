@@ -12,11 +12,17 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.6.4",
+	num: "0.6.5",
 	name: "Vorona Cirus GAS GAS GAS",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+        <h3>v0.6.5</h3><br>
+        - Added Anti-Vaxxers.<br>
+        - Added an Anti-Masker buyable.<br>
+        - Added 3 Anti-Roulette Buyables.<br>
+        - Added 7 Achievements.<br>
+        - Added Update rate slider.<br>
         <h3>v0.6.4</h3><br>
         - Added Green Bets.<br>
         - Added 4 Anti-Roulette Buyables.<br>
@@ -184,7 +190,10 @@ function addedPlayerData() { return {
     toggleKeys: false,
     cases: false,
     ca:0,
-    infectivity: false
+    infectivity: false,
+    ms: 50,
+    options:false,
+    up:50,
 }}
 var shiftDown = false
 
@@ -207,7 +216,7 @@ window.addEventListener('keyup', function(event) {
 // Display extra things at the top of the page
 var displayThings = [
     function(){
-		let a = "Current endgame: 1e4721 Anti-Maskers (v0.6.4)"
+		let a = "Current endgame: 4e64 Anti-Vaccines (v0.6.5)"
 		return player.autosave ? a : a + ". Warning: autosave is off"
 	},
 	function(){
@@ -224,7 +233,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.ct.Am.gte(Decimal.pow(10,4721))
+	return player.ct.Avaccines.gte(4e64)
 }
 
 

@@ -25,6 +25,7 @@ function toggleOpt(name) {
 		changeTreeQuality();
 	if (name == "oldStyle")
 		updateStyle();
+	if (name == "autosave") player.autosave = options.autosave
 }
 var styleCooldown = 0;
 function updateStyle() {
@@ -75,3 +76,4 @@ function milestoneShown(layer, id) {
 	}
 	return false;
 }
+

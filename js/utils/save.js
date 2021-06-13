@@ -1,12 +1,10 @@
 
 // ************ Save stuff ************
 var logSave = false
-function save() {
+function save(force) {
 	let t = new Date().getTime()
 	if (logSave) console.log("saved at " + t)
 	if (!(player === null)) player.lastSave = t
-}
-function save(force) {
 	NaNcheck(player)
 	if (NaNalert && !force) return
 	localStorage.setItem(modInfo.id, btoa(unescape(encodeURIComponent(JSON.stringify(player)))));
@@ -190,7 +188,6 @@ function fixData(defaultData, newData) {
 
 function load() {
 	let get = localStorage.getItem(modInfo.id);
-
 	if (get === null || get === undefined) {
 		player = getStartPlayer();
 		options = getStartOptions();
@@ -207,13 +204,14 @@ function load() {
 	}
 	player.time = Date.now();
 	if (player.newsArray === undefined) player.newsArray = [];
+	
 	versionCheck();
 	changeTheme();
 	changeTreeQuality();
 	updateLayers()
 	setupModInfo()
-
 	setupTemp();
+	updateTemp();
 	updateTemp();
 	updateTemp();
 	updateTemp();
@@ -222,6 +220,10 @@ function load() {
 	updateTemp()
 	updateTemp()
 	updateTemp()
+	updateTemp()
+	startInterval()
+	slider = document.getElementById("myRange")
+	if (slider) slider.value = player.up
 }
 
 function loadOptions() {
@@ -298,6 +300,10 @@ function importSave(imported=undefined, forced=false) {
 
 function layerText(elem, layer, text) {
 	return "<" + elem + " style='color:" + tmp[layer].color + ";text-shadow:0px 0px 10px;'>" + text + "</" + elem + ">"
+}
+
+function colorText(elem, color, text) {
+	return "<" + elem + " style='color:" + color + ";text-shadow:0px 0px 10px;'>" + text + "</" + elem + ">"
 }
 
 function versionCheck() {

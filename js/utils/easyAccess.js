@@ -57,6 +57,11 @@ function powExp3(n, exp){
 	return Decimal.pow(10,Decimal.pow(10,Decimal.pow(10,n.log10().log10().log10().pow(exp))))
 }
 
+function powSlog(n, exp){
+	if (n.lt(10)) return n
+	return tet10(slog(n).pow(exp))
+}
+
 function slog(n){
 	n = new Decimal(n)
 	return Decimal.add(n.layer,new Decimal(n.mag).slog())
@@ -65,6 +70,11 @@ function slog(n){
 function slogadd(n,add){
 	n = new Decimal(n)
 	return Decimal.tetrate(10,slog(n).add(add))
+}
+
+function tet10(n){
+	n = new Decimal(n)
+	return Decimal.tetrate(10,n)
 }
 
 function getGridData(layer, id) {

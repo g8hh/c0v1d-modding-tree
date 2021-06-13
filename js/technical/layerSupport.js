@@ -281,9 +281,20 @@ addLayer("info-tab", {
 })
 
 addLayer("options-tab", {
-    tabFormat: ["options-tab"],
+    tabFormat: [
+        "options-tab",
+        ["raw-html", function() { return `
+        <div class="slidecontainer">
+        <p>Update Rate: <span id="demo"></span>ms</p>
+        <input type="range" min="33" max="200" value="50" class="slider" id="myRange" onchange="input()" oninput = "input()">
+        </div>
+        `
+        }
+    ]
+    ],
     row: "otherside"
 })
+
 
 addLayer("changelog-tab", {
     tabFormat() {return ([["raw-html", modInfo.changelog]])},
