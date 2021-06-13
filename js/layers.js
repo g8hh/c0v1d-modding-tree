@@ -24479,7 +24479,7 @@ addLayer("ct", {
         166: {
             title: "No Vaccine",
             description: "<span style = 'font-size:9px'>Multiply Green Exp by 'AM Booster'^2, reduce SM and AM % buyables sc, +10% Even and Green Chance, Bulk x100, Roll and Auto is 1 tick, Unlock Anti-Vaxxers</span>.",
-            cost: Decimal.pow(10,5777600),
+            cost: Decimal.pow(10,5696000),
             currencyInternalName: "Am",
             currencyDisplayName: "Anti-Maskers",
             currencyLayer: "ct",
