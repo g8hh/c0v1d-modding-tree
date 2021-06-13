@@ -3426,7 +3426,7 @@ addLayer("d", {
             },
             effectDisplay(){
                 let dis = "^"+format(getDUpgEff(14))
-                if (tmp.d.upgrades[14].effect().gte(10)) dis += " (softcapped)"
+                if (tmp.d.upgrades[14].effect.gte(10)) dis += " (softcapped)"
                 return dis
             },
             unlocked() {
