@@ -22180,6 +22180,7 @@ addLayer("ct", {
     },
     getVaxxerGain() { 
         let gain = player.ct.Am.max(10).log10().div(27e7).log(tmp.ct.getVaxcostBase).add(1).root(tmp.ct.getVaxcostExp)
+        if (player.ct.Am.log10().lt(27e7)) gain = new Decimal(0)
         return gain.floor()
     },
     getVaxxerNext() { 
