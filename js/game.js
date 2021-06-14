@@ -342,7 +342,7 @@ function startChallenge(layer, x) {
 	doReset(layer, true)
 	if(enter) {
 		Vue.set(player[layer], "activeChallenge", x)
-		run(layers[layer].challenges[x].onStart, layers[layer].challenges[x])
+		if (layers[layer].challenges[x].onStart) layers[layer].challenges[x].onStart(true);
 	}
 	updateChallengeTemp(layer)
 }
