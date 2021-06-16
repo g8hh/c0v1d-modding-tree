@@ -193,7 +193,6 @@ function addedPlayerData() { return {
     infectivity: false,
     ms: 50,
     options:false,
-    up:50,
 }}
 var shiftDown = false
 
