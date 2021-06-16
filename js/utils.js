@@ -280,7 +280,7 @@ function updateMilestones(layer) {
 		if (!(hasMilestone(layer, id)) && layers[layer].milestones[id].done()) {
 			player[layer].milestones.push(id)
 			if (tmp[layer].milestonePopups || tmp[layer].milestonePopups === undefined) {
-			if (layer != "d") doPopup("milestone", tmp[layer].milestones[id].requirementDescription, "Milestone Gotten!", 3, tmp[layer].color);
+			if (layer != "d" && layer != "s") doPopup("milestone", tmp[layer].milestones[id].requirementDescription, "Milestone Gotten!", 3, tmp[layer].color);
 			}
 			player[layer].lastMilestone = id
 		}

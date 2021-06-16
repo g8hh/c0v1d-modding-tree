@@ -3426,7 +3426,7 @@ addLayer("d", {
             },
             effectDisplay(){
                 let dis = "^"+format(getDUpgEff(14))
-                if (tmp.d.upgrades[14].effect().gte(10)) dis += " (softcapped)"
+                if (tmp.d.upgrades[14].effect.gte(10)) dis += " (softcapped)"
                 return dis
             },
             unlocked() {
@@ -4898,7 +4898,7 @@ addLayer("f", {
             }
         } 
         else if (player.f.casuals.mul(m.pow(tmp.f.buyables[92].interval.pow(-1))).gte(Decimal.pow(10,tmp.f.buyables[91].effect.log10().div(tmp.f.buyables[92].effect).mul(1e4).log(getFUpgEff(184)).mul(tmp.f.int)))) {
-            player.f.casuals = Decimal.pow(10,tmp.f.buyables[91].effect.log10().div(tmp.f.buyables[92].effect).mul(0.0001).log(getFUpgEff(184)).mul(tmp.f.int))
+            player.f.casuals = Decimal.pow(10,tmp.f.buyables[91].effect.log10().div(tmp.f.buyables[92].effect).mul(0.0001).max(1).log(getFUpgEff(184)).mul(tmp.f.int))
         }
         else {
             player.f.casuals = player.f.casuals.mul(m.pow(tmp.f.buyables[92].interval.pow(-1))).min(limit)
@@ -22180,6 +22180,7 @@ addLayer("ct", {
     },
     getVaxxerGain() { 
         let gain = player.ct.Am.max(10).log10().div(27e7).log(tmp.ct.getVaxcostBase).add(1).root(tmp.ct.getVaxcostExp)
+        if (player.ct.Am.log10().lt(27e7)) gain = new Decimal(0)
         return gain.floor()
     },
     getVaxxerNext() { 
@@ -24479,7 +24480,7 @@ addLayer("ct", {
         166: {
             title: "No Vaccine",
             description: "<span style = 'font-size:9px'>Multiply Green Exp by 'AM Booster'^2, reduce SM and AM % buyables sc, +10% Even and Green Chance, Bulk x100, Roll and Auto is 1 tick, Unlock Anti-Vaxxers</span>.",
-            cost: Decimal.pow(10,5777600),
+            cost: Decimal.pow(10,5696000),
             currencyInternalName: "Am",
             currencyDisplayName: "Anti-Maskers",
             currencyLayer: "ct",
