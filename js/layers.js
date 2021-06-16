@@ -4898,7 +4898,7 @@ addLayer("f", {
             }
         } 
         else if (player.f.casuals.mul(m.pow(tmp.f.buyables[92].interval.pow(-1))).gte(Decimal.pow(10,tmp.f.buyables[91].effect.log10().div(tmp.f.buyables[92].effect).mul(1e4).log(getFUpgEff(184)).mul(tmp.f.int)))) {
-            player.f.casuals = Decimal.pow(10,tmp.f.buyables[91].effect.log10().div(tmp.f.buyables[92].effect).mul(0.0001).log(getFUpgEff(184)).mul(tmp.f.int))
+            player.f.casuals = Decimal.pow(10,tmp.f.buyables[91].effect.log10().div(tmp.f.buyables[92].effect).mul(0.0001).max(1).log(getFUpgEff(184)).mul(tmp.f.int))
         }
         else {
             player.f.casuals = player.f.casuals.mul(m.pow(tmp.f.buyables[92].interval.pow(-1))).min(limit)
