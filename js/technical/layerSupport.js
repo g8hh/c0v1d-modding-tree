@@ -285,7 +285,7 @@ addLayer("options-tab", {
         "options-tab",
         ["raw-html", function() { return `
         <div class="slidecontainer">
-        <p>Update Rate: <span id="demo"></span>ms</p>
+        <p>Update Rate: <span id="demo">50</span>ms</p>
         <input type="range" min="33" max="200" value="50" class="slider" id="myRange" onchange="input()" oninput = "input()">
         </div>
         `

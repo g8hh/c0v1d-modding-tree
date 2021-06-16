@@ -403,34 +403,13 @@ function autobuyUpgrades(layer){
 		if (isPlainObject(tmp[layer].upgrades[id]) && (layers[layer].upgrades[id].canAfford === undefined || layers[layer].upgrades[id].canAfford() === true))
 			buyUpg(layer, id) 
 }
-var m = 50
-var slider = document.getElementById("myRange");
-var output = document.getElementById("demo");
 setInterval(function() {
+	if (!player || player.tab != "options-tab") return
 	slider = document.getElementById("myRange")
 	output = document.getElementById("demo")
-	if (slider) player.ms = Number(slider.value)
-	if (output) output.innerHTML = player.ms
-	if (player) {
-		m=player.ms
-		if (player.tab == "options-tab") player.options=true
-		else player.options=false
-		if (!player.options) {
-			check()
-		}
-	}
-},1)
-function check() {
-    if (player) {
-	if(!player.options) {
-       window.setTimeout(check, 30);
-    } else {
-		if (slider) {
-			slider.value = player.up
-		}
-    }
-}
-}
+	if (slider.value != player.ms) slider.value = player.ms
+	if (output.innerHTML != "" + player.ms) output.innerHTML = player.ms
+},10)
 function gameLoop() {
 	if (player===undefined||tmp===undefined) return;
 	if (ticking) return;
@@ -551,8 +530,10 @@ var interval
 var tickWait = 0
 var tickWaitStart = 0
 function input () {
-	player.up = player.ms
-    clearInterval(interval)
+	value = document.getElementById("myRange").value
+	document.getElementById("demo").innerHTML = value
+	player.ms = Number(value)
+	clearInterval(interval)
 	startInterval()
 }
 function startInterval() {
