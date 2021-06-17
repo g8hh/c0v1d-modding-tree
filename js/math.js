@@ -49,11 +49,13 @@ function getTimesRequired(chance, r1){
 	//log(1-chance) of r2
 	return n.floor().add(1)
 }
-function bulkRoll(chance,ms) {
-	let c = getTimesRequired(Decimal.sub(1,Decimal.sub(1,chance).pow(ms/50))).mul(ms/50)
+function bulkRoll(chance,ms,r1) {
+	chance = new Decimal(chance)
+	if (r1 == undefined) r1 = Math.random()
+	let n = 1-((1-r1)**(50/ms))
+	let c = Decimal.log(n,1/Math.E).div(chance)
 	return c.floor()
 }
-
 function recurse(func, startingValue, times){
 	if (times <= 0) return startingValue
 	return recurse(func, func(startingValue), times-1)
