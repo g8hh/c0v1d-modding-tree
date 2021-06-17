@@ -8329,9 +8329,9 @@ addLayer("f", {
             },
             buyMax() { 
                 let cost = this.cost() // log1.1(log10(cost/e1120)/15)+44 =
-                let f = player.f.casualty
+                let f = player.f.casualty.max(10)
                 let max = f.div("e470").log10().div(15).ceil().min(44)
-                if (max.gte(44)) max = f.div("e1120").log10().div(15).log(1.1).add(45).floor()
+                if (max.gte(44)) max = f.div("e1120").max(10).log10().div(15).log(1.1).add(45).floor()
                 let diff = max.sub(this.total())
                 cost = Decimal.sub(1,Decimal.pow(1e15,diff)).div(-1e15).mul(cost)
                 if (tmp[this.layer].buyables[this.id].canAfford) {
