@@ -12,11 +12,16 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.6.5",
+	num: "0.6.6",
 	name: "Vorona Cirus GAS GAS GAS",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+        <h3>v0.6.6</h3><br>
+        - Added Side Effects.<br>
+        - Added 4 Anti-Vaxxer Buyables.<br>
+        - Added 3 Achievements.<br>
+        - Fixed NaN casual bug.<br>
         <h3>v0.6.5</h3><br>
         - Added Anti-Vaxxers.<br>
         - Added an Anti-Masker buyable.<br>
@@ -180,7 +185,9 @@ function getPointGen() {
     if (player.e.inC) gain = powExp(gain,tmp.e.qExp)
     if (hasUpgrade("e",311)) gain = powExp2(gain,upgradeEffect("e",311))
     if (hasUpgrade("e",325)) gain = powExp2(gain,upgradeEffect("e",325))
-	return gain.min(cap)
+	gain = gain.min(cap)
+    if (hasUpgrade("ct",194)) gain = gain.pow(upgradeEffect("ct",194))
+    return gain
 }
 
 // You can add non-layer related variables that should to into "player" and be saved here, along with default values
@@ -215,7 +222,7 @@ window.addEventListener('keyup', function(event) {
 // Display extra things at the top of the page
 var displayThings = [
     function(){
-		let a = "Current endgame: 4e64 Anti-Vaccines (v0.6.5)"
+		let a = "Current endgame: 1e1,100,000 Anti-Vaccines (v0.6.6)"
 		return player.autosave ? a : a + ". Warning: autosave is off"
 	},
 	function(){
@@ -232,7 +239,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.ct.Avaccines.gte(4e64)
+	return player.ct.Avaccines.gte(Decimal.pow(10,1.1e6))
 }
 
 
