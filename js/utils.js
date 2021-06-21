@@ -1,25 +1,3 @@
-// ************ Big Feature related ************
-function getTimesRequired(chance, r1){
-	chance = new Decimal(chance)
-	if (chance.gte(1)) return 1
-	if (chance.lte(0)) return Infinity
-	if (r1 == undefined) r1 = Math.random()
-	//we want (1-chance)^n < r1
-	let n
-	if (chance.log10().gt(-5)){
-			n = Decimal.ln(r1).div(Math.log(1-chance))
-	} else {
-			n = Decimal.ln(1/r1).div(chance)
-	}
-	//log(1-chance) of r2
-	return n.floor().add(1)
-}
-
-function recurse(func, startingValue, times){
-	if (times <= 0) return startingValue
-	return recurse(func, func(startingValue), times-1)
-}
-
 function respecBuyables(layer) {
 	if (!layers[layer].buyables) return
 	if (!layers[layer].buyables.respec) return
@@ -36,6 +14,16 @@ function canAffordUpgrade(layer, id) {
 	let cost = tmp[layer].upgrades[id].cost
 	return canAffordPurchase(layer, upg, cost)
 }
+/*function canAffordUpgrade(layer, id) {
+	let upg = tmp[layer].upgrades[id]
+	if(tmp[layer].deactivated) return false
+	if (tmp[layer].upgrades[id].canAfford === false) return false
+	let cost = tmp[layer].upgrades[id].cost
+	if (cost !== undefined) 
+		return canAffordPurchase(layer, upg, cost)
+
+	return true
+}*/
 
 function canBuyBuyable(layer, id) {
 	let b = temp[layer].buyables[id]
@@ -326,9 +314,9 @@ ctrlDown = false
 
 document.onkeydown = function (e) {
 	if (player === undefined) return;
-	if (gameEnded && !player.keepGoing) return;
 	shiftDown = e.shiftKey
 	ctrlDown = e.ctrlKey
+	if (tmp.gameEnded && !player.keepGoing) return;
 	let key = e.key
 	if (ctrlDown) key = "ctrl+" + key
 	if (onFocused) return

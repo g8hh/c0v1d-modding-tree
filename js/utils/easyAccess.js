@@ -1,21 +1,21 @@
 function hasUpgrade(layer, id) {
-	return (player[layer].upgrades.includes(toNumber(id)) || player[layer].upgrades.includes(id.toString()))
+	return ((player[layer].upgrades.includes(toNumber(id)) || player[layer].upgrades.includes(id.toString())) && !tmp[layer].deactivated)
 }
 
 function hasMilestone(layer, id) {
-	return (player[layer].milestones.includes(toNumber(id)) || player[layer].milestones.includes(id.toString()))
+	return ((player[layer].milestones.includes(toNumber(id)) || player[layer].milestones.includes(id.toString())) && !tmp[layer].deactivated)
 }
 
 function hasAchievement(layer, id) {
-	return (player[layer].achievements.includes(toNumber(id)) || player[layer].achievements.includes(id.toString()))
+	return ((player[layer].achievements.includes(toNumber(id)) || player[layer].achievements.includes(id.toString())) && !tmp[layer].deactivated)
 }
 
 function hasChallenge(layer, id) {
-	return (player[layer].challenges[id])
+	return ((player[layer].challenges[id]) && !tmp[layer].deactivated)
 }
 
 function maxedChallenge(layer, id) {
-	return (player[layer].challenges[id] >= tmp[layer].challenges[id].completionLimit)
+	return ((player[layer].challenges[id] >= tmp[layer].challenges[id].completionLimit) && !tmp[layer].deactivated)
 }
 
 function challengeCompletions(layer, id) {
@@ -42,41 +42,6 @@ function setClickableState(layer, id, state) {
 	player[layer].clickables[id] = state
 }
 
-function powExp(n, exp){
-	if (n.lt(10)) return n
-	return Decimal.pow(10,n.log10().pow(exp))
-}
-
-function powExp2(n, exp){
-	if (n.lt(1e10)) return n
-	return Decimal.pow(10,Decimal.pow(10,n.log10().log10().pow(exp)))
-}
-
-function powExp3(n, exp){
-	if (n.lt(Decimal.pow(10,1e10))) return n
-	return Decimal.pow(10,Decimal.pow(10,Decimal.pow(10,n.log10().log10().log10().pow(exp))))
-}
-
-function powSlog(n, exp){
-	if (n.lt(10)) return n
-	return tet10(slog(n).pow(exp))
-}
-
-function slog(n){
-	n = new Decimal(n)
-	return Decimal.add(n.layer,new Decimal(n.mag).slog())
-}
-
-function slogadd(n,add){
-	n = new Decimal(n)
-	return Decimal.tetrate(10,slog(n).add(add))
-}
-
-function tet10(n){
-	n = new Decimal(n)
-	return Decimal.tetrate(10,n)
-}
-
 function getGridData(layer, id) {
 	return (player[layer].grid[id])
 }
@@ -89,7 +54,7 @@ function upgradeEffect(layer, id) {
 	return (tmp[layer].upgrades[id].effect)
 }
 
-function milestoneEffect(layer, id){
+function milestoneEffect(layer, id) {
 	return (tmp[layer].milestones[id].effect)
 }
 
