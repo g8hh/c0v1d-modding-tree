@@ -1498,7 +1498,7 @@ var cnItems = {
     'Vax': '疫苗',
     'Vax Booster': '疫苗助推器',
     'Vax Opposition': '疫苗反对派',
-    '': '',
+    'Vaxxer Base': '疫苗接种者基数',
     '': '',
     '': '',
     '': '',
