@@ -25479,7 +25479,7 @@ addLayer("ct", {
                 "background-color"() {
                     if (!hasUpgrade("ct",214)) {
                     let color = "#bf8f8f"
-                    if (player.ct.Avaccines.gte(Decimal.pow(10,8e6))) color = "#8855cc"
+                    if (player.ct.Avaccines.gte(Decimal.pow(10,7.5e6))) color = "#8855cc"
                     return color
                     }
                 }
@@ -25506,7 +25506,7 @@ addLayer("ct", {
                 "background-color"() {
                     if (!hasUpgrade("ct",215)) {
                     let color = "#bf8f8f"
-                    if (player.ct.Avaccines.gte(Decimal.pow(10,27e6))) color = "#8855cc"
+                    if (player.ct.Avaccines.gte(Decimal.pow(10,25e6))) color = "#8855cc"
                     return color
                     }
                 }
@@ -25533,7 +25533,7 @@ addLayer("ct", {
                 "background-color"() {
                     if (!hasUpgrade("ct",216)) {
                     let color = "#bf8f8f"
-                    if (player.ct.Avaccines.gte(Decimal.pow(10,117e6))) color = "#8855cc"
+                    if (player.ct.Avaccines.gte(Decimal.pow(10,115e6))) color = "#8855cc"
                     return color
                     }
                 }
