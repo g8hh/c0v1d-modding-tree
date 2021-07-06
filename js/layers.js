@@ -28630,7 +28630,7 @@ addLayer("ct", {
             }
         },
         161: {
-			title: "Side Boost",
+			title: "Adverse Gain",
 			cost(x=player[this.layer].buyables[this.id]) { // cost for buying xth buyable, can be an object if there are multiple currencies
                 let cost = Decimal.pow(1e3,x.pow(1.4)).mul(1e119)
                 return cost.floor()
@@ -28651,7 +28651,7 @@ addLayer("ct", {
             display() { // Everything else displayed in the buyable button after the title
                 if (player.tab != "ct" || player.subtabs.ct.mainTabs != "Anti-Maskers" || !player.subtabs.ct.Anti == "Adverse Effects") return
                 let extra = ""
-                let dis = "Increase Side Effect boost exponent by "+ format(this.base())
+                let dis = "Multiply Adverse Effect gain by "+ format(this.base())+" (based on Adverse Effects)"
                 let shift = shiftDown?" (10^^(slog10(x)-0.9))":""
                 return dis + shift + ".\n\
                 Cost: " + formatWhole(tmp[this.layer].buyables[this.id].cost)+" Adverse Effects\n\
