@@ -17,6 +17,9 @@ let VERSION = {
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+        v0.6.7.1<br>
+        - Fixed Adverse buyable name and display.<br>
+        - Fixed Self Green and ExpoEffect upgrade display bug.<br>
         <h3>v0.6.7</h3><br>
         - Added Adverse Effects.<br>
         - Added 2 Anti-Vaxxer Buyables.<br>
