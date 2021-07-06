@@ -13,6 +13,11 @@ function powExp3(n, exp){
 	return Decimal.pow(10,Decimal.pow(10,Decimal.pow(10,n.log10().log10().log10().pow(exp))))
 }
 
+function mulSlog(n, mul){
+	if (n.lt(10)) return n
+	return tet10(slog(n).mul(mul))
+}
+
 function powSlog(n, exp){
 	if (n.lt(10)) return n
 	return tet10(slog(n).pow(exp))
