@@ -12,11 +12,15 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.6.6",
+	num: "0.6.7",
 	name: "Vorona Cirus GAS GAS GAS",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+        <h3>v0.6.7</h3><br>
+        - Added Adverse Effects.<br>
+        - Added 2 Anti-Vaxxer Buyables.<br>
+        - Added 3 Achievements.<br>
         <h3>v0.6.6</h3><br>
         - Added Side Effects.<br>
         - Added 4 Anti-Vaxxer Buyables.<br>
@@ -137,50 +141,60 @@ function canGenPoints(){
 	if(hasVUpg(11)) can = getVUpgEff(11)
 	return can
 }
-function getPointGen() {
-    let gain = new Decimal(0.1)
-    let cap = tmp.e.icap
+function getGainMult(){
+	let gain = new Decimal(1)
     let c22c = challengeCompletions("u", 11)+challengeCompletions("u", 12)+challengeCompletions("u", 21)+challengeCompletions("u", 22)-5
     c22c = Decimal.add(c22c, 1)
     c22c = Decimal.pow(5, c22c)
-    if(!canGenPoints()) gain = new Decimal(0)
     if(hasVUpg(12)) gain = gain.mul(getVUpgEff(12))
     if(hasVUpg(13)) gain = gain.mul(getVUpgEff(13))
     if(hasVUpg(21)) gain = gain.mul(getVUpgEff(21))
-    gain = gain.mul(tmp.i.effect)
-    gain = gain.mul(tmp.r.effect)
-    gain = gain.mul(tmp.u.effect)
-    gain = gain.mul(tmp.d.effect)
-    gain = gain.mul(tmp.f.effect)
-    gain = gain.mul(tmp.a.effect).mul(tmp.ct.effect)
+    gain = gain.mul(tmp.i.effect).mul(tmp.r.effect).mul(tmp.u.effect).mul(tmp.d.effect).mul(tmp.f.effect).mul(tmp.a.effect).mul(tmp.ct.effect)
     if (player.s.unlocked) gain = gain.mul(tmp.s.severityEff);
     if (inChallenge("u", 22)) gain = Decimal.mul(gain ,c22c)
-    if (inChallenge("s", 11)) gain = gain.pow(0.1)
-    if (inChallenge("s", 12)) gain = gain.pow(0.01)
-    if (inChallenge("s", 21)) gain = gain.pow(0.03)
-    if (hasDUpg(43)) gain = gain.pow(getDUpgEff(43))
-    if (hasFUpg(43)) gain = gain.pow(getFUpgEff(43))
-    if (hasFUpg(44)) gain = gain.pow(getFUpgEff(44))
-    if (hasFUpg(95)) gain = gain.pow(getFUpgEff(95))
-    if (hasFUpg(125)) gain = gain.pow(getFUpgEff(125))
-    if (hasFUpg(143)) gain = gain.pow(tmp.f.upgrades[143].effect2)
-    gain = gain.pow(tmp.d.buyables[13].effect)
-    gain = gain.pow(tmp.e.peffect)
-    if (hasFUpg(156)) gain = gain.pow(getFUpgEff(156))
-    if (hasFUpg(157)) gain = gain.pow(tmp.f.upgrades[157].effect2)
-    if (hasUpgrade("e",221)) gain = gain.pow(upgradeEffect("e",221))
-    if (player.e.c.gt(0)) gain = powExp(gain,tmp.e.Ceffect)
-    if (hasFUpg(144)) gain = powExp(gain,getFUpgEff(144))
-    if (hasFUpg(176)) gain = powExp(gain,getFUpgEff(176))
-    if (hasUpgrade("e",133)) gain = powExp(gain,upgradeEffect("e",133))
-    if (hasUpgrade("e",153)) gain = powExp(gain,upgradeEffect("e",153))
-    if (hasUpgrade("e",43)) gain = powExp(gain,upgradeEffect("e",43))
-    if (hasUpgrade("e",181)) gain = powExp(gain,upgradeEffect("e",181))
-    if (hasUpgrade("e",196)) gain = powExp(gain,upgradeEffect("e",196))
-    if (hasUpgrade("e",222)) gain = powExp(gain,upgradeEffect("e",222))
-    if (hasUpgrade("e",223)) gain = powExp(gain,upgradeEffect("e",223))
-    if (hasUpgrade("e",303)) gain = powExp(gain,upgradeEffect("e",303))
-    if (hasUpgrade("e",211)) gain = powExp(gain,tmp.e.upgrades[211].effect2)
+	return gain
+}
+function getGainExp(){
+	let exp = new Decimal(1)
+    if (inChallenge("s", 11)) exp = exp.mul(0.1)
+    if (inChallenge("s", 12)) exp = exp.mul(0.01)
+    if (inChallenge("s", 21)) exp = exp.mul(0.03)
+    if (hasDUpg(43)) exp = exp.mul(getDUpgEff(43))
+    if (hasFUpg(43)) exp = exp.mul(getFUpgEff(43))
+    if (hasFUpg(44)) exp = exp.mul(getFUpgEff(44))
+    if (hasFUpg(95)) exp = exp.mul(getFUpgEff(95))
+    if (hasFUpg(125)) exp = exp.mul(getFUpgEff(125))
+    if (hasFUpg(143)) exp = exp.mul(tmp.f.upgrades[143].effect2)
+    exp = exp.mul(tmp.d.buyables[13].effect)
+    exp = exp.mul(tmp.e.peffect)
+    if (hasFUpg(156)) exp = exp.mul(getFUpgEff(156))
+    if (hasFUpg(157)) exp = exp.mul(tmp.f.upgrades[157].effect2)
+    if (hasUpgrade("e",221)) exp = exp.mul(upgradeEffect("e",221))
+	return exp
+}
+function getGainpowExp(){
+	let exp = new Decimal(1)
+    if (player.e.c.gt(0)) exp = exp.mul(tmp.e.Ceffect)
+    if (hasFUpg(144)) exp = exp.mul(getFUpgEff(144))
+    if (hasFUpg(176)) exp = exp.mul(getFUpgEff(176))
+    if (hasUpgrade("e",133)) exp = exp.mul(upgradeEffect("e",133))
+    if (hasUpgrade("e",153)) exp = exp.mul(upgradeEffect("e",153))
+    if (hasUpgrade("e",43)) exp = exp.mul(upgradeEffect("e",43))
+    if (hasUpgrade("e",181)) exp = exp.mul(upgradeEffect("e",181))
+    if (hasUpgrade("e",196)) exp = exp.mul(upgradeEffect("e",196))
+    if (hasUpgrade("e",222)) exp = exp.mul(upgradeEffect("e",222))
+    if (hasUpgrade("e",223)) exp = exp.mul(upgradeEffect("e",223))
+    if (hasUpgrade("e",303)) exp = exp.mul(upgradeEffect("e",303))
+    if (hasUpgrade("e",211)) exp = exp.mul(tmp.e.upgrades[211].effect2)
+	return exp
+}
+function getPointGen() {
+    let gain = new Decimal(0.1)
+    let cap = tmp.e.icap
+    if(!canGenPoints()) gain = new Decimal(0)
+    gain = gain.mul(getGainMult())
+    gain = gain.pow(getGainExp())
+    gain = powExp(gain,getGainpowExp())
     if (inChallenge("e",12) || player.e.inC) gain = gain.add(1).log10()
     if (player.e.inC) gain = powExp(gain,tmp.e.qExp)
     if (hasUpgrade("e",311)) gain = powExp2(gain,upgradeEffect("e",311))
@@ -222,7 +236,7 @@ window.addEventListener('keyup', function(event) {
 // Display extra things at the top of the page
 var displayThings = [
     function(){
-		let a = "Current endgame: 1e1,100,000 Anti-Vaccines (v0.6.6)"
+		let a = "Current endgame: "+format(Decimal.pow(2,1024))+" Anti-Vaccines (v0.6.7)"
 		return player.autosave ? a : a + ". Warning: autosave is off"
 	},
 	function(){
@@ -239,7 +253,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.ct.Avaccines.gte(Decimal.pow(10,1.1e6))
+	return player.ct.AdEff.gte(Decimal.pow(2,1024))
 }
 
 
