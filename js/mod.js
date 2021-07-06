@@ -12,7 +12,7 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.6.7",
+	num: "0.6.7.1",
 	name: "Vorona Cirus GAS GAS GAS",
 }
 
@@ -239,7 +239,7 @@ window.addEventListener('keyup', function(event) {
 // Display extra things at the top of the page
 var displayThings = [
     function(){
-		let a = "Current endgame: "+format(Decimal.pow(2,1024))+" Adverse Effects (v0.6.7)"
+		let a = "Current endgame: "+format(Decimal.pow(2,1024))+" Adverse Effects (v0.6.7.1)"
 		return player.autosave ? a : a + ". Warning: autosave is off"
 	},
 	function(){
