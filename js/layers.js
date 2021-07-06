@@ -25776,7 +25776,7 @@ addLayer("ct", {
         },
         234: {
             title: "Adverse Booster",
-            description: "<span style='font-size:9px'>AE boost SE boost exp, cases boost AE gain, CRNA slog^1.02, add^1.1, Autobuy SE buyables.</span>",
+            description: "<span style='font-size:9px'>AE boost SE boost exp, cases boost AE gain, CRNA slog^1.02, 'Side-Capped'^2.3, Autobuy SE buyables.</span>",
             cost: new Decimal(1e17),
             currencyInternalName: "AdEff",
             currencyDisplayName: "Adverse Effects",
