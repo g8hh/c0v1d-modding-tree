@@ -236,7 +236,7 @@ window.addEventListener('keyup', function(event) {
 // Display extra things at the top of the page
 var displayThings = [
     function(){
-		let a = "Current endgame: "+format(Decimal.pow(2,1024))+" Anti-Vaccines (v0.6.7)"
+		let a = "Current endgame: "+format(Decimal.pow(2,1024))+" Adverse Effects (v0.6.7)"
 		return player.autosave ? a : a + ". Warning: autosave is off"
 	},
 	function(){
