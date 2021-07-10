@@ -198,9 +198,10 @@ function load() {
 		loadOptions();
 	}
 
-	if (player.offlineProd) {
-		if (player.offTime === undefined) player.offTime = { remain: 0 }
-		player.offTime.remain += (Date.now() - player.time) / 1000
+	if (options.offlineProd) {
+		if (player.offTime === undefined)
+			player.offTime = { remain: 0 };
+		player.offTime.remain += (Date.now() - player.time) / 1000;
 	}
 	player.time = Date.now();
 	if (player.newsArray === undefined) player.newsArray = [];
