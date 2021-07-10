@@ -24545,7 +24545,7 @@ addLayer("ct", {
         154: {
             title: "Even Boost",
             description: "'CorVid Exp' and 'Upgrade Booster' boost Even Payout, reduce their scaling, Autobuy.",
-            cost: Decimal.pow(10,14814),
+            cost: Decimal.pow(10,14817),
             currencyInternalName: "Am",
             currencyDisplayName: "Anti-Maskers",
             currencyLayer: "ct",

@@ -12,11 +12,13 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.6.7.1",
+	num: "0.6.7.2",
 	name: "Vorona Cirus GAS GAS GAS",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+        v0.6.7.2<br>
+        - Added 2 Achievement Rewards.<br>
         v0.6.7.1<br>
         - Fixed Adverse buyable name and display.<br>
         - Fixed Self Green and ExpoEffect upgrade display bug.<br>
