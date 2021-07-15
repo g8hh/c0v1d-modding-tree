@@ -4541,7 +4541,7 @@ addLayer("a", {
         },
         146: {
             name: "Unlucky Player",
-            tooltip: "Lose 5 times in a row with at least 60% Win Chance. Reward: 30 AP",
+            tooltip: "Lose 5 times in a row with at least 60% Win Chance. Reward: 30 AP, double Bet Amount",
             done() {
                 return player.ct.losestreak>4 && tmp.ct.getWinChance>=0.6
             },
@@ -4551,7 +4551,7 @@ addLayer("a", {
         },
         151: {
             name: "Best Bets",
-            tooltip: "Get 3 'Better Bets'. Reward: 30 AP",
+            tooltip: "Get 3 'Better Bets'. Reward: 30 AP, 5x Bet Amount",
             done() {
                 return tmp.ct.getIter>3
             },
@@ -22633,6 +22633,8 @@ addLayer("ct", {
         .mul(tmp.ct.buyables[113].effect).mul(tmp.ct.buyables[123].effect).mul(tmp.ct.buyables[131].effect)
         if (hasUpgrade("ct",114)) mult = mult.mul(2)
         if (hasAchievement("a",145)) mult = mult.mul(2)
+        if (hasAchievement("a",146)) mult = mult.mul(2)
+        if (hasAchievement("a",151)) mult = mult.mul(5)
         if (hasUpgrade("ct",115)) mult = mult.mul(upgradeEffect("ct",115))
         if (hasUpgrade("ct",116)) mult = mult.mul(upgradeEffect("ct",116))
         if (hasUpgrade("ct",122)) mult = mult.mul(upgradeEffect("ct",122))
@@ -24543,7 +24545,7 @@ addLayer("ct", {
         154: {
             title: "Even Boost",
             description: "'CorVid Exp' and 'Upgrade Booster' boost Even Payout, reduce their scaling, Autobuy.",
-            cost: Decimal.pow(10,14814),
+            cost: Decimal.pow(10,14817),
             currencyInternalName: "Am",
             currencyDisplayName: "Anti-Maskers",
             currencyLayer: "ct",
