@@ -12,11 +12,15 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.6.7.2",
-	name: "Vorona Cirus GAS GAS GAS",
+	num: "0.6.8",
+	name: "Vorona Cirus Adverse GAS GAS GAS",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+        <h3>v0.6.8</h3><br>
+        - Added Adversities.<br>
+        - Added 2 Adverse Effect Buyables.<br>
+        - Added 3 Achievements.<br>
         v0.6.7.2<br>
         - Added 2 Achievement Rewards.<br>
         v0.6.7.1<br>
@@ -241,7 +245,7 @@ window.addEventListener('keyup', function(event) {
 // Display extra things at the top of the page
 var displayThings = [
     function(){
-		let a = "Current endgame: "+format(Decimal.pow(2,1024))+" Adverse Effects (v0.6.7.2)"
+		let a = "Current endgame: 1e209 Adversities (v0.6.8)"
 		return player.autosave ? a : a + ". Warning: autosave is off"
 	},
 	function(){
@@ -258,7 +262,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.ct.AdEff.gte(Decimal.pow(2,1024))
+	return player.ct.Adversity.gte(1e209)
 }
 
 
