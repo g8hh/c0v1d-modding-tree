@@ -22904,8 +22904,8 @@ addLayer("ct", {
                             let a = "You have "+colorText("h2", "#8855cc", formatWhole(player.ct.Avaxxers))+" Anti-Vaxxers, which produces "+colorText("h2", "#8855cc", formatWhole(tmp.ct.getVaxGain))+" Anti-Vaccines "+(hasUpgrade("ct",203)?" and "+colorText("h2","#8855cc",format(tmp.ct.getSEGain))+" Side Effects ":"")+"per second (next at "+format(tmp.ct.getVaxxerNext)+")<br>"
                             let b = "You have "+colorText("h2", "#8855cc", formatWhole(player.ct.AdEff))+" Adverse Effects, which boosts Side Effect gain by "+colorText("h2", "#8855cc", format(tmp.ct.getAEEff))+"<br>"
                             let c = "You are gaining "+colorText("h2", "#8855cc", format(tmp.ct.getAEGain))+" Adverse Effects per second (starts at 5e11 Anti-Vaxxers)<br>"
-                            let d = hasUpgrade("ct",244)?"You have "+colorText("h2", "#6688aa", formatWhole(player.ct.Adversity))+" Adversities, which boosts Side Effect gain by "+colorText("h2", "#6688aa", format(tmp.ct.getAdvEff))+"<br>":""
-                            let e = hasUpgrade("ct",244)?"You are gaining "+colorText("h2", "#6688aa", format(tmp.ct.getAdvGain))+" Adversities per second (starts at 1e147,956 Anti-Vaxxers)<br>":""
+                            let d = hasUpgrade("ct",244)?"You have "+colorText("h2", "#6688aa", formatWhole(player.ct.Adversity))+" Adversities, which boosts Adverse Effect gain by "+colorText("h2", "#6688aa", format(tmp.ct.getAdvEff))+"<br>":""
+                            let e = hasUpgrade("ct",244)?"You are gaining "+colorText("h2", "#6688aa", format(tmp.ct.getAdvGain))+" Adversities per second (starts at 1e147,956 Adverse Effects)<br>":""
                         return a+b+c+d+e
                         }
                     }],
@@ -26136,7 +26136,7 @@ addLayer("ct", {
                 return Jisoo.min(0.72)
             },
             effectDisplay(){
-                return format(tmp.ct.upgrades[251].effect)+"x"
+                return "+"+format(tmp.ct.upgrades[251].effect)
             },
             unlocked() {
                 return hasUpgrade("ct",246)
