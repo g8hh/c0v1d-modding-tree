@@ -20,7 +20,7 @@ let changelog = `<h1>Changelog:</h1><br>
         <h3>v0.6.9</h3><br>
         - Added 6 Adverse Effect upgrades.<br>
         - Added an Adverse Effect Buyable.<br>
-        - Added 3 Achievements.<br>
+        - Added 2 Achievements.<br>
         <h3>v0.6.8</h3><br>
         - Added Adversities.<br>
         - Added 2 Adverse Effect Buyables.<br>
