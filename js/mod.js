@@ -292,7 +292,7 @@ function fixOldSave(oldVersion){
         if (hasAchievement("a",144)) addPoints("a",5)
 	}
     if(oldVersion=="0.6.9"){
-        if (player.points.lt(tet10(Decimal.pow(2,1024).log10()))) {
+        if (player.points.lt(tet10(Decimal.pow(2,1024).log10())) && hasAchievement("a",182)) {
             player.a.achievements.splice(player.a.achievements.indexOf("182"),1)
             addPoints("a",-50)
         }
