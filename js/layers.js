@@ -752,7 +752,7 @@ addLayer("r", {
     effect(){
         let eff = tmp.r.effbase
         eff = Decimal.pow(eff,player.r.points)
-        if (eff.gte(Decimal.pow(10,Decimal.pow(10,1e3)))) eff = eff.log10().pow(Decimal.pow(10,Decimal.pow(10,997)))
+        if (eff.gte(Decimal.pow(10,Decimal.pow(10,1e3)))) eff = eff.log10().pow(Decimal.pow(10,997))
         if (inChallenge("u", 21)) eff = new Decimal(1)
         return eff
     },
