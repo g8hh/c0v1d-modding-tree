@@ -12,11 +12,15 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.6.9",
+	num: "0.6.9.2",
 	name: "Vorona Cirus Adverse GAS GAS GAS",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+        v0.6.9.2<br>
+        - Fixed replicator effect bug.<br>
+        v0.6.9.1<br>
+        - Fixed In'F'inite CASES Achievement bug.<br>
         <h3>v0.6.9</h3><br>
         - Added 6 Adverse Effect upgrades.<br>
         - Added an Adverse Effect Buyable.<br>
@@ -249,7 +253,7 @@ window.addEventListener('keyup', function(event) {
 // Display extra things at the top of the page
 var displayThings = [
     function(){
-		let a = "Current endgame: 6.969e69,696 Adversities (v0.6.9)"
+		let a = "Current endgame: 6.969e69,696 Adversities (v0.6.9.2)"
 		return player.autosave ? a : a + ". Warning: autosave is off"
 	},
 	function(){
@@ -288,5 +292,11 @@ function fixOldSave(oldVersion){
     if(oldVersion=="0.6.3"){
         if (hasAchievement("a",143)) addPoints("a",5)
         if (hasAchievement("a",144)) addPoints("a",5)
+	}
+    if(oldVersion=="0.6.9"){
+        if (player.points.lt(tet10(Decimal.pow(2,1024).log10())) && hasAchievement("a",182)) {
+            player.a.achievements.splice(player.a.achievements.indexOf("182"),1)
+            addPoints("a",-50)
+        }
 	}
 }
