@@ -17,6 +17,8 @@ let VERSION = {
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+        v0.6.9.2<br>
+        - Fixed replicator effect bug.<br>
         v0.6.9.1<br>
         - Fixed In'F'inite CASES Achievement bug.<br>
         <h3>v0.6.9</h3><br>
