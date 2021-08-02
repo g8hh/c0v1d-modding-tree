@@ -206,7 +206,7 @@ function load() {
 	player.time = Date.now();
 	if (player.newsArray === undefined) player.newsArray = [];
 	
-	versionCheck();
+	
 	changeTheme();
 	changeTreeQuality();
 	updateLayers()
@@ -222,6 +222,7 @@ function load() {
 	updateTemp()
 	updateTemp()
 	updateTemp()
+	versionCheck();
 	startInterval()
 	slider = document.getElementById("myRange")
 	if (slider) slider.value = player.up
