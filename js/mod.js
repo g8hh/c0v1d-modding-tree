@@ -12,7 +12,7 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.6.9.1",
+	num: "0.6.9.2",
 	name: "Vorona Cirus Adverse GAS GAS GAS",
 }
 
@@ -253,7 +253,7 @@ window.addEventListener('keyup', function(event) {
 // Display extra things at the top of the page
 var displayThings = [
     function(){
-		let a = "Current endgame: 6.969e69,696 Adversities (v0.6.9.1)"
+		let a = "Current endgame: 6.969e69,696 Adversities (v0.6.9.2)"
 		return player.autosave ? a : a + ". Warning: autosave is off"
 	},
 	function(){
