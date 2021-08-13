@@ -12,11 +12,15 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.6.9.2",
+	num: "0.6.10",
 	name: "Vorona Cirus Adverse GAS GAS GAS",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+        <h3>v0.6.10</h3><br>
+        - Added Vaccination.<br>
+        - Added an Adverse Effect upgrade.<br>
+        - Added 2 Achievements.<br>
         v0.6.9.2<br>
         - Fixed replicator effect bug.<br>
         v0.6.9.1<br>
@@ -218,6 +222,11 @@ function getPointGen() {
     if (hasUpgrade("e",325)) gain = powExp2(gain,upgradeEffect("e",325))
 	gain = gain.min(cap)
     if (hasUpgrade("ct",194)) gain = gain.pow(upgradeEffect("ct",194))
+    if (player.ct.inC) {
+        gain = powSlog(gain,tmp.ct.clickables[31].exp)
+        if (gain.gte(tet10(30))) gain = tet10(slog(gain).log10().div(Decimal.log10(30)).pow(tmp.ct.clickables[31].exp).mul(Decimal.log10(30)).pow10())
+    }
+    if (hasUpgrade("ct",285)) gain = slogadd(gain,tmp.ct.upgrades[285].effect)
     return gain
 }
 
@@ -253,7 +262,7 @@ window.addEventListener('keyup', function(event) {
 // Display extra things at the top of the page
 var displayThings = [
     function(){
-		let a = "Current endgame: 6.969e69,696 Adversities (v0.6.9.2)"
+		let a = "Current endgame: 1e173 Unvaccinated Infections (v0.6.10)"
 		return player.autosave ? a : a + ". Warning: autosave is off"
 	},
 	function(){
@@ -270,7 +279,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.ct.Adversity.gte("6.969e69696")
+	return player.ct.Ui.gte(1e173)
 }
 
 

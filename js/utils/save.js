@@ -222,6 +222,7 @@ function load() {
 	updateTemp()
 	updateTemp()
 	updateTemp()
+	updateTemp()
 	versionCheck();
 	startInterval()
 	slider = document.getElementById("myRange")
