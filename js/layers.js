@@ -30073,7 +30073,7 @@ addLayer("ct", {
                 let dis = "Add "+format(this.base()) + " to 'Anti-Capped' slog (based on cases)"
                 return dis + ".\n\
                 Cost: " + formatWhole(tmp[this.layer].buyables[this.id].cost)+" Anti-Vaxxers\n\
-                Effect: -" + format(tmp[this.layer].buyables[this.id].effect)+"\n\
+                Effect: +" + format(tmp[this.layer].buyables[this.id].effect)+"\n\
                 Amount: " + formatWhole(getBuyableAmount("ct", 171)) + extra
             },
             unlocked() { return hasUpgrade("ct", 265) && player.ct.inC }, 
