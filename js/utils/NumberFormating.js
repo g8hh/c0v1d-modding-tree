@@ -118,7 +118,8 @@ function formatTime(s) {
 function formatTimeLong(s) {
 	s = new Decimal(s)
 	let slo = slog(s).sub(Decimal.log10(4))
-	if (s.gte(Decimal.pow(10,10000))) return formatTimeLong(tet10(slo.sub(slo.floor()).add(Decimal.log10(4).add(1)))) + "<sup>"+formatWhole(slo.floor())+"</sup>"
+	if (s.gte(tet10(3600))) return formatTimeLong(slog(s))+ "^^2"
+	else if (s.gte(Decimal.pow(10,10000))) return formatTimeLong(tet10(slo.sub(slo.floor()).add(Decimal.log10(4).add(1)))) + "<sup>"+formatWhole(slo.floor())+"</sup>"
 	if (s.gte("31557600e1000")) return format(s.div("31557600e1000")) + " universe lifetimes"
 	if (s.gte(31557600e100)) return format(s.div(31557600e100)) + " black hole eras"
 	if (s.gte(31557600e40)) return format(s.div(31557600e40)) + " degenerate eras"
