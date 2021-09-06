@@ -12,11 +12,15 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.6.10",
+	num: "0.6.11",
 	name: "Vorona Cirus Adverse GAS GAS GAS",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+        <h3>v0.6.11</h3><br>
+        - Added Adverse Vaccines.<br>
+        - Added 2 Vaccination upgrades.<br>
+        - Added 2 Achievements.<br>
         <h3>v0.6.10</h3><br>
         - Added Vaccination.<br>
         - Added an Adverse Effect upgrade.<br>
@@ -227,6 +231,7 @@ function getPointGen() {
         if (gain.gte(tet10(30))) gain = tet10(slog(gain).log10().div(Decimal.log10(30)).pow(tmp.ct.clickables[31].exp).mul(Decimal.log10(30)).pow10())
     }
     if (hasUpgrade("ct",285)) gain = slogadd(gain,tmp.ct.upgrades[285].effect)
+    if (hasUpgrade("ct",331) && player.ct.inC) gain = slogadd(gain,tmp.ct.upgrades[264].effect)
     return gain
 }
 
@@ -262,7 +267,7 @@ window.addEventListener('keyup', function(event) {
 // Display extra things at the top of the page
 var displayThings = [
     function(){
-		let a = "Current endgame: 1e173 Unvaccinated Infections (v0.6.10)"
+		let a = "Current endgame: 1e1066 Unvaccinated Infections (v0.6.11)"
 		return player.autosave ? a : a + ". Warning: autosave is off"
 	},
 	function(){
@@ -279,7 +284,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.ct.Ui.gte(1e173)
+	return player.ct.Ui.gte("e1066")
 }
 
 
