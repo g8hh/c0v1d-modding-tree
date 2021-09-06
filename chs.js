@@ -1536,7 +1536,7 @@ var cnItems = {
     "Get 1 'Adversity Gain 2' in Vaccination. Reward: 50 AP": "在疫苗接种中获得 1 个“逆境增益 2”。 奖励：50 AP",
     "Get 1.798F308 cases in Vaccination. Reward: 50 AP": "在疫苗接种中获得 1.798F308 个病例。 奖励：50 AP",
     "In'F'inite ANTI-VAX": "无限反疫苗",
-    "": "",
+    "ExpomRNA": "核糖核酸",
     "": "",
     "": "",
     "": "",
