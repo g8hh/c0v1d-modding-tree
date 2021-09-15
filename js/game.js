@@ -5,7 +5,7 @@ var scrolled = false;
 
 // Don't change this
 const TMT_VERSION = {
-	tmtNum: "2.6.5.1",
+	tmtNum: "2.6.6.2",
 	tmtName: "Fixed Reality"
 }
 
