@@ -81,8 +81,7 @@ function format(decimal, precision=3) {
 	if (decimal.mag == Number.POSITIVE_INFINITY) return "Infinity"
 	if (decimal.layer > 3 || (decimal.mag > 1e10 && decimal.layer == 3)) {
 		var slog = decimal.slog()
-		if (slog.gte(1e5)) return "F" + formatWhole(slog.floor())
-		if (slog.gte(1e4)) return Decimal.pow(10, slog.sub(slog.floor())).toStringWithDecimalPlaces(0) + "F" + commaFormat(slog.floor(), 0)
+		if (slog.gte(1e9)) return "F" + formatWhole(slog.floor())
 		if (slog.gte(100)) return Decimal.pow(10, slog.sub(slog.floor())).toStringWithDecimalPlaces(3) + "F" + commaFormat(slog.floor(), 0)
 		else return Decimal.pow(10, slog.sub(slog.floor())).toStringWithDecimalPlaces(4) + "F" + commaFormat(slog.floor(), 0)
 	} else if (decimal.layer > 2 || (Math.abs(decimal.mag) > 308 && decimal.layer == 2)) {
