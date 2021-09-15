@@ -12,11 +12,15 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.6.11",
+	num: "0.6.12",
 	name: "Vorona Cirus Adverse GAS GAS GAS",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+        <h3>v0.6.12</h3><br>
+        - Added Adverse Vaxxers.<br>
+        - Added 3 Adverse Vaccines.<br>
+        - Added 3 Achievements.<br>
         <h3>v0.6.11</h3><br>
         - Added Adverse Vaccines.<br>
         - Added 2 Vaccination upgrades.<br>
@@ -213,6 +217,12 @@ function getGainpowExp(){
     if (hasUpgrade("e",211)) exp = exp.mul(tmp.e.upgrades[211].effect2)
 	return exp
 }
+function getGainSlog(){
+	let slog = new Decimal(0)
+    if (hasUpgrade("ct",285)) slog = slog.add(tmp.ct.upgrades[285].effect)
+    if (hasUpgrade("ct",331) && player.ct.inC) slog = slog.add(tmp.ct.upgrades[264].effect)
+	return slog
+}
 function getPointGen() {
     let gain = new Decimal(0.1)
     let cap = tmp.e.icap
@@ -230,8 +240,7 @@ function getPointGen() {
         gain = powSlog(gain,tmp.ct.clickables[31].exp)
         if (gain.gte(tet10(30))) gain = tet10(slog(gain).log10().div(Decimal.log10(30)).pow(tmp.ct.clickables[31].exp).mul(Decimal.log10(30)).pow10())
     }
-    if (hasUpgrade("ct",285)) gain = slogadd(gain,tmp.ct.upgrades[285].effect)
-    if (hasUpgrade("ct",331) && player.ct.inC) gain = slogadd(gain,tmp.ct.upgrades[264].effect)
+    gain = slogadd(gain,getGainSlog())
     return gain
 }
 
@@ -267,7 +276,7 @@ window.addEventListener('keyup', function(event) {
 // Display extra things at the top of the page
 var displayThings = [
     function(){
-		let a = "Current endgame: 1e1066 Unvaccinated Infections (v0.6.11)"
+		let a = "Current endgame: 5e10 Adverse Vaxxers (v0.6.12)"
 		return player.autosave ? a : a + ". Warning: autosave is off"
 	},
 	function(){
@@ -284,7 +293,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.ct.Ui.gte("e1066")
+	return player.ct.Advaxxers.gte(5e10)
 }
 
 
