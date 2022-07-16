@@ -21281,7 +21281,7 @@ addLayer("e", {
                 return Jihyo
             },
             effectDisplay(){
-                return "/"+formatWhole(upgradeEffect("e",373))
+                return "/"+format(upgradeEffect("e",373))
             },
             canAfford() {
                 return player.e.mrna.gte(Decimal.pow(10,420420).mul(4.2))
