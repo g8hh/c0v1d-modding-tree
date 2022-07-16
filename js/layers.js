@@ -18807,7 +18807,7 @@ addLayer("e", {
             description() {
                 let a = player.e.buyables[72].div(1e3)
                 if (a.gte(500)) a = a.div(500).pow(0.3).mul(500)
-                let exp = Decimal.add(1.05,a.mul(hasUpgrade("e",246)+0).add(tmp.e.Cyeffect))
+                let exp = Decimal.add(1.05,a.mul(hasUpgrade("e",241)+0).add(tmp.e.Cyeffect))
                 return "Multiply RNA gain by " + format(exp) + " per RNA upgrade squared."
             } ,
             currencyDisplayName: "RNA",
