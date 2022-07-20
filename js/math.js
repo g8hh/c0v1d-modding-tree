@@ -1,14 +1,14 @@
-function powExp(n, exp){
+function powExp(n, exp){ // dilate
 	if (n.lt(10)) return n
 	return Decimal.pow(10,n.log10().pow(exp))
 }
 
-function powExp2(n, exp){
+function powExp2(n, exp){ // Trilate
 	if (n.lt(1e10)) return n
 	return Decimal.pow(10,Decimal.pow(10,n.log10().log10().pow(exp)))
 }
 
-function powExp3(n, exp){
+function powExp3(n, exp){ // Tetralate
 	if (n.lt(Decimal.pow(10,1e10))) return n
 	return Decimal.pow(10,Decimal.pow(10,Decimal.pow(10,n.log10().log10().log10().pow(exp))))
 }
@@ -18,12 +18,17 @@ function mulSlog(n, mul){
 	return tet10(slog(n).mul(mul))
 }
 
-function powSlog(n, exp){
+function powSlog(n, exp){ // Vaccinate
 	if (n.lt(10)) return n
 	return tet10(slog(n).pow(exp))
 }
 
-function slog(n){
+function powSlogExp(n, exp){ //Vaccidilate
+	if (n.lt(10)) return n
+	return tet10(powExp(slog(n),exp))
+}
+
+function slog(n){ // slog10(x), .slog is bugged >=eee9e15
 	n = new Decimal(n)
 	return Decimal.add(n.layer,new Decimal(n.mag).slog())
 }

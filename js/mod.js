@@ -12,11 +12,17 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.6.12",
-	name: "Vorona Cirus Adverse GAS GAS GAS",
+	num: "0.6.13",
+	name: "Vorona Cirus AdAnti-Vaxxed",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+        <h3>v0.6.13</h3><br>
+        - Added AdVaccines.<br>
+        - Added Adverse Challenges.<br>
+        - Added 3 Anti-Roulette clickables.<br>
+        - Added 5 Achievements.<br>
+        - Added an Achievement Reward (Corona GAS).<br>
         <h3>v0.6.12</h3><br>
         - Added Adverse Vaxxers.<br>
         - Added 3 Adverse Vaccines.<br>
@@ -236,11 +242,17 @@ function getPointGen() {
     if (hasUpgrade("e",325)) gain = powExp2(gain,upgradeEffect("e",325))
 	gain = gain.min(cap)
     if (hasUpgrade("ct",194)) gain = gain.pow(upgradeEffect("ct",194))
+    if (inChallenge("ct",12)) gain = gain.pow(tmp.ct.getAVaxEff)
     if (player.ct.inC) {
         gain = powSlog(gain,tmp.ct.clickables[31].exp)
         if (gain.gte(tet10(30))) gain = tet10(slog(gain).log10().div(Decimal.log10(30)).pow(tmp.ct.clickables[31].exp).mul(Decimal.log10(30)).pow10())
     }
     gain = slogadd(gain,getGainSlog())
+    if (inChallenge("ct", 11)) gain = powSlog(gain,0.5)
+    if (inChallenge("ct", 12)) gain = powSlog(gain,0.6)
+    if (inChallenge("ct", 21)) gain = powSlog(gain,0.5)
+    if (inChallenge("ct", 22)) gain = powSlog(gain,0.5)
+    if (inChallenge("ct", 31)) gain = gain.mul(player.ct.asv.pow(0.4).max(1))
     return gain
 }
 
@@ -276,7 +288,7 @@ window.addEventListener('keyup', function(event) {
 // Display extra things at the top of the page
 var displayThings = [
     function(){
-		let a = "Current endgame: 5e10 Adverse Vaxxers (v0.6.12)"
+		let a = "Current endgame: 9.797e979 Adverse Vaxxers (v0.6.13)"
 		return player.autosave ? a : a + ". Warning: autosave is off"
 	},
 	function(){
@@ -293,7 +305,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.ct.Advaxxers.gte(5e10)
+	return player.ct.Advaxxers.gte("9.797e979")
 }
 
 
