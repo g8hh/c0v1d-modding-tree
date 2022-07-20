@@ -88,6 +88,10 @@ function startIChallenge(id) {
     player.points = new Decimal(0)
 }
 
+function startCTChallenge(id) {
+    layers.ct.clickables[32].onClick()
+}
+
 function softcapStaticGain(gain, row) {
 	let start = (STATIC_SCALE_STARTS[String(row+1)]?STATIC_SCALE_STARTS[String(row+1)]():1);
     if (gain.gte(start)) {
@@ -3683,10 +3687,11 @@ addLayer("stat", {
                 let y = hasUpgrade("ct",145)?"Green Exponent:"+format(tmp.ct.getGreenExp)+"<br><br>":""
                 let z = hasUpgrade("ct",166)?"Anti-Vaxxer Base:"+format(tmp.ct.getVaxxerBase.b1)+"<br><br>":""
                 let aa = hasUpgrade("ct",166)?"Anti-Vaxxer Cost Base:"+format(tmp.ct.getVaxcostBase)+"<br><br>":""
-                let ab = player.e.points.gte(tet10(40))?"Social Distant Infecter scaling start:"+format(tet10(tmp.e.scStart))+"<br><br>":""
-                let ac = player.ct.buyables[181].gte(298)?"Distant UI Gain scaling start:"+format(tmp.ct.buyables[181].start)+"<br><br>":""
-                let ad = player.ct.buyables[181].gte(298)?"Distant UI Gain scaling base:"+format(tmp.ct.buyables[181].dbase)+"<br><br>":""
-                return a+b+c+d+e+f+g+h+i+j+k+l+m+n+o+p+q+r+s+t+u+v+w+x+y+z+aa+ab+ac+ad
+                let ab = hasUpgrade("ct",194)?"Anti-Capped CTNA Effect:"+format(tmp.ct.getAntiCapCTNA)+"<br><br>":""
+                let ac = player.e.points.gte(tet10(40))?"Social Distant Infecter scaling start:"+format(tet10(tmp.e.scStart))+"<br><br>":""
+                let ad = player.ct.buyables[181].gte(298)?"Distant UI Gain scaling start:"+format(tmp.ct.buyables[181].start)+"<br><br>":""
+                let ae = player.ct.buyables[181].gte(298)?"Distant UI Gain scaling base:"+format(tmp.ct.buyables[181].dbase)+"<br><br>":""
+                return a+b+c+d+e+f+g+h+i+j+k+l+m+n+o+p+q+r+s+t+u+v+w+x+y+z+aa+ab+ac+ad+ae
                 }
             }],
     ],
@@ -4107,9 +4112,17 @@ addLayer("a", {
         },
         74: {
             name: "Corona GAS",
-            tooltip: "Get ee1,000,000 cases. Reward: 6 AP",
+            tooltip() {
+                let a = "Get ee1,000,000 cases. Reward: 6 AP, multiply infection power and infectious disease gain (decreases with more IDs, starts at 5e285 IDs)"
+                let b = "<br>Currently: "+format(tmp.a.achievements[74].effect)+"x"
+                return  a+b
+            },
             done() {
                 return player.points.gte("eee6")
+            },
+            effect() {
+                if (player.e.diseases.lt(5e285)) return new Decimal(1)
+                return player.e.diseases.div(5e284).max(10).log10().pow(-0.275).mul(6).add(1)
             },
             onComplete() {
                 addPoints("a",6)
@@ -4820,6 +4833,56 @@ addLayer("a", {
             tooltip: "Get 5 Adverse Vaxxer Upgrades. Reward: 50 AP, Double Adverse Vaxxer gain",
             done() {
                 return player.ct.upgrades.filter(x=>x>340).length>=5
+            },
+            onComplete() {
+                addPoints("a",50)
+            }
+        },
+        194: {
+            name: "Million In'F'ected",
+            tooltip: "Get 1F1,000,000 cases. Reward: 50 AP, AP boosts UI gain.",
+            done() {
+                return player.points.gte(tet10(1e6))
+            },
+            onComplete() {
+                addPoints("a",50)
+            }
+        },
+        195: {
+            name: "Anti-Ribonucleic",
+            tooltip: "Get 2,022 aRNA Vaccines. Reward: 50 AP, Double Adverse Vaxxer gain and log10(UV) boosts UV gain.",
+            done() {
+                return player.ct.arna.gte(2022)
+            },
+            onComplete() {
+                addPoints("a",50)
+            }
+        },
+        196: {
+            name: "Anti-Adenovirus",
+            tooltip: "Get 2,023 AAV Vaccines. Reward: 50 AP, Double Adverse Vaxxer gain and log10(UV) boosts UV gain.",
+            done() {
+                return player.ct.aav.gte(2023)
+            },
+            onComplete() {
+                addPoints("a",50)
+            }
+        },
+        201: {
+            name: "Anti-Inactivated",
+            tooltip: "Get 2,024 AAV Vaccines. Reward: 50 AP, log10(Adverse Vaxxer) boosts Adverse Vaxxer gain and log10(UV) boosts UV gain.",
+            done() {
+                return player.ct.aiv.gte(2024)
+            },
+            onComplete() {
+                addPoints("a",50)
+            }
+        },
+        202: {
+            name: "Anti-Subunit",
+            tooltip: "Get 2,025 ASV Vaccines. Reward: 50 AP, log10(Adverse Vaxxer) boosts Adverse Vaxxer gain and log10(UV) boosts UV gain.",
+            done() {
+                return player.ct.asv.gte(2025)
             },
             onComplete() {
                 addPoints("a",50)
@@ -11808,7 +11871,7 @@ addLayer("e", {
         if (hasUpgrade("e",121)) eff = eff.mul(upgradeEffect("e",121))
         if (hasUpgrade("e",122)) eff = eff.mul(upgradeEffect("e",122))
         if (hasUpgrade("e",126)) eff = eff.mul(upgradeEffect("e",126))
-        eff = eff.mul(tmp.e.buyables[11].effect).mul(tmp.ct.effect)
+        eff = eff.mul(tmp.e.buyables[11].effect).mul(tmp.ct.effect).mul(tmp.a.achievements[74].effect)
         if (eff.gte(Decimal.tetrate(10,7))) eff = tet10(slog(eff).sub(7).div(2).add(7))
         return eff.min(tet10(8))
     },
@@ -11966,7 +12029,7 @@ addLayer("e", {
         if (hasUpgrade("e",142)) eff = eff.mul(upgradeEffect("e",142))
         if (hasUpgrade("e",85)) eff = eff.mul(upgradeEffect("e",85))
         if (player.e.p.lt(Decimal.pow(10,327))) eff = new Decimal(0)
-        eff = eff.mul(tmp.ct.effect)
+        eff = eff.mul(tmp.ct.effect).mul(tmp.a.achievements[74].effect)
         if (eff.gte(Decimal.tetrate(10,7))) eff = tet10(slog(eff).sub(7).div(2).add(7))
         return eff.min(tet10(8))
     },
@@ -22275,6 +22338,11 @@ addLayer("ct", {
             Uv: new Decimal(0),
             Av: new Decimal(0),
             Advaxxers: new Decimal(0),
+            AdVax: new Decimal(0),
+            arna: new Decimal(0),
+            aav: new Decimal(0),
+            aiv: new Decimal(0),
+            asv: new Decimal(0),
             AdvTime: 0,
             spent: new Decimal(0),
             Ui: new Decimal(0),
@@ -22287,7 +22355,18 @@ addLayer("ct", {
             number: 0,
             red:[1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36],
             black:[2,4,6,8,10,11,13,15,17,20,22,24,26,28,29,31,33,35],
+            AdV0:new Decimal(0),
+            AdVax0:new Decimal(0),
+            AdV1:new Decimal(0),
+            AdVax1:new Decimal(0),
+            AdV2:new Decimal(0),
+            AdVax2:new Decimal(0),
+            AdV3:new Decimal(0),
+            AdVax3:new Decimal(0),
+            AdV4:new Decimal(0),
             bet: 0,
+            wchance: 18/37,
+            wset: 1,
             bets: ["RED","BLACK","GREEN"],
             colors: ["#aa0000","#000000","#00aa00"],
             rolltime: 0,
@@ -22349,7 +22428,10 @@ addLayer("ct", {
             key:"t", description: "T:Reset for CTNA", onPress() {
                 if (canReset(this.layer))
                     doReset(this.layer)
-            }
+            },
+            key:"a", description: "A:Buy max AdVaccines", onPress() {
+                if (hasUpgrade("ct",373)) layers.ct.clickables[33].onClick()
+            },
         },
     ],
     tooltipLocked() {
@@ -22472,6 +22554,16 @@ addLayer("ct", {
         if (Vax.lt(5e11)) gain = new Decimal(0)
         return gain.mul(tmp.ct.buyables[161].effect).mul(tmp.ct.getAdvEff)
     },
+    getAntiCapCTNA() {
+        let cmult = new Decimal(1.07)
+        if (hasUpgrade("ct",254)) cmult = cmult.mul(1.1)
+        if (hasUpgrade("ct",281)) cmult = cmult.mul(1.1)
+        if (hasUpgrade("ct",282)) cmult = cmult.mul(1.1)
+        if (hasUpgrade("ct",362)) cmult = cmult.mul(2)
+        if (hasUpgrade("ct",376)) cmult = cmult.mul(tmp.ct.upgrades[376].effect2)
+        let eff = tet10(slog(player.ct.points.max(10)).mul(cmult).add(3))
+        return eff
+    },
     getAdvBaseGain() { 
         let Vax = player.ct.AdEff
         let start = player.ct.inC?Decimal.pow(10,1.05e10):Decimal.pow(10,147956)
@@ -22497,23 +22589,109 @@ addLayer("ct", {
         gain = gain.mul(tmp.ct.buyables[163].effect).mul(tmp.ct.buyables[164].effect)
         return gain
     },
+    AdVaxGain() { 
+        let gain = tmp.ct.buyables[201].gain
+        if (hasUpgrade("ct",375)) gain = gain.mul(tmp.ct.upgrades[375].effect2)
+        if (hasUpgrade("ct",376)) gain = gain.mul(tmp.ct.upgrades[376].effect)
+        if (hasUpgrade("ct",382)) gain = gain.mul(tmp.ct.upgrades[382].effect)
+        if (hasUpgrade("ct",383)) gain = gain.mul(tmp.ct.upgrades[383].effect)
+        if (hasChallenge("ct",11)) gain = gain.mul(tmp.ct.challenges[11].rewardEffect)
+        return gain
+    },
+    aRNAgain() { 
+        let gain = tmp.ct.buyables[201].arna
+        return gain
+    },
+    aRNAeff() { 
+        let eff = player.ct.arna.add(1).pow(0.75)
+        if (challengeCompletions("ct", 11)>=5) eff = eff.pow(1.1)
+        return eff
+    },
+    AAVgain() { 
+        let gain = tmp.ct.buyables[202].aav
+        return gain
+    },
+    AAVeff() { 
+        let eff = powExp(player.ct.aav.add(1).pow(3),1.01)
+        if (challengeCompletions("ct", 12)>=5) eff = powExp(eff,1.1)
+        return eff
+    },
+    AIVgain() { 
+        let gain = tmp.ct.buyables[203].aiv
+        return gain
+    },
+    AIVeff() { 
+        let eff = powExp(player.ct.aiv.add(1).pow(10),1.02)
+        if (challengeCompletions("ct", 21)>=5) eff = powExp(eff,1.05)
+        return eff
+    },
+    ASVgain() { 
+        let gain = tmp.ct.buyables[204].asv
+        return gain
+    },
+    ASVeff() { 
+        let eff = player.ct.asv.add(1).max(1).log10().pow(0.5).div(10)
+        if (challengeCompletions("ct", 22)>=5) eff = eff.mul(1.1)
+        return eff
+    },
+    AdVaxBase() {
+        let b = new Decimal(2)
+        b = b.add(tmp.ct.ASVeff)
+        return b
+    },
+    typeGain() {
+        let gain = new Decimal(1)
+        if (hasUpgrade("ct",386)) gain = gain.mul(5)
+        if (hasUpgrade("ct",391)) gain = gain.mul(5)
+        if (hasUpgrade("ct",392)) gain = gain.mul(tmp.ct.upgrades[392].effect)
+        if (hasUpgrade("ct",393)) gain = gain.mul(10)
+        if (hasUpgrade("ct",393)) gain = gain.mul(10)
+        if (hasChallenge("ct",31)) gain = gain.mul(tmp.ct.challenges[31].rewardEffect)
+        return gain
+    },
+    AdVaccineMult() {
+        let mult = tmp.ct.aRNAeff
+        if (hasUpgrade("ct",384)) mult = mult.mul(tmp.ct.upgrades[384].effect)
+        if (hasUpgrade("ct",385)) mult = mult.mul(tmp.ct.upgrades[385].effect)
+        return mult
+    },
+    AdVaxEff() { 
+        let eff = player.ct.AdVax.add(1).pow(0.75)
+        return eff
+    },
     getUIGain() { 
         let exp = new Decimal(1)
         if (hasUpgrade("ct",283)) exp = exp.add(0.3)
         if (hasUpgrade("ct",291)) exp = exp.add(0.1)
         if (hasUpgrade("ct",292)) exp = exp.add(0.2)
         if (hasUpgrade("ct",294)) exp = exp.add(tmp.ct.upgrades[294].effect)
+        if (hasUpgrade("ct",363)) exp = exp.add(1)
+        if (hasUpgrade("ct",366)) exp = exp.add(tmp.ct.upgrades[366].effect)
+        if (hasUpgrade("ct",381)) exp = exp.add(tmp.ct.upgrades[381].effect)
         let gain = player.ct.Uv.pow(exp)
         if (hasUpgrade("ct",273)) gain = gain.mul(tmp.ct.upgrades[273].effect)
         if (hasUpgrade("ct",281)) gain = gain.mul(tmp.ct.upgrades[281].effect)
         if (hasUpgrade("ct",283)) gain = gain.mul(tmp.ct.upgrades[283].effect)
         if (hasUpgrade("ct",294)) gain = gain.mul(tmp.ct.upgrades[294].effect.max(1))
         if (hasUpgrade("ct",356)) gain = gain.mul(tmp.ct.upgrades[356].effect)
-        return gain.mul(tmp.ct.buyables[181].effect).mul(tmp.ct.AdvaxxerEff)
+        if (hasUpgrade("ct",362)) gain = gain.mul(tmp.ct.upgrades[362].effect)
+        if (hasUpgrade("ct",364)) gain = gain.mul(tmp.ct.upgrades[364].effect)
+        if (hasUpgrade("ct",374)) gain = gain.mul(tmp.ct.upgrades[374].effect)
+        if (hasAchievement("a",194)) gain = gain.mul(player.a.points.max(1))
+        gain = gain.mul(tmp.ct.buyables[181].effect).mul(tmp.ct.AdvaxxerEff)
+        if (hasUpgrade("ct",311)) gain = gain.pow(1.075)
+        if (hasUpgrade("ct",313)) gain = gain.pow(1.05)
+        if (hasUpgrade("ct",312) && (inChallenge("ct",11) || inChallenge("ct",12) || inChallenge("ct",21) || inChallenge("ct",22))) gain = gain.pow(1.25)
+        if (inChallenge("ct",21)) gain = powExp(gain,0.8)
+        if (inChallenge("ct",22)) gain = powExp(gain,0.75)
+        return gain
     },
     getUIEff() { 
         let eff = player.ct.Ui.max(1).log10()
         if (hasUpgrade("ct",284)) eff = eff.pow(1.1)
+        if (hasUpgrade("ct",366)) eff = eff.pow(1.05)
+        if (hasUpgrade("ct",372)) eff = eff.pow(tmp.ct.upgrades[372].effect)
+        if (inChallenge("ct",11)) eff = new Decimal(0)
         return eff
     },
     getVaxEff() { 
@@ -22524,6 +22702,8 @@ addLayer("ct", {
         if (hasUpgrade("ct",193)) exp = exp.add(0.2)
         if (hasUpgrade("ct",205)) exp = exp.mul(tmp.ct.upgrades[205].effect)
         let eff = powExp(player.ct.Avaccines.add(1).mul(10),exp).div(10)
+        if (hasUpgrade("ct",383)) eff = powExp3(eff,tmp.ct.upgrades[383].effect)
+        eff = powExp3(eff,tmp.ct.AAVeff)
         if (player.ct.inC) eff = new Decimal(1)
         return eff
     },
@@ -22551,6 +22731,7 @@ addLayer("ct", {
         if (hasUpgrade("ct",263)) slog = slog.add(0.01)
         if (hasUpgrade("ct",286)) slog = slog.add(0.015)
         if (hasUpgrade("ct",301)) slog = slog.add(0.005)
+        if (hasUpgrade("ct",372)) slog = slog.add(0.01)
         let eff = slogadd(player.ct.AdEff.add(1),0.1).pow(exp)
         if (hasUpgrade("ct",235)) {
             exp = exp.add(5)
@@ -22565,6 +22746,7 @@ addLayer("ct", {
         if (hasUpgrade("ct",264)) exp = exp.add(.5)
         if (hasUpgrade("ct",265)) exp = exp.add(.3)
         if (hasUpgrade("ct",301)) slog = slog.add(0.015)
+        if (hasUpgrade("ct",363)) slog = slog.add(0.01)
         let eff = slogadd(mulSlog(powExp(player.ct.Adversity.add(1).mul(10),exp).div(10),1.075),slog)
         if (eff.gte(Decimal.pow(10,5e5))) eff = eff.log10().div(5e5).pow(0.2).mul(5e5).pow10()
         if (eff.gte(Decimal.pow(10,2e14))) eff = eff.log10().div(2e14).pow(0.35).mul(2e14).pow10()
@@ -22572,7 +22754,9 @@ addLayer("ct", {
     },
     AdvaxxerEff() { 
         let exp = player.ct.bestAdvax.cbrt().mul(4).min(20)
+        if (hasChallenge("ct",22)) exp = exp.mul(tmp.ct.challenges[22].rewardEffect)
         let eff = player.ct.bestAdvax.add(1).pow(exp)
+        if (inChallenge("ct",22)) eff = new Decimal(1)
         return eff
     },
     getCorEff() { 
@@ -22653,6 +22837,10 @@ addLayer("ct", {
         if (hasUpgrade("ct",233)) eff = slogadd(eff,3)
         if (hasUpgrade("ct",241)) mult = mult.mul(1.35)
         if (hasUpgrade("ct",245)) exp = exp.mul(1.35)
+        if (hasUpgrade("ct",372)) exp = exp.mul(1.002)
+        if (hasUpgrade("ct",393)) {
+            if (!(inChallenge("ct",11) || inChallenge("ct",12) || inChallenge("ct",21) || inChallenge("ct",22))) exp = exp.mul(1.011)
+        }
         eff = mulSlog(eff,mult)
         eff = powSlog(eff,exp)
         if (hasUpgrade("ct",253)) {
@@ -22829,11 +23017,28 @@ addLayer("ct", {
         if (hasUpgrade("ct",361)){
             layers.ct.buyables[181].buy()
         }
+        if (hasUpgrade("ct",373)){
+            player.ct.AdVax = player.ct.AdVax.add(tmp.ct.AdVaxGain.mul(diff))
+            player.ct.AdVax0 = player.ct.AdVax0.add(tmp.ct.buyables[202].gain.mul(diff))
+            player.ct.AdVax1 = player.ct.AdVax1.add(tmp.ct.buyables[203].gain.mul(diff))
+            player.ct.AdVax2 = player.ct.AdVax2.add(tmp.ct.buyables[204].gain.mul(diff))
+            player.ct.AdVax3 = player.ct.AdVax3.add(tmp.ct.buyables[211].gain.mul(diff))
+            player.ct.buyables[201] = player.ct.AdVax0
+            player.ct.buyables[202] = player.ct.AdVax1
+            player.ct.buyables[203] = player.ct.AdVax2
+            player.ct.buyables[204] = player.ct.AdVax3
+        }
+        if (hasUpgrade("ct",306)) player.ct.Uv = tmp.ct.clickables[31].gain.max(player.ct.Uv)
         player.ct.bestAdv = player.ct.bestAdv.max(player.ct.Adversity)
         player.ct.bestAdvax = player.ct.bestAdvax.max(player.ct.Advaxxers)
         player.ct.buyables[181] = player.ct.Uib
         player.ct.buyables[191] = player.ct.Av.add(player.ct.Aspent)
         if (hasUpgrade("ct",355)) player.ct.Advaxxers = player.ct.Advaxxers.add(player.ct.bestAps.mul(diff/2))
+        if (player.ct.challenges[11]>=3) player.ct.arna = player.ct.arna.add(tmp.ct.aRNAgain.mul(diff))
+        if (player.ct.challenges[12]>=3) player.ct.aav = player.ct.aav.add(tmp.ct.AAVgain.mul(diff))
+        if (player.ct.challenges[21]>=3) player.ct.aiv = player.ct.aiv.add(tmp.ct.AIVgain.mul(diff))
+        if (player.ct.challenges[22]>=3) player.ct.asv = player.ct.asv.add(tmp.ct.ASVgain.mul(diff))
+        if (hasUpgrade("ct",381) && player.ct.Advaxxers) player.ct.Advaxxers = player.ct.Advaxxers.add(tmp.ct.clickables[32].gain.mul(diff/100))
     },
     canReset() {return player.e.crna.gte(6.25e26) && player.e.mu.gte(1800)},
     getCRNA(){
@@ -22844,6 +23049,8 @@ addLayer("ct", {
         if (hasUpgrade("ct",203)) exp = exp.mul(tmp.ct.upgrades[203].effect)
         if (hasUpgrade("ct",206)) exp = exp.mul(tmp.ct.upgrades[206].effect)
         if (hasUpgrade("ct",234)) exp = exp.mul(1.02)
+        if (hasUpgrade("ct",362)) exp = exp.mul(1.05)
+        if (hasUpgrade("ct",372)) exp = exp.mul(1.05)
         if (c.gte(Decimal.pow(10,1e28))) c = c.log10().log10().div(28).pow(0.3).mul(28).pow10().pow10()
         if (c.gte(Decimal.pow(10,1e300))) c = c.log10().log10().div(300).pow(0.2).mul(300).pow10().pow10()
         if (c.gte(Decimal.tetrate(10,4))) c = Decimal.tetrate(10,slog(c).div(4).pow(0.7).mul(4))
@@ -22928,7 +23135,7 @@ addLayer("ct", {
         if (hasUpgrade("ct",195)) bet = bet.pow(tmp.ct.upgrades[195].effect)
         return bet
     },
-    getWinChance() { 
+    WinChance() { 
         let eff = 18/37
         if (hasUpgrade("ct",121)) eff = 0.5
         if (hasUpgrade("ct",125)) eff = 0.55
@@ -22939,6 +23146,10 @@ addLayer("ct", {
         if (hasUpgrade("ct",166)) eff = 0.85
         if (hasUpgrade("ct",172)) eff = 1-tmp.ct.getLoseChance.toNumber()
         return eff
+    },
+    getWinChance() { 
+        if (player.ct.wset == 0) return player.ct.wchance
+        return tmp.ct.WinChance
     },
     getLoseChance() { 
         let eff = new Decimal(0.15)
@@ -23071,7 +23282,7 @@ addLayer("ct", {
                         return a+b+b1+b2+b3+c+d+d2+e+e2+f+f2
                         }
                     }],
-                    function () {if (player.tab == "ct" && player.subtabs.ct.mainTabs == "Anti-Maskers" && player.subtabs.ct.Anti == "Anti-Roulette") return ["clickables",[1,2]]},
+                    function () {if (player.tab == "ct" && player.subtabs.ct.mainTabs == "Anti-Maskers" && player.subtabs.ct.Anti == "Anti-Roulette") return ["clickables",[4,1,2]]},
                     function () {if (player.tab == "ct" && player.subtabs.ct.mainTabs == "Anti-Maskers" && player.subtabs.ct.Anti == "Anti-Roulette") return ["buyables",[9,10,11,12,13]]},
                 ],
                 unlocked() {
@@ -23176,6 +23387,9 @@ addLayer("ct", {
                     ["row", [["upgrade",301]]],
                     ["row", [["upgrade",302]]],
                     ["row", [["upgrade",303],["upgrade",304],["upgrade",305]]],
+                    ["row", [["upgrade",306]]],
+                    ["row", [["upgrade",311],["upgrade",312]]],
+                    ["row", [["upgrade",313]]],
                 ],
                 buttonStyle: {"border-color": "#153d63"},
                 unlocked() {
@@ -23199,11 +23413,50 @@ addLayer("ct", {
                     }],
                     function () {if (player.tab == "ct" && player.subtabs.ct.mainTabs == "Anti-Maskers" && player.subtabs.ct.Av == "Adverse Vaxxers") return ["row", [["clickable",32]]]},
                     "blank",
-                    function () {if (player.tab == "ct" && player.subtabs.ct.mainTabs == "Anti-Maskers" && player.subtabs.ct.Av == "Adverse Vaxxers") return ["upgrades",[34,35,36]]},
+                    function () {if (player.tab == "ct" && player.subtabs.ct.mainTabs == "Anti-Maskers" && player.subtabs.ct.Av == "Adverse Vaxxers") return ["upgrades",[34,35,36,37,38,39]]},
                 ],
                 buttonStyle: {"border-color": "#153d63"},
                 unlocked() {
                     return hasUpgrade("ct",302) || player.ct.bestAdvax.gte(1)}
+            },
+            "AdVaccines": {
+                content: [
+                    ["raw-html",
+                    function () {
+                        if (player.tab == "ct" && player.subtabs.ct.mainTabs == "Anti-Maskers" && player.subtabs.ct.Av == "AdVaccines") {
+                            let a = "You have "+colorText("h2", "#153d63", formatWhole(player.ct.Advaxxers))+" Adverse Vaxxers, which boost UI gain by "+colorText("h2", "#153d63",format(tmp.ct.AdvaxxerEff))+"<br>"
+                            let b = "You have "+colorText("h2", "#153d63", formatWhole(player.ct.AdVax))+" AdVaxxed Vaccines, which boost Adverse Vaxxer gain by "+colorText("h2", "#153d63",format(tmp.ct.AdVaxEff))+"<br>"
+                            let c = "You are gaining "+format(tmp.ct.AdVaxGain)+" AdVaxxed Vaccines per second<br>"
+                            let d = player.ct.challenges[11]>=3?"You have "+colorText("h2", "#aa0000", formatWhole(player.ct.arna))+" aRNA Vaccines <span style='color:#aa0000'>("+format(tmp.ct.aRNAgain)+"/s)</span> (starts at 1e67 AdVaxxed Vaxxers), which boost AdVaccines by "+colorText("h2", "#aa0000",format(tmp.ct.aRNAeff))+"<br>":""
+                            let e = player.ct.challenges[12]>=3?"You have "+colorText("h2", "#aa5500", formatWhole(player.ct.aav))+" AAV Vaccines <span style='color:#aa5500'>("+format(tmp.ct.AAVgain)+"/s)</span> (starts at 1e53 AdVaxxed AdVaxxers), which boost Anti-Vaccine effect exp<sup>3</sup> by "+colorText("h2", "#aa5500",format(tmp.ct.AAVeff))+"<br>":""
+                            let f = player.ct.challenges[21]>=3?"You have "+colorText("h2", "#00aa55", formatWhole(player.ct.aiv))+" AIV Vaccines <span style='color:#00aa55'>("+format(tmp.ct.AIVgain)+"/s)</span> (starts at 1e32 AnVaxxed Vaccines), which boost UV gain by "+colorText("h2", "#00aa55",format(tmp.ct.AIVeff))+"<br>":""
+                            let g = player.ct.challenges[22]>=3?"You have "+colorText("h2", "#00aaaa", formatWhole(player.ct.asv))+" ASV Vaccines <span style='color:#00aaaa'>("+format(tmp.ct.ASVgain)+"/s)</span> (starts at 1e17 AnVaxxed Vaxxers), which increase multiplier per AdVaccine by "+colorText("h2", "#00aaaa",format(tmp.ct.ASVeff))+"<br>":""
+                        return a+b+c+d+e+f+g
+                        }
+                    }],
+                    function () {if (player.tab == "ct" && player.subtabs.ct.mainTabs == "Anti-Maskers" && player.subtabs.ct.Av == "AdVaccines") return ["row", [["clickable",33]]]},
+                    function () {if (player.tab == "ct" && player.subtabs.ct.mainTabs == "Anti-Maskers" && player.subtabs.ct.Av == "AdVaccines") return ["buyables",[20,21]]},
+                ],
+                buttonStyle: {"border-color": "#153d63"},
+                unlocked() {
+                    return hasUpgrade("ct",373)}
+            },
+            "Challenges": {
+                content: [
+                    ["raw-html",
+                    function () {
+                        if (player.tab == "ct" && player.subtabs.ct.mainTabs == "Anti-Maskers" && player.subtabs.ct.Av == "AdVaccines") {
+                            let a = "You have "+colorText("h2", "#153d63", formatWhole(player.ct.Advaxxers))+" Adverse Vaxxers, which boost UI gain by "+colorText("h2", "#153d63",format(tmp.ct.AdvaxxerEff))+"<br>"
+                            let b = "You have "+colorText("h2", "#153d63", formatWhole(player.ct.AdVax))+" AdVaxxed Vaccines, which boost Adverse Vaxxer gain by "+colorText("h2", "#153d63",format(tmp.ct.AdVaxEff))+"<br>"
+                            let c = "You are gaining "+format(tmp.ct.AdVaxGain)+" AdVaxxed Vaccines per second"
+                        return a+b+c
+                        }
+                    }],
+                    "challenges",
+                ],
+                buttonStyle: {"border-color": "#153d63"},
+                unlocked() {
+                    return hasUpgrade("ct",382)}
             },
         }
     },
@@ -23754,7 +24007,7 @@ addLayer("ct", {
         42: {
             title: "MMCT",
             description: "MMNA boosts CTNA gain.",
-            cost: Decimal.pow(10,6945).mul(3),
+            cost: Decimal.pow(10,6945),
             effect(){
                 let Jisoo = powExp(player.e.mm.add(1),0.15)
                 if (Jisoo.gte(Decimal.pow(10,1e5))) Jisoo = powExp(Jisoo.log10(),2).pow(4000)
@@ -25503,22 +25756,21 @@ addLayer("ct", {
             currencyDisplayName: "Anti-Vaccines",
             currencyLayer: "ct",
             effect(){
-                let cmult = new Decimal(1.07)
-                if (hasUpgrade("ct",254)) cmult = cmult.mul(1.1)
-                if (hasUpgrade("ct",281)) cmult = cmult.mul(1.1)
-                if (hasUpgrade("ct",282)) cmult = cmult.mul(1.1)
-                let Sana = tet10(slog(player.ct.points).mul(cmult).add(3))
+                let Sana = tmp.ct.getAntiCapCTNA
                 let mult = new Decimal(1)
                 let plus = (player.ct.inC||hasUpgrade("ct",355))?tmp.ct.buyables[171].effect:new Decimal(0)
                 if (hasUpgrade("ct",221)) plus = plus.add(tmp.ct.upgrades[221].effect)
                 if (hasUpgrade("ct",235)) plus = plus.add(tmp.ct.upgrades[235].effect)
                 if (hasUpgrade("ct",264)) plus = plus.add(tmp.ct.upgrades[264].effect)
+                if (hasUpgrade("ct",375)) plus = plus.add(tmp.ct.upgrades[375].effect)
                 if (hasUpgrade("ct",265)) plus = plus.add(tmp.ct.getUIEff)
                 if (hasUpgrade("ct",224)) mult = mult.mul(1.015)
                 if (hasUpgrade("ct",226)) mult = mult.mul(1.005)
                 if (hasUpgrade("ct",214)) Sana = mulSlog(Sana,1.01)
+                if (hasChallenge("ct",12)) Sana = mulSlog(Sana,tmp.ct.challenges[12].rewardEffect)
                 Sana = slogadd(Sana,plus)
                 Sana = mulSlog(Sana,mult)
+                if (inChallenge("ct",12)) Sana = new Decimal(1)
                 return Sana
             },
             effect2(){
@@ -26177,6 +26429,7 @@ addLayer("ct", {
                 if (Nayeon.gte(1e100)) Nayeon = Nayeon.log10().div(100).pow(0.5).mul(100).pow10()
                 if (Nayeon.gte(Decimal.pow(10,1e50))) Nayeon = Nayeon.log10().div(1e50).pow(0.5).mul(1e50).pow10()
                 if (Nayeon.gte(Decimal.pow(10,1e100))) Nayeon = Nayeon.log10().div(1e100).pow(0.3).mul(1e100).pow10()
+                if (Nayeon.gte(Decimal.pow(10,Decimal.pow(10,7e4)))) Nayeon = Nayeon.log10().log10().div(7e4).pow(0.2).mul(7e4).pow10().pow10()
                 return Nayeon
             },
             effectDisplay(){
@@ -26291,6 +26544,8 @@ addLayer("ct", {
             effect(){
                 let Jihyo = player.ct.Avaxxers.max(10).log10().pow(0.21063)
                 if (Jihyo.gte(Decimal.pow(10,3e3))) Jihyo = Jihyo.log10().div(3e3).pow(0.2).mul(3e3).pow10()
+                if (Jihyo.gte(Decimal.pow(10,1e5))) Jihyo = powExp(Jihyo.log10().pow(2),5)
+                if (Jihyo.gte(Decimal.pow(10,2e6))) Jihyo = powExp(Jihyo.log10().div(2).mul(1e4),6).pow(2)
                 return Jihyo
             },
             effectDisplay(){
@@ -26571,6 +26826,7 @@ addLayer("ct", {
                 let Jeongyeon = tmp.ct.buyables[161].base.max(10).log10().max(10).log10().sub(4.5).max(1).pow(0.25)
                 if (hasUpgrade("ct",286)) Jeongyeon = Jeongyeon.pow(3)
                 if (hasUpgrade("ct",302)) Jeongyeon = Jeongyeon.pow(Decimal.pow(2,.5))
+                if (hasUpgrade("ct",371)) Jeongyeon = Jeongyeon.pow(2)
                 return Jeongyeon
             },
             effectDisplay(){
@@ -26688,6 +26944,8 @@ addLayer("ct", {
                 let Mina = powExp(player.ct.Adversity.max(10).log10(),1.1).pow(0.3).sub(1).mul(1.2274)
                 if (Mina.gte(100) && player.ct.inC) Mina = Mina.div(100).pow(0.17).mul(100)
                 if (Mina.gte(900)) Mina = Mina.div(900).pow(0.1).mul(900)
+                if (Mina.gte(2e7)) Mina = Mina.div(2e7).pow(0.4).mul(2e7)
+                if (Mina.gte(5e7)) Mina = Mina.div(5).log10().add(3).pow(7).mul(5)
                 return Mina
             },
             effectDisplay(){
@@ -26823,9 +27081,10 @@ addLayer("ct", {
             currencyDisplayName: "Adverse Effects",
             currencyLayer: "ct",
             effect(){
+                let softcap = Decimal.pow(2,1024)
                 let Jisoo = powExp(player.ct.bestAdv.max(10).log10().sub(9.7e4),0.9).pow(0.85)
                 if (hasUpgrade("ct",296)) Jisoo = slogadd(Jisoo,0.4)
-                if (Jisoo.gte(Decimal.pow(2,1024))) Jisoo = Decimal.pow(2,Jisoo.log(2).div(1024).pow(0.5).mul(1024))
+                if (Jisoo.gte(softcap)) Jisoo = Decimal.pow(2,Jisoo.log(2).div(softcap.log(2)).pow(0.5).mul(softcap.log(2)))
                 return Jisoo
             },
             effectDisplay(){
@@ -26891,6 +27150,8 @@ addLayer("ct", {
                 let exp = new Decimal(2.5)
                 if (hasUpgrade("ct",301)) exp = exp.add(1.2)
                 if (hasUpgrade("ct",361)) exp = exp.add(1)
+                if (hasUpgrade("ct",366)) exp = exp.add(3)
+                if (hasUpgrade("ct",373)) exp = exp.add(4.2)
                 let Rosé = powExp(player.ct.Ui.max(1),exp).pow(exp)
                 if (player.ct.inC) Rosé = powExp(Rosé,0.2)
                 return Rosé
@@ -26946,6 +27207,7 @@ addLayer("ct", {
             currencyLayer: "ct",
             effect(){
                 let Lisa = player.ct.Avaxxers.max(10).log10().max(10).log10().pow(0.7)
+                if (hasUpgrade("ct",381)) Lisa = slogadd(Lisa,0.42)
                 return Lisa
             },
             effectDisplay(){
@@ -27368,8 +27630,24 @@ addLayer("ct", {
             currencyDisplayName: "Anti-Vaxxed Vaxxers",
             currencyLayer: "ct",
             effect(){
-                let time = new Decimal(player.ct.AdvTime).div(5)
-                let eff = Decimal.div(1e3,Decimal.pow(15,time.log10().mul(time.pow(0.3)))).max(1)
+                let d = new Decimal(5)
+                let mult = new Decimal(1e3)
+                if (hasUpgrade("ct",362)) d = d.mul(1.25)
+                if (hasUpgrade("ct",365)) {
+                    d = d.mul(2)
+                    mult = mult.mul(5)
+                }
+                if (hasUpgrade("ct",374)) d = d.mul(1.25)
+                if (hasUpgrade("ct",306)) {
+                    d = d.mul(3)
+                    mult = mult.mul(10)
+                }
+                if (hasUpgrade("ct",393)) {
+                    d = d.mul(2)
+                    mult = mult.mul(2)
+                }
+                let time = new Decimal(player.ct.AdvTime).max(0.0001).div(d)
+                let eff = Decimal.div(mult,Decimal.pow(15,time.log10().mul(time.pow(0.3)))).max(1)
                 return eff
             },
             effectDisplay(){
@@ -27379,11 +27657,13 @@ addLayer("ct", {
                 return hasUpgrade("ct",355)
             },
             canAfford() {
-                return player.ct.Av.gte(200) && (hasUpgrade("ct",302)) && !(hasUpgrade("ct",304) || hasUpgrade("ct",305))
+                return player.ct.Av.gte(200) && (hasUpgrade("ct",302)) && (!(hasUpgrade("ct",304) || hasUpgrade("ct",305)) || hasUpgrade("ct",365))
             },
             pay() {
                 player.ct.Av = player.ct.Av.sub(200)
                 player.ct.Aspent = player.ct.Aspent.add(200)
+                layers.ct.clickables[32].onClick()
+                
             },
             style: {
                 "background"() {
@@ -27397,13 +27677,16 @@ addLayer("ct", {
         },
         304: {
             title: "72",
-            description: "Multiply Adverse Vaxxer gain by 1000.",
+            description: "Multiply Adverse Vaxxer gain.",
             cost: new Decimal(200),
             currencyInternalName: "Ui",
             currencyDisplayName: "Anti-Vaxxed Vaxxers",
             currencyLayer: "ct",
             effect(){
                 let eff = new Decimal(1e3)
+                if (hasUpgrade("ct",372)) eff = eff.mul(10)
+                if (hasUpgrade("ct",306)) eff = eff.mul(3)
+                if (hasUpgrade("ct",393)) eff = eff.mul(5)
                 return eff
             },
             effectDisplay(){
@@ -27413,11 +27696,12 @@ addLayer("ct", {
                 return hasUpgrade("ct",355)
             },
             canAfford() {
-                return player.ct.Av.gte(200) && (hasUpgrade("ct",302)) && !(hasUpgrade("ct",303) || hasUpgrade("ct",305))
+                return player.ct.Av.gte(200) && (hasUpgrade("ct",302)) && (!(hasUpgrade("ct",303) || hasUpgrade("ct",305)) || hasUpgrade("ct",365))
             },
             pay() {
                 player.ct.Av = player.ct.Av.sub(200)
                 player.ct.Aspent = player.ct.Aspent.add(200)
+                layers.ct.clickables[32].onClick()
             },
             style: {
                 "background"() {
@@ -27437,8 +27721,23 @@ addLayer("ct", {
             currencyDisplayName: "Anti-Vaxxed Vaxxers",
             currencyLayer: "ct",
             effect(){
-                let time = new Decimal(player.ct.AdvTime).div(5)
-                let eff = Decimal.pow(15,time.log10().mul(time.pow(0.3))).min(5e3)
+                let cap = new Decimal(5e3)
+                let d = new Decimal(5)
+                if (hasUpgrade("ct",362)) {
+                    d = d.div(1.25)
+                    cap = cap.mul(2)
+                }
+                if (hasUpgrade("ct",366)) {
+                    d = d.div(1.5)
+                    cap = cap.mul(5)
+                }
+                if (hasUpgrade("ct",393)) {
+                    d = d.div(1.5)
+                    cap = cap.mul(5)
+                }
+                if (hasUpgrade("ct",306)) d = d.div(1.5)
+                let time = new Decimal(player.ct.AdvTime).max(0.0001).div(d)
+                let eff = Decimal.pow(15,time.log10().mul(time.pow(0.3))).min(cap)
                 return eff
             },
             effectDisplay(){
@@ -27448,17 +27747,127 @@ addLayer("ct", {
                 return hasUpgrade("ct",355)
             },
             canAfford() {
-                return player.ct.Av.gte(200) && (hasUpgrade("ct",302)) && !(hasUpgrade("ct",303) || hasUpgrade("ct",304))
+                return player.ct.Av.gte(200) && (hasUpgrade("ct",302)) && (!(hasUpgrade("ct",303) || hasUpgrade("ct",304)) || hasUpgrade("ct",365))
             },
             pay() {
                 player.ct.Av = player.ct.Av.sub(200)
                 player.ct.Aspent = player.ct.Aspent.add(200)
+                layers.ct.clickables[32].onClick()
             },
             style: {
                 "background"() {
                     if (!hasUpgrade("ct",305)) {
                     let color = "#bf8f8f"
                     if (tmp.ct.upgrades[305].canAfford) color = "radial-gradient(#383434, #153d63)"
+                    return color
+                    }
+                }
+            }
+        },
+        306: {
+            title: "81",
+            description: "You can get UV out of Vaccination, Adverse Vaxxer gain exp is 1/308.",
+            cost: new Decimal(900),
+            currencyInternalName: "Ui",
+            currencyDisplayName: "Anti-Vaxxed Vaxxers",
+            currencyLayer: "ct",
+            unlocked() {
+                return hasUpgrade("ct",376)
+            },
+            canAfford() {
+                return player.ct.Av.gte(900) && (hasUpgrade("ct",303) || hasUpgrade("ct",304) || hasUpgrade("ct",305))
+            },
+            pay() {
+                player.ct.Av = player.ct.Av.sub(900)
+                player.ct.Aspent = player.ct.Aspent.add(900)
+            },
+            style: {
+                "background"() {
+                    if (!hasUpgrade("ct",306)) {
+                    let color = "#bf8f8f"
+                    if (tmp.ct.upgrades[306].canAfford) color = "radial-gradient(#383434, #153d63)"
+                    return color
+                    }
+                }
+            }
+        },
+        311: {
+            title: "91",
+            description: "UI gain ^1.075.",
+            cost: new Decimal(870),
+            currencyInternalName: "Ui",
+            currencyDisplayName: "Anti-Vaxxed Vaxxers",
+            currencyLayer: "ct",
+            unlocked() {
+                return hasUpgrade("ct",383)
+            },
+            canAfford() {
+                return player.ct.Av.gte(870) && hasUpgrade("ct",306) && !hasUpgrade("ct",312)
+            },
+            pay() {
+                player.ct.Av = player.ct.Av.sub(870)
+                player.ct.Aspent = player.ct.Aspent.add(870)
+            },
+            style: {
+                "background"() {
+                    if (!hasUpgrade("ct",311)) {
+                    let color = "#bf8f8f"
+                    if (tmp.ct.upgrades[311].canAfford) color = "radial-gradient(#383434, #153d63)"
+                    return color
+                    }
+                }
+            }
+        },
+        312: {
+            title: "92",
+            description: "UI gain ^1.25 in Challenges.",
+            cost: new Decimal(870),
+            currencyInternalName: "Ui",
+            currencyDisplayName: "Anti-Vaxxed Vaxxers",
+            currencyLayer: "ct",
+            unlocked() {
+                return hasUpgrade("ct",383)
+            },
+            canAfford() {
+                return player.ct.Av.gte(870) && hasUpgrade("ct",306) && !hasUpgrade("ct",311)
+            },
+            pay() {
+                player.ct.Av = player.ct.Av.sub(870)
+                player.ct.Aspent = player.ct.Aspent.add(870)
+            },
+            style: {
+                "background"() {
+                    if (!hasUpgrade("ct",312)) {
+                    let color = "#bf8f8f"
+                    if (tmp.ct.upgrades[312].canAfford) color = "radial-gradient(#383434, #153d63)"
+                    return color
+                    }
+                }
+            }
+        },
+        313: {
+            title: "101",
+            description: "UI gain ^1.05, Unlock a challenge.",
+            cost: new Decimal(1e3),
+            currencyInternalName: "Ui",
+            currencyDisplayName: "Anti-Vaxxed Vaxxers",
+            currencyLayer: "ct",
+            unlocked() {
+                return hasUpgrade("ct",391)
+            },
+            canAfford() {
+                return player.ct.Av.gte(1e3) && (hasUpgrade("ct",311) || hasUpgrade("ct",312))
+            },
+            pay() {
+                player.ct.Av = player.ct.Av.sub(1e3)
+                player.ct.Aspent = player.ct.Aspent.add(1e3)
+                updateTemp()
+            },
+            style: {
+                "background"() {
+                    if (!hasUpgrade("ct",313)) {
+                    let color = "#bf8f8f"
+                    if (tmp.ct.upgrades[313].canAfford) color = "radial-gradient(#383434, #153d63)"
                     return color
                     }
                 }
@@ -27505,6 +27914,7 @@ addLayer("ct", {
                 let Jisoo = player.ct.Ui.max(10).log10().sub(666).max(1).pow(0.8).sub(1).div(3)
                 if (Jisoo.gte(25)) Jisoo = Jisoo.div(25).pow(0.2).mul(25)
                 if (Jisoo.gte(30)) Jisoo = Jisoo.div(30).pow(0.3).mul(30)
+                if (Jisoo.gte(33.75)) Jisoo = Decimal.sub(34,Jisoo.div(33.75).recip().pow(5).mul(.25))
                 return Jisoo.min(33.99)
             },
             effectDisplay(){
@@ -27594,8 +28004,8 @@ addLayer("ct", {
             currencyDisplayName: "Adverse Vaxxers",
             currencyLayer: "ct",
             effect(){
-                let Jisoo = player.ct.Advaxxers.add(2).mul(3).pow(1.5)
-                return Jisoo
+                let Jennie = player.ct.Advaxxers.add(2).mul(3).pow(1.5)
+                return Jennie
             },
             effectDisplay(){
                 return format(tmp.ct.upgrades[344].effect)+"x"
@@ -27667,9 +28077,9 @@ addLayer("ct", {
             currencyDisplayName: "Adverse Vaxxers",
             currencyLayer: "ct",
             effect(){
-                let Jisoo = player.ct.Advaxxers.add(1).pow(.2).mul(10)
-                if (Jisoo.gte(50)) Jisoo = Jisoo.mul(2).log10().mul(25)
-                return Jisoo
+                let Rosé = player.ct.Advaxxers.add(1).pow(.2).mul(10)
+                if (Rosé.gte(50)) Rosé = Rosé.mul(2).log10().mul(25)
+                return Rosé
             },
             effectDisplay(){
                 return "^^"+format(tmp.ct.upgrades[351].effect)
@@ -27698,9 +28108,10 @@ addLayer("ct", {
             currencyDisplayName: "Adverse Vaxxers",
             currencyLayer: "ct",
             effect(){
-                let Jisoo = player.ct.Advaxxers.add(1).pow(.2222).mul(25)
-                if (Jisoo.gte(200)) Jisoo = Jisoo.div(2).log10().mul(100)
-                return Jisoo
+                let Lisa = player.ct.Advaxxers.add(1).pow(.2222).mul(25)
+                if (Lisa.gte(200)) Lisa = Lisa.div(2).log10().mul(100)
+                if (Lisa.gte(4e3)) Lisa = Lisa.div(4e3).pow(0.5).mul(4e3)
+                return Lisa
             },
             effectDisplay(){
                 return "+"+format(tmp.ct.upgrades[352].effect)
@@ -27729,8 +28140,9 @@ addLayer("ct", {
             currencyDisplayName: "Adverse Vaxxers",
             currencyLayer: "ct",
             effect(){
-                let Jisoo = player.ct.Advaxxers.max(10).log10().mul(2)
-                return Jisoo
+                let Nayeon = player.ct.Advaxxers.max(10).log10().mul(2)
+                if (Nayeon.gte(100)) Nayeon = Nayeon.div(100).pow(0.3).mul(100)
+                return Nayeon
             },
             effectDisplay(){
                 return "^"+format(tmp.ct.upgrades[353].effect)
@@ -27759,8 +28171,10 @@ addLayer("ct", {
             currencyDisplayName: "Adverse Vaxxers",
             currencyLayer: "ct",
             effect(){
-                let Jisoo = player.ct.Advaxxers.max(10).log10().pow(0.2).sub(1).div(4)
-                return Jisoo
+                let Jeongyeon = player.ct.Advaxxers.max(10).log10().pow(0.2).sub(1).div(4)
+                if (Jeongyeon.gte(0.485)) Jeongyeon = Decimal.sub(0.499,Jeongyeon.recip().mul(0.097)).add(0.186)
+                if (Jeongyeon.gte(0.493)) Jeongyeon = Jeongyeon.div(0.493).pow(0.07).mul(0.493)
+                return Jeongyeon.min(0.495)
             },
             effectDisplay(){
                 return "-"+format(tmp.ct.upgrades[354].effect)
@@ -27789,8 +28203,8 @@ addLayer("ct", {
             currencyDisplayName: "Adverse Vaxxers",
             currencyLayer: "ct",
             effect(){
-                let Jisoo = player.ct.bestAps.div(2)
-                return Jisoo
+                let Momo = player.ct.bestAps.div(2)
+                return Momo
             },
             effectDisplay(){
                 let dis = ""
@@ -27824,8 +28238,8 @@ addLayer("ct", {
             currencyDisplayName: "Adverse Vaxxers",
             currencyLayer: "ct",
             effect(){
-                let Jisoo = slog(player.points.max(10)).pow(0.5050505).pow10()
-                return Jisoo
+                let Sana = slog(player.points.max(10)).pow(0.5050505).pow10()
+                return Sana
             },
             effectDisplay(){
                 return format(tmp.ct.upgrades[356].effect)+"x"
@@ -27869,6 +28283,818 @@ addLayer("ct", {
                 }
             }
         },
+        362: { // Karina, Giselle, Winter, Ningning, Jisoo, Jennie, Rosé, Lisa
+            title: "Infected UI",
+            description: "IN boost UI gain, Double 'Anti-Capped' CTNA slog, CRNA slog^1.05, AdVaxr gain exp is 1/400.",
+            cost: new Decimal(5e10),
+            currencyInternalName: "Advaxxers",
+            currencyDisplayName: "Adverse Vaxxers",
+            currencyLayer: "ct",
+            effect(){
+                let Karina = slog(player.e.points.max(10)).pow(0.63).pow10()
+                return Karina
+            },
+            effectDisplay(){
+                return format(tmp.ct.upgrades[362].effect)+"x"
+            },
+            unlocked() {
+                return hasUpgrade("ct",361)
+            },
+            canAfford() {
+                return player.ct.Advaxxers.gte(5e10)
+            },
+            style: {
+                "background"() {
+                    if (!hasUpgrade("ct",362)) {
+                    let color = "#bf8f8f"
+                    if (tmp.ct.upgrades[362].canAfford) color = "radial-gradient(#383434, #153d63)"
+                    return color
+                    }
+                }
+            }
+        },
+        363: {
+            title: "Capped Vaxxers",
+            description: "Adverse Vaxxers add to 'Capped' exp, UV boost to UI gain exp+1, Adversity slog+0.01.",
+            cost: new Decimal(2e13),
+            currencyInternalName: "Advaxxers",
+            currencyDisplayName: "Adverse Vaxxers",
+            currencyLayer: "ct",
+            effect(){
+                let Giselle = player.ct.Advaxxers.max(10).log10().div(3).max(1).pow(0.25).sub(1).div(3)
+                if (Giselle.gte(0.23)) Giselle = Giselle.div(.23).pow(0.1).mul(.23)
+                if (Giselle.gte(0.26)) Giselle = Giselle.div(.26).pow(0.4).mul(.26)
+                return Giselle
+            },
+            effectDisplay(){
+                return "+"+format(tmp.ct.upgrades[363].effect)
+            },
+            unlocked() {
+                return hasUpgrade("ct",362)
+            },
+            canAfford() {
+                return player.ct.Advaxxers.gte(2e13)
+            },
+            style: {
+                "background"() {
+                    if (!hasUpgrade("ct",363)) {
+                    let color = "#bf8f8f"
+                    if (tmp.ct.upgrades[363].canAfford) color = "radial-gradient(#383434, #153d63)"
+                    return color
+                    }
+                }
+            }
+        },
+        364: {
+            title: "Anti-UI",
+            description: "Unspent Anti-Vaxxed Vaxxers boost UI gain.",
+            cost: new Decimal(1e17),
+            currencyInternalName: "Advaxxers",
+            currencyDisplayName: "Adverse Vaxxers",
+            currencyLayer: "ct",
+            effect(){
+                let Winter = Decimal.pow(30,player.ct.Av)
+                return Winter
+            },
+            effectDisplay(){
+                return format(tmp.ct.upgrades[364].effect)+'x'
+            },
+            unlocked() {
+                return hasUpgrade("ct",363)
+            },
+            canAfford() {
+                return player.ct.Advaxxers.gte(1e17)
+            },
+            style: {
+                "background"() {
+                    if (!hasUpgrade("ct",364)) {
+                    let color = "#bf8f8f"
+                    if (tmp.ct.upgrades[364].canAfford) color = "radial-gradient(#383434, #153d63)"
+                    return color
+                    }
+                }
+            }
+        },
+        365: {
+            title: "AdAnti",
+            description: "You can pick all paths in the 3 way split, '71' time is 2x slower, mult x5.",
+            cost: new Decimal(1e20),
+            currencyInternalName: "Advaxxers",
+            currencyDisplayName: "Adverse Vaxxers",
+            currencyLayer: "ct",
+            unlocked() {
+                return hasUpgrade("ct",364)
+            },
+            canAfford() {
+                return player.ct.Advaxxers.gte(1e20)
+            },
+            style: {
+                "background"() {
+                    if (!hasUpgrade("ct",365)) {
+                    let color = "#bf8f8f"
+                    if (tmp.ct.upgrades[365].canAfford) color = "radial-gradient(#383434, #153d63)"
+                    return color
+                    }
+                }
+            }
+        },
+        366: {
+            title: "Adverse Exp",
+            description: "Adverse Vaxxers add to UV boost to UI gain exp, UI eff^1.05, '73' time is 1.5x faster, cap x5.",
+            cost: new Decimal(1.525e25),
+            currencyInternalName: "Advaxxers",
+            currencyDisplayName: "Adverse Vaxxers",
+            currencyLayer: "ct",
+            effect(){
+                let Ningning = player.ct.Advaxxers.max(10).log10().div(5).max(1).pow(0.3).sub(1).div(3)
+                return Ningning
+            },
+            effectDisplay(){
+                return "+"+format(tmp.ct.upgrades[366].effect)
+            },
+            unlocked() {
+                return hasUpgrade("ct",365)
+            },
+            canAfford() {
+                return player.ct.Advaxxers.gte(1.525e25)
+            },
+            style: {
+                "background"() {
+                    if (!hasUpgrade("ct",366)) {
+                    let color = "#bf8f8f"
+                    if (tmp.ct.upgrades[366].canAfford) color = "radial-gradient(#383434, #153d63)"
+                    return color
+                    }
+                }
+            }
+        },
+        371: {
+            title: "Adverse Advaxxer",
+            description: "Best Adversities boost AdVaxr gain, AG exp is 1.053, AG2 cost base is 1e6, exp is 1.1.",
+            cost: new Decimal(1e32),
+            currencyInternalName: "Advaxxers",
+            currencyDisplayName: "Adverse Vaxxers",
+            currencyLayer: "ct",
+            effect(){
+                let Jisoo = powExp(player.ct.bestAdv.max(10).log10(),.9).pow(0.15)
+                return Jisoo
+            },
+            effectDisplay(){
+                return format(tmp.ct.upgrades[371].effect)+"x"
+            },
+            unlocked() {
+                return hasUpgrade("ct",366)
+            },
+            canAfford() {
+                return player.ct.Advaxxers.gte(1e32)
+            },
+            style: {
+                "background"() {
+                    if (!hasUpgrade("ct",371)) {
+                    let color = "#bf8f8f"
+                    if (tmp.ct.upgrades[371].canAfford) color = "radial-gradient(#383434, #153d63)"
+                    return color
+                    }
+                }
+            }
+        },
+        372: {
+            title: "UI AdVax",
+            description: "Adverse Vaxxers boost UI effect, AE boost slog+0.01, '72' eff x10.",
+            cost: new Decimal(3.838e38),
+            currencyInternalName: "Advaxxers",
+            currencyDisplayName: "Adverse Vaxxers",
+            currencyLayer: "ct",
+            effect(){
+                let Jennie = player.ct.Advaxxers.max(10).log10().max(10).log10().pow(0.1)
+                return Jennie
+            },
+            effectDisplay(){
+                return "^"+format(tmp.ct.upgrades[372].effect)
+            },
+            unlocked() {
+                return hasUpgrade("ct",371)
+            },
+            canAfford() {
+                return player.ct.Advaxxers.gte(3.838e38)
+            },
+            style: {
+                "background"() {
+                    if (!hasUpgrade("ct",372)) {
+                    let color = "#bf8f8f"
+                    if (tmp.ct.upgrades[372].canAfford) color = "radial-gradient(#383434, #153d63)"
+                    return color
+                    }
+                }
+            }
+        },
+        373: {
+            title: "AdCases",
+            description: "Cases boost Adverse Vaxxer gain, AdVaxr gain exp is 1/350, Unlock AdVaccines.",
+            cost: new Decimal(5.151e51),
+            currencyInternalName: "Advaxxers",
+            currencyDisplayName: "Adverse Vaxxers",
+            currencyLayer: "ct",
+            effect(){
+                let Rosé = slog(player.points.max(10)).pow(0.13).pow10()
+                return Rosé
+            },
+            effectDisplay(){
+                return format(tmp.ct.upgrades[373].effect)+"x"
+            },
+            unlocked() {
+                return hasUpgrade("ct",372)
+            },
+            canAfford() {
+                return player.ct.Advaxxers.gte(5.151e51)
+            },
+            style: {
+                "background"() {
+                    if (!hasUpgrade("ct",373)) {
+                    let color = "#bf8f8f"
+                    if (tmp.ct.upgrades[373].canAfford) color = "radial-gradient(#383434, #153d63)"
+                    return color
+                    }
+                }
+            }
+        },
+        374: {
+            title: "AdUI",
+            description: "AdVaxxed Vaccines boost UI gain.",
+            cost: new Decimal(5e77),
+            currencyInternalName: "Advaxxers",
+            currencyDisplayName: "Adverse Vaxxers",
+            currencyLayer: "ct",
+            effect(){
+                let Lisa = player.ct.AdVax.add(1).pow(50)
+                return Lisa
+            },
+            effectDisplay(){
+                return format(tmp.ct.upgrades[374].effect)+"x"
+            },
+            unlocked() {
+                return hasUpgrade("ct",373)
+            },
+            canAfford() {
+                return player.ct.Advaxxers.gte(5e77)
+            },
+            style: {
+                "background"() {
+                    if (!hasUpgrade("ct",374)) {
+                    let color = "#bf8f8f"
+                    if (tmp.ct.upgrades[374].canAfford) color = "radial-gradient(#383434, #153d63)"
+                    return color
+                    }
+                }
+            }
+        },
+        375: {
+            title: "AdSlog",
+            description: "AdVaxxed Vaccines(AdVaxd) add to AC slog, AdVaxr boosts AdVaxd gain.",
+            cost: new Decimal(8.282e82),
+            currencyInternalName: "Advaxxers",
+            currencyDisplayName: "Adverse Vaxxers",
+            currencyLayer: "ct",
+            effect(){
+                let Karina = player.ct.AdVax.max(10).log10().pow(1.4).mul(500)
+                return Karina
+            },
+            effect2(){
+                let Giselle = powExp(player.ct.Advaxxers.max(10).log10(),1.1).pow(1.2)
+                return Giselle
+            },
+            effectDisplay(){
+                return "+"+format(tmp.ct.upgrades[375].effect)+", "+format(tmp.ct.upgrades[375].effect2)+"x"
+            },
+            unlocked() {
+                return hasUpgrade("ct",374)
+            },
+            canAfford() {
+                return player.ct.Advaxxers.gte(8.282e82)
+            },
+            style: {
+                "background"() {
+                    if (!hasUpgrade("ct",375)) {
+                    let color = "#bf8f8f"
+                    if (tmp.ct.upgrades[375].canAfford) color = "radial-gradient(#383434, #153d63)"
+                    return color
+                    }
+                }
+            }
+        },
+        376: {
+            title: "AdVersity",
+            description: "Best Adversities boost AdVaxd gain, AdVaxd boost AC CTNA slog, Unlock an AdVax.",
+            cost: new Decimal(2.92e92),
+            currencyInternalName: "Advaxxers",
+            currencyDisplayName: "Adverse Vaxxers",
+            currencyLayer: "ct",
+            effect(){
+                let Winter = powExp(player.ct.bestAdv.max(10).log10(),.82).pow(0.15)
+                return Winter
+            },
+            effect2(){
+                let Ningning = player.ct.AdVax.max(10).log10().pow(.2)
+                return Ningning
+            },
+            effectDisplay(){
+                return format(tmp.ct.upgrades[376].effect)+"x, "+format(tmp.ct.upgrades[376].effect2)+"x"
+            },
+            unlocked() {
+                return hasUpgrade("ct",375)
+            },
+            canAfford() {
+                return player.ct.Advaxxers.gte(2.92e92)
+            },
+            style: {
+                "background"() {
+                    if (!hasUpgrade("ct",376)) {
+                    let color = "#bf8f8f"
+                    if (tmp.ct.upgrades[376].canAfford) color = "radial-gradient(#383434, #153d63)"
+                    return color
+                    }
+                }
+            }
+        },
+        381: {
+            title: "AdExp",
+            description: "AdVaxxed Vaccines add to UV boost to UI exp, gain 1% of AdVaxr gain per second.",
+            cost: new Decimal(1.111e111),
+            currencyInternalName: "Advaxxers",
+            currencyDisplayName: "Adverse Vaxxers",
+            currencyLayer: "ct",
+            effect(){
+                let Jisoo = player.ct.AdVax.max(10).log10().pow(0.2).sub(1)
+                return Jisoo
+            },
+            effectDisplay(){
+                return "+"+format(tmp.ct.upgrades[381].effect)
+            },
+            unlocked() {
+                return hasUpgrade("ct",376)
+            },
+            canAfford() {
+                return player.ct.Advaxxers.gte(1.111e111)
+            },
+            style: {
+                "background"() {
+                    if (!hasUpgrade("ct",381)) {
+                    let color = "#bf8f8f"
+                    if (tmp.ct.upgrades[381].canAfford) color = "radial-gradient(#383434, #153d63)"
+                    return color
+                    }
+                }
+            }
+        },
+        382: {
+            title: "Anti-Vaxxed AdVax",
+            description: "Unspent Anti-Vaxxed Vaxxers boost AdVaxd gain, unlock Challenges.",
+            cost: new Decimal(1.616e161),
+            currencyInternalName: "Advaxxers",
+            currencyDisplayName: "Adverse Vaxxers",
+            currencyLayer: "ct",
+            effect(){
+                let Jennie = Decimal.pow(1.02,player.ct.Av.add(500))
+                return Jennie
+            },
+            effectDisplay(){
+                return format(tmp.ct.upgrades[382].effect)+"x"
+            },
+            unlocked() {
+                return hasUpgrade("ct",381)
+            },
+            canAfford() {
+                return player.ct.Advaxxers.gte(1.616e161)
+            },
+            style: {
+                "background"() {
+                    if (!hasUpgrade("ct",382)) {
+                    let color = "#bf8f8f"
+                    if (tmp.ct.upgrades[382].canAfford) color = "radial-gradient(#383434, #153d63)"
+                    return color
+                    }
+                }
+            }
+        },
+        383: {
+            title: "AdVaxxed UI",
+            description: "UI boost AdVaxd gain and Anti-Vax eff exp<sup>3</sup>.",
+            cost: new Decimal(2.424e242),
+            currencyInternalName: "Advaxxers",
+            currencyDisplayName: "Adverse Vaxxers",
+            currencyLayer: "ct",
+            effect(){
+                let Rosé = powExp(player.ct.Ui.add(1),1/3).pow(2/9)
+                return Rosé
+            },
+            effectDisplay(){
+                return format(tmp.ct.upgrades[383].effect)+"x"
+            },
+            unlocked() {
+                return hasUpgrade("ct",382)
+            },
+            canAfford() {
+                return player.ct.Advaxxers.gte(2.424e242)
+            },
+            style: {
+                "background"() {
+                    if (!hasUpgrade("ct",383)) {
+                    let color = "#bf8f8f"
+                    if (tmp.ct.upgrades[383].canAfford) color = "radial-gradient(#383434, #153d63)"
+                    return color
+                    }
+                }
+            }
+        },
+        384: {
+            title: "Challenged Vaccines",
+            description() {return "Multiply AdVaccines by Challenge 1,2,3 comps^^"+(hasUpgrade("ct",391)?"1.8":(hasUpgrade("ct",386)?"1.7":"1.5"))+"."},
+            cost: Decimal.pow(10,363).mul(3.636),
+            currencyInternalName: "Advaxxers",
+            currencyDisplayName: "Adverse Vaxxers",
+            currencyLayer: "ct",
+            effect(){
+                let chall = player.ct.challenges[11]+player.ct.challenges[12]+player.ct.challenges[21]
+                if (hasUpgrade("ct",394)) chall +=(player.ct.challenges[22]+player.ct.challenges[31])
+                let tet = 1.5
+                if (hasUpgrade("ct",386)) tet+=0.2
+                if (hasUpgrade("ct",391)) tet+=0.1
+                let Lisa = Decimal.tetrate(chall,tet)
+                return Lisa
+            },
+            effectDisplay(){
+                return format(tmp.ct.upgrades[384].effect)+"x"
+            },
+            unlocked() {
+                return hasUpgrade("ct",383)
+            },
+            canAfford() {
+                return player.ct.Advaxxers.gte(Decimal.pow(10,363).mul(3.636))
+            },
+            style: {
+                "background"() {
+                    if (!hasUpgrade("ct",384)) {
+                    let color = "#bf8f8f"
+                    if (tmp.ct.upgrades[384].canAfford) color = "radial-gradient(#383434, #153d63)"
+                    return color
+                    }
+                }
+            }
+        },
+        385: {
+            title: "Anti-Masked Vaccines",
+            description: "Anti-Maskers boost AdVaccines, unlock a challenge.",
+            cost: Decimal.pow(10,393).mul(3.939),
+            currencyInternalName: "Advaxxers",
+            currencyDisplayName: "Adverse Vaxxers",
+            currencyLayer: "ct",
+            effect(){
+                let Karina = slogadd(player.ct.Am.max(tet10(4)),-4.25).pow(0.2)
+                return Karina
+            },
+            effectDisplay(){
+                return format(tmp.ct.upgrades[385].effect)+"x"
+            },
+            unlocked() {
+                return hasUpgrade("ct",384)
+            },
+            canAfford() {
+                return player.ct.Advaxxers.gte(Decimal.pow(10,393).mul(3.939))
+            },
+            style: {
+                "background"() {
+                    if (!hasUpgrade("ct",385)) {
+                    let color = "#bf8f8f"
+                    if (tmp.ct.upgrades[385].canAfford) color = "radial-gradient(#383434, #153d63)"
+                    return color
+                    }
+                }
+            }
+        },
+        386: {
+            title: "Type Boost",
+            description: "<span style='font-size:9px;'>Anti-Vax types boost previous type gain based on AdVaxr, Anti-Vax type gain x5, comps tetration is 1.7.</span>",
+            cost: Decimal.pow(10,452).mul(4.52),
+            currencyInternalName: "Advaxxers",
+            currencyDisplayName: "Adverse Vaxxers",
+            currencyLayer: "ct",
+            effect(){
+                let Giselle = player.ct.Advaxxers.max(10).log10().max(10).log10().pow(1.5).sub(1).div(15)
+                return Giselle
+            },
+            effectDisplay(){
+                return "^"+format(tmp.ct.upgrades[386].effect)
+            },
+            unlocked() {
+                return hasUpgrade("ct",385)
+            },
+            canAfford() {
+                return player.ct.Advaxxers.gte(Decimal.pow(10,452).mul(4.52))
+            },
+            style: {
+                "background"() {
+                    if (!hasUpgrade("ct",386)) {
+                    let color = "#bf8f8f"
+                    if (tmp.ct.upgrades[386].canAfford) color = "radial-gradient(#383434, #153d63)"
+                    return color
+                    }
+                }
+            }
+        },
+        391: {
+            title: "AdVaxxer",
+            description: "Anti-Vax type gain x5, comps tetration is 1.8, unlock an AdVax.",
+            cost: Decimal.pow(10,505).mul(5.05),
+            currencyInternalName: "Advaxxers",
+            currencyDisplayName: "Adverse Vaxxers",
+            currencyLayer: "ct",
+            unlocked() {
+                return hasUpgrade("ct",386)
+            },
+            canAfford() {
+                return player.ct.Advaxxers.gte(Decimal.pow(10,505).mul(5.05))
+            },
+            style: {
+                "background"() {
+                    if (!hasUpgrade("ct",391)) {
+                    let color = "#bf8f8f"
+                    if (tmp.ct.upgrades[391].canAfford) color = "radial-gradient(#383434, #153d63)"
+                    return color
+                    }
+                }
+            }
+        },
+        392: {
+            title: "AdType",
+            description: "Adverse Vaxxers boost Anti-Vax type gain, unlock an AdVaccine.",
+            cost: Decimal.pow(10,525).mul(5.25),
+            currencyInternalName: "Advaxxers",
+            currencyDisplayName: "Adverse Vaxxers",
+            currencyLayer: "ct",
+            effect(){
+                let Winter = player.ct.Advaxxers.max(1).pow(0.002)
+                return Winter
+            },
+            effectDisplay(){
+                return format(tmp.ct.upgrades[392].effect)+"x"
+            },
+            unlocked() {
+                return hasUpgrade("ct",391)
+            },
+            canAfford() {
+                return player.ct.Advaxxers.gte(Decimal.pow(10,525).mul(5.25))
+            },
+            style: {
+                "background"() {
+                    if (!hasUpgrade("ct",392)) {
+                    let color = "#bf8f8f"
+                    if (tmp.ct.upgrades[392].canAfford) color = "radial-gradient(#383434, #153d63)"
+                    return color
+                    }
+                }
+            }
+        },
+        393: {
+            title: "Soft Vaccines",
+            description: "Row 7 Adverse Vaccine upgrades are applied after softcap, Anti-Vax 1st eff is stronger out of Challs, Anti-Vax type gain x10.",
+            cost: Decimal.pow(10,562).mul(5.62),
+            currencyInternalName: "Advaxxers",
+            currencyDisplayName: "Adverse Vaxxers",
+            currencyLayer: "ct",
+            unlocked() {
+                return hasUpgrade("ct",392)
+            },
+            canAfford() {
+                return player.ct.Advaxxers.gte(Decimal.pow(10,562).mul(5.62))
+            },
+            style: {
+                "background"() {
+                    if (!hasUpgrade("ct",393)) {
+                    let color = "#bf8f8f"
+                    if (tmp.ct.upgrades[393].canAfford) color = "radial-gradient(#383434, #153d63)"
+                    return color
+                    }
+                }
+            }
+        },
+        394: {
+            title: "Challenger",
+            description: "'Challenged Vaccines' counts Challenge 4 and 5 comps.",
+            cost: Decimal.pow(10,848).mul(8.484),
+            currencyInternalName: "Advaxxers",
+            currencyDisplayName: "Adverse Vaxxers",
+            currencyLayer: "ct",
+            unlocked() {
+                return hasUpgrade("ct",393)
+            },
+            canAfford() {
+                return player.ct.Advaxxers.gte(Decimal.pow(10,848).mul(8.484))
+            },
+            style: {
+                "background"() {
+                    if (!hasUpgrade("ct",394)) {
+                    let color = "#bf8f8f"
+                    if (tmp.ct.upgrades[394].canAfford) color = "radial-gradient(#383434, #153d63)"
+                    return color
+                    }
+                }
+            }
+        },
+    },
+    challenges: { 
+        rows: 3,
+        cols: 2,
+        11: {
+            name: "Vaccinated",
+            currencyDisplayName: "cases",
+            completionLimit: 5,
+            challengeDescription: function() {
+                let c11 = "UI effect is 0. Cases gain slog is ^0.5."
+                if (inChallenge("e", 11)) c11 = c11 + " (In Challenge)"
+                c11 += "<br>Completed:" + challengeCompletions("ct",11) + "/" + tmp.ct.challenges[11].completionLimit
+                return c11
+            },
+            onStart(testInput=false) { 
+                if (testInput) {
+                    startCTChallenge(11)
+                }
+            },
+            goal(){
+                let c11 = challengeCompletions("ct", 11)
+                if (c11>=2) c11 = c11 - 0.25
+                return tet10((311*c11)+800)
+            },
+            rewardDescription() {
+                let dis = "Cases boost AdVaxxed Vaccine gain. Unlock aRNA Vaccines at 3 completions. aRNA effect is ^1.1 and base gain^2 at 5 completions"
+                return dis
+            },
+            rewardEffect() {
+                let c11 = challengeCompletions("ct", 11)
+                let eff = slog(player.points.max(10)).pow(Decimal.max(c11,1))
+                return eff
+            },
+            rewardDisplay() {
+                return format(this.rewardEffect())+"x"
+            },
+            unlocked(){
+                return hasUpgrade("ct", 382)
+            }
+        },
+        12: {
+            name: "Anti-Anti-Capped",
+            currencyDisplayName: "cases",
+            completionLimit: 5,
+            challengeDescription: function() {
+                let c11 = "'Anti-Capped' effect is 1. Anti-Vaccine effect boosts cases gain. Cases gain slog is ^0.6."
+                if (inChallenge("e", 12)) c11 = c11 + " (In Challenge)"
+                c11 += "<br>Completed:" + challengeCompletions("ct",12) + "/" + tmp.ct.challenges[12].completionLimit
+                return c11
+            },
+            onStart(testInput=false) { 
+                if (testInput) {
+                    startCTChallenge(12)
+                }
+            },
+            goal(){
+                let c12 = challengeCompletions("ct", 12)
+                if (c12>=4) c12 = c12 - 0.74
+                if (c12>=3) c12 = c12 - 0.35
+                if (c12>=2) c12 = c12 - 0.46
+                return tet10((230*c12)+815)
+            },
+            rewardDescription() {
+                let dis = "UV boost 'Anti-Capped' slog. Unlock AAV Vaccines at 3 completions. AAV effect is dilated ^1.1 and base gain^2 at 5 completions"
+                return dis
+            },
+            rewardEffect() {
+                let c11 = challengeCompletions("ct", 12)
+                let eff = player.ct.Uv.max(10).log10().div(10).max(1).pow(Decimal.max(c11,1).pow(0.6).mul(0.04))
+                return eff
+            },
+            rewardDisplay() {
+                return format(this.rewardEffect(),4)+"x"
+            },
+            unlocked(){
+                return hasUpgrade("ct", 382)
+            }
+        },
+        21: {
+            name: "UnUnVaxxed",
+            currencyDisplayName: "UI",
+            currencyInternalName: "Ui",
+            currencyLayer: "ct",
+            completionLimit: 5,
+            challengeDescription: function() {
+                let c11 = "'UI Gain' effect is 1. UI gain is dilated ^0.8. Cases gain slog is ^0.5."
+                if (inChallenge("e", 21)) c11 = c11 + " (In Challenge)"
+                c11 += "<br>Completed:" + challengeCompletions("ct",21) + "/" + tmp.ct.challenges[21].completionLimit
+                return c11
+            },
+            onStart(testInput=false) { 
+                if (testInput) {
+                    startCTChallenge(21)
+                }
+            },
+            goal(){
+                let c12 = challengeCompletions("ct", 21)
+                if (c12>=4) c12 = (c12 + 0.4)  * 1.45
+                if (c12>=3) c12 = (c12 + 0.4)  * 1.2
+                if (c12>=2) c12 = (c12 + 1.3)  * 1.1
+                return Decimal.pow(10,c12*666+3434)
+            },
+            rewardDescription() {
+                let dis = "UI add to 'UI Gain' base. Unlock AIV Vaccines at 3 completions. AIV effect is dilated ^1.05 and base gain^2 at 5 completions"
+                return dis
+            },
+            rewardEffect() {
+                let c11 = challengeCompletions("ct", 21)
+                let eff = player.ct.Ui.max(10).log10().pow(Decimal.max(c11,1).pow(0.5).mul(1/6)).sub(1)
+                return eff
+            },
+            rewardDisplay() {
+                return "+"+format(this.rewardEffect(),4)
+            },
+            unlocked(){
+                return hasUpgrade("ct", 382)
+            }
+        },
+        22: {
+            name: "Anti-Adverse",
+            currencyDisplayName: "UI",
+            currencyInternalName: "Ui",
+            currencyLayer: "ct",
+            completionLimit: 5,
+            challengeDescription: function() {
+                let c11 = "Adverse Vaxxer effect is 1. UI gain is dilated ^0.75. Cases gain slog is ^0.5."
+                if (inChallenge("e", 22)) c11 = c11 + " (In Challenge)"
+                c11 += "<br>Completed:" + challengeCompletions("ct",22) + "/" + tmp.ct.challenges[22].completionLimit
+                return c11
+            },
+            onStart(testInput=false) { 
+                if (testInput) {
+                    startCTChallenge(22)
+                }
+            },
+            goal(){
+                let c12 = challengeCompletions("ct", 22)
+                if (c12>=4) c12 = (c12 + 0.1)  * 1.1
+                if (c12>=3) c12 = (c12 + 0.63)  * 1.1
+                if (c12>=2) c12 = (c12 + 1)  * 1.175
+                return Decimal.pow(10,c12*520+2727)
+            },
+            rewardDescription() {
+                let dis = "AdVaxxed Vaccines boost Adverse Vaxxer effect. Unlock ASV Vaccines at 3 completions. ASV effect is multiplied by 1.1 and base gain^2 at 5 completions"
+                return dis
+            },
+            rewardEffect() {
+                let c11 = challengeCompletions("ct", 22)
+                let eff = player.ct.AdVax.max(10).log10().pow(Decimal.max(c11,1).pow(0.6).mul(1/25))
+                return eff
+            },
+            rewardDisplay() {
+                return "^"+format(this.rewardEffect(),4)
+            },
+            unlocked(){
+                return hasUpgrade("ct", 385)
+            }
+        },
+        31: {
+            name: "Capped Vaccines",
+            currencyDisplayName: "cases",
+            completionLimit: 5,
+            countsAs: [11, 12],
+            challengeDescription: function() {
+                let c11 = "'Vaccinated' and 'Anti-Anti-Capped' are applied at once. Cases gain is multiplied by ASV vaccines<sup>0.4</sup>."
+                if (inChallenge("e", 31)) c11 = c11 + " (In Challenge)"
+                c11 += "<br>Completed:" + challengeCompletions("ct",31) + "/" + tmp.ct.challenges[22].completionLimit
+                return c11
+            },
+            onStart(testInput=false) { 
+                if (testInput) {
+                    startCTChallenge(31)
+                }
+            },
+            goal(){
+                let c12 = challengeCompletions("ct", 31)
+                if (c12>=2) c12 = (c12 + 1)  * 1.175
+                return tet10(c12*1.37+39.32)
+            },
+            rewardDescription() {
+                let dis = "Infecters boost Anti-Vaccine type gain. Unlock a buyable at 3 completions."
+                return dis
+            },
+            rewardEffect() {
+                let c11 = challengeCompletions("ct", 31)
+                let eff = slog(player.e.points.max(10)).pow(0.25).pow10().pow(Decimal.max(c11,1).div(20))
+                return eff
+            },
+            rewardDisplay() {
+                return format(this.rewardEffect())+"x"
+            },
+            unlocked(){
+                return hasUpgrade("ct", 313)
+            }
+        },
     },
     buyables: {
         respec() {
@@ -27884,11 +29110,11 @@ addLayer("ct", {
                 player.ct.Aspent = new Decimal(0)
                 if (hasUpgrade("ct",355)) layers.ct.clickables[32].onClick()
                 else layers.ct.clickables[31].onClick()
-                player.ct.inC = player.ct.inC?false:true
+                player.ct.inC = false
             }
             
 		},
-        showRespec() { return player.subtabs.ct.mainTabs=="Coronas" || (player.subtabs.ct.mainTabs=="Anti-Maskers" && player.subtabs.ct.Anti=="Adverse Vaccines")},
+        showRespec() { return player.subtabs.ct.mainTabs=="Coronas" || (player.subtabs.ct.Anti=="Adverse Vaccines" && player.subtabs.ct.Av=="Anti-Vaxxed Vaxxers")},
         respecText() { return player.subtabs.ct.mainTabs=="Coronas"?"Respec Coronas":"Respec Adverse Vaccines"},
 		rows: 19,
         cols: 4,
@@ -28243,7 +29469,7 @@ addLayer("ct", {
                 if (x.gte(5e4)) x = x.div(5e4).pow(3).mul(5e4)
                 if (x.gte(150)) x = x.div(150).pow(2.5).mul(150)
                 if (x.gte(50)) x = x.div(50).pow(2).mul(50)
-                let cost = Decimal.pow(1e10, x.pow(2.5).add(1506.1))
+                let cost = Decimal.pow(1e10, x.pow(2.5).add(1505.95))
                 return cost.floor()
             },
             base() { 
@@ -28306,14 +29532,14 @@ addLayer("ct", {
             },
             buyMax() {
                 let s = player.ct.points
-                let target = Decimal.log10(s.div(Decimal.pow(10,15061))).div(10).root(2.5)
+                let target = Decimal.log10(s.div(Decimal.pow(10,15059.5))).div(10).root(2.5)
                 if (target.gte(50)) target = target.div(50).pow(0.5).mul(50)
                 if (target.gte(150)) target = target.div(150).pow(0.4).mul(150)
                 if (target.gte(5e4)) target = target.div(5e4).pow(1/3).mul(5e4)
                 if (target.gte(3e6)) target = target.div(3e6).log(1.000001).add(3e6)
                 if (target.gte(1e40)) target = target.div(1e40).pow(1/3).mul(1e40)
                 target = target.ceil()
-                let cost = Decimal.pow(1e10, target.sub(1).pow(2.5)).mul(Decimal.pow(10,15061))
+                let cost = Decimal.pow(1e10, target.sub(1).pow(2.5)).mul(Decimal.pow(10,15059.5))
                 let diff = target.sub(player.ct.buyables[23])
                 if (tmp[this.layer].buyables[this.id].canAfford) {
                     if (!hasMilestone("ct",12)) player.ct.points = player.ct.points.sub(cost).max(0)
@@ -28323,7 +29549,7 @@ addLayer("ct", {
             style: {"width":"150px","height":"150px"}
         },
         31: {
-			title: "CTNA Boost",
+			title: "Corona Booster",
 			cost(x=player[this.layer].buyables[this.id]) { // cost for buying xth buyable, can be an object if there are multiple currencies
                 let cost = x.add(1).pow(4).add(2)
                 return cost.floor()
@@ -28357,7 +29583,7 @@ addLayer("ct", {
             },
             unlocked() { return hasMilestone("ct", 12) }, 
             canAfford() {
-                    return player.ct.corona.gte(tmp[this.layer].buyables[this.id].cost) && player.ct.buyables[31].lt(2)},
+                    return player.ct.corona.gte(tmp[this.layer].buyables[this.id].cost) && player.ct.buyables[31].lt(2) && !player.ct.inC},
             buy() { 
                 cost = tmp[this.layer].buyables[this.id].cost
                 if (tmp[this.layer].buyables[this.id].canAfford) {
@@ -28370,7 +29596,7 @@ addLayer("ct", {
             style: {"width":"150px","height":"150px"}
         },
         32: {
-			title: "CTNA Boost",
+			title: "Corona Booster",
 			cost(x=player[this.layer].buyables[this.id]) { // cost for buying xth buyable, can be an object if there are multiple currencies
                 let cost = x.add(1).pow(4).add(2)
                 return cost.floor()
@@ -28413,7 +29639,7 @@ addLayer("ct", {
             },
             unlocked() { return hasMilestone("ct", 12) }, 
             canAfford() {
-                    return player.ct.corona.gte(tmp[this.layer].buyables[this.id].cost) && player.ct.buyables[32].lt(2)},
+                    return player.ct.corona.gte(tmp[this.layer].buyables[this.id].cost) && player.ct.buyables[32].lt(2) && !player.ct.inC},
             buy() { 
                 cost = tmp[this.layer].buyables[this.id].cost
                 if (tmp[this.layer].buyables[this.id].canAfford) {
@@ -28426,7 +29652,7 @@ addLayer("ct", {
             style: {"width":"150px","height":"150px"}
         },
         33: {
-			title: "CTNA Boost",
+			title: "Corona Booster",
 			cost(x=player[this.layer].buyables[this.id]) { // cost for buying xth buyable, can be an object if there are multiple currencies
                 let cost = x.add(1).pow(4).add(2)
                 return cost.floor()
@@ -28460,7 +29686,7 @@ addLayer("ct", {
             },
             unlocked() { return hasMilestone("ct", 12) }, 
             canAfford() {
-                    return player.ct.corona.gte(tmp[this.layer].buyables[this.id].cost) && player.ct.buyables[33].lt(2)},
+                    return player.ct.corona.gte(tmp[this.layer].buyables[this.id].cost) && player.ct.buyables[33].lt(2) && !player.ct.inC},
             buy() { 
                 cost = tmp[this.layer].buyables[this.id].cost
                 if (tmp[this.layer].buyables[this.id].canAfford) {
@@ -30847,6 +32073,7 @@ addLayer("ct", {
                 if (hasUpgrade("ct",285)) exp=1.07
                 if (hasUpgrade("ct",286)) exp=1.06
                 if (hasUpgrade("ct",331)) exp=1.055
+                if (hasUpgrade("ct",371)) exp=1.053
                 if (player.ct.inC)exp +=0.1
                 return exp
             },
@@ -30916,12 +32143,14 @@ addLayer("ct", {
             },
             costbase() { 
                 let base = 1e10
-                if (hasUpgrade("ct",302)) base= 1e8
+                if (hasUpgrade("ct",302)) base = 1e8
+                if (hasUpgrade("ct",371)) base = 1e6
                 return base
             },
             costexp() { 
                 let exp = 1.15
-                if (hasUpgrade("ct",302)) exp= 1.13
+                if (hasUpgrade("ct",302)) exp = 1.13
+                if (hasUpgrade("ct",371)) exp = 1.1
                 if (player.ct.inC)exp +=0.1
                 return exp
             },
@@ -30994,17 +32223,28 @@ addLayer("ct", {
         171: {
 			title: "Capped",
 			cost(x=player[this.layer].buyables[this.id]) { // cost for buying xth buyable, can be an object if there are multiple currencies
+                if (x.gte(5e3)) x= x.div(5e3).pow(3).mul(5e3)
                 if (x.gte(1e3)) x= x.root(3).sub(7).pow10()
                 let cost = Decimal.pow(10,Decimal.pow(10,x.pow(1.1))).mul(1.7504e10)
                 return cost.floor()
             },
             base() { 
-                let exp = 0.6
-                if (hasUpgrade("ct",296)) exp+=0.3
-                if (!player.ct.inC) exp = exp-=0.5
-                let base = slog(player.points.max(10)).pow(exp).div(20)
-                if (!player.ct.inC) base = base.div(10)
+                let exp = tmp.ct.buyables[171].exp
+                let d = tmp.ct.buyables[171].basediv
+                let base = slog(player.points.max(10)).pow(exp).div(d)
                 return base
+            },
+            exp() {
+                let exp = new Decimal(0.6)
+                if (hasUpgrade("ct",296)) exp = exp.add(0.3)
+                if (!player.ct.inC) exp = exp.sub(0.5)
+                if (hasUpgrade("ct",363)) exp = exp.add(tmp.ct.upgrades[363].effect)
+                return exp
+            },
+            basediv() {
+                let d = new Decimal(20)
+                if (!player.ct.inC) d = d.mul(10)
+                return d
             },
             total() {
                 let total = getBuyableAmount("ct", 171)
@@ -31019,7 +32259,8 @@ addLayer("ct", {
                 if (player.tab != "ct" || player.subtabs.ct.mainTabs != "Anti-Maskers") return
                 let extra = ""
                 let dis = "Add "+format(this.base()) + " to 'Anti-Capped' slog (based on cases)"
-                return dis + ".\n\
+                let shift = shiftDown?" (slog10(x)<sup>"+format(tmp.ct.buyables[171].exp)+"</sup>/"+format(tmp.ct.buyables[171].basediv)+")":""
+                return dis + shift+ ".\n\
                 Cost: " + formatWhole(tmp[this.layer].buyables[this.id].cost)+" Anti-Vaxxers\n\
                 Effect: +" + format(tmp[this.layer].buyables[this.id].effect)+"\n\
                 Amount: " + formatWhole(getBuyableAmount("ct", 171)) + extra
@@ -31037,6 +32278,7 @@ addLayer("ct", {
                 let s = player.ct.Avaxxers
                 let target = s.div(1.7504e10).log(10).log10().root(1.1)
                 if (target.gte(1e3)) target= target.log10().add(7).pow(3)
+                if (target.gte(5e3)) target= target.div(5e3).root(3).mul(5e3)
                 target = target.ceil()
                 let diff = target.sub(player.ct.buyables[171])
                 if (tmp[this.layer].buyables[this.id].canAfford) {
@@ -31047,9 +32289,11 @@ addLayer("ct", {
         },
         181: {
 			title(){
-                return (player.ct.Uib.gte(tmp.ct.buyables[181].start)?"Distant ":"")+"UI Gain"
+                return (player.ct.Uib.gte(tmp.ct.buyables[181].sstart)?"Social Distant ":player.ct.Uib.gte(tmp.ct.buyables[181].start)?"Distant ":"")+"UI Gain"
             },
 			cost(x=player[this.layer].buyables[this.id]) { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let z = x.sub(tmp.ct.buyables[181].sstart)
+                if (x.gte(tmp.ct.buyables[181].sstart)) x = Decimal.pow(1.0001,z).mul(x)
                 let cost = Decimal.pow(10,x).mul(1e10)
                 let y = x.sub(tmp.ct.buyables[181].start)
                 let base = tmp.ct.buyables[181].dbase
@@ -31066,6 +32310,7 @@ addLayer("ct", {
                 let base = new Decimal(2)
                 if (hasUpgrade("ct",293)) base = base.add(0.42)
                 if (hasUpgrade("ct",295)) base = base.add(tmp.ct.upgrades[295].effect)
+                if (hasChallenge("ct",21)) base = base.add(tmp.ct.challenges[21].rewardEffect)
                 return base
             },
             start() { 
@@ -31076,6 +32321,10 @@ addLayer("ct", {
                 if (hasUpgrade("ct",352)) start = start.add(tmp.ct.upgrades[352].effect)
                 return start
             },
+            sstart() { 
+                let start = new Decimal(1e4)
+                return start
+            },
             total() {
                 let total = getBuyableAmount("ct", 181)
                 return total
@@ -31083,6 +32332,7 @@ addLayer("ct", {
 			effect() { // Effects of owning x of the items, x is a decimal
                 let x = tmp[this.layer].buyables[this.id].total
                 let base = tmp[this.layer].buyables[this.id].base
+                if (inChallenge("ct",21)) return new Decimal(1)
                 return Decimal.pow(base, x);
             },
             display() { // Everything else displayed in the buyable button after the title
@@ -31102,9 +32352,12 @@ addLayer("ct", {
                 let f = player.ct.Ui
                 let z = tmp.ct.buyables[181].dbase.log10()
                 let m = tmp.ct.buyables[181].start
+                let c = tmp.ct.buyables[181].sstart
                 let s = f.div(Decimal.pow(10,m.add(10))).log10()
+                let b = new Decimal(1.0001)
                 let max = f.div(1e10).max(10).log10().ceil().min(m)
                 if (max.gte(m)) max = max.add(s.mul(2).add(1).max(1).mul(4).mul(z).add(z.pow(2)).add(4).pow(0.5).sub(z).sub(2).div(z.mul(2))).ceil()
+                if (max.gte(tmp.ct.buyables[181].sstart)) max = Decimal.lambertw(max.mul(b.pow(c).mul(b.ln()))).div(b.ln())
                 return max
             },    
             buy() { 
@@ -31201,9 +32454,389 @@ addLayer("ct", {
             },
             style: {"width":"150px","height":"150px"},
         },
+        201: {
+			title: "AdVaxxed Vaxxer",
+			cost() { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let x = player.ct.AdV0
+                let cost = Decimal.pow(100,x).mul(1e72)
+                return cost.floor()
+            },
+            base(x=player[this.layer].buyables[this.id]) { 
+                let base = tmp.ct.AdVaxBase
+                return base
+            },
+            total() {
+                let total = getBuyableAmount("ct", 201)
+                return total
+            },
+            effect() { // Effects of owning x of the items, x is a decimal
+                let x = player.ct.AdV0
+                let base = tmp[this.layer].buyables[this.id].base
+                return Decimal.pow(base, x).mul(tmp.ct.AdVaccineMult);
+            },
+            gain() {
+                let gain = tmp.ct.buyables[201].total.mul(tmp.ct.buyables[201].effect)
+                return gain
+            },
+            arna() {
+                let gain = player.ct.AdVax0.div(1e66).max(10).log10().sub(1)
+                if (challengeCompletions("ct",11)>=5) gain = gain.pow(2)
+                if (hasUpgrade("ct",386)) gain = gain.mul(player.ct.aav.add(1).pow(tmp.ct.upgrades[386].effect))
+                return gain.mul(tmp.ct.typeGain)
+            },
+            display() { // Everything else displayed in the buyable button after the title
+                if (player.tab != "ct" || player.subtabs.ct.mainTabs != "Anti-Maskers" || player.subtabs.ct.Av != "AdVaccines") return
+                let extra = ""
+                let dis = "Produces AdVaxxed Vaccines"
+                if (player.ct.challenges[11]>=3) dis += " and <span style='color:#aa0000'>aRNA Vaccines</span>"
+                return dis + ".\n\
+                Cost: " + formatWhole(tmp[this.layer].buyables[this.id].cost)+" Adverse Vaxxers\n\
+                Effect: " + format(tmp[this.layer].buyables[this.id].effect)+"x\n\
+                Amount: " + formatWhole(getBuyableAmount("ct", 201)) + "("+formatWhole(player.ct.AdV0)+")"
+            },
+            unlocked() { return hasUpgrade("ct",373) }, 
+            canAfford() {
+                    return player.ct.Advaxxers.gte(tmp[this.layer].buyables[this.id].cost)},
+            buy() { 
+                cost = tmp[this.layer].buyables[this.id].cost
+                let max = tmp.ct.buyables[201].maxAfford
+                let b = max.max(1)
+                if (tmp[this.layer].buyables[this.id].canAfford) {
+                    player.ct.Advaxxers = player.ct.Advaxxers.sub(cost).max(0)
+                    player.ct.AdV0 = player.ct.AdV0.add(1).max(1)
+                    player.ct.AdVax0 = player.ct.AdVax0.add(1).max(1)
+                    player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1).max(1)
+                }
+            },
+            maxAfford() {// logr(s(r-1)/a1+1)=(n)
+                let s = player.ct.Advaxxers
+                let target = s.div(tmp.ct.buyables[201].cost).mul(99).add(1).log10().div(2)
+                return target.floor()
+            },
+            buyMax() { //Sn=a1(1-r^n)/(1-r)
+                let target = tmp.ct.buyables[201].maxAfford
+                let cost = Decimal.sub(1,Decimal.pow(100,target)).mul(tmp.ct.buyables[201].cost).div(-99)
+                let diff = target
+                if (tmp[this.layer].buyables[this.id].canAfford) {
+                    player.ct.Advaxxers = player.ct.Advaxxers.sub(cost).max(0)
+                    player.ct.AdV0 = player.ct.AdV0.add(diff)
+                    player.ct.AdVax0 = player.ct.AdVax0.add(diff)
+                    player.ct.buyables[201] = player.ct.buyables[201].add(diff)
+                    updateTemp()
+                }
+                
+            },
+            style: {"width":"150px","height":"150px","background"() {
+                let color = "#bf8f8f"
+                if (tmp.ct.buyables[201].canAfford) color = "radial-gradient(#383434, #153d63)"
+                return color
+                }
+            }
+        },
+        202: {
+			title: "AdVaxxed AdVaxxer",
+			cost() { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let x = player.ct.AdV1
+                let cost = Decimal.pow(1000,x).mul(1e75)
+                return cost.floor()
+            },
+            base(x=player[this.layer].buyables[this.id]) { 
+                let base = tmp.ct.AdVaxBase
+                return base
+            },
+            total() {
+                let total = getBuyableAmount("ct", 202)
+                return total
+            },
+            effect() { // Effects of owning x of the items, x is a decimal
+                let x = player.ct.AdV1
+                let base = tmp[this.layer].buyables[this.id].base
+                return Decimal.pow(base, x).mul(tmp.ct.AdVaccineMult);
+            },
+            gain () {
+                let gain = tmp.ct.buyables[202].total.mul(tmp.ct.buyables[202].effect)
+                return gain
+            },
+            aav() {
+                let gain = player.ct.AdVax1.div(1e52).max(10).log10().sub(1)
+                if (challengeCompletions("ct",12)>=5) gain = gain.pow(2)
+                if (hasUpgrade("ct",386)) gain = gain.mul(player.ct.aiv.add(1).pow(tmp.ct.upgrades[386].effect))
+                return gain.mul(tmp.ct.typeGain)
+            },
+            display() { // Everything else displayed in the buyable button after the title
+                if (player.tab != "ct" || player.subtabs.ct.mainTabs != "Anti-Maskers" || player.subtabs.ct.Av != "AdVaccines") return
+                let extra = ""
+                let dis = "Produces AdVaxxed Vaxxers"
+                if (player.ct.challenges[12]>=3) dis += " and <span style='color:#aa5500'>AAV Vaccines</span>"
+                return dis + ".\n\
+                Cost: " + formatWhole(tmp[this.layer].buyables[this.id].cost)+" Adverse Vaxxers\n\
+                Effect: " + format(tmp[this.layer].buyables[this.id].effect)+"x\n\
+                Amount: " + formatWhole(getBuyableAmount("ct", 202)) + "("+formatWhole(player.ct.AdV1)+")"
+            },
+            unlocked() { return hasUpgrade("ct",373) }, 
+            canAfford() {
+                    return player.ct.Advaxxers.gte(tmp[this.layer].buyables[this.id].cost)},
+            buy() { 
+                cost = tmp[this.layer].buyables[this.id].cost
+                let max = tmp.ct.buyables[202].maxAfford
+                let b = max.max(1)
+                if (tmp[this.layer].buyables[this.id].canAfford) {
+                    player.ct.Advaxxers = player.ct.Advaxxers.sub(cost).max(0)
+                    player.ct.AdV1 = player.ct.AdV1.add(1).max(1)
+                    player.ct.AdVax1 = player.ct.AdVax1.add(1).max(1)
+                    player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1).max(1)
+                }
+            },
+            maxAfford() {
+                let s = player.ct.Advaxxers
+                let target = s.div(tmp.ct.buyables[202].cost).mul(999).add(1).log10().div(3)
+                return target.floor()
+            },
+            buyMax() { // logr(s(r-1)/a1+1)=(n)
+                let target = tmp.ct.buyables[202].maxAfford
+                let cost = Decimal.sub(1,Decimal.pow(1000,target)).mul(tmp.ct.buyables[202].cost).div(-999)
+                let diff = target
+                if (tmp[this.layer].buyables[this.id].canAfford) {
+                    player.ct.Advaxxers = player.ct.Advaxxers.sub(cost).max(0)
+                    player.ct.AdV1 = player.ct.AdV1.add(diff)
+                    player.ct.AdVax1 = player.ct.AdVax1.add(diff)
+                    player.ct.buyables[202] = player.ct.buyables[202].add(diff)
+                    updateTemp()
+                }
+            },
+            style: {"width":"150px","height":"150px","background"() {
+                let color = "#bf8f8f"
+                if (tmp.ct.buyables[202].canAfford) color = "radial-gradient(#383434, #153d63)"
+                return color
+                }
+            }
+        },
+        203: {
+			title: "AnVaxxed Vaccine",
+			cost() { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let x = player.ct.AdV2
+                let cost = Decimal.pow(10000,x).mul(1e80)
+                return cost.floor()
+            },
+            base(x=player[this.layer].buyables[this.id]) { 
+                let base = tmp.ct.AdVaxBase
+                return base
+            },
+            total() {
+                let total = getBuyableAmount("ct", 203)
+                return total
+            },
+            effect() { // Effects of owning x of the items, x is a decimal
+                let x = player.ct.AdV2
+                let base = tmp[this.layer].buyables[this.id].base
+                return Decimal.pow(base, x).mul(tmp.ct.AdVaccineMult);
+            },
+            gain () {
+                let gain = tmp.ct.buyables[203].total.mul(tmp.ct.buyables[203].effect)
+                return gain
+            },
+            aiv() {
+                let gain = player.ct.AdVax2.div(1e31).max(10).log10().sub(1)
+                if (challengeCompletions("ct",21)>=5) gain = gain.pow(2)
+                if (hasUpgrade("ct",386)) gain = gain.mul(player.ct.asv.add(1).pow(tmp.ct.upgrades[386].effect))
+                return gain.mul(tmp.ct.typeGain)
+            },
+            display() { // Everything else displayed in the buyable button after the title
+                if (player.tab != "ct" || player.subtabs.ct.mainTabs != "Anti-Maskers" || player.subtabs.ct.Av != "AdVaccines") return
+                let extra = ""
+                let dis = "Produces AdVaxxed AdVaxxers"
+                if (player.ct.challenges[21]>=3) dis += " and <span style='color:#00aa55'>AIV Vaccines</span>"
+                return dis + ".\n\
+                Cost: " + formatWhole(tmp[this.layer].buyables[this.id].cost)+" Adverse Vaxxers\n\
+                Effect: " + format(tmp[this.layer].buyables[this.id].effect)+"x\n\
+                Amount: " + formatWhole(getBuyableAmount("ct", 203)) + "("+formatWhole(player.ct.AdV2)+")"
+            },
+            unlocked() { return hasUpgrade("ct",373) }, 
+            canAfford() {
+                    return player.ct.Advaxxers.gte(tmp[this.layer].buyables[this.id].cost)},
+            buy() { 
+                cost = tmp[this.layer].buyables[this.id].cost
+                let max = tmp.ct.buyables[203].maxAfford
+                let b = max.max(1)
+                if (tmp[this.layer].buyables[this.id].canAfford) {
+                    player.ct.Advaxxers = player.ct.Advaxxers.sub(cost).max(0)
+                    player.ct.AdV2 = player.ct.AdV2.add(1).max(1)
+                    player.ct.AdVax2 = player.ct.AdVax2.add(1).max(1)
+                    player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1).max(1)
+                }
+            },
+            maxAfford() {
+                let s = player.ct.Advaxxers
+                let target = s.div(tmp.ct.buyables[203].cost).mul(9999).add(1).log10().div(4)
+                return target.floor()
+            },
+            buyMax() { // logr(s(r-1)/a1+1)=(n)
+                let target = tmp.ct.buyables[203].maxAfford
+                let cost = Decimal.sub(1,Decimal.pow(10000,target)).mul(tmp.ct.buyables[203].cost).div(-9999)
+                let diff = target
+                if (tmp[this.layer].buyables[this.id].canAfford) {
+                    player.ct.Advaxxers = player.ct.Advaxxers.sub(cost).max(0)
+                    player.ct.AdV2 = player.ct.AdV2.add(diff)
+                    player.ct.AdVax2 = player.ct.AdVax2.add(diff)
+                    player.ct.buyables[203] = player.ct.buyables[203].add(diff)
+                    updateTemp()
+                }
+            },
+            style: {"width":"150px","height":"150px","background"() {
+                let color = "#bf8f8f"
+                if (tmp.ct.buyables[203].canAfford) color = "radial-gradient(#383434, #153d63)"
+                return color
+                }
+            }
+        },
+        204: {
+			title: "AnVaxxed Vaxxer",
+			cost() { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let x = player.ct.AdV3
+                let cost = Decimal.pow(1e6,x).mul(1e90)
+                return cost.floor()
+            },
+            base(x=player[this.layer].buyables[this.id]) { 
+                let base = tmp.ct.AdVaxBase
+                return base
+            },
+            total() {
+                let total = getBuyableAmount("ct", 204)
+                return total
+            },
+            effect() { // Effects of owning x of the items, x is a decimal
+                let x = player.ct.AdV3
+                let base = tmp[this.layer].buyables[this.id].base
+                return Decimal.pow(base, x).mul(tmp.ct.AdVaccineMult);
+            },
+            gain () {
+                let gain = tmp.ct.buyables[204].total.mul(tmp.ct.buyables[204].effect)
+                return gain
+            },
+            asv() {
+                let gain = player.ct.AdVax3.div(1e16).max(10).log10().sub(1)
+                if (challengeCompletions("ct",22)>=5) gain = gain.pow(2)
+                return gain.mul(tmp.ct.typeGain).div(1000)
+            },
+            display() { // Everything else displayed in the buyable button after the title
+                if (player.tab != "ct" || player.subtabs.ct.mainTabs != "Anti-Maskers" || player.subtabs.ct.Av != "AdVaccines") return
+                let extra = ""
+                let dis = "Produces AdVaxxed AdVaxxers"
+                if (player.ct.challenges[22]>=3) dis += " and <span style='color:#00aaaa'>ASV Vaccines</span>"
+                return dis + ".\n\
+                Cost: " + formatWhole(tmp[this.layer].buyables[this.id].cost)+" Adverse Vaxxers\n\
+                Effect: " + format(tmp[this.layer].buyables[this.id].effect)+"x\n\
+                Amount: " + formatWhole(getBuyableAmount("ct", 204)) + "("+formatWhole(player.ct.AdV3)+")"
+            },
+            unlocked() { return hasUpgrade("ct",373) }, 
+            canAfford() {
+                    return player.ct.Advaxxers.gte(tmp[this.layer].buyables[this.id].cost)},
+            buy() { 
+                cost = tmp[this.layer].buyables[this.id].cost
+                let max = tmp.ct.buyables[204].maxAfford
+                let b = max.max(1)
+                if (tmp[this.layer].buyables[this.id].canAfford) {
+                    player.ct.Advaxxers = player.ct.Advaxxers.sub(cost).max(0)
+                    player.ct.AdV3 = player.ct.AdV3.add(1).max(1)
+                    player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1).max(1)
+                }
+            },
+            maxAfford() {
+                let s = player.ct.Advaxxers
+                let target = s.div(tmp.ct.buyables[204].cost).mul(999999).add(1).log10().div(6)
+                return target.floor()
+            },
+            buyMax() { // logr(s(r-1)/a1+1)=(n)
+                let target = tmp.ct.buyables[204].maxAfford
+                let cost = Decimal.sub(1,Decimal.pow(1e6,target)).mul(tmp.ct.buyables[204].cost).div(-999999)
+                let diff = target
+                if (tmp[this.layer].buyables[this.id].canAfford) {
+                    player.ct.Advaxxers = player.ct.Advaxxers.sub(cost).max(0)
+                    player.ct.AdV3 = player.ct.AdV3.add(diff)
+                    player.ct.AdVax3 = player.ct.AdVax3.add(diff)
+                    player.ct.buyables[204] = player.ct.buyables[204].add(diff)
+                    updateTemp()
+                }
+            },
+            style: {"width":"150px","height":"150px","background"() {
+                let color = "#bf8f8f"
+                if (tmp.ct.buyables[204].canAfford) color = "radial-gradient(#383434, #153d63)"
+                return color
+                }
+            }
+        },
+        211: {
+			title: "AnVaxxed AdVaxxer",
+			cost() { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let x = player.ct.AdV4
+                let cost = Decimal.pow(1e10,x).mul("e555")
+                return cost.floor()
+            },
+            base(x=player[this.layer].buyables[this.id]) { 
+                let base = tmp.ct.AdVaxBase
+                return base
+            },
+            total() {
+                let total = getBuyableAmount("ct", 211)
+                return total
+            },
+            effect() { // Effects of owning x of the items, x is a decimal
+                let x = player.ct.AdV4
+                let base = tmp[this.layer].buyables[this.id].base
+                return Decimal.pow(base, x).mul(tmp.ct.AdVaccineMult).div(1e15);
+            },
+            gain () {
+                let gain = tmp.ct.buyables[211].total.mul(tmp.ct.buyables[211].effect)
+                return gain
+            },
+            display() { // Everything else displayed in the buyable button after the title
+                if (player.tab != "ct" || player.subtabs.ct.mainTabs != "Anti-Maskers" || player.subtabs.ct.Av != "AdVaccines") return
+                let extra = ""
+                let dis = "Produces AnVaxxed Vaxxers"
+                return dis + ".\n\
+                Cost: " + formatWhole(tmp[this.layer].buyables[this.id].cost)+" Adverse Vaxxers\n\
+                Effect: " + format(tmp[this.layer].buyables[this.id].effect)+"x\n\
+                Amount: " + formatWhole(getBuyableAmount("ct", 211)) + "("+formatWhole(player.ct.AdV4)+")"
+            },
+            unlocked() { return hasUpgrade("ct",392) }, 
+            canAfford() {
+                    return player.ct.Advaxxers.gte(tmp[this.layer].buyables[this.id].cost)},
+            buy() { 
+                cost = tmp[this.layer].buyables[this.id].cost
+                let max = tmp.ct.buyables[211].maxAfford
+                let b = max.max(1)
+                if (tmp[this.layer].buyables[this.id].canAfford) {
+                    player.ct.Advaxxers = player.ct.Advaxxers.sub(cost).max(0)
+                    player.ct.AdV4 = player.ct.AdV4.add(1).max(1)
+                    player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1).max(1)
+                }
+            },
+            maxAfford() {
+                let s = player.ct.Advaxxers
+                let target = s.div(tmp.ct.buyables[211].cost).mul(9999999999).add(1).log10().div(10)
+                return target.floor()
+            },
+            buyMax() { // logr(s(r-1)/a1+1)=(n)
+                let target = tmp.ct.buyables[211].maxAfford
+                let cost = Decimal.sub(1,Decimal.pow(1e6,target)).mul(tmp.ct.buyables[211].cost).div(-9999999999)
+                let diff = target
+                if (tmp[this.layer].buyables[this.id].canAfford) {
+                    player.ct.Advaxxers = player.ct.Advaxxers.sub(cost).max(0)
+                    player.ct.AdV4 = player.ct.AdV4.add(diff)
+                    player.ct.buyables[211] = player.ct.buyables[211].add(diff)
+                    updateTemp()
+                }
+            },
+            style: {"width":"150px","height":"150px","background"() {
+                let color = "#bf8f8f"
+                if (tmp.ct.buyables[211].canAfford) color = "radial-gradient(#383434, #153d63)"
+                return color
+                }
+            }
+        },
     },
     clickables: {
-        rows: 3,
+        rows: 4,
         cols: 3,
         11: {
             display() {
@@ -31279,7 +32912,7 @@ addLayer("ct", {
                     }
                 }
                 if (player.ct.buyables[102].gte(1)) {
-                if (player.ct.win.gte(0)) {
+                if (player.ct.win.gt(0)) {
                     if (player.ct.bet == 3) {
                         if (hasUpgrade("ct",193)) player.ct.gwinstreak=getTimesRequired(tmp.ct.getGreenLoseChance,0.001)
                         else player.ct.gwinstreak++
@@ -31355,11 +32988,16 @@ addLayer("ct", {
                 let dis = "Cases gain slog is ^" + format(tmp.ct.clickables[31].exp) + ", Cases gain beyond 1F30 is slog exp^"+ format(tmp.ct.clickables[31].exp) +", Anti-Vaccine effect is 1."
                 if (player.ct.inC) dis += "(IN)<br>"
                 if (player.ct.inC) dis += "+<h3>" + formatWhole(tmp.ct.clickables[31].gain.sub(player.ct.Uv).max(0))+"</h3> Unvaccinated Vaxxers<br>"
-                if (tmp.ct.clickables[31].gain.sub(player.ct.Uv).lt(1e6)) dis += "Next at " + formatWhole(tmp.ct.clickables[31].next)
+                if (tmp.ct.clickables[31].gain.sub(player.ct.Uv).lt(1e6) && player.ct.inC) dis += "Next at " + formatWhole(tmp.ct.clickables[31].next)
                 return dis
             },
             gain() {
-                let gain = slog(player.points.max(10)).div(10.2).pow10().div(10).pow(tmp.ct.clickables[31].gainexp)
+                let p = player.points
+                if (!player.ct.inC) {
+                    p = powSlog(p,tmp.ct.clickables[31].exp)
+                    if (p.gte(tet10(30))) p = tet10(slog(p).log10().div(Decimal.log10(30)).pow(tmp.ct.clickables[31].exp).mul(Decimal.log10(30)).pow10())
+                }
+                let gain = slog(p.max(10)).div(10.2).pow10().div(10).pow(tmp.ct.clickables[31].gainexp)
                 if (gain.gte(1e120)) gain = gain.log10().div(120).pow(0.5).mul(120).pow10()
                 if (gain.gte(1e200)) gain = gain.div(1e200).pow(2/3).mul(1e200)
                 if (gain.gte(Decimal.pow(2,1024))) gain = Decimal.pow(2,gain.log(2).div(1024).pow(0.9).mul(1024))
@@ -31368,11 +33006,14 @@ addLayer("ct", {
                 return gain.floor()
             },
             gainmult() {
-                let mult = new Decimal(1)
+                let mult = tmp.ct.AIVeff
                 if (hasAchievement("a",191)) mult = mult.mul(Decimal.pow(2,player.ct.upgrades.filter(n=>n>340).length))
                 if (hasAchievement("a",192)) mult = mult.mul(2)
+                if (hasAchievement("a",195)) mult = mult.mul(player.ct.Uv.max(10).log10())
+                if (hasAchievement("a",196)) mult = mult.mul(player.ct.Uv.max(10).log10())
+                if (hasAchievement("a",201)) mult = mult.mul(player.ct.Uv.max(10).log10())
+                if (hasAchievement("a",202)) mult = mult.mul(player.ct.Uv.max(10).log10())
                 if (hasUpgrade("ct",344)) mult= mult.mul(tmp.ct.upgrades[344].effect)
-                if (hasUpgrade("ct",303)) mult= mult.mul(tmp.ct.upgrades[303].effect)
                 return mult
             },
             gainexp() {
@@ -31400,11 +33041,17 @@ addLayer("ct", {
                 player.ct.inC = player.ct.inC ? false : true
                 if (player.ct.inC) {
                     doReset("ct",true)
-                    layerDataReset("ct",["upgrades","milestones","inC","auto","autom","autoc","autov","autoroll","Uv","Ui","bestAdv","Uib","Av","Aspent","Advaxxers","bestAdvax","AdvTime","bestAps"])
+                    layerDataReset("ct",["upgrades","milestones","challenges","inC","auto","autom","autoc","autov","autoroll","Uv","Ui","bestAdv","Uib","Av","Aspent","Advaxxers","bestAdvax","AdvTime","bestAps","AdVax","arna","aav","aiv","asv","AdV0","AdVax0","AdV1","AdVax1","AdV2","AdVax2","AdV3","AdVax3","AdV4"])
+                    player.ct.buyables[204]= player.ct.AdV3
                     updateTemp()
                     updateTemp()
                 } else {
                     player.ct.Uv = tmp.ct.clickables[31].gain.max(player.ct.Uv)
+                    player.ct.buyables[31] = new Decimal(2)
+                    player.ct.buyables[32] = new Decimal(2)
+                    player.ct.buyables[33] = new Decimal(2)
+                    updateTemp()
+                    updateTemp()
                 }
             },
             style: {'height':'160px', 'width':'215px', 'font-size':'13px','background':"radial-gradient(#383434, #153d63)"
@@ -31414,6 +33061,7 @@ addLayer("ct", {
             display() {
                 let aps = tmp.ct.clickables[32].gain.div(Decimal.max(player.ct.AdvTime,0.0001))
                 let dis = "Reset Vaccination for <h3>"+formatWhole(tmp.ct.clickables[32].gain)+"</h3> Adverse Vaxxers<br>"
+                if (tmp.ct.clickables[32].gain.gte(Decimal.pow(2,1024))) dis += " (softcapped)"
                 if (tmp.ct.clickables[32].gain.lt(1e6)) dis += "Next at " + formatWhole(tmp.ct.clickables[32].next)+"<br>"
                 if (aps.gte(10)) dis += "<br>" + format(aps) + "/s"
                 else if (aps.gte(1/6)) dis += "<br>" + format(aps.mul(60)) + "/min"
@@ -31424,22 +33072,44 @@ addLayer("ct", {
                 let exp = tmp.ct.clickables[32].gainexp
                 let mult = tmp.ct.clickables[32].gainmult
                 let gain = player.ct.Ui.div(Decimal.pow(2,4096)).pow(exp).mul(mult)
+                if (gain.gte(Decimal.pow(2,1024))) gain = Decimal.pow(2,gain.log(2).div(1024).pow(0.75).mul(1024))
+                gain = gain.mul(tmp.ct.clickables[32].aftermult)
                 if (player.ct.Ui.lt(Decimal.pow(2,4096))) gain = new Decimal(0)
                 return gain.floor()
             },
             gainmult() {
-                let mult = new Decimal(1)
+                let mult = tmp.ct.AdVaxEff
                 if (hasAchievement("a",192)) mult = mult.mul(2)
                 if (hasAchievement("a",193)) mult = mult.mul(2)
+                if (hasAchievement("a",195)) mult = mult.mul(2)
+                if (hasAchievement("a",196)) mult = mult.mul(2)
+                if (hasAchievement("a",201)) mult = mult.mul(player.ct.Advaxxers.max(10).log10())
+                if (hasAchievement("a",202)) mult = mult.mul(player.ct.Advaxxers.max(10).log10())
                 if (hasUpgrade("ct",354)) mult = mult.mul(5)
                 if (hasUpgrade("ct",355)) mult = mult.mul(3)
+                if (!hasUpgrade("ct",393)) {
                 if (hasUpgrade("ct",303)) mult = mult.mul(tmp.ct.upgrades[303].effect)
                 if (hasUpgrade("ct",304)) mult = mult.mul(tmp.ct.upgrades[304].effect)
                 if (hasUpgrade("ct",305)) mult = mult.mul(tmp.ct.upgrades[305].effect)
+                }
+                if (hasUpgrade("ct",371)) mult = mult.mul(tmp.ct.upgrades[371].effect)
+                if (hasUpgrade("ct",373)) mult = mult.mul(tmp.ct.upgrades[373].effect)
+                return mult
+            },
+            aftermult() {
+                let mult = new Decimal(1)
+                if (hasUpgrade("ct",393)) {
+                if (hasUpgrade("ct",303)) mult = mult.mul(tmp.ct.upgrades[303].effect)
+                if (hasUpgrade("ct",304)) mult = mult.mul(tmp.ct.upgrades[304].effect)
+                if (hasUpgrade("ct",305)) mult = mult.mul(tmp.ct.upgrades[305].effect)
+                }
                 return mult
             },
             gainexp() {
                 let exp = new Decimal(1/512)
+                if (hasUpgrade("ct",362)) exp = new Decimal(1/400)
+                if (hasUpgrade("ct",373)) exp = new Decimal(1/350)
+                if (hasUpgrade("ct",306)) exp = new Decimal(1/308)
                 return exp
             },
             next() {
@@ -31455,7 +33125,7 @@ addLayer("ct", {
             canClick() {return player.ct.Ui.gte(Decimal.pow(2,4096))},
             onClick() {
                 let a = 270
-                let keep = ["upgrades","milestones","auto","autom","autoc","autov","autoroll","Advaxxers","bestAdvax","bestAps"]
+                let keep = ["upgrades","milestones","challenges","auto","autom","autoc","autov","autoroll","Advaxxers","bestAdvax","bestAps","arna","aav","aiv","asv","AdV0","AdV1","AdV2","AdV3","AdVax3","AdV4"]
                 if (hasUpgrade("ct",342)) a = 280
                 if (hasUpgrade("ct",345)) a = 290
                 if (hasUpgrade("ct",346)) {
@@ -31468,7 +33138,15 @@ addLayer("ct", {
                 doReset("ct",true)
                 layerDataReset("ct",keep)
                 player.ct.upgrades = player.ct.upgrades.filter(n=>(n<a || n>340))
+                player.ct.AdVax0 = player.ct.AdV0
+                player.ct.AdVax1 = player.ct.AdV1
+                player.ct.AdVax2 = player.ct.AdV2
+                player.ct.AdVax3 = player.ct.AdV3
+                player.ct.buyables[211] = player.ct.AdV4
                 if (hasAchievement("a",192)) player.ct.Uv = new Decimal(1e50)
+                player.ct.buyables[31] = new Decimal(2)
+                player.ct.buyables[32] = new Decimal(2)
+                player.ct.buyables[33] = new Decimal(2)
                 updateTemp()
                 updateTemp()
             },
@@ -31478,6 +33156,74 @@ addLayer("ct", {
                 return color
                 }
             }
+        },
+        33: {
+            display() {
+                let dis = "<h3>Max All (A)</h3><br>"
+                return dis
+            },
+            unlocked() {
+                return hasUpgrade("ct",373)
+            },
+            canClick() {return true},
+            onClick() {
+                layers.ct.buyables[201].buyMax()
+                //updateTemp()
+                layers.ct.buyables[202].buyMax()
+                //updateTemp()
+                layers.ct.buyables[203].buyMax()
+                //updateTemp()
+                layers.ct.buyables[204].buyMax()
+                if (hasUpgrade("ct",392)) layers.ct.buyables[211].buyMax()
+            },
+            style: {'height':'130px', 'width':'130px', 'font-size':'13px',"background"() {
+                let color = "#bf8f8f"
+                if (tmp.ct.clickables[33].canClick) color = "radial-gradient(#383434, #153d63)"
+                return color
+                }
+            }
+        },
+        41: {
+            display() {
+                return "Set Even win chance to 60%"
+            },
+            canClick() {return true},
+            unlocked() {
+                return tmp.ct.WinChance>=0.6
+            },
+            onClick() {
+                player.ct.wset = 0
+                player.ct.wchance = .6
+            },
+            style: {'height':'120px', 'width':'120px','background-color':'#aa0000','color':'#ffffff'},
+        },
+        42: {
+            display() {
+                return "Set Even win chance to 75%"
+            },
+            canClick() {return true},
+            unlocked() {
+                return tmp.ct.WinChance>=0.75
+            },
+            onClick() {
+                player.ct.wset = 0
+                player.ct.wchance = .75
+            },
+            style: {'height':'120px', 'width':'120px','background-color':'#000000','color':'#ffffff'},
+        },
+        43: {
+            display() {
+                return "Set Even win chance to 85%+"
+            },
+            canClick() {return true},
+            unlocked() {
+                return tmp.ct.WinChance>=0.85
+            },
+            onClick() {
+                player.ct.wset = 1
+                player.ct.wchance = 1
+            },
+            style: {'height':'120px', 'width':'120px','background-color':'#00aa00','color':'#ffffff'},
         },
     }
 })
