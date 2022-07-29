@@ -22691,6 +22691,7 @@ addLayer("ct", {
         if (hasUpgrade("ct",284)) eff = eff.pow(1.1)
         if (hasUpgrade("ct",366)) eff = eff.pow(1.05)
         if (hasUpgrade("ct",372)) eff = eff.pow(tmp.ct.upgrades[372].effect)
+        if (hasUpgrade("ct",395)) eff = eff.pow(tmp.ct.upgrades[395].effect)
         if (inChallenge("ct",11)) eff = new Decimal(0)
         return eff
     },
@@ -22850,6 +22851,7 @@ addLayer("ct", {
             if (eff.gte(tet10(70))) eff = tet10(slog(eff).div(70).pow(10).mul(70))
         }
         if (eff.gte(tet10(130))) eff = tet10(slog(eff).log10().div(Decimal.log10(130)).pow(0.8).mul(Decimal.log10(130)).pow10())
+        if (hasUpgrade("ct",395)) eff = powSlog(eff,tmp.ct.upgrades[395].effect)
         if (player.ct.inC) eff = new Decimal(1)
         return eff
     },
@@ -28900,6 +28902,36 @@ addLayer("ct", {
                 }
             }
         },
+        395: {
+            title: "Challenger",
+            description: "Cases boost UI effect and Anti-Vaccine 1st effect slog.",
+            cost: Decimal.pow(10,979).mul(9.797),
+            currencyInternalName: "Advaxxers",
+            currencyDisplayName: "Adverse Vaxxers",
+            currencyLayer: "ct",
+            effect(){
+                let Sana = slog(player.points.max(10)).max(10).log10().pow(0.5).div(35).add(1).max(1)
+                return Sana
+            },
+            effectDisplay(){
+                return "^"+format(tmp.ct.upgrades[395].effect)
+            },
+            unlocked() {
+                return hasUpgrade("ct",394)
+            },
+            canAfford() {
+                return player.ct.Advaxxers.gte(Decimal.pow(10,979).mul(9.797))
+            },
+            style: {
+                "background"() {
+                    if (!hasUpgrade("ct",395)) {
+                    let color = "#bf8f8f"
+                    if (tmp.ct.upgrades[395].canAfford) color = "radial-gradient(#383434, #153d63)"
+                    return color
+                    }
+                }
+            }
+        },
     },
     challenges: { 
         rows: 3,
@@ -32818,7 +32850,7 @@ addLayer("ct", {
             },
             buyMax() { // logr(s(r-1)/a1+1)=(n)
                 let target = tmp.ct.buyables[211].maxAfford
-                let cost = Decimal.sub(1,Decimal.pow(1e6,target)).mul(tmp.ct.buyables[211].cost).div(-9999999999)
+                let cost = Decimal.sub(1,Decimal.pow(1e10,target)).mul(tmp.ct.buyables[211].cost).div(-9999999999)
                 let diff = target
                 if (tmp[this.layer].buyables[this.id].canAfford) {
                     player.ct.Advaxxers = player.ct.Advaxxers.sub(cost).max(0)
