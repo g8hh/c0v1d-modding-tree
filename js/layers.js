@@ -32863,7 +32863,7 @@ addLayer("ct", {
             onClick() {
                 if (!hasUpgrade("ct",166)) player.ct.Am = player.ct.Am.sub(tmp.ct.getBetAmt).max(0)
                 if (hasUpgrade("ct",166) && player.ct.bet<3) player.ct.win = new Decimal(0)
-                if (hasUpgrade("ct",182) && player.ct.bet==3) player.ct.win = new Decimal(0)
+                else if (hasUpgrade("ct",182) && player.ct.bet==3) player.ct.win = new Decimal(0)
                 else player.ct.win = tmp.ct.getBetAmt.neg()
                 let starttime = 10
                 if (hasUpgrade("ct",121)) starttime -=2
