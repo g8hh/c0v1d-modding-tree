@@ -25319,7 +25319,7 @@ addLayer("ct", {
         },
         166: {
             title: "No Vaccine",
-            description: "<span style = 'font-size:9px'>Multiply Green Exp by 'AM Booster'^2, reduce SM and AM % buyables sc, +10% Even and Green Chance, Bulk x100, Roll and Auto is 1 tick, Unlock Anti-Vaxxers</span>.",
+            description: "<span style = 'font-size:9px'>Multiply Green Exp by 'AM Booster'^2, reduce SM and AM % buyables sc, +10% Even and Green Chance, Bulk x100, Roll and Auto is 1 tick, You don't lose AMs on Even Loss, Unlock Anti-Vaxxers</span>.",
             cost: Decimal.pow(10,5696000),
             currencyInternalName: "Am",
             currencyDisplayName: "Anti-Maskers",
@@ -25530,7 +25530,7 @@ addLayer("ct", {
         },
         182: {
             title: "Green Vax",
-            description: "AM boosts Anti-Vaxxer base, Green Chance is 18/37.",
+            description: "AM boosts Anti-Vaxxer base, Green Chance is 18/37, You don't lose AMs on Green Loss.",
             cost: new Decimal(5e48),
             currencyInternalName: "Avaccines",
             currencyDisplayName: "Anti-Vaccines",
@@ -32863,6 +32863,7 @@ addLayer("ct", {
             onClick() {
                 if (!hasUpgrade("ct",166)) player.ct.Am = player.ct.Am.sub(tmp.ct.getBetAmt).max(0)
                 if (hasUpgrade("ct",166) && player.ct.bet<3) player.ct.win = new Decimal(0)
+                if (hasUpgrade("ct",182) && player.ct.bet==3) player.ct.win = new Decimal(0)
                 else player.ct.win = tmp.ct.getBetAmt.neg()
                 let starttime = 10
                 if (hasUpgrade("ct",121)) starttime -=2
@@ -33189,7 +33190,7 @@ addLayer("ct", {
             },
             canClick() {return true},
             unlocked() {
-                return tmp.ct.WinChance>=0.6
+                return tmp.ct.WinChance>=0.75
             },
             onClick() {
                 player.ct.wset = 0
@@ -33203,7 +33204,7 @@ addLayer("ct", {
             },
             canClick() {return true},
             unlocked() {
-                return tmp.ct.WinChance>=0.75
+                return tmp.ct.WinChance>=0.85
             },
             onClick() {
                 player.ct.wset = 0
