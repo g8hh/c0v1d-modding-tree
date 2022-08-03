@@ -28917,7 +28917,7 @@ addLayer("ct", {
                 return "^"+format(tmp.ct.upgrades[395].effect)
             },
             unlocked() {
-                return hasUpgrade("ct",394)
+                return hasUpgrade("ct",395)
             },
             canAfford() {
                 return player.ct.Advaxxers.gte(Decimal.pow(10,979).mul(9.797))
