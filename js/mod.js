@@ -12,11 +12,13 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.6.13",
+	num: "0.6.13.1",
 	name: "Vorona Cirus AdAnti-Vaxxed",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+        v0.6.13.1<br>
+        - Fixed Green Lose Streak bug<br>
         <h3>v0.6.13</h3><br>
         - Added AdVaccines.<br>
         - Added Adverse Challenges.<br>
@@ -288,7 +290,7 @@ window.addEventListener('keyup', function(event) {
 // Display extra things at the top of the page
 var displayThings = [
     function(){
-		let a = "Current endgame: 9.797e979 Adverse Vaxxers (v0.6.13)"
+		let a = "Current endgame: 9.797e979 Adverse Vaxxers (v0.6.13.1)"
 		return player.autosave ? a : a + ". Warning: autosave is off"
 	},
 	function(){
