@@ -30587,7 +30587,7 @@ addLayer("ct", {
                 return hasUpgrade("ct",415)
             },
             canAfford() {
-                return Decimal.pow(10,686) && inChallenge("ct",32)
+                return player.points.gte(Decimal.pow(10,686)) && inChallenge("ct",32)
             },
             pay() {
                 player.points = player.points.sub(Decimal.pow(10,686))
@@ -30611,7 +30611,7 @@ addLayer("ct", {
                 return hasUpgrade("ct",416)
             },
             canAfford() {
-                return Decimal.pow(10,6363) && inChallenge("ct",32)
+                return player.points.gte(Decimal.pow(10,6363)) && inChallenge("ct",32)
             },
             pay() {
                 player.points = player.points.sub(Decimal.pow(10,6363))
