@@ -113,18 +113,43 @@ function formatTime(s) {
     else if (s < 31536000) return formatWhole(Math.floor(s / 86400) % 365) + "d " + formatWhole(Math.floor(s / 3600) % 24) + "h " + formatWhole(Math.floor(s / 60) % 60) + "m " + format(s % 60) + "s"
     else return formatWhole(Math.floor(s / 31536000)) + "y " + formatWhole(Math.floor(s / 86400) % 365) + "d " + formatWhole(Math.floor(s / 3600) % 24) + "h " + formatWhole(Math.floor(s / 60) % 60) + "m " + format(s % 60) + "s"
 }
+function verseTime(years) {
+	s = slog(new Decimal(years)).sub(Decimal.log10(9))
+	let verse1 = [2,3,4,5]
+	let verse2 = ["multi","meta","xeno","hyper"]
+	let id = 0;
+		if (s.gte(verse1[verse1.length - 1])) id = verse1.length - 1;
+		else {
+			while (s.gte(verse1[id])) id++;
+			if (id > 0) id--;
+		}
+	let mag = slogadd(years,-verse1[id]+1).div(1e9)
+	return [mag,verse2[id]]
+}
 
 function formatTimeLong(s) {
 	s = new Decimal(s)
-	let slo = slog(s).sub(Decimal.log10(4))
-	if (s.gte(tet10(3600))) return formatTimeLong(slog(s))+ "^^2"
-	else if (s.gte(Decimal.pow(10,10000))) return formatTimeLong(tet10(slo.sub(slo.floor()).add(Decimal.log10(4).add(1)))) + "<sup>"+formatWhole(slo.floor())+"</sup>"
-	if (s.gte("31557600e1000")) return format(s.div("31557600e1000")) + " universe lifetimes"
-	if (s.gte(31557600e100)) return format(s.div(31557600e100)) + " black hole eras"
-	if (s.gte(31557600e40)) return format(s.div(31557600e40)) + " degenerate eras"
-	if (s.gte(31557600e9)) return format(s.div(31557600e9)) + " aeons"
-	if (s.gte(31557600e3)) return format(s.div(31557600e3)) + " millenia"
-	if (s.gte(31557600)) return format(s.div(31557600)) + " years"
+	let years = s.div(31556952)
+	let mlt = verseTime(years)
+	let arv1 = [1,1e15,1e30,1e45,1e60,1e75,1e90,1e105]
+	let arv2 = ["","mega","giga","tera","peta","exa","zetta","yotta"]
+	let id = 0;
+		if (mlt[0].gte(arv1[arv1.length - 1])) id = arv1.length - 1;
+		else {
+			while (mlt[0].gte(arv1[id])) id++;
+			if (id > 0) id--;
+		}
+	let verse = arv2[id]+(arv2[id]!=""?"-":"")+mlt[1]
+	if (mlt[1]=="multi") verse = arv2[id]
+	if (years.gte("6pt9")) return format(slog(years).pow10().div(9e6)) + " omniverse ages"
+	if (years.gte("eee56") && years.lt("eee69")) return format(years.log10().log10().div(1e56)) + " new big bangs"
+	if (years.gte("ee120") && years.lt("eee9")) return format(years.log10().div(1e120)) + " big rips"
+	if (years.gte("ee9")) return format(mlt[0].div(arv1[id])) + " " + verse +"verse ages"
+	if (years.gte(1e100)) return format(years.div(1e100)) + " black hole eras"
+	if (years.gte(1e40)) return format(years.div(1e40)) + " degenerate eras"
+	if (years.gte(1e9)) return format(years.div(1e9)) + " aeons"
+	if (years.gte(1e3)) return format(years.div(1e3)) + " millenia"
+	if (years.gte(1)) return format(years) + " years"
 	if (s.gte(86400)) return format(s.div(86400)) + " days"
 	if (s.gte(3600)) return format(s.div(3600)) + " hours"
 	if (s.gte(60)) return format(s.div(60)) + " minutes"
@@ -139,6 +164,82 @@ function formatTimeLong(s) {
 	if (s.gte(1e-24)) return format(s.mul(1e24)) + " yoctoseconds"
 	return format(s.mul(1.855e43)) + " Planck Times"
 }
+
+function formatSize(s) {
+	s = new Decimal(s)
+	let scale1 = [1.616255e-35,1e-24,1e-21,1e-18,1e-15,1e-12,1e-9,1e-6,0.001,0.01,1,1e3,1e6,1e9,1.495978707e11,9.46e15,8.8e26]
+	let scale2 = [" Planck Lengths"," yoctometers"," zeptometers"," attometers"," femtometers"
+	," picometers"," nanometers"," micrometers"," millimeters"," centimeters"," meters"," kilometers"
+	," megameters", " gigameters", " astronomical units", " light-years", " observable universes"]
+	let id = 0;
+		if (s.gte(scale1[scale1.length - 1])) id = scale1.length - 1;
+		else {
+			while (s.gte(scale1[id])) id++;
+			if (id > 0) id--;
+		}
+	return format(s.div(scale1[id])) + scale2[id]
+}
+function heightComp(s) {
+	s = new Decimal(s)
+	let scale1 = [1.71,10,93,828,8848,408e3,385e6,1.71*78e8,1.495978707e11,45e11,14e13
+		,42e15,2.62062e20,2.4001873e22,2.36518e24]
+	let scale2 = [ " you"," a house"," the Statue of Liberty"," Burj Khalifa", " Mount Everest", " the distance to ISS", " the distance to the Moon", " the total human height", " the distance to the Sun", " the distance to Neptune", " the farthest distance from Sedna", " the distance to Proxima Centauri"
+	," the distance to the center of the Milky Way"," the distance to Andromeda"," the distance to the Great Attractor"]
+	let id = 0;
+		if (s.gte(scale1[scale1.length - 1])) id = scale1.length - 1;
+		else {
+			while (s.gte(scale1[id])) id++;
+			if (id > 0) id--;
+		}
+	return format(s.div(scale1[id])) + " times taller than" + scale2[id]
+}
+
+function formatComp(s) { // SARS-CoV-2 radius: 50 nm, Volume = 4/3(πr^3) = 5.23598e-22 m^3, 523,598 nm^3
+	s = new Decimal(s)
+	let scale1 = [5.23598e-22,9e-17,6.2e-11,3.555e-6,4.73176e-4,0.062,2.5e3,4.1887902e12,1.08e21,1.53e24,1.41e27,1.4017341e37,6.7742e60,4e80,"e10310"]
+	let scale2 = [" SARS-CoV-2 viruses."," red blood cells.", " grains of sand.", " teaspoons.", " infectant bottles.", " infected people."," Olympic-sized swimming pools."," Chicxulub asteroids."," Earths."
+	," Jupiters."," Suns."," Stephenson 2-18s."," Milky Ways."," observable universes.", " symptom-verses."]
+	let id = 0;
+		if (s.gte(scale1[scale1.length - 1])) id = scale1.length - 1;
+		else {
+			while (s.gte(scale1[id])) id++;
+			if (id > 0) id--;
+		}
+	return format(s.div(scale1[id])) + scale2[id]
+}
+
+function eventsTime(years) { // From AD NG+++
+	s = new Decimal(years)
+	let thisYear = new Date().getFullYear()
+	let bc = s.sub(thisYear)
+	let dates = [5388e5, 2521e5, 2013e5, 145e6, 66e6, 5.332e6, 3.5e6,  2.58e6, 7.81e5, 3.15e5, 
+		2.5e5,   1.95e5, 1.6e5,  1.25e5, 7e4, 
+		6.7e4,   5e4,   4.5e4,  4e4,   3.5e4, 
+		3.3e4,   3.1e4,  2.9e4,  2.8e4,  2e4, 
+		1.6e4,   1.5e4,  1.4e4,  11600, 1e4,
+		8e3,    6e3,   5e3,   4e3,   3200,
+		3000,   2600,  2500,  2300,  1800,
+		1400,   1175,  800,   753,   653,
+		539,    356,   200,   4,     0]
+	let events = ["Cambrian Period","Triassic Period","Jurassic Period","Cretaceous Period","The Cretaceous–Paleogene extinction event (Chicxulub impact)","start of Pliocene epoch", "birthdate of Lucy (typical Australopithicus afarensis female)", "Quaternary period", "Calabrian age", "Homo sapiens",
+	"Homo neanderthalensis", "emergence of anatomically modern humans", "Homo sapiens idaltu", "peak of Eemian interglacial period", "earliest abstract/symbolic art",
+	"Upper Paleolithic", "Late Stone Age", "European early modern humans", "first human settlement", "oldest known figurative art",
+	"oldest known domesticated dog", "Last Glacial Maximum", "oldest ovens", "oldest known twisted rope", "oldest human permanent settlement (hamlet considering built of rocks and of mammoth bones)",
+	"rise of Kerberan culture", "colonization of North America", "domestication of the pig", "prehistoric warfare", "Holocene",
+	"death of other human breeds", "agricultural revolution", "farmers arrived in Europe", "first metal tools", "first horse",
+	"Sumerian cuneiform writing system", "union of Egypt", "rise of Maya", "extinction of mammoths", "rise of Akkadian Empire",
+	"first alphabetic writing", "rise of Olmec civilization", "end of bronze age", "rise of Greek city-states", "rise of Rome",
+	"rise of Persian Empire", "fall of Babylonian Empire", "birth of Alexander the Great", "first paper", "birth of Jesus Christ"]
+	let index = 0
+	for (var i = 0; i < dates.length; i++){
+		if (bc.gt(dates[i])) {
+			index = i
+			break
+		}
+	}
+	return format(bc) + " BCE (" + format(bc.sub(dates[index])) + " years before the " + events[index] + ').'
+}
+
 
 function toPlaces(x, precision, maxAccepted) {
 	x = new Decimal(x)
