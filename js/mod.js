@@ -12,11 +12,22 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.6.13.1",
-	name: "Vorona Cirus AdAnti-Vaxxed",
+	num: "0.6.14.1",
+	name: "Vorona Cirus Booster",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+        v0.6.14.1<br>
+        - Fixed 'You are past endgame' bug<br>
+        - Fixed Unvaxxed Layer upgrades that aren't tsupposed to be buyable out of 'Booster Vaccine'<br>
+        <h3>v0.6.14</h3><br>
+        - Added a Challenge.<br>
+        - Added a Buyable.<br>
+        - Added a Side Layer.<br>
+        - Added 2 Layers.<br>
+        - Added 3 Achievements.<br>
+        - Added Cases Representation (from NG+++).<br>
+        - Changed Anti-Roulette clickables.<br>
         v0.6.13.1<br>
         - Fixed Green Lose Streak bug<br>
         <h3>v0.6.13</h3><br>
@@ -231,7 +242,38 @@ function getGainSlog(){
     if (hasUpgrade("ct",331) && player.ct.inC) slog = slog.add(tmp.ct.upgrades[264].effect)
 	return slog
 }
-function getPointGen() {
+function getGainMultSlog(){
+	let mult = new Decimal(1)
+    let exp = player.ct.upgrades.filter(x=>x>410).length
+    if (hasUpgrade("ct",415)) exp = exp**2
+    if (hasUpgrade("Uv",11)) mult = mult.mul(upgradeEffect("Uv",11))
+    if (hasUpgrade("Uv",31)) mult = mult.mul(upgradeEffect("Uv",31))
+    if (hasMilestone("Ui",4)) mult = mult.mul(milestoneEffect("Ui",4))
+    if (hasAchievement("a",204)) mult = mult.mul(player.a.points.max(1))
+    mult = mult.mul(tmp.Uv.effect).mul(tmp.Uv.buyables[11].effect).mul(tmp.Ui.effect)
+    if (hasUpgrade("ct",401)) mult = mult.mul(tmp.ct.upgrades[401].effect)
+    if (hasUpgrade("ct",411)) mult = mult.mul(Decimal.pow(2,exp))
+	return mult.mul(tmp.Ui.pathEff)
+}
+function getGainpowSlog(){
+	let mult = new Decimal(1)
+    if (hasUpgrade("Uv",22)) mult = mult.mul(upgradeEffect("Uv",22))
+    if (hasUpgrade("Ui",12)) mult = mult.mul(upgradeEffect("Ui",12))
+	return mult
+}
+function getBaseGain(){
+	let mult = new Decimal(1)
+    if (hasUpgrade("ct",404)) mult = mult.mul(tmp.ct.upgrades[404].effect)
+    if (hasAchievement("a",205)) mult = mult.mul(player.a.points.max(1))
+	return mult.mul(tmp.Ui.buyables[11].effect)
+}
+function getMultSlog(){
+	let mult = new Decimal(1)
+    if (hasUpgrade("uv",11)) mult = mult.mul(tmp.uv.upgrades[11].effect)
+	return mult
+}
+
+function getPointBase() {
     let gain = new Decimal(0.1)
     let cap = tmp.e.icap
     if(!canGenPoints()) gain = new Decimal(0)
@@ -250,11 +292,24 @@ function getPointGen() {
         if (gain.gte(tet10(30))) gain = tet10(slog(gain).log10().div(Decimal.log10(30)).pow(tmp.ct.clickables[31].exp).mul(Decimal.log10(30)).pow10())
     }
     gain = slogadd(gain,getGainSlog())
+    gain = mulSlog(gain,getMultSlog())
     if (inChallenge("ct", 11)) gain = powSlog(gain,0.5)
     if (inChallenge("ct", 12)) gain = powSlog(gain,0.6)
     if (inChallenge("ct", 21)) gain = powSlog(gain,0.5)
     if (inChallenge("ct", 22)) gain = powSlog(gain,0.5)
-    if (inChallenge("ct", 31)) gain = gain.mul(player.ct.asv.pow(0.4).max(1))
+    if (inChallenge("ct", 31)) {
+        let cmul = player.ct.asv.pow(0.4).max(1)
+        if (challengeCompletions("ct",31)>1) cmul = player.ct.asv.pow(0.3).max(1).div(420)
+        if (challengeCompletions("ct",31)>2) cmul = player.ct.asv.pow(0.15).max(1).div(2022)
+        if (challengeCompletions("ct",31)>3) cmul = player.ct.asv.pow(0.123).max(1).div(1e9)
+        gain = gain.mul(cmul)
+    }
+    return gain
+}
+
+function getPointGen() {
+    let gain = getPointBase()
+    if (inChallenge("ct", 32)) gain = slogadd(slog(gain).mul(getBaseGain()).pow(getGainpowSlog()),tmp.ct.getBoosterSlog).div(1e9).mul(getGainMultSlog())
     return gain
 }
 
@@ -290,8 +345,10 @@ window.addEventListener('keyup', function(event) {
 // Display extra things at the top of the page
 var displayThings = [
     function(){
-		let a = "Current endgame: 9.797e979 Adverse Vaxxers (v0.6.13.1)"
-		return player.autosave ? a : a + ". Warning: autosave is off"
+		let a = "Current endgame: 1e101,000 cases in 'Booster Vaccine' (v0.6.14.1)"
+        let b = inChallenge("ct",32)?"<br>'Booster Vaccine' progress: "+format(slog(player.points.max(1)).div(Decimal.pow(2,1024).log10()).mul(100))+"%":""
+        
+		return a + b+ (player.autosave ? "" : ". Warning: autosave is off")
 	},
 	function(){
 		let a = new Date().getTime() - player.lastSave
@@ -301,13 +358,14 @@ var displayThings = [
 		for (i = 0; i<10; i++){
 			c += lastTenTicks[i] / 10000
 		}
-		return b + " Average TPS = " + format(c, 3) + "s/tick."
+        let d = isEndgame()?makeBlue("<br>You are past endgame,<br>and the game might not be balanced here."):""
+		return b + " Average TPS = " + format(c, 3) + "s/tick."+d
 	}
 ]
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.ct.Advaxxers.gte("9.797e979")
+	return player.points.gte("e101e3") && inChallenge("ct",32)
 }
 
 
