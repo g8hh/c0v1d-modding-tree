@@ -5141,7 +5141,7 @@ addLayer("uv", {
                 return format(tmp.uv.upgrades[11].effect)+"x"
             },
             canAfford () {
-                return player.points.gte(1e190)
+                return player.points.gte(1e190) && inChallenge("ct",32)
             },
             pay() {
                 player.points = player.points.sub(1e190)
@@ -5166,7 +5166,7 @@ addLayer("uv", {
                 return "^"+format(tmp.uv.upgrades[12].effect)+", "+format(tmp.uv.upgrades[12].effect2)+"x"
             },
             canAfford () {
-                return player.points.gte("e1730")
+                return player.points.gte("e1730") && inChallenge("ct",32)
             },
             pay() {
                 player.points = player.points.sub("e1730")

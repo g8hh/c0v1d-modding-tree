@@ -12,11 +12,14 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.6.14",
+	num: "0.6.14.1",
 	name: "Vorona Cirus Booster",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+        v0.6.14.1<br>
+        - Fixed 'You are past endgame' bug<br>
+        - Fixed Unvaxxed Layer upgrades that aren't tsupposed to be buyable out of 'Booster Vaccine'<br>
         <h3>v0.6.14</h3><br>
         - Added a Challenge.<br>
         - Added a Buyable.<br>
@@ -342,7 +345,7 @@ window.addEventListener('keyup', function(event) {
 // Display extra things at the top of the page
 var displayThings = [
     function(){
-		let a = "Current endgame: 1e101,000 cases in 'Booster Vaccine' (v0.6.14)"
+		let a = "Current endgame: 1e101,000 cases in 'Booster Vaccine' (v0.6.14.1)"
         let b = inChallenge("ct",32)?"<br>'Booster Vaccine' progress: "+format(slog(player.points.max(1)).div(Decimal.pow(2,1024).log10()).mul(100))+"%":""
         
 		return a + b+ (player.autosave ? "" : ". Warning: autosave is off")
@@ -355,7 +358,7 @@ var displayThings = [
 		for (i = 0; i<10; i++){
 			c += lastTenTicks[i] / 10000
 		}
-        let d = isEndgame?makeBlue("<br>You are past endgame,<br>and the game might not be balanced here."):""
+        let d = isEndgame()?makeBlue("<br>You are past endgame,<br>and the game might not be balanced here."):""
 		return b + " Average TPS = " + format(c, 3) + "s/tick."+d
 	}
 ]
