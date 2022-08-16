@@ -13718,7 +13718,7 @@ addLayer("e", {
             },
             "Upgrades3": {
                 content: [
-                    function () {if (player.tab == "e" && player.subtabs.e.mainTabs == "RNA" && player.subtabs.e.mRNAupg == "Upgrades3") return ["upgrades",[41]]},
+                    function () {if (player.tab == "e" && player.subtabs.e.mainTabs == "RNA" && player.subtabs.e.mRNAupg == "Upgrades3") return ["upgrades",[41,42]]},
                 ],
                 buttonStyle: {"border-color": "#00AA55"},
                 unlocked() {return hasUpgrade("e",406)}
