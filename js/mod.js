@@ -3,6 +3,7 @@ let modInfo = {
 	id: "c0v1d",
 	author: "Vorona",
 	pointsName: "cases",
+    pointsNameSingular: "case",
 	discordName: "",
 	discordLink: "",
 	changelogLink: "https://github.com/Acamaeda/The-Modding-Tree/blob/master/changelog.md",
@@ -12,11 +13,16 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.6.14.1",
+	num: "0.6.15",
 	name: "Vorona Cirus Booster",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+        <h3>v0.6.15</h3><br>
+        - Added Anti-Boosters<br>
+        - Added 5 Achievements.<br>
+        - Added a Layer.<br>
+        - Added Singular/Plural words.<br>
         v0.6.14.1<br>
         - Fixed 'You are past endgame' bug<br>
         - Fixed Unvaxxed Layer upgrades that aren't tsupposed to be buyable out of 'Booster Vaccine'<br>
@@ -246,8 +252,10 @@ function getGainMultSlog(){
 	let mult = new Decimal(1)
     let exp = player.ct.upgrades.filter(x=>x>410).length
     if (hasUpgrade("ct",415)) exp = exp**2
+    if (hasUpgrade("ct",422)) exp = exp**2
     if (hasUpgrade("Uv",11)) mult = mult.mul(upgradeEffect("Uv",11))
     if (hasUpgrade("Uv",31)) mult = mult.mul(upgradeEffect("Uv",31))
+    if (hasUpgrade("Ur",13)) mult = mult.mul(upgradeEffect("Ur",13))
     if (hasMilestone("Ui",4)) mult = mult.mul(milestoneEffect("Ui",4))
     if (hasAchievement("a",204)) mult = mult.mul(player.a.points.max(1))
     mult = mult.mul(tmp.Uv.effect).mul(tmp.Uv.buyables[11].effect).mul(tmp.Ui.effect)
@@ -264,12 +272,15 @@ function getGainpowSlog(){
 function getBaseGain(){
 	let mult = new Decimal(1)
     if (hasUpgrade("ct",404)) mult = mult.mul(tmp.ct.upgrades[404].effect)
-    if (hasAchievement("a",205)) mult = mult.mul(player.a.points.max(1))
+    if (hasUpgrade("ct",471)) mult = mult.mul(tmp.ct.upgrades[471].effect)
+    if (hasAchievement("a",205) && player.s.points.gte(1)) mult = mult.mul(player.a.points.max(1))
+    if (hasAchievement("a",212) && player.d.points.gte(1)) mult = mult.mul(player.a.points.max(1))
 	return mult.mul(tmp.Ui.buyables[11].effect)
 }
 function getMultSlog(){
 	let mult = new Decimal(1)
     if (hasUpgrade("uv",11)) mult = mult.mul(tmp.uv.upgrades[11].effect)
+    if (hasUpgrade("ct",431)) mult = mult.mul(tmp.ct.upgrades[431].effect)
 	return mult
 }
 
@@ -345,7 +356,7 @@ window.addEventListener('keyup', function(event) {
 // Display extra things at the top of the page
 var displayThings = [
     function(){
-		let a = "Current endgame: 1e101,000 cases in 'Booster Vaccine' (v0.6.14.1)"
+		let a = "Current endgame: e10,000,000,000 cases in 'Booster Vaccine' (v0.6.15)"
         let b = inChallenge("ct",32)?"<br>'Booster Vaccine' progress: "+format(slog(player.points.max(1)).div(Decimal.pow(2,1024).log10()).mul(100))+"%":""
         
 		return a + b+ (player.autosave ? "" : ". Warning: autosave is off")
@@ -365,7 +376,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.points.gte("e101e3") && inChallenge("ct",32)
+	return player.points.gte("ee10") && inChallenge("ct",32)
 }
 
 
