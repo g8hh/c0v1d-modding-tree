@@ -6832,7 +6832,7 @@ addLayer("Ur", {
         3: {
             requirementDescription: "56 unvaxxed replicators (4)",
             effectDescription: "Autobuy Pathogen 'Boost' buyables and unlock Unvaxxed Replicants.",
-            done() { return player.Ur.points.gte(28) }
+            done() { return player.Ur.points.gte(56) }
         },
         4: {
             requirementDescription: "1e10 unvaxxed replicants (5)",
