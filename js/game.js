@@ -27,21 +27,21 @@ function getResetGain(layer, canMax=false, useType = null) {
 		if ((!tmp[layer].canBuyMax) || tmp[layer].baseAmount.lt(tmp[layer].requires)) return decimalOne
 		let gain = tmp[layer].baseAmount.div(tmp[layer].requires).div(tmp[layer].gainMult).max(1).log(tmp[layer].base).times(tmp[layer].gainExp).pow(Decimal.pow(tmp[layer].exponent, -1))
 		gain = gain.times(tmp[layer].directMult)
-		if (layer == "r"  || layer == "u" || layer == "e") gain = softcapStaticGain(gain, tmp[layer].row)
+		gain = softcapStaticGain(gain, layer)
 		if (layer=="e") gain = gain.mul(tmp.e.infDiv)
 		if (layer == "u" && player.u.points.lt(320)) {
 			let amt = player[layer].points.plus((canMax&&tmp[layer].baseAmount.gte(tmp[layer].nextAt))?tmp[layer].resetGain:0)
 			if (player.u.points.gte(30)) {
 				let umult = Decimal.pow(1e8,amt.pow(1.9))
 				gain = tmp[layer].baseAmount.div(umult).div(tmp[layer].requires).div(tmp[layer].gainMult).max(1).log(tmp[layer].base).times(tmp[layer].gainExp).pow(Decimal.pow(tmp[layer].exponent, -1)).add(30)
-				gain = softcapStaticGain(gain, tmp[layer].row)
+				gain = softcapStaticGain(gain, layer)
 			}
 			if (player.u.points.lt(30)) { 
 				gain = Decimal.div(tmp["u"].baseAmount,tmp[layer].requires).div(tmp[layer].gainMult).max(1).log(base).times(tmp[layer].gainExp).pow(Decimal.pow(exp, -1))
 				if (gain.gte(30)) { 
 					let umult = Decimal.pow(1e8,amt.pow(1.9))
 					gain = tmp[layer].baseAmount.div(umult).div(tmp[layer].requires).div(tmp[layer].gainMult).max(1).log(tmp[layer].base).times(tmp[layer].gainExp).pow(Decimal.pow(tmp[layer].exponent, -1)).add(30)
-					gain = softcapStaticGain(gain, tmp[layer].row)
+					gain = softcapStaticGain(gain, layer)
 					
 				}
 			}
@@ -65,6 +65,9 @@ function getResetGain(layer, canMax=false, useType = null) {
 		if (tmp[layer].baseAmount.lt(tmp[layer].requires)) return decimalZero
 		let gain = tmp[layer].baseAmount.div(tmp[layer].requires).pow(tmp[layer].exponent).times(tmp[layer].gainMult).pow(tmp[layer].gainExp)
 		if (gain.gte(tmp[layer].softcap)) gain = gain.pow(tmp[layer].softcapPower).times(tmp[layer].softcap.pow(decimalOne.sub(tmp[layer].softcapPower)))
+		if (layer=="Ui") {
+			if (gain.gte("ee4")) gain = gain.log10().div(1e4).pow(0.75).mul(1e4).pow10()
+		}
 		gain = gain.times(tmp[layer].directMult)
 		return gain.floor().max(0);
 	} else if (type=="custom"){
@@ -96,7 +99,7 @@ function getNextAt(layer, canMax=false, useType = null) {
 		let amt = player[layer].points.plus((canMax&&tmp[layer].baseAmount.gte(tmp[layer].nextAt))?tmp[layer].resetGain:0).div(tmp[layer].directMult)
 		let g = amt
 		if (layer == "e") g = g.div(tmp.e.infDiv)
-		if (layer == "r" || layer == "u" || layer == "e") amt = scaleStaticCost(g, tmp[layer].row)
+		amt = scaleStaticCost(g, layer)
 		let extraCost = Decimal.pow(tmp[layer].base, amt.pow(tmp[layer].exponent).div(tmp[layer].gainExp)).times(tmp[layer].gainMult)
 		let cost = extraCost.times(tmp[layer].requires).max(tmp[layer].requires)
 		if (layer == "u") {

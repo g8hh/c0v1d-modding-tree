@@ -164,7 +164,11 @@ function formatTimeLong(s) {
 	if (s.gte(1e-24)) return format(s.mul(1e24)) + " yoctoseconds"
 	return format(s.mul(1.855e43)) + " Planck Times"
 }
-
+function pluralize(n,singular,plural,round=false) {
+	n = new Decimal(n)
+	if ((n.eq_tolerance(1,0.0005) || (n.round().eq(1) && round==true && n.gte(1)))) return singular
+	return plural
+}
 function formatSize(s) {
 	s = new Decimal(s)
 	let scale1 = [1.616255e-35,1e-24,1e-21,1e-18,1e-15,1e-12,1e-9,1e-6,0.001,0.01,1,1e3,1e6,1e9,1.495978707e11,9.46e15,8.8e26]
