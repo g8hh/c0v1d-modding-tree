@@ -5267,7 +5267,7 @@ addLayer("uv", {
             }
         },
         13: {
-            title: "Slog Booster",
+            title: "Effect Booster",
             description: "Raise UI effect to 1.01 (1.15 in 'Booster Vaccine') per Unvaxxed Layer.",
             cost: new Decimal("e101e3"),
             currencyDisplayName: "cases in 'Booster Vaccine'",
@@ -5288,7 +5288,7 @@ addLayer("uv", {
             }
         },
         14: {
-            title: "Slog Booster",
+            title: "Challenge Booster",
             description: "Multiply eff. challenge completions by 1.1 per Unvaxxed Layer.",
             cost: new Decimal("e633e3"),
             currencyDisplayName: "cases in 'Booster Vaccine'",
@@ -5308,7 +5308,7 @@ addLayer("uv", {
             }
         },
         15: {
-            title: "Slog Booster",
+            title: "Base Booster",
             description: "Raise 'UI Gain' base to 1.2 (1.5 in 'Booster Vaccine') per Unvaxxed Layer.",
             cost: new Decimal("e5542e3"),
             currencyDisplayName: "cases in 'Booster Vaccine'",
@@ -5329,7 +5329,7 @@ addLayer("uv", {
             }
         },
         21: {
-            title: "Slog Booster",
+            title: "Scaling Booster",
             description: "'UI Gain' scalings start 1.1x later (1.5 in 'Booster Vaccine') per Unvaxxed Layer.",
             cost: new Decimal("e725e5"),
             currencyDisplayName: "cases in 'Booster Vaccine'",
@@ -5350,7 +5350,7 @@ addLayer("uv", {
             }
         },
         22: {
-            title: "Slog Booster",
+            title: "Layer Booster",
             description: "Adverse Vaxxers and cases in 'Booster Vaccine' add eff. Unvaxxed Layers.",
             cost: new Decimal("e25e8"),
             currencyDisplayName: "cases in 'Booster Vaccine'",
