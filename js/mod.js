@@ -13,11 +13,16 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.6.15",
-	name: "Vorona Cirus Booster",
+	num: "0.6.16",
+	name: "Vorona Cirus Booster GAS",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+        <h3>v0.6.16</h3><br>
+        - Added 2 Booster Upgrades<br>
+        - Added 6 Anti-Booster Upgrades<br>
+        - Added 4 Achievements.<br>
+        - Added a Layer.<br>
         <h3>v0.6.15</h3><br>
         - Added Anti-Boosters<br>
         - Added 5 Achievements.<br>
@@ -245,7 +250,7 @@ function getGainpowExp(){
 function getGainSlog(){
 	let slog = new Decimal(0)
     if (hasUpgrade("ct",285)) slog = slog.add(tmp.ct.upgrades[285].effect)
-    if (hasUpgrade("ct",331) && player.ct.inC) slog = slog.add(tmp.ct.upgrades[264].effect)
+    if (hasUpgrade("ct",331) && player.ct.inC) slog = slog.add(tmp.ct.upgrades[264].effect.min(1e10))
 	return slog
 }
 function getGainMultSlog(){
@@ -267,6 +272,7 @@ function getGainpowSlog(){
 	let mult = new Decimal(1)
     if (hasUpgrade("Uv",22)) mult = mult.mul(upgradeEffect("Uv",22))
     if (hasUpgrade("Ui",12)) mult = mult.mul(upgradeEffect("Ui",12))
+    if (hasUpgrade("Up",31)) mult = mult.mul(upgradeEffect("Up",31))
 	return mult
 }
 function getBaseGain(){
@@ -275,6 +281,7 @@ function getBaseGain(){
     if (hasUpgrade("ct",471)) mult = mult.mul(tmp.ct.upgrades[471].effect)
     if (hasAchievement("a",205) && player.s.points.gte(1)) mult = mult.mul(player.a.points.max(1))
     if (hasAchievement("a",212) && player.d.points.gte(1)) mult = mult.mul(player.a.points.max(1))
+    if (hasAchievement("a",216) && player.f.points.gte(1)) mult = mult.mul(player.a.points.max(1))
 	return mult.mul(tmp.Ui.buyables[11].effect)
 }
 function getMultSlog(){
@@ -315,12 +322,14 @@ function getPointBase() {
         if (challengeCompletions("ct",31)>3) cmul = player.ct.asv.pow(0.123).max(1).div(1e9)
         gain = gain.mul(cmul)
     }
-    return gain
+    return gain.min(tet10(1.797e308))
 }
 
 function getPointGen() {
     let gain = getPointBase()
-    if (inChallenge("ct", 32)) gain = slogadd(slog(gain).mul(getBaseGain()).pow(getGainpowSlog()),tmp.ct.getBoosterSlog).div(1e9).mul(getGainMultSlog())
+    let mult = getGainMultSlog()
+    let exp = tmp.ct.getBoosterExp
+    if (inChallenge("ct", 32)) gain = slogadd(slog(gain).mul(getBaseGain()).pow(getGainpowSlog()),tmp.ct.getBoosterSlog).min(mult.pow(tmp.uv.slogCap)).div(1e9).mul(mult).pow(exp)
     return gain
 }
 
@@ -356,7 +365,7 @@ window.addEventListener('keyup', function(event) {
 // Display extra things at the top of the page
 var displayThings = [
     function(){
-		let a = "Current endgame: e10,000,000,000 cases in 'Booster Vaccine' (v0.6.15)"
+		let a = "Current endgame: e2.93e30 cases in 'Booster Vaccine' (v0.6.16)"
         let b = inChallenge("ct",32)?"<br>'Booster Vaccine' progress: "+format(slog(player.points.max(1)).div(Decimal.pow(2,1024).log10()).mul(100))+"%":""
         
 		return a + b+ (player.autosave ? "" : ". Warning: autosave is off")
@@ -376,7 +385,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.points.gte("ee10") && inChallenge("ct",32)
+	return player.points.gte("e293e28") && inChallenge("ct",32)
 }
 
 

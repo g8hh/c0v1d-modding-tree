@@ -140,7 +140,10 @@ function formatTimeLong(s) {
 			if (id > 0) id--;
 		}
 	let verse = arv2[id]+(arv2[id]!=""?"-":"")+mlt[1]
-	if (mlt[1]=="multi") verse = arv2[id]
+	if (mlt[1]=="multi") {
+		verse = arv2[id]
+		if (arv2[id]=="") verse = "multi"
+	}
 	if (years.gte("6pt9")) return format(slog(years).pow10().div(9e6)) + " omniverse ages"
 	if (years.gte("eee56") && years.lt("eee69")) return format(years.log10().log10().div(1e56)) + " new big bangs"
 	if (years.gte("ee120") && years.lt("eee9")) return format(years.log10().div(1e120)) + " big rips"
@@ -225,7 +228,7 @@ function eventsTime(years) { // From AD NG+++
 		3000,   2600,  2500,  2300,  1800,
 		1400,   1175,  800,   753,   653,
 		539,    356,   200,   4,     0]
-	let events = ["Cambrian Period","Triassic Period","Jurassic Period","Cretaceous Period","The Cretaceous–Paleogene extinction event (Chicxulub impact)","start of Pliocene epoch", "birthdate of Lucy (typical Australopithicus afarensis female)", "Quaternary period", "Calabrian age", "Homo sapiens",
+	let events = ["Cambrian Period","Triassic Period","Jurassic Period","Cretaceous Period","Cretaceous–Paleogene extinction event (Chicxulub impact)","start of Pliocene epoch", "birthdate of Lucy (typical Australopithicus afarensis female)", "Quaternary period", "Calabrian age", "Homo sapiens",
 	"Homo neanderthalensis", "emergence of anatomically modern humans", "Homo sapiens idaltu", "peak of Eemian interglacial period", "earliest abstract/symbolic art",
 	"Upper Paleolithic", "Late Stone Age", "European early modern humans", "first human settlement", "oldest known figurative art",
 	"oldest known domesticated dog", "Last Glacial Maximum", "oldest ovens", "oldest known twisted rope", "oldest human permanent settlement (hamlet considering built of rocks and of mammoth bones)",
