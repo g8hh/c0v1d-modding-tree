@@ -67,6 +67,7 @@ function getResetGain(layer, canMax=false, useType = null) {
 		if (gain.gte(tmp[layer].softcap)) gain = gain.pow(tmp[layer].softcapPower).times(tmp[layer].softcap.pow(decimalOne.sub(tmp[layer].softcapPower)))
 		if (layer=="Ui") {
 			if (gain.gte("ee4")) gain = gain.log10().div(1e4).pow(0.75).mul(1e4).pow10()
+			if (gain.gte("e25e5")) gain = gain.log10().div(25e5).pow(0.6).mul(25e5).pow10()
 		}
 		gain = gain.times(tmp[layer].directMult)
 		return gain.floor().max(0);
