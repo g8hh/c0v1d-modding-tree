@@ -329,7 +329,7 @@ function getPointGen() {
     let gain = getPointBase()
     let mult = getGainMultSlog()
     let exp = tmp.ct.getBoosterExp
-    if (inChallenge("ct", 32)) gain = slogadd(slog(gain).mul(getBaseGain()).pow(getGainpowSlog()),tmp.ct.getBoosterSlog).min(mult.pow(tmp.uv.slogCap)).div(1e9).mul(mult).pow(exp)
+    if (inChallenge("ct", 32)) gain = slogadd(slog(gain).mul(getBaseGain()).pow(getGainpowSlog()),tmp.ct.getBoosterSlog).min(mult.pow(tmp.uv.slogCap).max("ee10")).div(1e9).mul(mult).pow(exp)
     return gain
 }
 
