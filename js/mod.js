@@ -13,11 +13,13 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.6.16",
+	num: "0.6.16.1",
 	name: "Vorona Cirus Booster GAS",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+        v0.6.16.1<br>
+        - Fixed cases gain too low bug in 'Booster Vaccine'<br>
         <h3>v0.6.16</h3><br>
         - Added 2 Booster Upgrades<br>
         - Added 6 Anti-Booster Upgrades<br>
