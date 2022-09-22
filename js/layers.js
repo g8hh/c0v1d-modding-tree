@@ -3893,7 +3893,7 @@ addLayer("a", {
         },
         13: {
             name: "Thousand Infected",
-            tooltip: "Get 1,000 cases. Reward: 1 AP",
+            tooltip() {return "Get "+formatWhole(1e3)+" cases. Reward: 1 AP"},
             done() {
                 return player.points.gte(1000)
             },
@@ -3903,7 +3903,7 @@ addLayer("a", {
         },
         14: {
             name: "Million Infected",
-            tooltip: "Get 1,000,000 cases. Reward: 1 AP",
+            tooltip() {return "Get "+formatWhole(1e6)+" cases. Reward: 1 AP"},
             done() {
                 return player.points.gte(1e6)
             },
@@ -3913,7 +3913,7 @@ addLayer("a", {
         },
         15: {
             name: "Covid 19",
-            tooltip: "Get 63,154,455 cases. Reward: 1 AP",
+            tooltip() {return "Get "+formatWhole(63154455)+" cases. Reward: 1 AP"},
             done() {
                 return player.points.gte(63154455)
             },
@@ -3923,7 +3923,7 @@ addLayer("a", {
         },
         16: {
             name: "World Infected",
-            tooltip: "Get 7.8e9 cases. Reward: 1 AP",
+            tooltip() {return "Get "+formatWhole(7.8e9)+" cases. Reward: 1 AP"},
             done() {
                 return player.points.gte(7.8e9)
             },
@@ -3963,7 +3963,7 @@ addLayer("a", {
         },
         24: {
             name: "Infected company",
-            tooltip: "Get 1e100 cases. Reward: 2 AP",
+            tooltip() {return "Get "+formatWhole(1e100)+" cases. Reward: 2 AP"},
             done() {
                 return player.points.gte(1e100)
             },
@@ -3973,9 +3973,9 @@ addLayer("a", {
         },
         25: {
             name: "Infinite infections",
-            tooltip: "Get 1.798e308 cases. Reward: 2 AP",
+            tooltip() {return "Get "+formatWhole(Decimal.pow(2,1024))+" cases. Reward: 2 AP"},
             done() {
-                return player.points.gte("1.798e308")
+                return player.points.gte(Decimal.pow(2,1024))
             },
             onComplete() {
                 addPoints("a",2)
@@ -4073,7 +4073,7 @@ addLayer("a", {
         },
         43: {
             name: "Corona Death",
-            tooltip: "Get 1,466,925 deaths. Reward: 3 AP, Double death gain",
+            tooltip() {return "Get "+formatWhole(1466925)+" deaths. Reward: 3 AP, Double death gain"},
             done() {
                 return player.d.points.gte(1466925)
             },
@@ -4083,7 +4083,7 @@ addLayer("a", {
         },
         44: {
             name: "Coffin",
-            tooltip: "Get 1e30 deaths. Reward: 3 AP, Double death gain",
+            tooltip() {return "Get "+formatWhole(1e30)+" deaths. Reward: 3 AP, Double death gain"},
             done() {
                 return player.d.points.gte(1e30)
             },
@@ -4093,7 +4093,7 @@ addLayer("a", {
         },
         45: {
             name: "Coffin Dance",
-            tooltip: "Get 1e100 deaths. Reward: 4 AP",
+            tooltip() {return "Get "+formatWhole(1e100)+" deaths. Reward: 4 AP"},
             done() {
                 return player.d.points.gte(1e100)
             },
@@ -4143,7 +4143,7 @@ addLayer("a", {
         },
         54: {
             name: "NG+++ INFECTED",
-            tooltip: "Get ee18 cases. Reward: 4 AP, Double Fatality Dimensions",
+            tooltip() {return "Get "+formatWhole("ee18")+" cases. Reward: 4 AP, Double Fatality Dimensions"},
             done() {
                 return player.points.gte("ee18")
             },
@@ -4153,7 +4153,7 @@ addLayer("a", {
         },
         55: {
             name: "PPOOWWEERR!",
-            tooltip: "Get 1e1000 fatality power. Reward: 4 AP",
+            tooltip() {return "Get "+formatWhole("ee3")+" fatality power. Reward: 4 AP"},
             done() {
                 return player.f.p.gte(Decimal.pow(10,1e3))
             },
@@ -4193,7 +4193,7 @@ addLayer("a", {
         },
         63: {
             name: "Zero Deaths",
-            tooltip: "Get 1e10000 fatality without Dimension and Multiplier Boosts. Reward: 5 AP",
+            tooltip() {return "Get "+formatWhole("ee4")+" fatality without Dimension and Multiplier Boosts. Reward: 5 AP"},
             done() {
                 return player.f.points.gte("ee4") && player.f.buyables[32].eq(0) && player.f.buyables[33].eq(0)
             },
@@ -4213,7 +4213,7 @@ addLayer("a", {
         },
         65: {
             name: "'ZERO' Deaths",
-            tooltip: "Get 6e666,666 fatality without Dimension and Multiplier Boosts in Casualty Challenge 1. Reward: 5 AP, AP boosts fatality dimensions",
+            tooltip() {return "Get "+formatWhole("6e666666")+" fatality without Dimension and Multiplier Boosts in Casualty Challenge 1. Reward: 5 AP, AP boosts fatality dimensions"},
             done() {
                 return player.f.points.gte("6e666666") && player.f.buyables[32].eq(0) && player.f.buyables[33].eq(0) && inChallenge("f",31)
             },
@@ -4233,7 +4233,7 @@ addLayer("a", {
         },
         71: {
             name: "GoogolPlex",
-            tooltip: "Get ee100 cases. Reward: 5 AP",
+            tooltip() {return "Get "+formatWhole("ee100")+" cases. Reward: 5 AP"},
             done() {
                 return player.points.gte("ee100")
             },
@@ -4243,7 +4243,7 @@ addLayer("a", {
         },
         72: {
             name: "When will it be enough?",
-            tooltip: "Get 1e30000 casuals. Reward: 5 AP",
+            tooltip() {return "Get "+formatWhole("e30000")+" casuals. Reward: 5 AP"},
             done() {
                 return player.f.casuals.gte("e30000")
             },
@@ -4253,7 +4253,7 @@ addLayer("a", {
         },
         73: {
             name: "GAS",
-            tooltip: "Get ee1000 cases. Reward: 6 AP",
+            tooltip() {return "Get "+formatWhole("eee3")+" cases. Reward: 6 AP"},
             done() {
                 return player.points.gte("eee3")
             },
@@ -4264,7 +4264,7 @@ addLayer("a", {
         74: {
             name: "Corona GAS",
             tooltip() {
-                let a = "Get ee1,000,000 cases. Reward: 6 AP, multiply infection power and infectious disease gain (decreases with more IDs, starts at 5e285 IDs)"
+                let a = "Get "+formatWhole("eee6")+" cases. Reward: 6 AP, multiply infection power and infectious disease gain (decreases with more IDs, starts at 5e285 IDs)"
                 let b = "<br>Currently: "+format(tmp.a.achievements[74].effect)+"x"
                 return  a+b
             },
@@ -4321,7 +4321,7 @@ addLayer("a", {
         },
         83: {
             name: "E-World Quarantine",
-            tooltip: "Get e7,800,000,000 cases in Quarantine. Reward: 8 AP",
+            tooltip() {return "Get "+format("e78e8")+" cases in Quarantine. Reward: 8 AP"},
             done() {
                 return player.e.inC && player.points.gte("e7.8e9")
             },
@@ -4341,7 +4341,7 @@ addLayer("a", {
         },
         85: {
             name: "GAS GAS",
-            tooltip: "Get eee20 cases. Reward: 8 AP",
+            tooltip() {return "Get "+format("eee20")+" cases. Reward: 8 AP"},
             done() {
                 return player.points.gte("eee20")
             },
@@ -4361,7 +4361,7 @@ addLayer("a", {
         },
         91: {
             name: "Cased GAS",
-            tooltip: "Get ee8.8521e33 cases. Reward: 9 AP",
+            tooltip() {return "Get "+format(Decimal.pow(Math.E,Decimal.pow(Math.E,Decimal.pow(Math.E,79))))+" cases. Reward: 9 AP"},
             done() {
                 return player.points.gte(Decimal.pow(Math.E,Decimal.pow(Math.E,Decimal.pow(Math.E,79))))
             },
@@ -4421,7 +4421,7 @@ addLayer("a", {
         },
         101: {
             name: "Corona GAS GAS",
-            tooltip: "Get eee1000 cases. Reward: 10 AP",
+            tooltip() {return "Get "+format("eee1000")+" cases. Reward: 10 AP"},
             done() {
                 return player.points.gte("eee1000")
             },
@@ -4461,7 +4461,7 @@ addLayer("a", {
         },
         105: {
             name: "In'F'ected",
-            tooltip: "Get 1F5 cases. Reward: 10 AP",
+            tooltip() {return "Get "+format(tet10(5.00000000001))+" cases. Reward: 10 AP"},
             done() {
                 return player.points.gte(Decimal.tetrate(10,5))
             },
@@ -4511,7 +4511,7 @@ addLayer("a", {
         },
         114: {
             name: "Mutated Mutations",
-            tooltip: "Get 1000 Mutations. Reward: 15 AP",
+            tooltip: "Get 1,000 Mutations. Reward: 15 AP",
             done() {
                 return player.e.mu.gte(1e3)
             },
@@ -4591,7 +4591,7 @@ addLayer("a", {
         },
         126: {
             name: "Outside",
-            tooltip: "Get 1e100 LaBas. Reward: 20 AP",
+            tooltip() {return "Get "+format(1e100)+" LaBas. Reward: 20 AP"},
             done() {
                 return player.ct.LaBas.gte(1e100)
             },
@@ -4631,7 +4631,7 @@ addLayer("a", {
         },
         134: {
             name: "CrowBird '19'",
-            tooltip: "Get 1e19 CorVids. Reward: 25 AP",
+            tooltip() {return "Get "+format(1e19)+" CorVids. Reward: 25 AP"},
             done() {
                 return player.ct.CorVid.gte(1e19)
             },
@@ -4821,7 +4821,7 @@ addLayer("a", {
         },
         165: {
             name: "Capped↑↑10",
-            tooltip: "Get 1F10 cases. Reward: 50 AP",
+            tooltip() {return "Get "+format(tet10(10))+" cases. Reward: 50 AP"},
             done() {
                 return player.points.gte(tet10(10))
             },
@@ -4861,7 +4861,7 @@ addLayer("a", {
         },
         173: {
             name: "CASED GAS GAS",
-            tooltip: "Get 1F20 cases. Reward: 50 AP",
+            tooltip() {return "Get "+format(tet10(20))+" cases. Reward: 50 AP"},
             done() {
                 return player.points.gte(tet10(20))
             },
@@ -4891,7 +4891,7 @@ addLayer("a", {
         },
         176: {
             name: "Giggol Infected",
-            tooltip: "Get 1F100 cases. Reward: 50 AP",
+            tooltip() {return "Get "+format(tet10(100))+" cases. Reward: 50 AP"},
             done() {
                 return player.points.gte(tet10(100))
             },
@@ -4911,7 +4911,7 @@ addLayer("a", {
         },
         182: {
             name: "In'F'inite CASES",
-            tooltip: "Get 1.798F308 cases. Reward: 50 AP",
+            tooltip() {return "Get "+format(tet10(Decimal.pow(2,1024).log10()))+" cases. Reward: 50 AP"},
             done() {
                 return player.points.gte(tet10(Decimal.pow(2,1024).log10()))
             },
@@ -4931,7 +4931,7 @@ addLayer("a", {
         },
         184: {
             name: "Anti-Vaxxed Giggol",
-            tooltip: "Get 1F100 cases in Vaccination. Reward: 50 AP",
+            tooltip() {return "Get "+format(tet10(100))+" cases in Vaccination. Reward: 50 AP"},
             done() {
                 return player.points.gte(tet10(100)) && player.ct.inC
             },
@@ -4951,7 +4951,7 @@ addLayer("a", {
         },
         186: {
             name: "In'F'inite ANTI-VAX",
-            tooltip: "Get 1.798F308 cases in Vaccination. Reward: 50 AP",
+            tooltip() {return "Get "+format(tet10(Decimal.pow(2,1024).log10()))+" cases in Vaccination. Reward: 50 AP"},
             done() {
                 return player.points.gte(tet10(Decimal.pow(2,1024).log10())) && player.ct.inC
             },
@@ -4991,7 +4991,7 @@ addLayer("a", {
         },
         194: {
             name: "Million In'F'ected",
-            tooltip: "Get 1F1,000,000 cases. Reward: 50 AP, AP boosts UI gain.",
+            tooltip() {return "Get "+format(tet10(1e6))+" cases. Reward: 50 AP, AP boosts UI gain."},
             done() {
                 return player.points.gte(tet10(1e6))
             },
@@ -5058,7 +5058,7 @@ addLayer("a", {
         },
         204: {
             name: "World In'F'ected",
-            tooltip: "Get F7.8e9 cases. Reward: 100 AP, AP boosts cases gain after slog.",
+            tooltip() {return "Get "+format(tet10(7.8e9))+" cases. Reward: 100 AP, AP boosts cases gain after slog."},
             done() {
                 return player.points.gte(tet10(7.8e9))
             },
