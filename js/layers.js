@@ -3833,10 +3833,10 @@ addLayer("stat", {
                 let a = "Base cases gain: "+format(base)+" cases/s.<br><br>"
                 let b = "Base cases gain in 'Booster Vaccine' ("+format(bmult)+"x): "+format(bgain)+" cases/s.<br><br>"
                 let c = "Base cases gain in 'Booster Vaccine' with exponents (^"+format(exp)+"):"+format(bexp)+" cases/s.<br><br>"
-                let d = "Base cases gain in 'Booster Vaccine' with exponents and slog adders (+"+format(tmp.ct.getBoosterSlog)+"): "+format(bslog.min(mult.pow(cap)))+" (caps at "+format(mult.pow(cap).max("ee10"))+") cases/s.<br><br>"
+                let d = "Base cases gain in 'Booster Vaccine' with exponents and slog adders (+"+format(tmp.ct.getBoosterSlog)+"): "+format(bslog.min(mult.pow(cap).max("ee10")))+" (caps at "+format(mult.pow(cap).max("ee10"))+") cases/s.<br><br>"
                 let e = "Cases gain multiplier after slog: "+format(mult)+"x.<br><br>"
-                let f = "Total cases gain: "+format(bslog.min(mult.pow(cap)).mul(mult))+" cases/s.<br><br>"
-                let g = "Total cases gain with exponents (^"+format(cexp)+"): "+format(bslog.min(mult.pow(cap)).mul(mult).pow(cexp))+" cases/s.<br><br>"
+                let f = "Total cases gain: "+format(bslog.min(mult.pow(cap).max("ee10")).mul(mult))+" cases/s.<br><br>"
+                let g = "Total cases gain with exponents (^"+format(cexp)+"): "+format(bslog.min(mult.pow(cap).max("ee10")).mul(mult).pow(cexp))+" cases/s.<br><br>"
                 let h = "Base gain cap exponent (After slog mult<sup>exp</sup>): "+format(cap)+".<br><br>"
                 return a+b+c+d+e+f+g+h
                 }
