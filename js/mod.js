@@ -13,11 +13,13 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.6.16",
+	num: "0.6.16.1",
 	name: "Vorona Cirus Booster GAS",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+        v0.6.16.1<br>
+        - Fixed cases gain too low bug in 'Booster Vaccine'<br>
         <h3>v0.6.16</h3><br>
         - Added 2 Booster Upgrades<br>
         - Added 6 Anti-Booster Upgrades<br>
@@ -329,7 +331,7 @@ function getPointGen() {
     let gain = getPointBase()
     let mult = getGainMultSlog()
     let exp = tmp.ct.getBoosterExp
-    if (inChallenge("ct", 32)) gain = slogadd(slog(gain).mul(getBaseGain()).pow(getGainpowSlog()),tmp.ct.getBoosterSlog).min(mult.pow(tmp.uv.slogCap)).div(1e9).mul(mult).pow(exp)
+    if (inChallenge("ct", 32)) gain = slogadd(slog(gain).mul(getBaseGain()).pow(getGainpowSlog()),tmp.ct.getBoosterSlog).min(mult.pow(tmp.uv.slogCap).max("ee10")).div(1e9).mul(mult).pow(exp)
     return gain
 }
 
