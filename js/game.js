@@ -26,7 +26,6 @@ function getResetGain(layer, canMax=false, useType = null) {
 		let exp = new Decimal(1.9)
 		if ((!tmp[layer].canBuyMax) || tmp[layer].baseAmount.lt(tmp[layer].requires)) return decimalOne
 		let gain = tmp[layer].baseAmount.div(tmp[layer].requires).div(tmp[layer].gainMult).max(1).log(tmp[layer].base).times(tmp[layer].gainExp).pow(Decimal.pow(tmp[layer].exponent, -1))
-		gain = gain.times(tmp[layer].directMult)
 		gain = softcapStaticGain(gain, layer)
 		if (layer=="e") gain = gain.mul(tmp.e.infDiv)
 		if (layer == "u" && player.u.points.lt(320)) {
@@ -46,7 +45,11 @@ function getResetGain(layer, canMax=false, useType = null) {
 				}
 			}
 		}
-		if (layer == "u" && gain.gte(1e34)) gain = gain.div(1e34).pow(0.2).mul(1e34)
+		gain = gain.times(tmp[layer].directMult)
+		if (layer == "u" && gain.gte(1e34)) {
+			gain = gain.div(1e34).pow(0.2).mul(1e34)
+			
+		}
 		if (layer == "s") {
 			if (gain.gte(getDUpgEff(41).add(20))) {  // gain=1e10000^1.9^s
 				gain = tmp[layer].baseAmount.div(tmp[layer].requires).log(Decimal.pow(10,1e4)).log(1.9).add(getDUpgEff(41).add(20))
@@ -97,13 +100,17 @@ function getNextAt(layer, canMax=false, useType = null) {
 		if (!tmp[layer].canBuyMax) canMax = false
 		let base = new Decimal(1e8)
 		let exp = new Decimal(1.9)
-		let amt = player[layer].points.plus((canMax&&tmp[layer].baseAmount.gte(tmp[layer].nextAt))?tmp[layer].resetGain:0).div(tmp[layer].directMult)
+		let amt = player[layer].points.plus((canMax&&tmp[layer].baseAmount.gte(tmp[layer].nextAt))?tmp[layer].resetGain:0)
 		let g = amt
 		if (layer == "e") g = g.div(tmp.e.infDiv)
+		if (layer == "u" && amt.gte(1e34)) {
+			g = g.div(1e34).pow(5).mul(1e34)
+		}
+		g = g.div(tmp[layer].directMult)
 		amt = scaleStaticCost(g, layer)
 		let extraCost = Decimal.pow(tmp[layer].base, amt.pow(tmp[layer].exponent).div(tmp[layer].gainExp)).times(tmp[layer].gainMult)
 		let cost = extraCost.times(tmp[layer].requires).max(tmp[layer].requires)
-		if (layer == "u") {
+		if (layer == "u" && player.u.points.lt(320)) {
 			if (player.u.points.gte(30)) {
 				amt = amt.sub(30)
 				let umult = Decimal.pow(1e8,(amt.add(30)).pow(1.9))
@@ -119,6 +126,7 @@ function getNextAt(layer, canMax=false, useType = null) {
 				}
 				cost = extraCost.times(tmp[layer].requires).max(tmp[layer].requires)
 			}
+			
 		}
 		if (layer == "s") {
 			if (player.s.points.gte(getDUpgEff(41).add(20))) {
