@@ -36726,7 +36726,7 @@ addLayer("ct", {
             currencyDisplayName: "cases",
             completionLimit: 1,
             challengeDescription: function() {
-                let c11 = "Cases gain is slog10(gain)/"+format(1e9)+". Infectivity, severity, death, and fatality multiplier from normal layers is 1."
+                let c11 = "Cases gain is slog10(gain)/"+format(1e9)+". Infectivity, severity, death, fatality, and IN multiplier from normal layers is 1."
                 if (inChallenge("ct", 32)) c11 = c11 + " (In Challenge)"
                 return c11
             },
