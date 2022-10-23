@@ -17799,11 +17799,12 @@ addLayer("e", {
     },
     effect(){
         let eff = player.e.points
+        eff = Decimal.pow(this.effbase(),eff).sub(1)
         if (inChallenge("ct",32)) {
+            eff = player.e.points
             if (hasUpgrade("Uu",21)) eff = eff.mul(tmp.Uu.upgrades[21].effect)
         }
         else {
-        eff = Decimal.pow(this.effbase(),eff).sub(1)
         if (hasUpgrade("e",14)) eff = eff.mul(tmp.e.upgrades[14].effect)
         if (hasUpgrade("e",21)) eff = eff.mul(upgradeEffect("e",21))
         if (hasUpgrade("e",23)) eff = eff.mul(upgradeEffect("e",23))
