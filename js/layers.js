@@ -10719,7 +10719,7 @@ addLayer("Uu", {//6.028e32647
             description() {return "Req: "+format("e2360")+" PrPres<br>Unvaxxed uncoaters make PrPSc effect softcap later, 'PrPSc Exp' bulk*40."},
             cost: new Decimal(3),
             canAfford(){
-                return player.Ur.points.gte(3) && (player.Up.prpres.gte("e2360"))
+                return player.Uu.points.gte(3) && (player.Up.prpres.gte("e2360"))
             },
             effect(){
                 let eff = player.Uu.points.add(1).pow(0.85).div(11.6).add(1)
@@ -10735,7 +10735,7 @@ addLayer("Uu", {//6.028e32647
             description() {return "Req: "+format("3.801e3801")+" PrPres<br>Unvaxxed uncoaters add to 'PrPSc Boost' base, 'PrPSc Exp' bulk*10."},
             cost: new Decimal(9),
             canAfford(){
-                return player.Ur.points.gte(9) && (player.Up.prpres.gte("3.801e3801"))
+                return player.Uu.points.gte(9) && (player.Up.prpres.gte("3.801e3801"))
             },
             effect(){
                 let eff = player.Uu.points.add(1).pow(0.8).div(1.07e4)
@@ -10751,7 +10751,7 @@ addLayer("Uu", {//6.028e32647
             description() {return "Req: "+format("e4195")+" PrPres<br>PrPres add to unvaxxed uncoater base, 1st milestone effect^π."},
             cost: new Decimal(11),
             canAfford(){
-                return player.Ur.points.gte(11) && (player.Up.prpres.gte("e4195"))
+                return player.Uu.points.gte(11) && (player.Up.prpres.gte("e4195"))
             },
             effect(){
                 let eff = player.Up.prpres.div("e4100").max(10).log10().pow(0.55).div(100)
@@ -10767,7 +10767,7 @@ addLayer("Uu", {//6.028e32647
             description() {return "Req: "+format("5.186e5186")+" PrPres<br>Unvaxxed uncoaters boost 'Infected PrPres', 'PrPSc Exp' bulk*5."},
             cost: new Decimal(14),
             canAfford(){
-                return player.Ur.points.gte(14) && (player.Up.prpres.gte("5.186e5186"))
+                return player.Uu.points.gte(14) && (player.Up.prpres.gte("5.186e5186"))
             },
             effect(){
                 let eff = player.Uu.points.add(1).pow(0.77777).div(2).add(1)
@@ -10783,7 +10783,7 @@ addLayer("Uu", {//6.028e32647
             description() {return "Req: "+format("5.766e5766")+" PrPres<br>Infection power boosts PrPres gain."},
             cost: new Decimal(16),
             canAfford(){
-                return player.Ur.points.gte(16) && (player.Up.prpres.gte("5.766e5766"))
+                return player.Uu.points.gte(16) && (player.Up.prpres.gte("5.766e5766"))
             },
             effect(){
                 let eff = player.e.p.add(1).pow(50)
@@ -10799,7 +10799,7 @@ addLayer("Uu", {//6.028e32647
             description() {return "Req: "+format("e6353")+" PrPres<br>PrPres boosts infection power gain."},
             cost: new Decimal(18),
             canAfford(){
-                return player.Ur.points.gte(18) && (player.Up.prpres.gte("e6353"))
+                return player.Uu.points.gte(18) && (player.Up.prpres.gte("e6353"))
             },
             effect(){
                 let eff = powExp(player.Up.prpres.div("e6000"),0.92).add(1).pow(0.005)
