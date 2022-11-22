@@ -13,11 +13,18 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.6.16.1",
-	name: "Vorona Cirus Booster GAS",
+	num: "0.6.17",
+	name: "Vorona Cirus Uncoated GAS",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+        <h3>v0.6.17</h3><br>
+        - Added Notations<br>
+        - Added a Booster Upgrade<br>
+        - Added an Unvaxxed layer Upgrade<br>
+        - Added 3 Anti-Booster Upgrades<br>
+        - Added 4 Achievements.<br>
+        - Added a Layer.<br>
         v0.6.16.1<br>
         - Fixed cases gain too low bug in 'Booster Vaccine'<br>
         <h3>v0.6.16</h3><br>
@@ -331,7 +338,7 @@ function getPointGen() {
     let gain = getPointBase()
     let mult = getGainMultSlog()
     let exp = tmp.ct.getBoosterExp
-    if (inChallenge("ct", 32)) gain = slogadd(slog(gain).mul(getBaseGain()).pow(getGainpowSlog()),tmp.ct.getBoosterSlog).min(mult.pow(tmp.uv.slogCap).max("ee10")).div(1e9).mul(mult).pow(exp)
+    if (inChallenge("ct", 32)) gain = slogadd(slog(gain).mul(getBaseGain()).pow(getGainpowSlog()),tmp.ct.getBoosterSlog).min(mult.pow(tmp.uv.slogCap).max("ee10")).div(1e9).mul(mult).pow(exp).min("ee430")
     return gain
 }
 
@@ -345,6 +352,7 @@ function addedPlayerData() { return {
     infectivity: false,
     ms: 50,
     options:false,
+    notation:'Scientific',
 }}
 var shiftDown = false
 
@@ -367,7 +375,7 @@ window.addEventListener('keyup', function(event) {
 // Display extra things at the top of the page
 var displayThings = [
     function(){
-		let a = "Current endgame: e2.93e30 cases in 'Booster Vaccine' (v0.6.16)"
+		let a = "Current endgame: "+format("ee261")+" cases in 'Booster Vaccine' (v0.6.17)"
         let b = inChallenge("ct",32)?"<br>'Booster Vaccine' progress: "+format(slog(player.points.max(1)).div(Decimal.pow(2,1024).log10()).mul(100))+"%":""
         
 		return a + b+ (player.autosave ? "" : ". Warning: autosave is off")
@@ -387,7 +395,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.points.gte("e293e28") && inChallenge("ct",32)
+	return player.points.gte("ee261") && inChallenge("ct",32)
 }
 
 
