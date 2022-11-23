@@ -13,11 +13,17 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.6.17",
-	name: "Vorona Cirus Uncoated GAS",
+	num: "0.6.18",
+	name: "Vorona Cirus Anti-Distanced GAS",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+        <h3>v0.6.18</h3><br>
+        - Added Anti-Distancing<br>
+        - Added 4 Booster Upgrades<br>
+        - Added an Unvaxxed layer Upgrade<br>
+        - Added 5 Anti-Booster Upgrades<br>
+        - Added 5 Achievements.<br>
         <h3>v0.6.17</h3><br>
         - Added Notations<br>
         - Added a Booster Upgrade<br>
@@ -338,7 +344,7 @@ function getPointGen() {
     let gain = getPointBase()
     let mult = getGainMultSlog()
     let exp = tmp.ct.getBoosterExp
-    if (inChallenge("ct", 32)) gain = slogadd(slog(gain).mul(getBaseGain()).pow(getGainpowSlog()),tmp.ct.getBoosterSlog).min(mult.pow(tmp.uv.slogCap).max("ee10")).div(1e9).mul(mult).pow(exp).min("ee430")
+    if (inChallenge("ct", 32)) gain = slogadd(slog(gain).mul(getBaseGain()).pow(getGainpowSlog()),tmp.ct.getBoosterSlog).min(mult.pow(tmp.uv.slogCap).max("ee10")).div(1e9).mul(mult).pow(exp).min("ee2e20")
     return gain
 }
 
@@ -375,7 +381,7 @@ window.addEventListener('keyup', function(event) {
 // Display extra things at the top of the page
 var displayThings = [
     function(){
-		let a = "Current endgame: "+format("ee261")+" cases in 'Booster Vaccine' (v0.6.17)"
+		let a = "Current endgame: "+format("ee2e18")+" cases in 'Booster Vaccine' (v0.6.18)"
         let b = inChallenge("ct",32)?"<br>'Booster Vaccine' progress: "+format(slog(player.points.max(1)).div(Decimal.pow(2,1024).log10()).mul(100))+"%":""
         
 		return a + b+ (player.autosave ? "" : ". Warning: autosave is off")
@@ -395,7 +401,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.points.gte("ee261") && inChallenge("ct",32)
+	return player.points.gte("ee2e18") && inChallenge("ct",32)
 }
 
 
