@@ -5082,7 +5082,7 @@ addLayer("a", {
         },
         201: {
             name: "Anti-Inactivated",
-            tooltip: "Get 2,024 AAV Vaccines. Reward: 50 AP, log10(Adverse Vaxxer) boosts Adverse Vaxxer gain and log10(UV) boosts UV gain.",
+            tooltip: "Get 2,024 AIV Vaccines. Reward: 50 AP, log10(Adverse Vaxxer) boosts Adverse Vaxxer gain and log10(UV) boosts UV gain.",
             done() {
                 return player.ct.aiv.gte(2024)
             },
