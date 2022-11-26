@@ -35280,6 +35280,7 @@ addLayer("ct", {
                 if (Jeongyeon.gte(1e10)) Jeongyeon = Jeongyeon.log10().pow(5).mul(1e5)
                 if (Jeongyeon.gte(1e20)) Jeongyeon = Jeongyeon.log10().div(20).pow(0.75).mul(20).pow10()
                 if (Jeongyeon.gte(1e250)) Jeongyeon = Jeongyeon.log10().div(250).pow(0.75).mul(250).pow10()
+                if (Jeongyeon.gte("e400")) Jeongyeon = Jeongyeon.log10().div(400).pow(0.6).mul(400).pow10()
                 if (hasUpgrade("ct",286)) Jeongyeon = Jeongyeon.pow(3)
                 if (hasUpgrade("ct",302)) Jeongyeon = Jeongyeon.pow(Decimal.pow(2,.5))
                 if (hasUpgrade("ct",371)) Jeongyeon = Jeongyeon.pow(2)
@@ -44047,6 +44048,7 @@ addLayer("ct", {
             base() { 
                 let base = player.ct.buyables[261].add(100).log10().div(2).sub(1).mul(5).add(1)
                 if (base.gte(1.13)) base = base.div(1.13).pow(0.2).mul(1.13)
+                if (base.gte(1.2)) base = base.div(1.2).pow(0.35).mul(1.2)
                 return base
             },
             effect() { // Effects of owning x of the items, x is a decimal
@@ -44112,6 +44114,7 @@ addLayer("ct", {
             },
             base() { 
                 let base = player.ct.buyables[251].add(100).log10().div(2).pow(0.5)
+                if (base.gte(1.1)) base = base.div(1.1).pow(0.3).mul(1.1)
                 return base
             },
             effect() { // Effects of owning x of the items, x is a decimal
@@ -44307,6 +44310,7 @@ addLayer("ct", {
             },
             base() { 
                 let base = player.ct.Advaxxers.max(10).log10().max(10).log10().div(8.3).max(1).pow(2)
+                if (base.gte(1.11)) base = base.div(1.11).pow(0.25).mul(1.11)
                 return base
             },
             effect() { // Effects of owning x of the items, x is a decimal

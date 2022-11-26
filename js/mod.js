@@ -13,11 +13,14 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.6.18",
+	num: "0.6.18.1",
 	name: "Vorona Cirus Anti-Distanced GAS",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+        v0.6.18.1<br>
+        - Added Anti-Distancing softcaps<br>
+        - Fixed 'Anti-Inactivated' achievement tooltip<br>
         <h3>v0.6.18</h3><br>
         - Added Anti-Distancing<br>
         - Added 4 Booster Upgrades<br>
