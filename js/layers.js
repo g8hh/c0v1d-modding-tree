@@ -30940,6 +30940,7 @@ addLayer("ct", {
     },
     getDistEff() {
         let eff = tmp.ct.getDist.div(1.8288).pow(-0.1)
+        if (eff.gte(1.4)) eff = eff.div(1.4).pow(0.5).mul(1.4)
         return eff
     },
     extraBoostEff() {
