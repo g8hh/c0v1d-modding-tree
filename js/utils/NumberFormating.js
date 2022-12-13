@@ -373,6 +373,21 @@ function formatSize(s) {
 		}
 	return format(s.div(scale1[id])) + scale2[id]
 }
+function distShort(s) {
+	s = new Decimal(s)
+	let scale1 = [1.616255e-35,1e-24,1e-21,1e-18,1e-15,1e-12,1e-9,1e-6,0.001,0.01,1,1e3,1e6,1e9,1.495978707e11,9.46e15,8.8e26]
+	let scale2 = [" PL"," ym"," zm"," am"," fm"
+	," pm"," nm"," um"," mm"," cm"," m"," km"
+	," Mm", " Gm", " AU", " ly", " uni"]
+	let id = 0;
+		if (s.gte(scale1[scale1.length - 1])) id = scale1.length - 1;
+		else {
+			while (s.gte(scale1[id])) id++;
+			if (id > 0) id--;
+		}
+	return format(s.div(scale1[id])) + scale2[id]
+}
+
 function heightComp(s) {
 	s = new Decimal(s)
 	let scale1 = [1.71,10,93,828,8848,408e3,385e6,1.71*78e8,1.495978707e11,45e11,14e13

@@ -46,8 +46,8 @@ function getResetGain(layer, canMax=false, useType = null) {
 			}
 		}
 		gain = gain.times(tmp[layer].directMult)
-		if (layer == "u" && gain.gte(1e34)) {
-			gain = gain.div(1e34).pow(0.2).mul(1e34)
+		if (layer == "u" && gain.gte(tmp.Uu.unSoft)) {
+			gain = gain.div(tmp.Uu.unSoft).pow(0.2).mul(tmp.Uu.unSoft)
 			
 		}
 		if (layer == "s") {
@@ -103,8 +103,8 @@ function getNextAt(layer, canMax=false, useType = null) {
 		let amt = player[layer].points.plus((canMax&&tmp[layer].baseAmount.gte(tmp[layer].nextAt))?tmp[layer].resetGain:0)
 		let g = amt
 		if (layer == "e") g = g.div(tmp.e.infDiv)
-		if (layer == "u" && amt.gte(1e34)) {
-			g = g.div(1e34).pow(5).mul(1e34)
+		if (layer == "u" && amt.gte(tmp.Uu.unSoft)) {
+			g = g.div(tmp.Uu.unSoft).pow(5).mul(tmp.Uu.unSoft)
 		}
 		g = g.div(tmp[layer].directMult)
 		amt = scaleStaticCost(g, layer)
@@ -217,7 +217,6 @@ function rowReset(row, layer) {
 
 function layerDataReset(layer, keep = []) {
 	let storedData = {unlocked: player[layer].unlocked, forceTooltip: player[layer].forceTooltip, noRespecConfirm: player[layer].noRespecConfirm, prevTab:player[layer].prevTab} // Always keep these
-
 	for (thing in keep) {
 		if (player[layer][keep[thing]] !== undefined)
 			storedData[keep[thing]] = player[layer][keep[thing]]
@@ -227,8 +226,8 @@ function layerDataReset(layer, keep = []) {
 	Vue.set(player[layer], "clickables", getStartClickables(layer))
 	Vue.set(player[layer], "challenges", getStartChallenges(layer))
 	Vue.set(player[layer], "grid", getStartGrid(layer))
-
 	layOver(player[layer], getStartLayerData(layer))
+	
 	player[layer].upgrades = []
 	player[layer].milestones = []
 	player[layer].achievements = []
