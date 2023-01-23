@@ -135,6 +135,7 @@ function t4format(x,m) {
 
 function standard(decimal, precision){
 	decimal = new Decimal(decimal)
+	if (decimal.sign < 0) return "-"+standard(decimal.neg(), precision)
 	if (decimal.layer > 4 || (decimal.mag > Math.log10(3e45) && decimal.layer == 4)) {
 		var slog = decimal.slog()
 		if (slog.gte(1e9)) return "F" + formatWhole(slog.floor())
@@ -183,10 +184,11 @@ function hyperEformat(decimal, precision) {
 	if (s.gte(1e9)) e = formatWhole(s.floor())
 	if (decimal.layer >= 1e10) return hyperEformat(s,precision)+'#2'
 	if (decimal.layer >= 1e9) return 'E1#'+e
-	if (decimal.layer > 0 || decimal.mag >= 1e10) return 'E'+m+'#'+e
+	if ((decimal.layer > 0 && decimal.mag>0) || decimal.mag >= 1e10) return 'E'+m+'#'+e
 	if (decimal.mag >= 1e3) return commaFormat(decimal, 0)
 	if (decimal.mag >= 0.001) return regularFormat(decimal, precision)
-	if (decimal.sign!=0) return '1/'+standard(decimal.recip(),precision)
+	if (decimal.mag >= 1/9e15) return '1/'+standard(decimal.recip(),precision)
+	if (decimal.sign!=0) return '1/'+hyperEformat(decimal.recip(),precision)
 	return regularFormat(decimal,precision)
 }
 
