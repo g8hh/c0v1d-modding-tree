@@ -29148,7 +29148,7 @@ addLayer("ct", {
                 if (hasUpgrade("ct",306)) d = d.div(1.5)
                 if (hasUpgrade("ct",426)) d = d.div(10)
                 let cTime = player.ct.AdvTime
-                if (cTime>=3600) cTime = (cTime/3600)**0.5*360+3240
+                if (cTime>=3600) cTime = (cTime/3600)**0.45*300+3300
                 let time = new Decimal(cTime).max(0.0001).div(d)
                 let eff = Decimal.pow(15,time.log10().mul(time.pow(0.3)))
                 if (!hasUpgrade("ct",424)) eff = eff.min(cap)
