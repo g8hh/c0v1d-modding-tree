@@ -12928,8 +12928,8 @@ addLayer("e", {
         return eff
     },
     mol(){
-        let eff = new Decimal(1e11**inChallenge("ct",32))
-        return eff
+        if (inChallenge("ct",32)) return new Decimal(1e11)
+        return decimalOne
     },
     Adeffect(){
         let eff = player.e.ad.add(10).div(2.2e9).div(tmp.e.mol).max(10).log10().pow(0.333)
@@ -29147,7 +29147,9 @@ addLayer("ct", {
                 }
                 if (hasUpgrade("ct",306)) d = d.div(1.5)
                 if (hasUpgrade("ct",426)) d = d.div(10)
-                let time = new Decimal(player.ct.AdvTime).max(0.0001).div(d)
+                let cTime = player.ct.AdvTime
+                if (cTime>=3600) cTime = (cTime/3600)**0.5*360+3240
+                let time = new Decimal(cTime).max(0.0001).div(d)
                 let eff = Decimal.pow(15,time.log10().mul(time.pow(0.3)))
                 if (!hasUpgrade("ct",424)) eff = eff.min(cap)
                 if (hasUpgrade("ct",396)) eff = eff.pow(5)
@@ -29159,7 +29161,9 @@ addLayer("ct", {
                 return eff
             },
             effectDisplay(){
-                return format(tmp.ct.upgrades[305].effect)+"x"
+                let dis = format(tmp.ct.upgrades[305].effect)+"x"
+                if (player.ct.AdvTime>=3600) dis += ' (softcapped)'
+                return dis
             },
             unlocked() {
                 return hasUpgrade("ct",355)
@@ -32555,7 +32559,7 @@ addLayer("ct", {
             currencyDisplayName: "Anti-Boosters",
             currencyLayer: "ct",
             effect(){
-                let Yeji = powExp(player.ct.bestBoost.div("e15e6").add(1),0.8).pow(0.00002)
+                let Yeji = powExp(player.ct.bestBoost.div("e15e6").add(1),0.8).pow(0.00002).min(5)
                 return Yeji
             },
             effectDisplay(){

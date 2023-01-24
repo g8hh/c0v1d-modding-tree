@@ -13,11 +13,14 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.6.19",
+	num: "0.6.19.1",
 	name: "Vorona Cirus Anti-Distanced Symptoms",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+        v0.6.19.1<br>
+        - Added upgrade '73' softcap at 1 hour reset time<br>
+        - Fixed AdChallenges NaN bug<br>
         <h3>v0.6.19</h3><br>
         - Added an Unvaxxed layer<br>
         - Added an Unvaxxed layer upgrade<br>
