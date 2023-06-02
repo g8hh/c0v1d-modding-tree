@@ -25192,17 +25192,17 @@ addLayer("ct", {
     crex() {
         return tmp.ct.getCorEff.e2.mul(player.e.mu2.pow(tmp.e.crx))
     },
-    timeSpeed() {
-        let eff = tmp.ct.AntiDistEff[1]
-        if (hasUpgrade("uv",31)) eff = Decimal.mul(eff,tmp.uv.upgrades[31].effect)
-        if (hasUpgrade("uv",66)) eff = eff.mul(3)
-        return eff
-    },
     AntiDistEff() {
         let ad = tmp.ct.getAntiDist.mul(1e33)
         let eff = ad.add(10).log10()
         let eff2 = powExp(ad.add(1),0.5).pow(3)
         return [eff,eff2]
+    },
+    timeSpeed() {
+        let eff = tmp.ct.AntiDistEff[1]
+        if (hasUpgrade("uv",31)) eff = Decimal.mul(eff,tmp.uv.upgrades[31].effect)
+        if (hasUpgrade("uv",66)) eff = eff.mul(3)
+        return eff
     },
     update(diff) {
         if (player.ct.AdvTime+diff*tmp.ct.timeSpeed.toNumber()>=1e308) {
