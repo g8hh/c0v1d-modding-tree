@@ -148,7 +148,7 @@ let changelog = `<h1>Changelog:</h1><br>
         - Added 5 Milestones.<br>
         - Added 6 Buyables.<br>
         - Added 4 Achievements.<br>
-        <h2 style = color:#93d281;>v0.6Taeyeon</h2><br>
+        <h2 style = color:#93d281;>v0.6</h2><br>
         - Added CTNA.<br>
         - Added 3 more mRNA upgrades.<br>
         - Added 8 more Achievements.<br>
