@@ -5566,10 +5566,12 @@ addLayer("uv", {
     }},
     tooltip() {
         let dis = "Unvaxxed Layers"
-        if (player.uv.uvUnlocked) dis = formatWhole(player.uv.virus) + " UnBoosted "+pluralize(player.uv.virus,'Virus','Viruses',true) 
-        if (inChallenge("ct",32)) {
-            dis += " (+"+formatWhole(tmp.uv.clickables[31].gain)+" on reset)"
-            if (tmp.e.clickables[31].canClick || tmp.e.clickables[32].canClick) dis += " (You can mutate!)"
+        if (player.uv.uvUnlocked) {
+            dis = formatWhole(player.uv.virus) + " UnBoosted "+pluralize(player.uv.virus,'Virus','Viruses',true) 
+            if (inChallenge("ct",32)) {
+                dis += " (+"+formatWhole(tmp.uv.clickables[31].gain)+" on reset)"
+                if (tmp.e.clickables[31].canClick || tmp.e.clickables[32].canClick) dis += " (You can mutate!)"
+            }
         }
       return dis
     },
