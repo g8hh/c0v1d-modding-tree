@@ -5693,6 +5693,7 @@ addLayer("uv", {
                 ],
             "milestones"
             ],
+            unlocked() { return player.uv.uvUnlocked }
         },
     },
     bars: {
