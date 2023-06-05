@@ -14886,7 +14886,7 @@ addLayer("e", {
             if (player.e.mu.gte(4)) {
                 if (player.e.mu.gte(40)) mut = mut.div(40).pow(1.25).mul(40).sub(40).mul(2).add(40)
                 if (player.e.mu.gte(180)) mut = mut.div(180).pow(1.25).mul(180).sub(180).mul(2).add(180)
-                if (player.e.mu.gte(260)) mut = mut.sub(260).mul(1.2).add(400)
+                if (player.e.mu.gte(275)) mut = mut.sub(260).mul(1.2).add(400)
                 c = c.div(Decimal.pow(2,mut.sub(4)))
             }
         }
