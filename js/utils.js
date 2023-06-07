@@ -54,12 +54,12 @@ function buyUpgrade(layer, id) {
 	buyUpg(layer, id)
 }
 
-function buyUpg(layer, id) {
+function buyUpg(layer, id, auto=false) {
 	if (!tmp[layer].upgrades || !tmp[layer].upgrades[id]) return
 	let upg = tmp[layer].upgrades[id]
 	if (!player[layer].unlocked || player[layer].deactivated) return
 	if (!tmp[layer].upgrades[id].unlocked) return
-	if (player[layer].upgrades.includes(id)) return
+	if (player[layer].upgrades.includes(id) || player[layer].upgrades.includes(id.toString()) || player[layer].upgrades.includes(parseInt(id))) return
 	if (upg.canAfford === false) return
 	let pay = layers[layer].upgrades[id].pay
 	if (pay !== undefined)
@@ -89,8 +89,8 @@ function buyUpg(layer, id) {
 		}
 	}
 	player[layer].upgrades.push(id);
-	if (upg.onPurchase != undefined)
-		run(upg.onPurchase, upg)
+	if (upg.onPurchase != undefined) run(upg.onPurchase, upg)
+	if (auto) player[layer].upgCool = tmp[layer].upgCool
 }
 
 function buyMaxBuyable(layer, id) {
