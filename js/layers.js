@@ -48952,7 +48952,7 @@ addLayer("Us", {
                 if (tmp[this.layer].buyables[this.id].canAfford) {
                     if (hasUpgrade("ct",543)) player[this.layer].buyables[this.id] = b
                     else {
-                        if (!hasMilestone("Us",6) && !hasUpgrade("ct",543)) player.Us.severity = player.Us.severity.sub(cost)
+                        if (!hasMilestone("Us",6) && !hasUpgrade("ct",543)) player.Us.severity = player.Us.severity.sub(cost).max(0)
                         player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1).max(1)
                     }
                 }
@@ -49467,7 +49467,7 @@ addLayer("Us", {
                 if (tmp[this.layer].buyables[this.id].canAfford) {
                     if (hasMilestone("Us",15)) player[this.layer].buyables[this.id] = b
                     else {
-                        player.Us.severity = player.Us.severity.sub(cost)
+                        player.Us.severity = player.Us.severity.sub(cost).max(0)
                         player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1).max(1)
                     }
                 }
@@ -49535,7 +49535,7 @@ addLayer("Us", {
                 if (tmp[this.layer].buyables[this.id].canAfford) {
                     if (hasMilestone("Us",15)) player[this.layer].buyables[this.id] = b
                     else {
-                        player.Us.severity = player.Us.severity.sub(cost)
+                        player.Us.severity = player.Us.severity.sub(cost).max(0)
                         player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1).max(1)
                     }
                 }
@@ -49605,7 +49605,7 @@ addLayer("Us", {
                 if (tmp[this.layer].buyables[this.id].canAfford) {
                     if (hasMilestone("Us",15)) player[this.layer].buyables[this.id] = b
                     else {
-                        player.Us.severity = player.Us.severity.sub(cost)
+                        player.Us.severity = player.Us.severity.sub(cost).max(0)
                         player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1).max(1)
                     }
                 }
@@ -49677,7 +49677,7 @@ addLayer("Us", {
                 if (tmp[this.layer].buyables[this.id].canAfford) {
                     if (hasMilestone("Us",15)) player[this.layer].buyables[this.id] = b
                     else {
-                        player.Us.severity = player.Us.severity.sub(cost)
+                        player.Us.severity = player.Us.severity.sub(cost).max(0)
                         player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1).max(1)
                     }
                 }
@@ -49745,7 +49745,7 @@ addLayer("Us", {
                 if (tmp[this.layer].buyables[this.id].canAfford) {
                     if (hasMilestone("Us",15)) player[this.layer].buyables[this.id] = b
                     else {
-                        player.Us.severity = player.Us.severity.sub(cost)
+                        player.Us.severity = player.Us.severity.sub(cost).max(0)
                         player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1).max(1)
                     }
                 }
@@ -49816,7 +49816,7 @@ addLayer("Us", {
                 if (tmp[this.layer].buyables[this.id].canAfford) {
                     if (hasMilestone("Us",15)) player[this.layer].buyables[this.id] = b
                     else {
-                        player.Us.severity = player.Us.severity.sub(cost)
+                        player.Us.severity = player.Us.severity.sub(cost).max(0)
                         player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1).max(1)
                     }
                 }
@@ -49885,7 +49885,7 @@ addLayer("Us", {
                 if (tmp[this.layer].buyables[this.id].canAfford) {
                     if (hasMilestone("Us",15)) player[this.layer].buyables[this.id] = b
                     else {
-                        player.Us.severity = player.Us.severity.sub(cost)
+                        player.Us.severity = player.Us.severity.sub(cost).max(0)
                         player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1).max(1)
                     }
                 }
@@ -49956,7 +49956,7 @@ addLayer("Us", {
                 if (tmp[this.layer].buyables[this.id].canAfford) {
                     if (hasMilestone("Us",15)) player[this.layer].buyables[this.id] = b
                     else {
-                        player.Us.severity = player.Us.severity.sub(cost)
+                        player.Us.severity = player.Us.severity.sub(cost).max(0)
                         player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1).max(1)
                     }
                 }
@@ -50026,7 +50026,7 @@ addLayer("Us", {
                 if (tmp[this.layer].buyables[this.id].canAfford) {
                     if (hasMilestone("Us",15)) player[this.layer].buyables[this.id] = b
                     else {
-                        player.Us.severity = player.Us.severity.sub(cost)
+                        player.Us.severity = player.Us.severity.sub(cost).max(0)
                         player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1).max(1)
                     }
                 }
@@ -50102,7 +50102,7 @@ addLayer("Us", {
                 if (tmp[this.layer].buyables[this.id].canAfford) {
                     if (hasMilestone("uv",3)) player[this.layer].buyables[this.id] = b
                     else {
-                        player.Us.severity = player.Us.severity.sub(cost)
+                        player.Us.severity = player.Us.severity.sub(cost).max(0)
                         player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1).max(1)
                     }
                 }
