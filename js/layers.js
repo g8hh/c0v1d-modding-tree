@@ -47755,7 +47755,7 @@ addLayer("Us", {
                 "blank",
             ],
             buttonStyle: {"border-color": "#00AA55"},
-            unlocked() {return hasMilestone("Us",8)}
+            unlocked() {return hasMilestone("uv",8)}
         },
         "tRNA Mutations": {
             content:[
