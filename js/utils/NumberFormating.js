@@ -113,7 +113,7 @@ function t3format(x,mult=false,y,z) {
 	let t3to = ["k","k","c","c","c","k","k","c","k","c"]
 	if (mult && y>0 && x<10) t3ones = ["","","D","Tr","T","P","Ex","Z","Y","N"]
 	let t3tens = ["","","I","Tr","Te","P","E","Z","Y","N"]
-	let t3hunds = ["","Ho","Do","Tro","To","Po","Ex","Zo","Yo","No"]
+	let t3hunds = ["","Ho","Do","Tro","To","Po","Exo","Zo","Yo","No"]
 	let t3f = t3ills[x]
 	if ((mult && y>0) || z>=1e3) t3f = t3ones[x]
 	let t3t = t3tens[Math.floor(x/10)%10]
@@ -122,6 +122,7 @@ function t3format(x,mult=false,y,z) {
 	if (x%100<20&&x%100>9) t3t = t3tns[x%10]
 	if (x%100>19) t3t += t3to[x%10]+t3ones[x%10]
 	if (x>=10) t3f = t3h+t3t
+	if (x>=100&&x%100<10) t3f = t3h+t3ones[x%10]
 	return t3f
 }
 
@@ -136,7 +137,7 @@ function t4format(x,m) {
 function standard(decimal, precision){
 	decimal = new Decimal(decimal)
 	if (decimal.sign < 0) return "-"+standard(decimal.neg(), precision)
-	if (decimal.layer > 4 || (decimal.mag > Math.log10(3e45) && decimal.layer == 4)) {
+	if (decimal.layer > 4 && decimal.mag>=0 || (decimal.mag >= Math.log10(3e45) && decimal.layer == 4)) {
 		var slog = decimal.slog()
 		if (slog.gte(1e9)) return "F" + formatWhole(slog.floor())
 		if (slog.gte(100)) return Decimal.pow(10, slog.sub(slog.floor())).toStringWithDecimalPlaces(3) + "F" + commaFormat(slog.floor(), 0)
@@ -204,7 +205,8 @@ function letter(decimal, precision, str) { //AD NG+++
 	}
 	let skipped = Decimal.floor(Decimal.log10(power.mul(len.sub(1)).add(1)).div(Decimal.log10(len))).sub(7)
 	if (skipped.lt(4)) skipped = new Decimal(0)
-	else power = Decimal.floor((power.sub((Decimal.pow(len, skipped).sub(1))).div(len.sub(1)).mul(len)).div(Decimal.pow(len, skipped)))
+	// (power - () / (len - 1) * len) = Decimal.floor(power.sub(Decimal.pow(len,skipped).sub(1).div(len.sub(1)).mul(len)).div(Decimal.pow(len,skipped)))
+	else power = Decimal.floor(power.sub(Decimal.pow(len,skipped).sub(1).div(len.sub(1)).mul(len)).div(Decimal.pow(len,skipped)))
 	while (power.gt(0)) {
 		ret = str[(power.sub(1)).toNumber() % len.toNumber()] + ret
 		power = Decimal.ceil(power.div(len)).sub(1)
@@ -267,7 +269,7 @@ function formatSciEng(decimal, precision) {
 		else exponentialFormat(decimal, precision)
 	}
 	if (decimal.mag == Number.POSITIVE_INFINITY) return "Infinity"
-	if (decimal.layer > 3 || (decimal.mag > 1e10 && decimal.layer == 3)) {
+	if (decimal.layer > 3 || (decimal.mag >= 1e10 && decimal.layer == 3)) {
 		var slog = decimal.slog()
 		if (slog.gte(1e9)) return "F" + formatWhole(slog.floor())
 		if (slog.gte(100)) return Decimal.pow(10, slog.sub(slog.floor())).toStringWithDecimalPlaces(3) + "F" + commaFormat(slog.floor(), 0)
@@ -302,8 +304,8 @@ function formatTime(s) {
     else if (s < 31536000) return formatWhole(Math.floor(s / 86400) % 365) + "d " + formatWhole(Math.floor(s / 3600) % 24) + "h " + formatWhole(Math.floor(s / 60) % 60) + "m " + format(s % 60) + "s"
     else return formatWhole(Math.floor(s / 31536000)) + "y " + formatWhole(Math.floor(s / 86400) % 365) + "d " + formatWhole(Math.floor(s / 3600) % 24) + "h " + formatWhole(Math.floor(s / 60) % 60) + "m " + format(s % 60) + "s"
 }
-function verseTime(years) {
-	s = slog(new Decimal(years)).sub(Decimal.log10(9))
+function verse(x) {
+	s = slog(new Decimal(x)).sub(Decimal.log10(9))
 	let verse1 = [2,3,4,5]
 	let verse2 = ["multi","meta","xeno","hyper"]
 	let id = 0;
@@ -312,14 +314,28 @@ function verseTime(years) {
 			while (s.gte(verse1[id])) id++;
 			if (id > 0) id--;
 		}
-	let mag = slogadd(years,-verse1[id]+1).div(1e9)
+	let mag = slogadd(x,-verse1[id]+1).div(1e9)
+	return [mag,verse2[id]]
+}
+
+function verseShort(x) {
+	s = slog(new Decimal(x)).sub(Decimal.log10(9))
+	let verse1 = [2,3,4,5]
+	let verse2 = ["mlt","met","xen","hyp"]
+	let id = 0;
+		if (s.gte(verse1[verse1.length - 1])) id = verse1.length - 1;
+		else {
+			while (s.gte(verse1[id])) id++;
+			if (id > 0) id--;
+		}
+	let mag = slogadd(x,-verse1[id]+1).div(1e9)
 	return [mag,verse2[id]]
 }
 
 function formatTimeLong(s) {
 	s = new Decimal(s)
 	let years = s.div(31556952)
-	let mlt = verseTime(years)
+	let mlt = verse(years)
 	let arv1 = [1,1e15,1e30,1e45,1e60,1e75,1e90,1e105]
 	let arv2 = ["","mega","giga","tera","peta","exa","zetta","yotta"]
 	let id = 0;
@@ -328,33 +344,26 @@ function formatTimeLong(s) {
 			while (mlt[0].gte(arv1[id])) id++;
 			if (id > 0) id--;
 		}
-	let verse = arv2[id]+(arv2[id]!=""?"-":"")+mlt[1]
+	let mverse = arv2[id]+(arv2[id]!=""?"-":"")+mlt[1]
 	if (mlt[1]=="multi") {
-		verse = arv2[id]
-		if (arv2[id]=="") verse = "multi"
+		mverse = arv2[id]
+		if (arv2[id]=="") mverse = "multi"
 	}
 	if (years.gte("6pt9")) return format(slog(years).pow10().div(9e6)) + " omniverse ages"
 	if (years.gte("eee56") && years.lt("eee69")) return format(years.log10().log10().div(1e56)) + " new big bangs"
 	if (years.gte("ee120") && years.lt("eee9")) return format(years.log10().div(1e120)) + " big rips"
-	if (years.gte("ee9")) return format(mlt[0].div(arv1[id])) + " " + verse +"verse ages"
-	if (years.gte(1e100)) return format(years.div(1e100)) + " black hole eras"
-	if (years.gte(1e40)) return format(years.div(1e40)) + " degenerate eras"
-	if (years.gte(1e9)) return format(years.div(1e9)) + " aeons"
-	if (years.gte(1e3)) return format(years.div(1e3)) + " millenia"
-	if (years.gte(1)) return format(years) + " years"
-	if (s.gte(86400)) return format(s.div(86400)) + " days"
-	if (s.gte(3600)) return format(s.div(3600)) + " hours"
-	if (s.gte(60)) return format(s.div(60)) + " minutes"
-	if (s.gte(1)) return format(s) + " seconds"
-	if (s.gte(0.001)) return format(s.mul(1e3)) + " milliseconds"
-	if (s.gte(1e-6)) return format(s.mul(1e6)) + " microseconds"
-	if (s.gte(1e-9)) return format(s.mul(1e9)) + " nanoseconds"
-	if (s.gte(1e-12)) return format(s.mul(1e12)) + " picoseconds"
-	if (s.gte(1e-15)) return format(s.mul(1e15)) + " femtoseconds"
-	if (s.gte(1e-18)) return format(s.mul(1e18)) + " attoseconds"
-	if (s.gte(1e-21)) return format(s.mul(1e21)) + " zeptoseconds"
-	if (s.gte(1e-24)) return format(s.mul(1e24)) + " yoctoseconds"
-	return format(s.mul(1.855e43)) + " Planck Times"
+	if (years.gte("ee9")) return format(mlt[0].div(arv1[id])) + " " + mverse +"verse ages"
+	let scale1 = [5.39121e-44,1e-30,1e-27,1e-24,1e-21,1e-18,1e-15,1e-12,1e-9,1e-6,0.001,1,60,3600,86400,31556952,31556952e3,31556952e9,31556952e40,31556952e100]
+	let scale2 = [" Planck Times"," quectoseconds"," rontoseconds"," yoctoseconds"," zeptoseconds"," attoseconds"," femtoseconds"
+	," picoseconds"," nanoseconds"," microseconds"," milliseconds"," seconds"," minutes"
+	," hours", " days", " years", " millenia", " aeons", " degenerate eras", " black hole eras"]
+	let id2 = 0;
+		if (s.gte(scale1[scale1.length - 1])) id2 = scale1.length - 1;
+		else {
+			while (s.gte(scale1[id2])) id2++;
+			if (id2 > 0) id2--;
+		}
+	return format(s.div(scale1[id2])) + scale2[id2]
 }
 function pluralize(n,singular,plural,round=false) {
 	n = new Decimal(n)
@@ -363,8 +372,24 @@ function pluralize(n,singular,plural,round=false) {
 }
 function formatSize(s) {
 	s = new Decimal(s)
-	let scale1 = [1.616255e-35,1e-24,1e-21,1e-18,1e-15,1e-12,1e-9,1e-6,0.001,0.01,1,1e3,1e6,1e9,1.495978707e11,9.46e15,8.8e26]
-	let scale2 = [" Planck Lengths"," yoctometers"," zeptometers"," attometers"," femtometers"
+	let uni = s.div(8.8e26)
+	let mlt = verse(uni)
+	let arv1 = [1,1e15,1e30,1e45,1e60,1e75,1e90,1e105]
+	let arv2 = ["","mega","giga","tera","peta","exa","zetta","yotta"]
+	let arv = 0;
+		if (mlt[0].gte(arv1[arv1.length - 1])) arv = arv1.length - 1;
+		else {
+			while (mlt[0].gte(arv1[arv])) arv++;
+			if (arv > 0) arv--;
+		}
+	let mverse = arv2[arv]+(arv2[arv]!=""?"-":"")+mlt[1]
+	if (mlt[1]=="multi") {
+		mverse = arv2[arv]
+		if (arv2[arv]=="") mverse = "multi"
+	}
+	if (uni.gte("ee9")) return format(mlt[0].div(arv1[arv])) + " " + mverse +"verses"
+	let scale1 = [1.616255e-35,1e-30,1e-27,1e-24,1e-21,1e-18,1e-15,1e-12,1e-9,1e-6,0.001,0.01,1,1e3,1e6,1e9,1.495978707e11,9.46e15,8.8e26]
+	let scale2 = [" Planck Lengths"," quectometers"," rontometers"," yoctometers"," zeptometers"," attometers"," femtometers"
 	," picometers"," nanometers"," micrometers"," millimeters"," centimeters"," meters"," kilometers"
 	," megameters", " gigameters", " astronomical units", " light-years", " observable universes"]
 	let id = 0;
@@ -377,9 +402,25 @@ function formatSize(s) {
 }
 function distShort(s) {
 	s = new Decimal(s)
-	let scale1 = [1.616255e-35,1e-24,1e-21,1e-18,1e-15,1e-12,1e-9,1e-6,0.001,0.01,1,1e3,1e6,1e9,1.495978707e11,9.46e15,8.8e26]
-	let scale2 = [" PL"," ym"," zm"," am"," fm"
-	," pm"," nm"," um"," mm"," cm"," m"," km"
+	let uni = s.div(8.8e26)
+	let mlt = verseShort(uni)
+	let arv1 = [1,1e15,1e30,1e45,1e60,1e75,1e90,1e105]
+	let arv2 = ["","mg","gg","tr","pt","ex","zt","yt"]
+	let arv = 0;
+		if (mlt[0].gte(arv1[arv1.length - 1])) arv = arv1.length - 1;
+		else {
+			while (mlt[0].gte(arv1[arv])) arv++;
+			if (arv > 0) arv--;
+		}
+	let mverse = arv2[arv]+(arv2[arv]!=""?"-":"")+mlt[1]
+	if (mlt[1]=="mlt") {
+		mverse = arv2[arv]+"v"
+		if (arv2[arv]=="") mverse = "mlt"
+	}
+	if (uni.gte("ee9")) return format(mlt[0].div(arv1[arv])) + " " + mverse
+	let scale1 = [1.616255e-35,1e-30,1e-27,1e-24,1e-21,1e-18,1e-15,1e-12,1e-9,1e-6,0.001,0.01,1,1e3,1e6,1e9,1.495978707e11,9.46e15,8.8e26]
+	let scale2 = [" PL"," qm"," rm"," ym"," zm"," am"," fm"
+	," pm"," nm"," µm"," mm"," cm"," m"," km"
 	," Mm", " Gm", " AU", " ly", " uni"]
 	let id = 0;
 		if (s.gte(scale1[scale1.length - 1])) id = scale1.length - 1;

@@ -1,7 +1,13 @@
 var layers = {}
 
 const decimalZero = new Decimal(0)
+const decimalHalf = new Decimal(1/2)
 const decimalOne = new Decimal(1)
+const decimalTwo = new Decimal(2)
+const decimalThree = new Decimal(3)
+const decimalFour = new Decimal(4)
+const decimalFive = new Decimal(5)
+const decimalTen = new Decimal(10)
 const decimalNaN = new Decimal(NaN)
 
 const defaultGlow = "#ff0000"

@@ -13,11 +13,18 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.6.19.1",
-	name: "Vorona Cirus Anti-Distanced Symptoms",
+	num: "0.6.20",
+	name: "Vorona Cirus UnBoosted",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+        <h3>v0.6.20</h3><br>
+        - Added UnBoosted Viruses<br>
+        - Added an Unvaxxed Layer upgrade<br>
+        - Added 2 Booster upgrades<br>
+        - Added 6 Anti-Distancing upgrades<br>
+        - Added 4 Achievements<br>
+        - Fixed quarantine UC gain exponent applied 2x bug.<br>
         v0.6.19.1<br>
         - Added upgrade '73' softcap at 1 hour reset time<br>
         - Fixed AdChallenges NaN bug<br>
@@ -358,7 +365,7 @@ function getPointGen() {
     let gain = getPointBase()
     let mult = getGainMultSlog()
     let exp = tmp.ct.getBoosterExp
-    if (inChallenge("ct", 32)) gain = slogadd(slog(gain).mul(getBaseGain()).pow(getGainpowSlog()),tmp.ct.getBoosterSlog).min(mult.pow(tmp.uv.slogCap).max("ee10")).div(1e9).mul(mult).pow(exp).min("ee2e27355")
+    if (inChallenge("ct", 32)) gain = slogadd(slog(gain).mul(getBaseGain()).pow(getGainpowSlog()),tmp.ct.getBoosterSlog).min(mult.pow(tmp.uv.slogCap).max("ee10")).div(1e9).mul(mult).pow(exp).min("eeee21")
     return gain
 }
 
@@ -391,11 +398,43 @@ window.addEventListener('keyup', function(event) {
 	if (event.keyCode == 16) shiftDown = false;
 	if (event.keyCode == 17) controlDown = false;
 }, false);
-
+function convertToB16(n){
+    let codes = {
+            0: "0",
+            1: "1",
+            2: "2",
+            3: "3",
+            4: "4",
+            5: "5",
+            6: "6",
+            7: "7",
+            8: "8",
+            9: "9",
+            10: "A",
+            11: "B",
+            12: "C",
+            13: "D",
+            14: "E",
+            15: "F",
+    }
+    let x = n % 16
+    return codes[(n-x)/16] + codes[x]
+}
+function getUndulatingColor(period = Math.sqrt(760)){
+        let t = new Date().getTime()
+        let a = Math.sin(t / 1e3 / period * 2 * Math.PI + 0) 
+        let b = Math.sin(t / 1e3 / period * 2 * Math.PI + 2)
+        let c = Math.sin(t / 1e3 / period * 2 * Math.PI + 4)
+        a = convertToB16(Math.floor(a*128) + 128)
+        b = convertToB16(Math.floor(b*128) + 128)
+        c = convertToB16(Math.floor(c*128) + 128)
+        return "#"+String(a) + String(b) + String(c)
+}
 // Display extra things at the top of the page
 var displayThings = [
     function(){
-		let a = "Current endgame: "+format("eee9800")+" cases in 'Booster Vaccine' (v0.6.19)"
+        let x = getUndulatingColor()
+		let a = "Current endgame: "+colorText("h2", x,format("eee26e18"))/*"Taeyeon"*/+" cases in 'Booster Vaccine' (v0.6.20)"
         let b = inChallenge("ct",32)?"<br>'Booster Vaccine' progress: "+format(slog(player.points.max(1)).div(Decimal.pow(2,1024).log10()).mul(100))+"%":""
         
 		return a + b+ (options.autosave ? "" : ". Warning: autosave is off")
@@ -415,7 +454,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.points.gte("eee9800") && inChallenge("ct",32)
+	return player.points.gte("eee26e18") && inChallenge("ct",32)
 }
 
 

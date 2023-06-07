@@ -13,6 +13,13 @@ function powExp3(n, exp){ // Tetralate
 	return Decimal.pow(10,Decimal.pow(10,Decimal.pow(10,n.log10().log10().log10().pow(exp))))
 }
 
+function powExpN(num, n, exp){ // n-late
+	num = new Decimal(num)
+	exp = new Decimal(exp)
+	if (num.lt(tet10(n))) return num
+	return slogadd(slogadd(num,-n).pow(exp),n)
+}
+
 function mulSlog(n, mul){
 	if (n.lt(10)) return n
 	return tet10(slog(n).mul(mul))
@@ -94,7 +101,7 @@ function logisticTimeUntil(goal, current, gain, loss){
 function getLogisticAmount(current, gain, loss, diff){
 	if (loss.eq(0)) return current.add(gain.mul(diff))
 	if (current.eq(gain.div(loss))) return current
-	if (gain.gte("ee10")) return gain.div(loss)
+	if (gain.gte("ee10") || loss.gte(1e308)) return gain.div(loss)
 	if (current.lt(gain.div(loss))) {
 			c = getLogisticTimeConstant(current, gain, loss)
 			
