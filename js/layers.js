@@ -15660,7 +15660,7 @@ addLayer("e", {
                 c = c.div(Decimal.pow(co,n.mul(co.div(9).pow(cexp+0.1)).pow(cexp)))
             }
         }
-        return c.mul(tmp.e.buyables[105].effect)//.min(1)
+        return c.mul(tmp.e.buyables[105].effect).min(1)
     },
     chance2() {
         let x = player.e.mu2
