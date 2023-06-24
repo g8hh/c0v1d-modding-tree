@@ -336,8 +336,8 @@ function formatTimeLong(s) {
 	s = new Decimal(s)
 	let years = s.div(31556952)
 	let mlt = verse(years)
-	let arv1 = [1,1e15,1e30,1e45,1e60,1e75,1e90,1e105]
-	let arv2 = ["","mega","giga","tera","peta","exa","zetta","yotta"]
+	let arv1 = [1,1e15,1e30,1e45,1e60,1e75,1e90,1e105,1e120,1e135]
+	let arv2 = ["","mega","giga","tera","peta","exa","zetta","yotta","ronna","quetta"]
 	let id = 0;
 		if (mlt[0].gte(arv1[arv1.length - 1])) id = arv1.length - 1;
 		else {
@@ -351,7 +351,7 @@ function formatTimeLong(s) {
 	}
 	if (years.gte("6pt9")) return format(slog(years).pow10().div(9e6)) + " omniverse ages"
 	if (years.gte("eee56") && years.lt("eee69")) return format(years.log10().log10().div(1e56)) + " new big bangs"
-	if (years.gte("ee120") && years.lt("eee9")) return format(years.log10().div(1e120)) + " big rips"
+	if (years.gte("ee120") && years.lt("ee129")) return format(years.log10().div(1e120)) + " big rips"
 	if (years.gte("ee9")) return format(mlt[0].div(arv1[id])) + " " + mverse +"verse ages"
 	let scale1 = [5.39121e-44,1e-30,1e-27,1e-24,1e-21,1e-18,1e-15,1e-12,1e-9,1e-6,0.001,1,60,3600,86400,31556952,31556952e3,31556952e9,31556952e40,31556952e100]
 	let scale2 = [" Planck Times"," quectoseconds"," rontoseconds"," yoctoseconds"," zeptoseconds"," attoseconds"," femtoseconds"
@@ -374,8 +374,8 @@ function formatSize(s) {
 	s = new Decimal(s)
 	let uni = s.div(8.8e26)
 	let mlt = verse(uni)
-	let arv1 = [1,1e15,1e30,1e45,1e60,1e75,1e90,1e105]
-	let arv2 = ["","mega","giga","tera","peta","exa","zetta","yotta"]
+	let arv1 = [1,1e15,1e30,1e45,1e60,1e75,1e90,1e105,1e120,1e135]
+	let arv2 = ["","mega","giga","tera","peta","exa","zetta","yotta","ronna","quetta"]
 	let arv = 0;
 		if (mlt[0].gte(arv1[arv1.length - 1])) arv = arv1.length - 1;
 		else {
@@ -404,8 +404,8 @@ function distShort(s) {
 	s = new Decimal(s)
 	let uni = s.div(8.8e26)
 	let mlt = verseShort(uni)
-	let arv1 = [1,1e15,1e30,1e45,1e60,1e75,1e90,1e105]
-	let arv2 = ["","mg","gg","tr","pt","ex","zt","yt"]
+	let arv1 = [1,1e15,1e30,1e45,1e60,1e75,1e90,1e105,1e120,1e135]
+	let arv2 = ["","mg","gg","tr","pt","ex","zt","yt","rn","qt"]
 	let arv = 0;
 		if (mlt[0].gte(arv1[arv1.length - 1])) arv = arv1.length - 1;
 		else {
