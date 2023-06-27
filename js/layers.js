@@ -16001,7 +16001,7 @@ addLayer("e", {
                 if (hasMilestone("ct",7)) x = x.mul(1.1)
                 if (hasUpgrade("e",401)) x = x.mul(upgradeEffect("e",401))
                 if (hasUpgrade("Us",114)) x = x.mul(1.1)
-                if (player.e.mu2.gte(9)) x = x.div(1.05)
+                if (player.e.mu2.gte(9) && inChallenge("ct",32)) x = x.div(1.05)
                 return x
             },
             Vdiv() {
