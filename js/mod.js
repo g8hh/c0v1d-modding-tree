@@ -13,11 +13,21 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.6.20",
-	name: "Vorona Cirus UnBoosted",
+	num: "0.6.21.1",
+	name: "Vorona Cirus UnBoostered rRNA",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+        v0.6.21.1<br>
+        - Fixed Corona Mutation 9+ cost<br>
+        <h3>v0.6.21</h3><br>
+        - Added mutated rRNA<br>
+        - Added 12 UnBoosted Virus upgrades<br>
+        - Added an Unvaxxed Layer upgrade<br>
+        - Added a Booster upgrade<br>
+        - Added 4 Anti-Distancing upgrades<br>
+        - Added 4 Achievements<br>
+        - Changed SARS Mutation names.<br>
         <h3>v0.6.20</h3><br>
         - Added UnBoosted Viruses<br>
         - Added an Unvaxxed Layer upgrade<br>
@@ -365,7 +375,7 @@ function getPointGen() {
     let gain = getPointBase()
     let mult = getGainMultSlog()
     let exp = tmp.ct.getBoosterExp
-    if (inChallenge("ct", 32)) gain = slogadd(slog(gain).mul(getBaseGain()).pow(getGainpowSlog()),tmp.ct.getBoosterSlog).min(mult.pow(tmp.uv.slogCap).max("ee10")).div(1e9).mul(mult).pow(exp).min("eeee21")
+    if (inChallenge("ct", 32)) gain = slogadd(slog(gain).mul(getBaseGain()).pow(getGainpowSlog()),tmp.ct.getBoosterSlog).min(mult.pow(tmp.uv.slogCap).max("ee10")).div(1e9).mul(mult).pow(exp).min("eeee1221")
     return gain
 }
 
@@ -434,7 +444,7 @@ function getUndulatingColor(period = Math.sqrt(760)){
 var displayThings = [
     function(){
         let x = getUndulatingColor()
-		let a = "Current endgame: "+colorText("h2", x,format("eee26e18"))/*"Taeyeon"*/+" cases in 'Booster Vaccine' (v0.6.20)"
+		let a = "Current endgame: "+colorText("h2", x,format("eee15e181"))/*"Taeyeon"*/+" cases in 'Booster Vaccine' (v0.6.21)"
         let b = inChallenge("ct",32)?"<br>'Booster Vaccine' progress: "+format(slog(player.points.max(1)).div(Decimal.pow(2,1024).log10()).mul(100))+"%":""
         
 		return a + b+ (options.autosave ? "" : ". Warning: autosave is off")
@@ -454,7 +464,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.points.gte("eee26e18") && inChallenge("ct",32)
+	return player.points.gte("eee15e181") && inChallenge("ct",32)
 }
 
 
