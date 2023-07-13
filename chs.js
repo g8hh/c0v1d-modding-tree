@@ -2281,6 +2281,7 @@ var cnRegReplace = new Map([
     [/^Infecter base:(.+),$/, '感染者基础：$1,'],
     [/^You have (.+) virus points.$/, '你有 $1 病毒点数。'],
     [/^You have (.+) severity.$/, '你有 $1 严重性。'],
+    [/^You have (.+) fatality.$/, '你有 $1 致死性。'],
     [/^You have (.+) infectivity.$/, '你有 $1 传染。'],
     [/^You have (.+) deaths.$/, '你有 $1 死亡。'],
     [/^You have (.+) cases.$/, '你有 $1 病例。'],
