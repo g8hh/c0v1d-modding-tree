@@ -35134,7 +35134,7 @@ addLayer("ct", {
                 return hasUpgrade("ct",554) && player.uv.uvUnlocked
             },
             canAfford() {
-                return player.ct.aBoost.gte(Decimal.pow(10,483e7)) 
+                return player.ct.aBoost.gte(Decimal.pow(10,158e8)) 
             },
             style: {
                 "background"() {
