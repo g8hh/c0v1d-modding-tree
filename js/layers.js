@@ -33493,7 +33493,7 @@ addLayer("ct", {
             }
         },
         454: {
-            title: "Best Speed",
+            title: "Type Divider",
             description: "'Distance Divider' exponent+0.005, 'Anti-Type Boost' cost exponent-0.2.",
             cost: new Decimal("eeee154e3"),
             currencyDisplayName: "cases in 'Booster Vaccine'",
@@ -54369,7 +54369,7 @@ addLayer("Ud", {
         rows: 10,
         cols: 5,
         11: {
-            title: "DDmm",
+            title: "Deadly Softcap",
             cost: decimalFive,
             description: "Unvaxxed Deaths make unvaxxed severity 2nd softcap later.",
             effect(){
@@ -54382,7 +54382,7 @@ addLayer("Ud", {
             },
         },
         12: {
-            title: "DDmm",
+            title: "UnrRNA",
             cost: decimalTen,
             description: "Unvaxxed Deaths add to mutated rRNA exponent.",
             effect(){
@@ -54409,7 +54409,7 @@ addLayer("Ud", {
             },
         },
         14: {
-            title: "DDmm",
+            title: "Deadly Log",
             cost: new Decimal(250),
             description: "Unvaxxed deaths boost CRNA gain after log.",
             effect(){
@@ -54422,7 +54422,7 @@ addLayer("Ud", {
             },
         },
         15: {
-            title: "DDmm",
+            title: "Deadly Recovery",
             cost: new Decimal(2023),
             description: "Unvaxxed deaths reduce boosted recovery effects, mutated rRNA effect^1.1.",
             effect(){
@@ -54435,7 +54435,7 @@ addLayer("Ud", {
             },
         },
         21: {
-            title: "DDmm",
+            title: "Deadly Limit",
             cost: new Decimal(2e8),
             description: "Unvaxxed deaths boost MMNA limit, mutated rRNA slog subtractor/1.005, UD gain exp+0.3.",
             effect(){
@@ -54449,37 +54449,37 @@ addLayer("Ud", {
             },
         },
         22: {
-            title: "DDmm",
+            title: "Deadly Milestone",
             cost: new Decimal(1e71),
             description: "Uncoating power and UU milestone 29 eff^3, US milestone 46 eff is dilated ^1.5.",
         },
         23: {
-            title: "DDmm",
+            title: "Deadly SARS",
             cost: new Decimal(3e90),
             description: "SARS Mutation limit+1, UnBoosted Virus effect dilation+0.1.",
         },
         24: {
-            title: "DDmm",
+            title: "Deadlier SARS",
             cost: new Decimal(5e197),
             description: "SARS Mutation limit+1, UnBoosted Virus effect dilation+0.1, milestone 5 effect^1.5.",
         },
         25: {
-            title: "DDmm",
+            title: "Deadliest SARS",
             cost: new Decimal(1e228),
             description: "SARS Mutation limit+1, milestone 5 effect^1.5.",
         },
         31: { // 10^(19 to 23)^2
-            title: "DDmm",
+            title: "Deadly Pain",
             cost: new Decimal("e361"),
             description: "Change 'Severe Pain' effect to exponent, milestone 5 effect^1.2.",
         },
         32: {
-            title: "DDmm",
+            title: "Deadly Atpms",
             cost: new Decimal("e400"),
             description: "Change 'Severe Atoms' effect to exponent.",
         },
         33: {
-            title: "DDmm",
+            title: "Deadly MMNA",
             cost: new Decimal("e441"),
             description: "'ImRNA' boosts MMNA effect.",
             effectDisplay(){
@@ -54488,12 +54488,12 @@ addLayer("Ud", {
             },
         },
         34: {
-            title: "DDmm",
+            title: "Deadly Cases",
             cost: new Decimal("e484"),
             description: "Change 'Caser RNA' effect to exponent but reduce 'Cased Carbon' effect.",
         },
         35: {
-            title: "DDmm",
+            title: "Deadly tRNA",
             cost: new Decimal("e529"),
             description: "Unvaxxed tRNA boosts MMNA effect.",
             effectDisplay(){
@@ -54502,7 +54502,7 @@ addLayer("Ud", {
             },
         },
         41: {
-            title: "DDmm",
+            title: "Deadly Conjunctivitis",
             cost: new Decimal("e1000"),
             description: "Change 'Severe Conjunctivitis' effect to exponent.",
         },
