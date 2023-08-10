@@ -451,7 +451,7 @@ function getUndulatingColor(period = Math.sqrt(760)){
 var displayThings = [
     function(){
         let x = getUndulatingColor()
-		let a = "Current endgame: "+colorText("h2", x,format("eeee182e3"))/*"Taeyeon"*/+" cases in 'Booster Vaccine' (v0.6.21)"
+		let a = "Current endgame: "+colorText("h2", x,format("eeee182e3"))/*"Taeyeon"*/+" cases in 'Booster Vaccine' (v0.6.22)"
         let b = inChallenge("ct",32)?"<br>'Booster Vaccine' progress: "+format(slog(player.points.max(1)).div(Decimal.pow(2,1024).log10()).mul(100))+"%":""
         
 		return a + b+ (options.autosave ? "" : ". Warning: autosave is off")
