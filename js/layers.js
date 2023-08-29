@@ -15003,7 +15003,7 @@ addLayer("e", {
             if (hasMilestone("Us",26)) eff = eff.mul(tmp.Us.milestones[26].effect)
             if (hasMilestone("Us",27)) eff = eff.mul(tmp.Us.milestones[27].effect)
             if (hasUpgrade("Ud",21)) eff = eff.mul(tmp.Ud.upgrades[21].effect)
-            if (hasChallenge("ct",22)) eff = eff.pow(tmp.Ud.challenges[22].rewardEffect)
+            if (hasChallenge("Ud",22)) eff = eff.pow(tmp.Ud.challenges[22].rewardEffect)
         }
         return eff.min(tet10(7))
     },
@@ -54400,7 +54400,7 @@ addLayer("Ud", {
             description: "Mutated rRNA boosts unvaxxed death gain.",
             effect(){
                 let eff = tmp.Us.rrnaAmt.div(1e100).add(10).log10().pow(0.6).add(1)
-                if (hasChallenge("ct",22)) eff = eff.pow(tmp.Ud.challenges[22].rewardEffect2)
+                if (hasChallenge("Ud",22)) eff = eff.pow(tmp.Ud.challenges[22].rewardEffect2)
                 return eff
             },
             effectDisplay(){
