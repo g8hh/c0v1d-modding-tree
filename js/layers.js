@@ -263,7 +263,7 @@ function startCTChallenge(id) {
             player.Us.upgrades.push('51','52','53','54','55','91','92','93','94','95')
             player.Us.milestones.push(24,25,26,27,28,29)
         }
-        if (hasUpgrade("uv",76)) {
+        if (hasUpgrade("uv",83)) {
             player.Us.upgrades.push('101','102','103','104','105')
             player.Us.milestones.push(30,31,32,33,34,35,36,37,38,39,56)
             player.Us.autounr = true
