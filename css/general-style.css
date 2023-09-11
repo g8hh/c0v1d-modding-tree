@@ -35,6 +35,16 @@ h1, h2, h3, b, input {
 	cursor: default;
 }
 
+.boughtAch {
+	background-color: #77bf5f;
+	cursor: default;
+}
+
+.bought:hover {
+	transform: scale(1.3, 1.3);
+	z-index: 2;
+}
+
 #points {
 	color: var(--points);
 	text-shadow: 0 0 10px var(--points);

@@ -13,11 +13,18 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.6.21.1",
-	name: "Vorona Cirus UnBoostered rRNA",
+	num: "0.6.22",
+	name: "Vorona Cirus UnBoostered Coffins",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+        <h3>v0.6.22</h3><br>
+        - Added an Unvaxxed Layer<br>
+        - Added 6 UnBoosted Virus upgrades<br>
+        - Added 3 UnBoosted Virus milestones<br>
+        - Added a Booster upgrade<br>
+        - Added an Anti-Distancing upgrade<br>
+        - Added 3 Achievements<br>
         v0.6.21.1<br>
         - Fixed Corona Mutation 9+ cost<br>
         <h3>v0.6.21</h3><br>
@@ -375,7 +382,7 @@ function getPointGen() {
     let gain = getPointBase()
     let mult = getGainMultSlog()
     let exp = tmp.ct.getBoosterExp
-    if (inChallenge("ct", 32)) gain = slogadd(slog(gain).mul(getBaseGain()).pow(getGainpowSlog()),tmp.ct.getBoosterSlog).min(mult.pow(tmp.uv.slogCap).max("ee10")).div(1e9).mul(mult).pow(exp).min("eeee1221")
+    if (inChallenge("ct", 32)) gain = slogadd(slog(gain).mul(getBaseGain()).pow(getGainpowSlog()),tmp.ct.getBoosterSlog).min(mult.pow(tmp.uv.slogCap).max("ee10")).div(1e9).mul(mult).pow(exp).min("eeee343521")
     return gain
 }
 
@@ -444,7 +451,7 @@ function getUndulatingColor(period = Math.sqrt(760)){
 var displayThings = [
     function(){
         let x = getUndulatingColor()
-		let a = "Current endgame: "+colorText("h2", x,format("eee15e181"))/*"Taeyeon"*/+" cases in 'Booster Vaccine' (v0.6.21)"
+		let a = "Current endgame: "+colorText("h2", x,format("eeee182e3"))/*"Taeyeon"*/+" cases in 'Booster Vaccine' (v0.6.22)"
         let b = inChallenge("ct",32)?"<br>'Booster Vaccine' progress: "+format(slog(player.points.max(1)).div(Decimal.pow(2,1024).log10()).mul(100))+"%":""
         
 		return a + b+ (options.autosave ? "" : ". Warning: autosave is off")
@@ -464,7 +471,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.points.gte("eee15e181") && inChallenge("ct",32)
+	return player.points.gte("eeee182e3") && inChallenge("ct",32)
 }
 
 
