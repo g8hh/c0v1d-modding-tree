@@ -297,6 +297,12 @@ function formatWhole(decimal) {
     return format(decimal, 0)
 }
 
+function formatPercent(decimal, boost) {
+    decimal = new Decimal(decimal)
+	if (decimal.gte(10)) return format(decimal)+"x"
+    return (boost?"+"+format(decimal.sub(1).mul(100)):format(decimal.mul(100)))+"%"
+}
+
 function formatTime(s) {
 	if (s < 60) return format(s) + "s"
     else if (s < 3600) return formatWhole(Math.floor(s / 60)) + "m " + format(s % 60) + "s"
@@ -387,6 +393,7 @@ function formatSize(s) {
 		mverse = arv2[arv]
 		if (arv2[arv]=="") mverse = "multi"
 	}
+	if (uni.gte("6pt9")) return format(slog(uni).pow10().div(9e6)) + " omniverses"
 	if (uni.gte("ee9")) return format(mlt[0].div(arv1[arv])) + " " + mverse +"verses"
 	let scale1 = [1.616255e-35,1e-30,1e-27,1e-24,1e-21,1e-18,1e-15,1e-12,1e-9,1e-6,0.001,0.01,1,1e3,1e6,1e9,1.495978707e11,9.46e15,8.8e26]
 	let scale2 = [" Planck Lengths"," quectometers"," rontometers"," yoctometers"," zeptometers"," attometers"," femtometers"
@@ -417,6 +424,7 @@ function distShort(s) {
 		mverse = arv2[arv]+"v"
 		if (arv2[arv]=="") mverse = "mlt"
 	}
+	if (uni.gte("6pt9")) return format(slog(uni).pow10().div(9e6)) + " omni"
 	if (uni.gte("ee9")) return format(mlt[0].div(arv1[arv])) + " " + mverse
 	let scale1 = [1.616255e-35,1e-30,1e-27,1e-24,1e-21,1e-18,1e-15,1e-12,1e-9,1e-6,0.001,0.01,1,1e3,1e6,1e9,1.495978707e11,9.46e15,8.8e26]
 	let scale2 = [" PL"," qm"," rm"," ym"," zm"," am"," fm"
