@@ -55340,6 +55340,7 @@ addLayer("Ud", {
                     ["upgrades",[6,7,8,9,10]],
                 ],
                 shouldNotify() {return (tmp.Ud.buyables[41].canAfford || tmp.Ud.buyables[42].canAfford)},
+                unlocked() {return true}
             },
             "Mutants": {
                 content: [
