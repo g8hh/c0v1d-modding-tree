@@ -1,14 +1,20 @@
 function powExp(n, exp){ // dilate
+	n = new Decimal(n)
+	exp = new Decimal(exp)
 	if (n.lt(10)) return n
 	return Decimal.pow(10,n.log10().pow(exp))
 }
 
 function powExp2(n, exp){ // Trilate
+	n = new Decimal(n)
+	exp = new Decimal(exp)
 	if (n.lt(1e10)) return n
 	return Decimal.pow(10,Decimal.pow(10,n.log10().log10().pow(exp)))
 }
 
 function powExp3(n, exp){ // Tetralate
+	n = new Decimal(n)
+	exp = new Decimal(exp)
 	if (n.lt(Decimal.pow(10,1e10))) return n
 	return Decimal.pow(10,Decimal.pow(10,Decimal.pow(10,n.log10().log10().log10().pow(exp))))
 }
@@ -21,16 +27,22 @@ function powExpN(num, n, exp){ // n-late
 }
 
 function mulSlog(n, mul){
+	n = new Decimal(n)
+	mul = new Decimal(mul)
 	if (n.lt(10)) return n
 	return tet10(slog(n).mul(mul))
 }
 
 function powSlog(n, exp){ // Vaccinate
+	n = new Decimal(n)
+	exp = new Decimal(exp)
 	if (n.lt(10)) return n
 	return tet10(slog(n).pow(exp))
 }
 
 function powSlogExp(n, exp){ //Vaccidilate
+	n = new Decimal(n)
+	exp = new Decimal(exp)
 	if (n.lt(10)) return n
 	return tet10(powExp(slog(n),exp))
 }
