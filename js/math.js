@@ -90,6 +90,38 @@ function recurse(func, startingValue, times){
 	return recurse(func, func(startingValue), times-1)
 }
 
+function getPopulation(pop,br,dr,int,diff) {
+	pop = new Decimal(pop)
+	br = new Decimal(br)
+	dr = new Decimal(dr)
+	int = new Decimal(int)
+	let tempPop = pop
+	let intpow = decimalOne
+	if (int.lt(diff)) intpow = Decimal.div(diff, int)
+	if (Decimal.gte(br, 1) || Decimal.gte(dr, 1)) {
+		tempPop = tempPop.times(br.sub(dr).add(1).pow(intpow))
+		return tempPop.max(0)
+	}
+	if (tempPop.lt(500)) {
+	for (var i = 0; tempPop.gt(i); i++) {
+		let counter = 0
+		if (br.toNumber() > Math.random()) counter++ 
+		if (dr.toNumber() > Math.random()) counter-- 
+		let y = Decimal.add(tempPop,counter)
+		let x = y.div(tempPop)
+		tempPop = tempPop.mul(Decimal.pow(x,intpow))
+	}
+	}
+	else {
+		let counter = 0
+		for (let c = 0; c < 500; c++) if (br.toNumber() > Math.random()) counter++
+        for (let c = 0; c < 500; c++) if (dr.toNumber() > Math.random()) counter--
+		let x = counter / 500 + 1
+		tempPop = tempPop.times(Decimal.pow(x,intpow)).round().max(0)
+	}
+	return tempPop.max(0)
+}
+
 //Tree of life
 function getLogisticTimeConstant(current, gain, loss){
 	if (current.eq(gain.div(loss))) return Infinity
