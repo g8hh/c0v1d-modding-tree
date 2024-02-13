@@ -26668,7 +26668,7 @@ addLayer("ct", {
     hotkeys: [
         {
             key:"t", description: "T:Reset for CTNA", onPress() {
-                if (canReset(this.layer)) doReset(this.layer)
+                if (canReset(this.layer) && !inChallenge("ct",32)) doReset(this.layer)
             },
         },
         {

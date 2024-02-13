@@ -13,11 +13,13 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.6.24",
+	num: "0.6.24.1",
 	name: "Vorona Cirus UnBoostered Coronas",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+        v0.6.24.1<br>
+        - Fixed T hotkey resetting for CTNA in 'Booster Vaccine' and getting kicked out of the challenge.<br>
         <h3>v0.6.24</h3><br>
         - Added Deadly Crows<br>
         - Added 5 UnBoosted Virus upgrades<br>
@@ -517,4 +519,8 @@ function fixOldSave(oldVersion){
             addPoints("a",-50)
         }
 	}
+    if(oldVersion=="0.6.24"){
+        if (!inChallenge("ct",32) && player.uv.tree == "unvaxxed")
+        player.uv.tree = "normal"
+    }
 }
