@@ -519,8 +519,7 @@ function fixOldSave(oldVersion){
             addPoints("a",-50)
         }
 	}
-    if(oldVersion=="0.6.24"){
-        if (!inChallenge("ct",32) && player.uv.tree == "unvaxxed")
+    if (!inChallenge("ct",32) && player.uv.tree == "unvaxxed"){
         player.uv.tree = "normal"
     }
 }
