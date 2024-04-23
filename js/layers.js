@@ -5788,7 +5788,7 @@ addLayer("a", {
         281: {
             name: "Anti-Universe",
             tooltip() {
-                let a = "Increase the anti-distancing to "+distShort(8.8e26)+". Reward: 250 AP, Adverse Vaxxer gain is multiplied by 1.01 per AP after 9,000."
+                let a = "Increase the anti-distancing to "+distShort(8.8e26)+". Reward: 250 AP, Anti-Distance gain is multiplied by 1.01 per AP after 9,000."
                 let b = "<br>Currently: "+format(tmp.a.achievements[281].effect)+"x"
                 return  a+b
             },
