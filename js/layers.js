@@ -43605,7 +43605,7 @@ addLayer("Ui", {
             Multiplier: " + format(tmp[this.layer].buyables[this.id].mult)+"x\n\
             Amount: " + formatWhole(amt) + "(" + formatWhole(amt) + ")"
         },
-        unlocked() { return hasUpgrade("Ur",33) }, 
+        unlocked() { return hasMilestone("Up",9) }, 
         canAfford() {
                 return player.Ui.points.gte(tmp[this.layer].buyables[this.id].cost)},
         buy() { 
