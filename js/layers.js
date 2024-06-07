@@ -27718,7 +27718,7 @@ addLayer("ct", {
         if (hasUpgrade("Ud",143)) c = c.mul(tmp.Ud.upgrades[143].effect)
         let eff = c.div(7).add(1).pow(1.3)
         if (inChallenge("ct",32)){
-            eff = c.div(20).add(1).pow(0.8-8e-111)
+            eff = c.div(20).add(1).pow(0.8)
             if (eff.gte(40)) eff = eff.div(40).pow(0.4).mul(40)
         }
         else {
@@ -63887,7 +63887,7 @@ addLayer("Ud", {
             unlocked() { return hasUpgrade("Ud",105) }, 
             canAfford() {
                 let max = player.Ud.maxDC2 && player.Ud.crows.gte(tmp[this.layer].buyables[this.id].cost)
-                let safe = !player.Ud.maxDC2 && player.Ud.crows.pow(tmp.ct.upgrades[593].exp).gte(tmp[this.layer].buyables[this.id].cost)
+                let safe = !player.Ud.maxDC2 && player.Ud.crows.pow(hasMilestone("uv",55)?tmp.ct.upgrades[593].exp:1).gte(tmp[this.layer].buyables[this.id].cost)
                 return max || safe
             },
             buy() { 
@@ -63988,7 +63988,7 @@ addLayer("Ud", {
             unlocked() { return hasUpgrade("Ud",105) }, 
             canAfford() {
                 let max = player.Ud.maxDC2 && player.Ud.crows.gte(tmp[this.layer].buyables[this.id].cost)
-                let safe = !player.Ud.maxDC2 && player.Ud.crows.pow(tmp.ct.upgrades[593].exp).gte(tmp[this.layer].buyables[this.id].cost)
+                let safe = !player.Ud.maxDC2 && player.Ud.crows.pow(hasMilestone("uv",55)?tmp.ct.upgrades[593].exp:1).gte(tmp[this.layer].buyables[this.id].cost)
                 return max || safe
             },
             buy() { 
@@ -64092,7 +64092,7 @@ addLayer("Ud", {
             unlocked() { return hasUpgrade("Ud",105) }, 
             canAfford() {
                 let max = player.Ud.maxDC2 && player.Ud.crows.gte(tmp[this.layer].buyables[this.id].cost)
-                let safe = !player.Ud.maxDC2 && player.Ud.crows.pow(tmp.ct.upgrades[593].exp).gte(tmp[this.layer].buyables[this.id].cost)
+                let safe = !player.Ud.maxDC2 && player.Ud.crows.pow(hasMilestone("uv",55)?tmp.ct.upgrades[593].exp:1).gte(tmp[this.layer].buyables[this.id].cost)
                 return max || safe
             },
             buy() { 
@@ -64197,7 +64197,7 @@ addLayer("Ud", {
             unlocked() { return hasUpgrade("Ud",105) }, 
             canAfford() {
                 let max = player.Ud.maxDC2 && player.Ud.crows.gte(tmp[this.layer].buyables[this.id].cost)
-                let safe = !player.Ud.maxDC2 && player.Ud.crows.pow(tmp.ct.upgrades[593].exp).gte(tmp[this.layer].buyables[this.id].cost)
+                let safe = !player.Ud.maxDC2 && player.Ud.crows.pow(hasMilestone("uv",55)?tmp.ct.upgrades[593].exp:1).gte(tmp[this.layer].buyables[this.id].cost)
                 return max || safe
             },
             buy() { 
@@ -64302,7 +64302,7 @@ addLayer("Ud", {
             unlocked() { return hasMilestone("Ud",63) }, 
             canAfford() {
                 let max = player.Ud.maxDC2 && player.Ud.crows.gte(tmp[this.layer].buyables[this.id].cost)
-                let safe = !player.Ud.maxDC2 && player.Ud.crows.pow(tmp.ct.upgrades[593].exp).gte(tmp[this.layer].buyables[this.id].cost)
+                let safe = !player.Ud.maxDC2 && player.Ud.crows.pow(hasMilestone("uv",55)?tmp.ct.upgrades[593].exp:1).gte(tmp[this.layer].buyables[this.id].cost)
                 return max || safe
             },
             buy() { 
@@ -64397,7 +64397,7 @@ addLayer("Ud", {
             unlocked() { return hasMilestone("Ud",63) }, 
             canAfford() {
                 let max = player.Ud.maxDC2 && player.Ud.crows.gte(tmp[this.layer].buyables[this.id].cost)
-                let safe = !player.Ud.maxDC2 && player.Ud.crows.pow(tmp.ct.upgrades[593].exp).gte(tmp[this.layer].buyables[this.id].cost)
+                let safe = !player.Ud.maxDC2 && player.Ud.crows.pow(hasMilestone("uv",55)?tmp.ct.upgrades[593].exp:1).gte(tmp[this.layer].buyables[this.id].cost)
                 return max || safe
             },
             buy() { 
@@ -64488,7 +64488,7 @@ addLayer("Ud", {
             unlocked() { return hasMilestone("Ud",63) }, 
             canAfford() {
                 let max = player.Ud.maxDC2 && player.Ud.crows.gte(tmp[this.layer].buyables[this.id].cost)
-                let safe = !player.Ud.maxDC2 && player.Ud.crows.pow(tmp.ct.upgrades[593].exp).gte(tmp[this.layer].buyables[this.id].cost)
+                let safe = !player.Ud.maxDC2 && player.Ud.crows.pow(hasMilestone("uv",55)?tmp.ct.upgrades[593].exp:1).gte(tmp[this.layer].buyables[this.id].cost)
                 return max || safe
             },
             buy() { 
@@ -64589,7 +64589,7 @@ addLayer("Ud", {
             unlocked() { return hasMilestone("Ud",63) }, 
             canAfford() {
                 let max = player.Ud.maxDC2 && player.Ud.crows.gte(tmp[this.layer].buyables[this.id].cost)
-                let safe = !player.Ud.maxDC2 && player.Ud.crows.pow(tmp.ct.upgrades[593].exp).gte(tmp[this.layer].buyables[this.id].cost)
+                let safe = !player.Ud.maxDC2 && player.Ud.crows.pow(hasMilestone("uv",55)?tmp.ct.upgrades[593].exp:1).gte(tmp[this.layer].buyables[this.id].cost)
                 return max || safe
             },
             buy() { 
