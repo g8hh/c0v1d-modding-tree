@@ -6,7 +6,7 @@ var NaNalert = false;
 // Tmp will not call these
 var activeFunctions = [
 	"startData", "onPrestige", "doReset", "update", "automate",
-	"buy", "buyMax", "respec", "onPress", "onClick", "onHold", "masterButtonPress",
+	"buy", "buyMax", "buySafe", "respec", "onPress", "onClick", "onHold", "masterButtonPress",
 	"sellOne", "sellAll", "pay", "actualCostFunction", "actualEffectFunction",
 	"effectDescription", "display", "fullDisplay", "effectDisplay", "rewardDisplay",
 	"tabFormat", "content",

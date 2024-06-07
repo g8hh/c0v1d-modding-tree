@@ -379,6 +379,75 @@ function pluralize(n,singular,plural,round=false) {
 	if ((n.eq_tolerance(1,0.0005) || (n.round().eq(1) && round==true && n.gte(1)))) return singular
 	return plural
 }
+
+function formatMass(s) {
+	s = new Decimal(s)
+	let uni = s.div(15e55)
+	let mlt = verse(uni)
+	let arv1 = [1,1e15,1e30,1e45,1e60,1e75,1e90,1e105,1e120,1e135]
+	let arv2 = ["","mega","giga","tera","peta","exa","zetta","yotta","ronna","quetta"]
+	let arv = 0;
+		if (mlt[0].gte(arv1[arv1.length - 1])) arv = arv1.length - 1;
+		else {
+			while (mlt[0].gte(arv1[arv])) arv++;
+			if (arv > 0) arv--;
+		}
+	let mverse = arv2[arv]+(arv2[arv]!=""?"-":"")+mlt[1]
+	if (mlt[1]=="multi") {
+		mverse = arv2[arv]
+		if (arv2[arv]=="") mverse = "multi"
+	}
+	if (uni.gte("6pt9")) return format(slog(uni).pow10().div(9e6)) + pluralize(slog(uni).pow10().div(9e6), " omniverse", " omniverses")
+	if (uni.gte("ee9")) return format(mlt[0].div(arv1[arv])) + " " + mverse  + pluralize(mlt[0].div(arv1[arv]), "verse", "verses")
+	let scale1 = [1.06959715e-64,1.78266192e-33,1e-30,1e-27,1e-24,1.6605390666e-24,1e-21,1e-18,1e-15,1e-12,1e-9,1e-6,2.176434e-5,0.001,1,1e3,1e6,1e9,1e12,1e15,1e18,1.619e20,5.972e27,1.989e33,2.9835e45,15e55]
+	let scale2 = [" gravitons"," electronvolt masses"," quectograms"," rontograms"," yoctograms"," daltons (atomic mass)"," zeptograms"," attograms"," femtograms"
+	," picograms"," nanograms"," micrograms"," Planck Masses"," milligrams"," grams"," kilograms"
+	," tonnes", " kilotonnes", " megatonnes", " gigatonnes", " teratonnes", " Mount Everests", " Earths", " Suns", " Milky Ways", " observable universes"]
+	let scalesing = [" graviton"," electronvolt mass"," quectogram"," rontogram"," yoctogram"," dalton (atomic mass)"," zeptogram"," attogram"," femtogram"
+	," picogram"," nanogram"," microgram"," Planck Mass"," milligram"," gram"," kilogram"
+	," tonne", " kilotonne", " megatonne", " gigatonne", " teratonne", " Mount Everest", " Earth", " Sun", " Milky Ways", " observable universe"]
+	let id = 0;
+		if (s.gte(scale1[scale1.length - 1])) id = scale1.length - 1;
+		else {
+			while (s.gte(scale1[id])) id++;
+			if (id > 0) id--;
+		}
+	let mag = s.div(scale1[id])
+	return format(mag) + pluralize(mag,scalesing[id],scale2[id])
+}
+
+function massShort(s) {
+	s = new Decimal(s)
+	let uni = s.div(15e55)
+	let mlt = verseShort(uni)
+	let arv1 = [1,1e15,1e30,1e45,1e60,1e75,1e90,1e105,1e120,1e135]
+	let arv2 = ["","mg","gg","tr","pt","ex","zt","yt","rn","qt"]
+	let arv = 0;
+		if (mlt[0].gte(arv1[arv1.length - 1])) arv = arv1.length - 1;
+		else {
+			while (mlt[0].gte(arv1[arv])) arv++;
+			if (arv > 0) arv--;
+		}
+	let mverse = arv2[arv]+(arv2[arv]!=""?"-":"")+mlt[1]
+	if (mlt[1]=="mlt") {
+		mverse = arv2[arv]+"v"
+		if (arv2[arv]=="") mverse = "mlt"
+	}
+	if (uni.gte("6pt9")) return format(slog(uni).pow10().div(9e6)) + " omni"
+	if (uni.gte("ee9")) return format(mlt[0].div(arv1[arv])) + " " + mverse
+	let scale1 = [1.06959715e-64,1.78266192e-33,1e-30,1e-27,1e-24,1.6605390666e-24,1e-21,1e-18,1e-15,1e-12,1e-9,1e-6,2.176434e-5,0.001,1,1e3,1e6,1e9,1e12,1e15,1e18,1.619e20,5.972e27,1.989e33,2.9835e45,15e55]
+	let scale2 = [" G"," eV/c<sup>2</sup>"," qg"," rg"," yg", " u"," zg"," ag"," fg"
+	," pg"," ng"," µg"," PM", " mg"," g"," kg"
+	," t", " kt"," Mt", " Gt"," Tt", " MME", " M🜨", " M☉", " MMWG", " uni"]
+	let id = 0;
+		if (s.gte(scale1[scale1.length - 1])) id = scale1.length - 1;
+		else {
+			while (s.gte(scale1[id])) id++;
+			if (id > 0) id--;
+		}
+	return format(s.div(scale1[id])) + scale2[id]
+}
+
 function formatSize(s) {
 	s = new Decimal(s)
 	let uni = s.div(8.8e26)

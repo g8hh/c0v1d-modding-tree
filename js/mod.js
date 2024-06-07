@@ -13,11 +13,21 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.6.24.1",
-	name: "Vorona Cirus UnBoostered Coronas",
+	num: "0.6.25",
+	name: "Vorona Cirus AnT-CTNA",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+        <h3>v0.6.25</h3><br>
+        - Added AnTNA<br>
+        - Added 9 CTNA milestones<br>
+        - Added 11 UnBoosted Virus upgrades<br>
+        - Added 15 UnBoosted Virus milestones<br>
+        - Added an UnBoosted Virus buyable<br>
+        - Added 3 Booster upgrades<br>
+        - Added an Unvaxxed Layer upgrade<br>
+        - Added 6 Anti-Distancing upgrades<br>
+        - Added 6 Achievements<br>
         v0.6.24.1<br>
         - Fixed T hotkey resetting for CTNA in 'Booster Vaccine' and getting kicked out of the challenge.<br>
         <h3>v0.6.24</h3><br>
@@ -401,7 +411,7 @@ function getPointGen() {
     let gain = getPointBase()
     let mult = getGainMultSlog()
     let exp = tmp.ct.getBoosterExp
-    if (inChallenge("ct", 32)) gain = slogadd(slog(gain).mul(getBaseGain()).pow(getGainpowSlog()),tmp.ct.getBoosterSlog).min(mult.pow(tmp.uv.slogCap).max("ee10")).div(1e9).mul(mult).pow(exp).min("eeeee123423")
+    if (inChallenge("ct", 32)) gain = slogadd(slog(gain).mul(getBaseGain()).pow(getGainpowSlog()),tmp.ct.getBoosterSlog).min(mult.pow(tmp.uv.slogCap).max("ee10")).div(1e9).mul(mult).pow(exp).min("eeeeee33")
     return gain
 }
 
@@ -470,7 +480,7 @@ function getUndulatingColor(period = Math.sqrt(760)){
 var displayThings = [
     function(){
         let x = getUndulatingColor()
-		let a = "Current endgame: "+colorText("h2", x,format("eeeee13115"))/*"Taeyeon"*/+" cases in 'Booster Vaccine' (v0.6.24)"
+		let a = "Current endgame: "+colorText("h2", x,format("eeeee6e15"))/*"Taeyeon"*/+" cases in 'Booster Vaccine' (v0.6.25)"
         let b = inChallenge("ct",32)?"<br>'Booster Vaccine' progress: "+format(slog(player.points.max(1)).div(Decimal.pow(2,1024).log10()).mul(100))+"%":""
         
 		return a + b+ (options.autosave ? "" : ". Warning: autosave is off")
@@ -490,7 +500,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.points.gte("eeeee13115") && inChallenge("ct",32)
+	return player.points.gte("eeeee6e15") && inChallenge("ct",32)
 }
 
 

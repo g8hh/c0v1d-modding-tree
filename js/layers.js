@@ -6,6 +6,10 @@ const STATIC_SCALE_STARTS = {
     "Uu": function() { return new Decimal(120) },
     "Us": function() { return decimalTen },
 }
+
+function makeUDText(c){
+    return "<span style='color:#a9146a'>" + c + "</span>"
+}
 function makeRed(c){
     return "<span style='color:#aa0000'>" + c + "</span>"
 }
@@ -319,6 +323,9 @@ function startCTChallenge(id) {
             player.Ud.mu = new Decimal(100)
             player.Ud.buyables[41] = new Decimal(100)
             player.Ud.buyables[42] = new Decimal(10)
+        }
+        if (hasMilestone("uv",51)) {
+            player.Ud.autocrow = true
         }
     }
 }
@@ -4004,8 +4011,8 @@ addLayer("stat", {
                 let y = hasUpgrade("ct",145)?"Green Exponent:"+format(tmp.ct.getGreenExp)+"<br><br>":""
                 let z = hasUpgrade("ct",166)?"Anti-Vaxxer Base:"+format(tmp.ct.getVaxxerBase.b1)+"<br><br>":""
                 let aa = hasUpgrade("ct",166)?"Anti-Vaxxer Cost Base:"+format(tmp.ct.getVaxcostBase)+"<br><br>":""
-                let ab = hasUpgrade("ct",194)?"Anti-Capped CTNA Effect:"+format(tmp.ct.getAntiCapCTNA)+"<br><br>":""
-                let ab2 = hasUpgrade("ct",194)?"Anti-Capped CTNA Total Effect:"+format(tmp.ct.aCapCtna)+"<br><br>":""
+                let ab = hasUpgrade("ct",194)?"Anti-Capped CTNA Effect slog:"+format(tmp.ct.getAntiCapCTNA)+"<br><br>":""
+                let ab2 = hasUpgrade("ct",194)?"Anti-Capped CTNA Total Effect slog:"+format(tmp.ct.aCapCtna)+"<br><br>":""
                 let ac = player.e.points.gte(tet10(40))?"Social Distant Infecter scaling start:"+format(tet10(tmp.e.scStart))+"<br><br>":""
                 let ad = player.ct.buyables[181].gte(298)?"Distant UI Gain scaling start:"+format(tmp.ct.buyables[181].start)+"<br><br>":""
                 let ae = player.ct.buyables[181].gte(298)?"Distant UI Gain scaling base:"+format(tmp.ct.buyables[181].dbase,(tmp.ct.buyables[181].dbase.lt(1.001)?5:tmp.ct.buyables[181].dbase.lt(1.01)?4:3))+"<br><br>":""
@@ -4106,11 +4113,11 @@ addLayer("a", {
     row: "side", // Row the layer is in on the tree (0 is the first row)
     layerShown() { return true },
     achievements: {
-        rows: 28,
+        rows: 30,
         cols: 6,
         11: {
             name: "Start",
-            tooltip: "Get 2 cases. Reward: 1 AP",
+            tooltip: "Get 2 cases. Reward: 1 AP.",
             done() {
                 return player.points.gte(2)
             },
@@ -4120,7 +4127,7 @@ addLayer("a", {
         },
         12: {
             name: "Infect",
-            tooltip: "Get 10 cases. Reward: 1 AP",
+            tooltip: "Get 10 cases. Reward: 1 AP.",
             done() {
                 return player.points.gte(10)
             },
@@ -4130,7 +4137,7 @@ addLayer("a", {
         },
         13: {
             name: "Thousand Infected",
-            tooltip() {return "Get "+formatWhole(1e3)+" cases. Reward: 1 AP"},
+            tooltip() {return "Get "+formatWhole(1e3)+" cases. Reward: 1 AP."},
             done() {
                 return player.points.gte(1000)
             },
@@ -4140,7 +4147,7 @@ addLayer("a", {
         },
         14: {
             name: "Million Infected",
-            tooltip() {return "Get "+formatWhole(1e6)+" cases. Reward: 1 AP"},
+            tooltip() {return "Get "+formatWhole(1e6)+" cases. Reward: 1 AP."},
             done() {
                 return player.points.gte(1e6)
             },
@@ -4150,7 +4157,7 @@ addLayer("a", {
         },
         15: {
             name: "Covid 19",
-            tooltip() {return "Get "+formatWhole(63154455)+" cases. Reward: 1 AP"},
+            tooltip() {return "Get "+formatWhole(63154455)+" cases. Reward: 1 AP."},
             done() {
                 return player.points.gte(63154455)
             },
@@ -4160,7 +4167,7 @@ addLayer("a", {
         },
         16: {
             name: "World Infected",
-            tooltip() {return "Get "+formatWhole(7.8e9)+" cases. Reward: 1 AP"},
+            tooltip() {return "Get "+formatWhole(7.8e9)+" cases. Reward: 1 AP."},
             done() {
                 return player.points.gte(7.8e9)
             },
@@ -4180,7 +4187,7 @@ addLayer("a", {
         },
         22: {
             name: "Upgraded infections",
-            tooltip: "Get 5 infectivity upgrades. Reward: 1 AP",
+            tooltip: "Get 5 infectivity upgrades. Reward: 1 AP.",
             done() {
                 return player.i.upgrades.length>=5
             },
@@ -4190,7 +4197,7 @@ addLayer("a", {
         },
         23: {
             name: "Replicated",
-            tooltip: "Get 1 replicator. Reward: 2 AP",
+            tooltip: "Get 1 replicator. Reward: 2 AP.",
             done() {
                 return player.r.points.gte(1)
             },
@@ -4200,7 +4207,7 @@ addLayer("a", {
         },
         24: {
             name: "Infected company",
-            tooltip() {return "Get "+formatWhole(1e100)+" cases. Reward: 2 AP"},
+            tooltip() {return "Get "+formatWhole(1e100)+" cases. Reward: 2 AP."},
             done() {
                 return player.points.gte(1e100)
             },
@@ -4210,7 +4217,7 @@ addLayer("a", {
         },
         25: {
             name: "Infinite infections",
-            tooltip() {return "Get "+formatWhole(Decimal.pow(2,1024))+" cases. Reward: 2 AP"},
+            tooltip() {return "Get "+formatWhole(Decimal.pow(2,1024))+" cases. Reward: 2 AP."},
             done() {
                 return player.points.gte(Decimal.pow(2,1024))
             },
@@ -4220,7 +4227,7 @@ addLayer("a", {
         },
         26: {
             name: "SUS Upgrade",
-            tooltip: "Get 7 infectivity upgrades. Reward: 2 AP",
+            tooltip: "Get 7 infectivity upgrades. Reward: 2 AP.",
             done() {
                 return player.i.upgrades.length>=7
             },
@@ -4240,7 +4247,7 @@ addLayer("a", {
         },
         32: {
             name: "(softcapped)",
-            tooltip: "Get 2 uncoater upgrades. Reward: 2 AP",
+            tooltip: "Get 2 uncoater upgrades. Reward: 2 AP.",
             done() {
                 return player.u.upgrades.length>=2
             },
@@ -4250,7 +4257,7 @@ addLayer("a", {
         },
         33: {
             name: "(hardcapped)",
-            tooltip: "Get 5 uncoater upgrades. Reward: 2 AP",
+            tooltip: "Get 5 uncoater upgrades. Reward: 2 AP.",
             done() {
                 return player.u.upgrades.length>=5
             },
@@ -4260,7 +4267,7 @@ addLayer("a", {
         },
         34: {
             name: "Challenging",
-            tooltip: "Complete an uncoater challenge. Reward: 2 AP",
+            tooltip: "Complete an uncoater challenge. Reward: 2 AP.",
             done() {
                 return challengeCompletions("u", 11)>=1
             },
@@ -4270,7 +4277,7 @@ addLayer("a", {
         },
         35: {
             name: "Severe case",
-            tooltip: "Get 1 severity. Reward: 3 AP",
+            tooltip: "Get 1 severity. Reward: 3 AP.",
             done() {
                 return player.s.severity.gte(1)
             },
@@ -4280,7 +4287,7 @@ addLayer("a", {
         },
         36: {
             name: "Auto",
-            tooltip: "Get 11 symptom upgrades. Reward: 3 AP",
+            tooltip: "Get 11 symptom upgrades. Reward: 3 AP.",
             done() {
                 return player.s.upgrades.length>=11
             },
@@ -4330,7 +4337,7 @@ addLayer("a", {
         },
         45: {
             name: "Coffin Dance",
-            tooltip() {return "Get "+formatWhole(1e100)+" deaths. Reward: 4 AP"},
+            tooltip() {return "Get "+formatWhole(1e100)+" deaths. Reward: 4 AP."},
             done() {
                 return player.d.points.gte(1e100)
             },
@@ -4340,7 +4347,7 @@ addLayer("a", {
         },
         46: {
             name: "Coughin Dance",
-            tooltip: "Get 14 death upgrades. Reward: 4 AP",
+            tooltip: "Get 14 death upgrades. Reward: 4 AP.",
             done() {
                 return player.d.upgrades.length>=14
             },
@@ -4350,7 +4357,7 @@ addLayer("a", {
         },
         51: {
             name: "Mortal Kombat",
-            tooltip: "Get 1 fatality. Reward: 4 AP",
+            tooltip: "Get 1 fatality. Reward: 4 AP.",
             done() {
                 return player.f.points.gte(1)
             },
@@ -4390,7 +4397,7 @@ addLayer("a", {
         },
         55: {
             name: "PPOOWWEERR!",
-            tooltip() {return "Get "+formatWhole("ee3")+" fatality power. Reward: 4 AP"},
+            tooltip() {return "Get "+formatWhole("ee3")+" fatality power. Reward: 4 AP."},
             done() {
                 return player.f.p.gte(Decimal.pow(10,1e3))
             },
@@ -4400,7 +4407,7 @@ addLayer("a", {
         },
         56: {
             name: "The 9th Dimension is a lie",
-            tooltip: "Get exactly 99 8th Dimensions. Reward: 5 AP",
+            tooltip: "Get exactly 99 8th Dimensions. Reward: 5 AP.",
             done() {
                 return player.f.buyables[24].eq(99)
             },
@@ -4410,7 +4417,7 @@ addLayer("a", {
         },
         61: {
             name: "Casual",
-            tooltip: "Get 1 casualty. Reward: 5 AP",
+            tooltip: "Get 1 casualty. Reward: 5 AP.",
             done() {
                 return player.f.casualty.gte(1)
             },
@@ -4420,7 +4427,7 @@ addLayer("a", {
         },
         62: {
             name: "Fatally Challenged",
-            tooltip: "Complete 4 Fatality Challenges Reward: 5 AP",
+            tooltip: "Complete 4 Fatality Challenges Reward: 5 AP.",
             done() {
                 return hasChallenge("f",11) && hasChallenge("f",12) && hasChallenge("f",21) && hasChallenge("f",22)
             },
@@ -4430,7 +4437,7 @@ addLayer("a", {
         },
         63: {
             name: "Zero Deaths",
-            tooltip() {return "Get "+formatWhole("ee4")+" fatality without Dimension and Multiplier Boosts. Reward: 5 AP"},
+            tooltip() {return "Get "+formatWhole("ee4")+" fatality without Dimension and Multiplier Boosts. Reward: 5 AP."},
             done() {
                 return player.f.points.gte("ee4") && player.f.buyables[32].eq(0) && player.f.buyables[33].eq(0)
             },
@@ -4440,7 +4447,7 @@ addLayer("a", {
         },
         64: {
             name: "REPLICANTI",
-            tooltip: "Unlock Casuals. Reward: 5 AP",
+            tooltip: "Unlock Casuals. Reward: 5 AP.",
             done() {
                 return hasMilestone("f",17)
             },
@@ -4460,7 +4467,7 @@ addLayer("a", {
         },
         66: {
             name: "0 cases from Casualty",
-            tooltip: "Get 1 Casualty Dimension 8. Reward: 5 AP",
+            tooltip: "Get 1 Casualty Dimension 8. Reward: 5 AP.",
             done() {
                 return player.f.buyables[84].gte(1)
             },
@@ -4470,7 +4477,7 @@ addLayer("a", {
         },
         71: {
             name: "GoogolPlex",
-            tooltip() {return "Get "+formatWhole("ee100")+" cases. Reward: 5 AP"},
+            tooltip() {return "Get "+formatWhole("ee100")+" cases. Reward: 5 AP."},
             done() {
                 return player.points.gte("ee100")
             },
@@ -4480,7 +4487,7 @@ addLayer("a", {
         },
         72: {
             name: "When will it be enough?",
-            tooltip() {return "Get "+formatWhole("e30000")+" casuals. Reward: 5 AP"},
+            tooltip() {return "Get "+formatWhole("e30000")+" casuals. Reward: 5 AP."},
             done() {
                 return player.f.casuals.gte("e30000")
             },
@@ -4490,7 +4497,7 @@ addLayer("a", {
         },
         73: {
             name: "GAS",
-            tooltip() {return "Get "+formatWhole("eee3")+" cases. Reward: 6 AP"},
+            tooltip() {return "Get "+formatWhole("eee3")+" cases. Reward: 6 AP."},
             done() {
                 return player.points.gte("eee3")
             },
@@ -4518,7 +4525,7 @@ addLayer("a", {
         },
         75: {
             name: "Infected Challenge",
-            tooltip: "Complete all Infecter Challenges. Reward: 6 AP",
+            tooltip: "Complete all Infecter Challenges. Reward: 6 AP.",
             done() {
                 return player.e.c11.gte(1e6) && player.e.c12.gte(1e6)
             },
@@ -4528,7 +4535,7 @@ addLayer("a", {
         },
         76: {
             name: "Unimmune",
-            tooltip: "Get 1 'Immunity Base'. Reward: 6 AP",
+            tooltip: "Get 1 'Immunity Base'. Reward: 6 AP.",
             done() {
                 return player.e.buyables[23].gte(1)
             },
@@ -4538,7 +4545,7 @@ addLayer("a", {
         },
         81: {
             name: "Diseased Diseases",
-            tooltip: "Get 1 'Disease Boost'. Reward: 7 AP",
+            tooltip: "Get 1 'Disease Boost'. Reward: 7 AP.",
             done() {
                 return player.e.buyables[42].gte(1)
             },
@@ -4548,7 +4555,7 @@ addLayer("a", {
         },
         82: {
             name: "Quarantined",
-            tooltip: "Get 1 Unquarantined Infection. Reward: 7 AP",
+            tooltip: "Get 1 Unquarantined Infection. Reward: 7 AP.",
             done() {
                 return player.e.qt.gte(1)
             },
@@ -4558,7 +4565,7 @@ addLayer("a", {
         },
         83: {
             name: "E-World Quarantine",
-            tooltip() {return "Get "+format("e78e8")+" cases in Quarantine. Reward: 8 AP"},
+            tooltip() {return "Get "+format("e78e8")+" cases in Quarantine. Reward: 8 AP."},
             done() {
                 return player.e.inC && player.points.gte("e7.8e9")
             },
@@ -4568,7 +4575,7 @@ addLayer("a", {
         },
         84: {
             name: "Unquarantined Quarantine",
-            tooltip: "Get Unquarantined Infections out of Quarantine. Reward: 8 AP",
+            tooltip: "Get Unquarantined Infections out of Quarantine. Reward: 8 AP.",
             done() {
                 return hasUpgrade("e",162)
             },
@@ -4578,7 +4585,7 @@ addLayer("a", {
         },
         85: {
             name: "GAS GAS",
-            tooltip() {return "Get "+format("eee20")+" cases. Reward: 8 AP"},
+            tooltip() {return "Get "+format("eee20")+" cases. Reward: 8 AP."},
             done() {
                 return player.points.gte("eee20")
             },
@@ -4588,7 +4595,7 @@ addLayer("a", {
         },
         86: {
             name: "Multi-Million",
-            tooltip: "Get 1,000,000 Multiplier Boosts. Reward: 8 AP",
+            tooltip: "Get 1,000,000 Multiplier Boosts. Reward: 8 AP.",
             done() {
                 return player.f.buyables[33].gte(1e6)
             },
@@ -4598,7 +4605,7 @@ addLayer("a", {
         },
         91: {
             name: "Cased GAS",
-            tooltip() {return "Get "+format(Decimal.pow(Math.E,Decimal.pow(Math.E,Decimal.pow(Math.E,79))))+" cases. Reward: 9 AP"},
+            tooltip() {return "Get "+format(Decimal.pow(Math.E,Decimal.pow(Math.E,Decimal.pow(Math.E,79))))+" cases. Reward: 9 AP."},
             done() {
                 return player.points.gte(Decimal.pow(Math.E,Decimal.pow(Math.E,Decimal.pow(Math.E,79))))
             },
@@ -4608,7 +4615,7 @@ addLayer("a", {
         },
         92: {
             name: "Atomic Virus",
-            tooltip: "Get 1 Atom. Reward: 9 AP",
+            tooltip: "Get 1 Atom. Reward: 9 AP.",
             done() {
                 return player.e.h.gte(1)
             },
@@ -4618,7 +4625,7 @@ addLayer("a", {
         },
         93: {
             name: "Molecular Virus",
-            tooltip: "Get 1 Molecule. Reward: 9 AP",
+            tooltip: "Get 1 Molecule. Reward: 9 AP.",
             done() {
                 return player.e.ad.gte(1) || player.e.ur.gte(1)
             },
@@ -4628,7 +4635,7 @@ addLayer("a", {
         },
         94: {
             name: "Phosphate",
-            tooltip: "Get 1 Phosphorus. Reward: 9 AP",
+            tooltip: "Get 1 Phosphorus. Reward: 9 AP.",
             done() {
                 return player.e.ph.gte(1)
             },
@@ -4638,7 +4645,7 @@ addLayer("a", {
         },
         95: {
             name: "Phosphate Virus",
-            tooltip: "Get 1 Ribose-Phosphate. Reward: 9 AP",
+            tooltip: "Get 1 Ribose-Phosphate. Reward: 9 AP.",
             done() {
                 return player.e.rp.gte(1)
             },
@@ -4648,7 +4655,7 @@ addLayer("a", {
         },
         96: {
             name: "mRNA Virus",
-            tooltip: "Get 1 mRNA. Reward: 10 AP",
+            tooltip: "Get 1 mRNA. Reward: 10 AP.",
             done() {
                 return player.e.mrna.gte(1)
             },
@@ -4658,7 +4665,7 @@ addLayer("a", {
         },
         101: {
             name: "Corona GAS GAS",
-            tooltip() {return "Get "+format("eee1000")+" cases. Reward: 10 AP"},
+            tooltip() {return "Get "+format("eee1000")+" cases. Reward: 10 AP."},
             done() {
                 return player.points.gte("eee1000")
             },
@@ -4668,7 +4675,7 @@ addLayer("a", {
         },
         102: {
             name: "Automatic Diseases",
-            tooltip: "Get 8 Infecter milestones. Reward: 10 AP",
+            tooltip: "Get 8 Infecter milestones. Reward: 10 AP.",
             done() {
                 return player.e.points.gte(2e4)
             },
@@ -4678,7 +4685,7 @@ addLayer("a", {
         },
         103: {
             name: "Mutated",
-            tooltip: "Get 1 MMNA. Reward: 10 AP",
+            tooltip: "Get 1 MMNA. Reward: 10 AP.",
             done() {
                 return player.e.mm.gte(1)
             },
@@ -4688,7 +4695,7 @@ addLayer("a", {
         },
         104: {
             name: "Infecterrr",
-            tooltip: "Get 10 Infecter milestones. Reward: 10 AP",
+            tooltip: "Get 10 Infecter milestones. Reward: 10 AP.",
             done() {
                 return player.e.points.gte(5e4)
             },
@@ -4698,7 +4705,7 @@ addLayer("a", {
         },
         105: {
             name: "In'F'ected",
-            tooltip() {return "Get "+format(tet10(5))+" cases. Reward: 10 AP"},
+            tooltip() {return "Get "+format(tet10(5))+" cases. Reward: 10 AP."},
             done() {
                 return player.points.gte(Decimal.tetrate(10,5))
             },
@@ -4708,7 +4715,7 @@ addLayer("a", {
         },
         106: {
             name: "COV",
-            tooltip: "Get 3 Corona Mutations. Reward: 10 AP",
+            tooltip: "Get 3 Corona Mutations. Reward: 10 AP.",
             done() {
                 return player.e.mu2.gte(3)
             },
@@ -4718,7 +4725,7 @@ addLayer("a", {
         },
         111: {
             name: "Mutant",
-            tooltip: "Get 300 Mutations. Reward: 15 AP",
+            tooltip: "Get 300 Mutations. Reward: 15 AP.",
             done() {
                 return player.e.mu.gte(300)
             },
@@ -4728,7 +4735,7 @@ addLayer("a", {
         },
         112: {
             name: "CO.RO.NA.",
-            tooltip: "Get 1 CRNA. Reward: 15 AP",
+            tooltip: "Get 1 CRNA. Reward: 15 AP.",
             done() {
                 return player.e.crna.gte(1)
             },
@@ -4738,7 +4745,7 @@ addLayer("a", {
         },
         113: {
             name: "COVI",
-            tooltip: "Get 7 Corona Mutations. Reward: 15 AP",
+            tooltip: "Get 7 Corona Mutations. Reward: 15 AP.",
             done() {
                 return player.e.mu2.gte(7)
             },
@@ -4748,7 +4755,7 @@ addLayer("a", {
         },
         114: {
             name: "Mutated Mutations",
-            tooltip: "Get 1,000 Mutations. Reward: 15 AP",
+            tooltip: "Get 1,000 Mutations. Reward: 15 AP.",
             done() {
                 return player.e.mu.gte(1e3)
             },
@@ -4758,7 +4765,7 @@ addLayer("a", {
         },
         115: {
             name: "CoTona",
-            tooltip: "Get 1 CTNA. Reward: 15 AP",
+            tooltip: "Get 1 CTNA. Reward: 15 AP.",
             done() {
                 return player.ct.total.gte(1)
             },
@@ -4768,7 +4775,7 @@ addLayer("a", {
         },
         116: {
             name: "CoMutated",
-            tooltip: "Get 20 Corona Mutations. Reward: 15 AP",
+            tooltip: "Get 20 Corona Mutations. Reward: 15 AP.",
             done() {
                 return player.e.mu2.gte(20)
             },
@@ -4778,7 +4785,7 @@ addLayer("a", {
         },
         121: {
             name: "CRPonent",
-            tooltip: "Get 1 'CRNA Exponent'. Reward: 15 AP",
+            tooltip: "Get 1 'CRNA Exponent'. Reward: 15 AP.",
             done() {
                 return player.ct.buyables[11].gte(1)
             },
@@ -4788,7 +4795,7 @@ addLayer("a", {
         },
         122: {
             name: "CorVutated",
-            tooltip: "Get 100 Corona Mutations. Reward: 15 AP",
+            tooltip: "Get 100 Corona Mutations. Reward: 15 AP.",
             done() {
                 return player.e.mu2.gte(100)
             },
@@ -4798,7 +4805,7 @@ addLayer("a", {
         },
         123: {
             name: "CrowBird 19",
-            tooltip: "Get 1 CorVid. Reward: 20 AP",
+            tooltip: "Get 1 CorVid. Reward: 20 AP.",
             done() {
                 return player.ct.CorVid.gte(1)
             },
@@ -4808,7 +4815,7 @@ addLayer("a", {
         },
         124: {
             name: "UnLogged",
-            tooltip: "Get less than 0 log. Reward: 20 AP",
+            tooltip: "Get less than 0 log. Reward: 20 AP.",
             done() {
                 return tmp.e.crlog.lt(0)
             },
@@ -4818,7 +4825,7 @@ addLayer("a", {
         },
         125: {
             name: "VoCiMutation",
-            tooltip: "Get 30,000 Corona Mutations. Reward: 20 AP",
+            tooltip: "Get 30,000 Corona Mutations. Reward: 20 AP.",
             done() {
                 return player.e.mu2.gte(3e4)
             },
@@ -4828,7 +4835,7 @@ addLayer("a", {
         },
         126: {
             name: "Outside",
-            tooltip() {return "Get "+format(1e100)+" LaBas. Reward: 20 AP"},
+            tooltip() {return "Get "+format(1e100)+" LaBas. Reward: 20 AP."},
             done() {
                 return player.ct.LaBas.gte(1e100)
             },
@@ -4838,7 +4845,7 @@ addLayer("a", {
         },
         131: {
             name: "Crowna Mutater",
-            tooltip: "Get 1,000,000 Corona Mutations. Reward: 25 AP",
+            tooltip: "Get 1,000,000 Corona Mutations. Reward: 25 AP.",
             done() {
                 return player.e.mu2.gte(1e6)
             },
@@ -4848,7 +4855,7 @@ addLayer("a", {
         },
         132: {
             name: "CrowBirder",
-            tooltip: "Get 1 'CorVid Gain'. Reward: 25 AP",
+            tooltip: "Get 1 'CorVid Gain'. Reward: 25 AP.",
             done() {
                 return player.ct.buyables[61].gte(1)
             },
@@ -4858,7 +4865,7 @@ addLayer("a", {
         },
         133: {
             name: "Milestone Booster",
-            tooltip: "Get 20 CTNA Milestones. Reward: 25 AP",
+            tooltip: "Get 20 CTNA Milestones. Reward: 25 AP.",
             done() {
                 return player.ct.milestones.length>=20
             },
@@ -4868,7 +4875,7 @@ addLayer("a", {
         },
         134: {
             name: "CrowBird '19'",
-            tooltip() {return "Get "+format(1e19)+" CorVids. Reward: 25 AP"},
+            tooltip() {return "Get "+format(1e19)+" CorVids. Reward: 25 AP."},
             done() {
                 return player.ct.CorVid.gte(1e19)
             },
@@ -4878,7 +4885,7 @@ addLayer("a", {
         },
         135: {
             name: "Mask^-1",
-            tooltip: "Get 1 Anti-Masker. Reward: 25 AP",
+            tooltip: "Get 1 Anti-Masker. Reward: 25 AP.",
             done() {
                 return player.ct.Am.gte(1)
             },
@@ -4888,7 +4895,7 @@ addLayer("a", {
         },
         136: {
             name: "No Maskers",
-            tooltip: "Get 100 Anti-Maskers. Reward: 25 AP",
+            tooltip: "Get 100 Anti-Maskers. Reward: 25 AP.",
             done() {
                 return player.ct.Am.gte(100)
             },
@@ -4898,7 +4905,7 @@ addLayer("a", {
         },
         141: {
             name: "Anti-Gambler",
-            tooltip: "Unlock Anti-Roulette. Reward: 25 AP",
+            tooltip: "Unlock Anti-Roulette. Reward: 25 AP.",
             done() {
                 return hasUpgrade("ct",113)
             },
@@ -4908,7 +4915,7 @@ addLayer("a", {
         },
         142: {
             name: "Anti-House",
-            tooltip: "Get an Edge. Reward: 25 AP",
+            tooltip: "Get an Edge. Reward: 25 AP.",
             done() {
                 return hasUpgrade("ct",114)
             },
@@ -4918,7 +4925,7 @@ addLayer("a", {
         },
         143: {
             name: "Lucky Player",
-            tooltip: "Win 5 times in a row (After getting 'Streak Multiplier'). Reward: 30 AP",
+            tooltip: "Win 5 times in a row (After getting 'Streak Multiplier'). Reward: 30 AP.",
             done() {
                 return player.ct.winstreak>4
             },
@@ -4928,7 +4935,7 @@ addLayer("a", {
         },
         144: {
             name: "Rigging the wheel",
-            tooltip: "Get more than 50% Win Chance. Reward: 30 AP",
+            tooltip: "Get more than 50% Win Chance. Reward: 30 AP.",
             done() {
                 return hasUpgrade("ct",125)
             },
@@ -4978,7 +4985,7 @@ addLayer("a", {
         },
         153: {
             name: "Anti-Maskest",
-            tooltip: "Get 1 'AM Booster'. Reward: 30 AP",
+            tooltip: "Get 1 'AM Booster'. Reward: 30 AP.",
             done() {
                 return player.ct.buyables[83].gte(1)
             },
@@ -4988,7 +4995,7 @@ addLayer("a", {
         },
         154: {
             name: "Luckier Player",
-            tooltip: "Win 15 times in a row. Reward: 30 AP",
+            tooltip: "Win 15 times in a row. Reward: 30 AP.",
             done() {
                 return player.ct.winstreak>14
             },
@@ -4998,7 +5005,7 @@ addLayer("a", {
         },
         155: {
             name: "Lucky Greens",
-            tooltip: "Win 2 times in a row on Green. Reward: 30 AP",
+            tooltip: "Win 2 times in a row on Green. Reward: 30 AP.",
             done() {
                 return player.ct.gwinstreak>1
             },
@@ -5018,7 +5025,7 @@ addLayer("a", {
         },
         161: {
             name: "Vaccination Opposer",
-            tooltip: "Get 1 Anti-Vaxxer. Reward: 50 AP",
+            tooltip: "Get 1 Anti-Vaxxer. Reward: 50 AP.",
             done() {
                 return player.ct.Avaxxers.gte(1)
             },
@@ -5028,7 +5035,7 @@ addLayer("a", {
         },
         162: {
             name: "Luckiest Player",
-            tooltip: "Win 1,000 times in a row. Reward: 50 AP",
+            tooltip: "Win 1,000 times in a row. Reward: 50 AP.",
             done() {
                 return Decimal.gte(player.ct.winstreak,1e3)
             },
@@ -5048,7 +5055,7 @@ addLayer("a", {
         },
         164: {
             name: "Luckier Greens",
-            tooltip: "Win 100 times in a row on Green. Reward: 50 AP",
+            tooltip: "Win 100 times in a row on Green. Reward: 50 AP.",
             done() {
                 return Decimal.gte(player.ct.gwinstreak,100)
             },
@@ -5058,7 +5065,7 @@ addLayer("a", {
         },
         165: {
             name: "Capped↑↑10",
-            tooltip() {return "Get "+format(tet10(10))+" cases. Reward: 50 AP"},
+            tooltip() {return "Get "+format(tet10(10))+" cases. Reward: 50 AP."},
             done() {
                 return player.points.gte(tet10(10))
             },
@@ -5068,7 +5075,7 @@ addLayer("a", {
         },
         166: {
             name: "Adverse Event",
-            tooltip: "Get 1 Side Effect. Reward: 50 AP",
+            tooltip: "Get 1 Side Effect. Reward: 50 AP.",
             done() {
                 return player.ct.SideEff.gte(1)
             },
@@ -5078,7 +5085,7 @@ addLayer("a", {
         },
         171: {
             name: "Harmful Effects",
-            tooltip: "Get 1 'Side Boost'. Reward: 50 AP",
+            tooltip: "Get 1 'Side Boost'. Reward: 50 AP.",
             done() {
                 return player.ct.buyables[153].gte(1)
             },
@@ -5088,7 +5095,7 @@ addLayer("a", {
         },
         172: {
             name: "Adverser Event",
-            tooltip: "Get 1 Adverse Effect. Reward: 50 AP",
+            tooltip: "Get 1 Adverse Effect. Reward: 50 AP.",
             done() {
                 return player.ct.AdEff.gte(1)
             },
@@ -5098,7 +5105,7 @@ addLayer("a", {
         },
         173: {
             name: "CASED GAS GAS",
-            tooltip() {return "Get "+format(tet10(20))+" cases. Reward: 50 AP"},
+            tooltip() {return "Get "+format(tet10(20))+" cases. Reward: 50 AP."},
             done() {
                 return player.points.gte(tet10(20))
             },
@@ -5108,7 +5115,7 @@ addLayer("a", {
         },
         174: {
             name: "Difficulties",
-            tooltip: "Get 1 Adversity. Reward: 50 AP",
+            tooltip: "Get 1 Adversity. Reward: 50 AP.",
             done() {
                 return player.ct.Adversity.gte(1)
             },
@@ -5118,7 +5125,7 @@ addLayer("a", {
         },
         175: {
             name: "Adverse Difficulties",
-            tooltip: "Get 1 'Adversity Gain'. Reward: 50 AP",
+            tooltip: "Get 1 'Adversity Gain'. Reward: 50 AP.",
             done() {
                 return player.ct.buyables[163].gte(1)
             },
@@ -5128,7 +5135,7 @@ addLayer("a", {
         },
         176: {
             name: "Giggol Infected",
-            tooltip() {return "Get "+format(tet10(100))+" cases. Reward: 50 AP"},
+            tooltip() {return "Get "+format(tet10(100))+" cases. Reward: 50 AP."},
             done() {
                 return player.points.gte(tet10(100))
             },
@@ -5138,7 +5145,7 @@ addLayer("a", {
         },
         181: {
             name: "Difficult Difficulties",
-            tooltip: "Get 1 'Adversity Gain 2'. Reward: 50 AP",
+            tooltip: "Get 1 'Adversity Gain 2'. Reward: 50 AP.",
             done() {
                 return player.ct.buyables[164].gte(1)
             },
@@ -5148,7 +5155,7 @@ addLayer("a", {
         },
         182: {
             name: "In'F'inite CASES",
-            tooltip() {return "Get "+format(tet10(Decimal.pow(2,1024).log10()))+" cases. Reward: 50 AP"},
+            tooltip() {return "Get "+format(tet10(Decimal.pow(2,1024).log10()))+" cases. Reward: 50 AP."},
             done() {
                 return player.points.gte(tet10(Decimal.pow(2,1024).log10()))
             },
@@ -5168,7 +5175,7 @@ addLayer("a", {
         },
         184: {
             name: "Anti-Vaxxed Giggol",
-            tooltip() {return "Get "+format(tet10(100))+" cases in Vaccination. Reward: 50 AP"},
+            tooltip() {return "Get "+format(tet10(100))+" cases in Vaccination. Reward: 50 AP."},
             done() {
                 return player.points.gte(tet10(100)) && player.ct.inC
             },
@@ -5178,7 +5185,7 @@ addLayer("a", {
         },
         185: {
             name: "Anti-Vaxxed Adversity",
-            tooltip: "Get 1 'Adversity Gain 2' in Vaccination. Reward: 50 AP",
+            tooltip: "Get 1 'Adversity Gain 2' in Vaccination. Reward: 50 AP.",
             done() {
                 return player.ct.buyables[164].gte(1) && player.ct.inC
             },
@@ -5188,7 +5195,7 @@ addLayer("a", {
         },
         186: {
             name: "In'F'inite ANTI-VAX",
-            tooltip() {return "Get "+format(tet10(Decimal.pow(2,1024).log10()))+" cases in Vaccination. Reward: 50 AP"},
+            tooltip() {return "Get "+format(tet10(Decimal.pow(2,1024).log10()))+" cases in Vaccination. Reward: 50 AP."},
             done() {
                 return player.points.gte(tet10(Decimal.pow(2,1024).log10())) && player.ct.inC
             },
@@ -5365,7 +5372,7 @@ addLayer("a", {
         },
         215: {
             name: "Failure!", 
-            tooltip: "Fail a challenge. Reward: 100 AP",
+            tooltip: "Fail a challenge. Reward: 100 AP.",
             done() {
                 return player.Up.fail==1
             },
@@ -5571,7 +5578,7 @@ addLayer("a", {
         },
         251: {
             name: "In'F'ected Booster",
-            tooltip() {return "Get "+format(tet10(5))+" cases in 'Booster Vaccine'. Reward: 150 AP"},
+            tooltip() {return "Get "+format(tet10(5))+" cases in 'Booster Vaccine'. Reward: 150 AP."},
             done() {
                 return player.points.gte(Decimal.tetrate(10,5)) && inChallenge("ct",32)
             },
@@ -5717,7 +5724,7 @@ addLayer("a", {
         },
         266: {
             name: "Anti-Distanced People",
-            tooltip() {return "Increase the anti-distancing to "+distShort(1.8288)+". Reward: 250 AP"},
+            tooltip() {return "Increase the anti-distancing to "+distShort(1.8288)+". Reward: 250 AP."},
             done() {
                 return tmp.ct.getAntiDist.gte(1.8288) //6 ft
             },
@@ -5747,7 +5754,7 @@ addLayer("a", {
         },
         273: {
             name: "Anti-Proxima",
-            tooltip() {return "Increase the anti-distancing to "+distShort(4e16)+". Reward: 250 AP"},
+            tooltip() {return "Increase the anti-distancing to "+distShort(4e16)+". Reward: 250 AP."},
             done() {
                 return tmp.ct.getAntiDist.gte(4e16)
             },
@@ -5767,7 +5774,7 @@ addLayer("a", {
         },
         275: {
             name: "Cr0wB00st-19",
-            tooltip() {return "Get 19 CorVids in 'Booster Vaccine'. Reward: 250 AP"},
+            tooltip() {return "Get 19 CorVids in 'Booster Vaccine'. Reward: 250 AP."},
             done() {
                 return player.ct.CorVid.gte(19) && inChallenge("ct",32)
             },
@@ -5777,7 +5784,7 @@ addLayer("a", {
         },
         276: {
             name: "'Crow'Bird 19",
-            tooltip() {return "Get "+format(1e19)+" Deadly Crows. Reward: 250 AP"},
+            tooltip() {return "Get "+format(1e19)+" Deadly Crows. Reward: 250 AP."},
             done() {
                 return player.Ud.crows.gte(1e19)
             },
@@ -5800,6 +5807,69 @@ addLayer("a", {
             },
             onComplete() {
                 addPoints("a",250)
+            }
+        },
+        282: {
+            name: "Unfini-Boosted",
+            tooltip() {return "Get "+format(Decimal.pow(2,1024))+" UnBoosted Viruses. Reward: 250 AP, UnBoosted Viruses boost time speed.<br>Currently: "+format(tmp.a.achievements[282].effect)+"x"},
+            done() {
+                return player.uv.virus.gte(Decimal.pow(2,1024))
+            },
+            effect() {
+                return Decimal.pow(2,player.uv.virus.div(Decimal.pow(2,1024)).max(1).log2().pow(0.2))
+            },
+            onComplete() {
+                addPoints("a",250)
+            }
+        },
+        283: {
+            name: "Anti-CTNA",
+            tooltip() {return "Get 1 AnTNA. Reward: 250 AP."},
+            done() {
+                return player.ct.AnTNA.gte(1)
+            },
+            onComplete() {
+                addPoints("a",250)
+            }
+        },
+        284: {
+            name: "'Cr0wB1rd' 19",
+            tooltip() {return "Get 19 Deadly CrowBirds. Reward: 250 AP."},
+            done() {
+                return player.Ud.crowBirds.gte(19)
+            },
+            onComplete() {
+                addPoints("a",250)
+            }
+        },
+        285: {
+            name: "Cr0wV1d-19",
+            tooltip() {return "Get 19 extra CorVids in 'Booster Vaccine'. Reward: 250 AP, Deadly Crow birth rate*19 at 19 extra CorVids."},
+            done() {
+                return player.ct.CorVid.sub(player.ct.buyables[41]).gte(19) && inChallenge("ct",32)
+            },
+            onComplete() {
+                addPoints("a",250)
+            }
+        },
+        286: {
+            name: "AnT-Electron",
+            tooltip() {return "Get "+formatMass(1.78266192e-33)+" of AnT-Black Hole mass. Reward: 300 AP."},
+            done() {
+                return player.ct.AnTBH.gte(1.78266192e-33)
+            },
+            onComplete() {
+                addPoints("a",300)
+            }
+        },
+        291: {
+            name: "AnTomic",
+            tooltip() {return "Get "+formatMass(1.6605390666e-24)+" of AnT-Black Hole mass. Reward: 300 AP."},
+            done() {
+                return player.ct.AnTBH.gte(1.6605390666e-24)
+            },
+            onComplete() {
+                addPoints("a",300)
             }
         },
     },
@@ -6218,7 +6288,7 @@ addLayer("uv", {
         5: {
             requirementDescription() {return formatTime(600)+" Best Reset Time (6)"},
             effect() {
-                let eff = new Decimal(600/player.uv.bestTime).add(1)
+                let eff = new Decimal(600/Math.max(player.uv.bestTime,1)).add(1)
                 return eff
             },
             effectDescription() {return "Best reset time boosts UnBoosted Virus gain, 'UnRetRNA' cooldown is "+formatTime(50)+".<br>Currently: "+format(tmp.uv.milestones[5].effect)+'x'},
@@ -6436,6 +6506,86 @@ addLayer("uv", {
             requirementDescription() {return format(295e293)+" Total UnBoosted Viruses (44)"},
             effectDescription() {return "Raise Anti-Distance effects to 1.0295."},
             done() { return player.uv.virusTotal.gte(295e293) }
+        },
+        44: {
+            requirementDescription() {return format("eeeee13115")+" Cases in 'Booster Vaccine' (45)"},
+            effect() {
+                let eff = slog(player.ct.bestCases.max(10)).div(6).max(1).log10().div(3).add(1).pow(2)
+                return eff
+            },
+            effectDescription() {return "Best cases in 'Booster Vaccine' boost Anti-Distance effects. Reduce 'Anti-Booster Gain' cost exponent by 0.02/0.01/0.01 at "+format(1e302)+"/"+format("e312")+"/"+format("e329")+" total UnBoosted Viruses.<br>Currently: ^"+format(tmp.uv.milestones[44].effect)},
+            done() { return player.points.gte("eeeee13115") && inChallenge("ct",32) }
+        },
+        45: {
+            requirementDescription() {return format("e335")+" Total UnBoosted Viruses (46)"},
+            effectDescription() {return "Raise Anti-Distance effects to 1.00335 and multiply time speed by 3.35."},
+            done() { return player.uv.virusTotal.gte("e335") }
+        },
+        46: {
+            requirementDescription() {return format("e353")+" Total UnBoosted Viruses (47)"},
+            effectDescription() {return "Raise Anti-Distance effects to 1.00353 and multiply time speed by 3.53."},
+            done() { return player.uv.virusTotal.gte("e353") }
+        },
+        47: {
+            requirementDescription() {return format("e400")+" Total UnBoosted Viruses (48)"},
+            effectDescription() {return "Multiply AnTNA gain by 40."},
+            done() { return player.uv.virusTotal.gte("e400") }
+        },
+        48: {
+            requirementDescription() {return format("415e413")+" Total UnBoosted Viruses (49)"},
+            effectDescription() {return "Multiply AnTNA gain by 4.15 and increase 'AnTNA Base' base by 0.0415."},
+            done() { return player.uv.virusTotal.gte("415e413") }
+        },
+        49: {
+            requirementDescription() {return format("e440")+" Total UnBoosted Viruses (50)"},
+            effectDescription() {return "Raise base 'Anti-Capped' CTNA slog to 1.2 and multiply AnTNA gain by 5."},
+            done() { return player.uv.virusTotal.gte("e440") }
+        },
+        50: {
+            requirementDescription() {return format("455e453")+" Total UnBoosted Viruses (51)"},
+            effectDescription() {return "Reduce 'Antiest-Booster Gain' cost exponent by 0.05. Add 0.15 to 'AnTNA 9' exponent."},
+            done() { return player.uv.virusTotal.gte("455e453") }
+        },
+        51: {
+            requirementDescription() {return "200,000 Deadly CrowBirds in "+formatTime(888)+" (52)"},
+            toggles: [["Ud","autocrow"]],
+            effectDescription() {return "Autoclick 'Max All' Deadly Crow buyables and add 0.1 to 'AnTNA 9' exponent. Reduce 'Antiest-Booster Gain' cost exponent by 0.02 and multiply AnTNA gain by 5.2."},
+            done() { return player.Ud.crowBirds.gte(2e5) && player.ct.resetTime<=888 }
+        },
+        52: {
+            requirementDescription() {return format("e477")+" Total UnBoosted Viruses (53)"},
+            effectDescription() {return "Multiply Deadly Crow birth and death rate by 4.77. Add 0.05 to 'AnTNA 9' (and 'AnTNA 6' at "+format("481e479")+" Total UBV) exponent."},
+            done() { return player.uv.virusTotal.gte("e477") }
+        },
+        53: {
+            requirementDescription() {return format("e488")+" Total UnBoosted Viruses (54)"},
+            effectDescription() {return "Add 0.25 to base AnTNA gain and 'AnTNA 2' exponent."},
+            done() { return player.uv.virusTotal.gte("e488") }
+        },
+        54: {
+            requirementDescription() {return format("e505")+" Total UnBoosted Viruses (55)"},
+            effectDescription() {return "Add 0.25 to base AnTNA gain and 'AnTNA 2' exponent. Multiply AnT-Black Hole mass gain by 5.05 (*5.14 at "+format("e514")+" Total UBV)."},
+            done() { return player.uv.virusTotal.gte("e505") }
+        },
+        55: {
+            requirementDescription() {return format("e545")+" Total UnBoosted Viruses (56)"},
+            effectDescription() {return "'Max All' buys 2nd row Deadly Crow buyables and add 0.005 to 'AnTNA 9' exponent. Multiply AnT-Black Hole mass gain by 10.96 and double Feed cooldown at "+format("e548")+" Total UBV."},
+            done() { return player.uv.virusTotal.gte("e545") }
+        },
+        56: {
+            requirementDescription() {return format("e569")+" Total UnBoosted Viruses (57)"},
+            effectDescription() {return "Add 0.05 to 'CorVid Gain' exponent and again at "+format("e591")+" Total UBV."},
+            done() { return player.uv.virusTotal.gte("e569") }
+        },
+        57: {
+            requirementDescription() {return format("e600")+" Total UnBoosted Viruses (58)"},
+            effectDescription() {return "Add 1.5 to 'AnTNA 2' exponent. Raise 'AdBases' effect to 1.3 and base AnT-Black Hole mass gain in gravitons to 1.1."},
+            done() { return player.uv.virusTotal.gte("e600") }
+        },
+        58: {
+            requirementDescription() {return format("e629")+" Total UnBoosted Viruses (59)"},
+            effectDescription() {return "'Max All' buys 3rd row Deadly Crow buyables and add 0.005 to 'AnTNA 9' exponent. Add 0.03 to 'CorVid Gain' exponent."},
+            done() { return player.uv.virusTotal.gte("e629") }
         },
     },
     upgrades: {
@@ -6676,6 +6826,7 @@ addLayer("uv", {
             currencyDisplayName: "cases in 'Booster Vaccine'",
             effect(){
                 let Chungha = Decimal.pow(10,tmp.uv.effLayers.sub(6))
+                if (hasUpgrade("uv",41)) Chungha = Chungha.pow(tmp.uv.upgrades[41].effect)
                 return Chungha
             },
             effectDisplay(){
@@ -6743,6 +6894,25 @@ addLayer("uv", {
             },
             pay() {
                 player.points = player.points.sub("eeeee8461")
+            }
+        },
+        41: {
+            title: "AnDisterer",
+            description: "Raise 'AnDister' to 1.2 per Unvaxxed Layer+10.",
+            cost: new Decimal("eeeee2978297"),
+            currencyDisplayName: "cases in 'Booster Vaccine'",
+            effect(){
+                let Chungha = Decimal.pow(1.2,tmp.uv.effLayers.add(10))
+                return Chungha
+            },
+            effectDisplay(){
+                return "^"+format(tmp.uv.upgrades[41].effect)
+            },
+            canAfford () {
+                return player.points.gte("eeeee2978297") && inChallenge("ct",32)
+            },
+            pay() {
+                player.points = player.points.sub("eeeee2978297")
             }
         },
         51: {
@@ -6991,7 +7161,7 @@ addLayer("uv", {
             effect(){
                 let x = 0 
                 for (let a in player.uv.buyables) {
-                    if (tmp.uv.buyables[a].effect.lte(tmp.uv.buyables[a].int) && a<100) x ++
+                    if (tmp.uv.buyables[a].effect.lte(0.1) && a<100) x ++
                 }
                 let Chungha = Decimal.pow(2,x)
                 return Chungha
@@ -7228,6 +7398,7 @@ addLayer("uv", {
             exp() {
                 let exp = new Decimal(0.005)
                 if (hasUpgrade("Ud",172)) exp = exp.mul(10)
+                if (hasMilestone("Ud",79) && player.ct.CorVid.gte(4e87)) exp = exp.mul(100)
                 return exp
             },
             effect(){
@@ -7249,6 +7420,7 @@ addLayer("uv", {
             exp() {
                 let exp = new Decimal(0.005)
                 if (hasUpgrade("Ud",172)) exp = exp.mul(2)
+                if (hasMilestone("Ud",79) && player.ct.CorVid.gte(4e87)) exp = exp.mul(10)
                 return exp
             },
             effect(){
@@ -7262,13 +7434,14 @@ addLayer("uv", {
         },
         113: { 
             title: "UB39",
-            description() {return  shiftDown?"Effect: 10<sup>log10(UBV effect)<sup>0.085</sup>*"+format(tmp.uv.upgrades[112].exp)+"-1</sup>":"UnBoosted Viruses boost Deadly Crow birth rate (shift to see formula)."},
+            description() {return  shiftDown?"Effect: 10<sup>log10(UBV effect)<sup>0.085</sup>*"+format(tmp.uv.upgrades[113].exp)+"-1</sup>":"UnBoosted Viruses boost Deadly Crow birth rate (shift to see formula)."},
             cost: new Decimal(1e256),
             currencyDisplayName: "UnBoosted Viruses",
             currencyInternalName: "virus",
             currencyLayer: "uv",
             exp() {
                 let exp = new Decimal(0.0035)
+                if (hasMilestone("Ud",79) && player.ct.CorVid.gte(4e87)) exp = exp.mul(3)
                 return exp
             },
             effect(){
@@ -7282,7 +7455,7 @@ addLayer("uv", {
         },
         114: { 
             title: "UB40",
-            description() {return "Anti-Distancing buyables after 7,000 multiply 'Boosterain' effective buyable amount by 1.003."},
+            description() {return shiftDown?"Anti-Distance buyables (Row 3) softcap at 1,000: x → (log10(x)+7)<sup>3</sup>":"Anti-Distancing buyables after 7,000 multiply 'Boosterain' effective buyable amount by 1.003."},
             cost: new Decimal(1e285),
             currencyDisplayName: "UnBoosted Viruses",
             currencyInternalName: "virus",
@@ -7290,7 +7463,11 @@ addLayer("uv", {
             effect(){
                 let exp = decimalZero
                 for (i = 0; i < player.ct.distBuyId.length; i++){
-                    exp = exp.add(player.ct.buyables[player.ct.distBuyId[i]])
+                    let amt = player.ct.buyables[player.ct.distBuyId[i]]
+                    if (player.ct.distBuyId[i]>280 && amt.gte(1e3)) {
+                        amt = amt.log10().add(7).pow(3)
+                    }
+                    exp = exp.add(amt)
                 }
                 let Somi = Decimal.pow(1.003,exp.sub(7000).max(0))
                 return Somi
@@ -7298,6 +7475,160 @@ addLayer("uv", {
             effectDisplay(){
                 return format(tmp.uv.upgrades[114].effect)+'x'
             },
+        },
+        115: { 
+            title: "UB41",
+            description() {return "<span style='font-size:9px'>Longest Adverse Vaxxer reset time boosts UBV gain base (starts at "+formatTimeLong(1e60)+"), time speed*3.16, and unlock a buyable.</span>"},
+            cost: new Decimal("e316.5"),
+            currencyDisplayName: "UnBoosted Viruses",
+            currencyInternalName: "virus",
+            currencyLayer: "uv",
+            effect(){
+                let time = player.ct.bestTime.max(player.ct.AdvVaxTime)
+                if (time.gte(31556952e123)) time = time.div(31556952).log10().div(123).pow(0.8).mul(18).add(105).pow10().mul(31556952)
+                let Somi = powExp(time.div(1e60).sub(1).max(0).pow(0.5).mul(10),0.5).div(100).add(1)
+                return Somi
+            },
+            effectDisplay(){
+                return format(tmp.uv.upgrades[115].effect)+'x'
+            },
+        },
+        116: { 
+            title: "UB42",
+            description() {return "Deadly Crows divide their interval."},
+            cost: new Decimal("339e337"),
+            currencyDisplayName: "UnBoosted Viruses",
+            currencyInternalName: "virus",
+            currencyLayer: "uv",
+            effect(){
+                let Somi = powExp(player.Ud.crows.add(1),0.45).pow(0.1)
+                return Somi
+            },
+            effectDisplay(){
+                return "/"+format(tmp.uv.upgrades[116].effect)
+            },
+        },
+        121: { 
+            title: "UB43",
+            description() {return "Bought Deadly Crows after 30 divide their interval."},
+            cost: new Decimal("e357"),
+            currencyDisplayName: "UnBoosted Viruses",
+            currencyInternalName: "virus",
+            currencyLayer: "uv",
+            effect(){
+                let Somi = Decimal.pow(1.2,player.Ud.buyables[101].sub(30).max(0).pow(1.1))
+                return Somi
+            },
+            effectDisplay(){
+                return "/"+format(tmp.uv.upgrades[121].effect)
+            },
+        },
+        122: { 
+            title: "UB44",
+            description() {return  shiftDown?"Effect: (UBV / "+format("e380")+")<sup>0.05</sup> + 1":"UnBoosted Viruses boost AnTNA gain (shift to see formula)."},
+            cost: new Decimal("382e380"),
+            currencyDisplayName: "UnBoosted Viruses",
+            currencyInternalName: "virus",
+            currencyLayer: "uv",
+            effect(){
+                let Somi = player.uv.virus.div("e380").pow(0.05).add(1)
+                return Somi
+            },
+            effectDisplay(){
+                return format(tmp.uv.upgrades[122].effect)+"x"
+            },
+        },
+        123: { 
+            title: "UB45",
+            description() {return "Deadly CrowBirds divide Deadly Crow interval."},
+            cost: new Decimal("e422"),
+            currencyDisplayName: "UnBoosted Viruses",
+            currencyInternalName: "virus",
+            currencyLayer: "uv",
+            effect(){
+                let Somi = powExp(player.Ud.crowBirds.div(10).add(1),0.65).pow(0.3)
+                return Somi
+            },
+            effectDisplay(){
+                return "/"+format(tmp.uv.upgrades[123].effect)
+            },
+        },
+        124: { 
+            title: "UB46",
+            description() {return "Autobuyer interval limit is "+formatTime(0.01)+". Autobuyer interval below "+formatTime(0.1)+" boosts UBV gain base."},
+            cost: new Decimal("e441"),
+            currencyDisplayName: "UnBoosted Viruses",
+            currencyInternalName: "virus",
+            currencyLayer: "uv",
+            effect(){
+                let Somi = decimalOne
+                for (let a in player.uv.buyables) {
+                    if (tmp.uv.buyables[a].effect.lte(0.1) && a<100) Somi = Somi.mul(tmp.uv.buyables[a].effect.recip().div(10).pow(0.35).sub(1).mul(3).pow10())
+                }
+                return Somi
+            },
+            effectDisplay(){
+                return format(tmp.uv.upgrades[124].effect)+"x"
+            },
+        },
+        125: { 
+            title: "UB47",
+            description() {return "Double DC birth and death rate and again at "+format("468e466")+" total UBV. Add 0.05 to 'UnBoosted Layer' base and 'AnTNA 9' exponent."},
+            cost: new Decimal("467e465"),
+            currencyDisplayName: "UnBoosted Viruses",
+            currencyInternalName: "virus",
+            currencyLayer: "uv",
+        },
+        126: { 
+            title: "UB48",
+            description() {return "Add 0.1 to 'UnBoosted Base' base. Divide Deadly CrowBird interval by 1.5."},
+            cost: new Decimal("e479"),
+            currencyDisplayName: "UnBoosted Viruses",
+            currencyInternalName: "virus",
+            currencyLayer: "uv",
+        },
+        131: {//Hyojung, Mimi, YooA, Seunghee, Yubin, Arin
+            title: "UB49",
+            description() {return shiftDown?"Effect: 10<sup>log10(AnTNA / "+format("e525")+" + 1)<sup>0.65</sup> * 0.08</sup>":"UnBoosted Viruses boost AnT-Black Hole mass gain (shift to see formula)."},
+            cost: new Decimal("e539"),
+            currencyDisplayName: "UnBoosted Viruses",
+            currencyInternalName: "virus",
+            currencyLayer: "uv",
+            effect(){
+                let Hyojung = powExp(player.uv.virus.div("e525").add(1),0.65).pow(0.07)
+                return Hyojung
+            },
+            effectDisplay(){
+                return format(tmp.uv.upgrades[131].effect)+"x"
+            },
+        },
+        132: { 
+            title: "UB50",
+            description() {return  shiftDown?"Effect: 10<sup>log10(UBV effect)<sup>0.05</sup>*"+format(tmp.uv.upgrades[112].exp)+"-1</sup>":"UnBoosted Viruses boost CorVid gain (shift to see formula)."},
+            cost: new Decimal("e574"),
+            currencyDisplayName: "UnBoosted Viruses",
+            currencyInternalName: "virus",
+            currencyLayer: "uv",
+            exp() {
+                let exp = new Decimal(0.01)
+                return exp
+            },
+            effect(){
+                let exp = tmp.uv.upgrades[132].exp
+                let Mimi = powExp(tmp.uv.virusEff,0.05).pow(exp).div(10).max(1)
+                return Mimi
+            },
+            effectDisplay(){
+                return format(tmp.uv.upgrades[132].effect)+'x'
+            },
+        },
+        133: { 
+            title: "UB51",
+            description() {return "Add 0.02 to 'CorVid Gain' exponent."},
+            cost: new Decimal("e646"),
+            currencyDisplayName: "UnBoosted Viruses",
+            currencyInternalName: "virus",
+            currencyLayer: "uv",
         },
     },
     clickables: {
@@ -7381,6 +7712,11 @@ addLayer("uv", {
                 let exp = new Decimal(2023)
                 if (hasUpgrade("ct",545)) exp = new Decimal(20232024)
                 if (hasMilestone("uv",20)) exp = new Decimal(202320242025)
+                if (hasUpgrade("uv",115)) exp = exp.mul(tmp.uv.upgrades[115].effect)
+                if (hasUpgrade("uv",124)) exp = exp.mul(tmp.uv.upgrades[124].effect)
+                if (hasUpgrade("ct",642) && player.points.gte("eeeee7144e3")) exp = exp.mul(1.5)
+                if (hasMilestone("Ud",60) && player.Ud.crows.gte(Decimal.pow(2,1024))) exp = exp.mul(3.08)
+                exp = exp.mul(tmp.uv.buyables[111].effect2)
                 return exp
             },
             gainexp() {
@@ -7545,8 +7881,13 @@ addLayer("uv", {
             cost() { // cost for buying xth buyable, can be an object if there are multiple currencies
                 let base = tmp.uv.buyables[21].costb
                 let exp = tmp.uv.buyables[21].coste
+                let mult = decimalOne
                 let x = player.uv.buyables[21]
-                let cost = Decimal.pow(base,x.pow(exp))
+                if (x.gte(13)) {
+                    x = x.sub(13).pow(1.4).mul(Decimal.log(1e10,base))
+                    mult = new Decimal("e440")
+                }
+                let cost = Decimal.pow(base,x.pow(exp)).mul(mult)
                 return cost
             },
             costb() { // cost for buying xth buyable, can be an object if there are multiple currencies
@@ -7559,17 +7900,18 @@ addLayer("uv", {
             },
             int() {
                 let i = 0.1
+                if (hasUpgrade("uv",124)) i = 0.01
                 return i
             },
             effect() { // Effects of owning x of the items, x is a decimal
                 let x = player.uv.buyables[21]
                 let i = tmp.uv.buyables[21].int
-                return Decimal.pow(0.7, x).mul(10).max(i);
+                return Decimal.pow(0.7, x).mul(10).max(0.1).mul(Decimal.pow(0.9, x.sub(13).max(0))).max(i);
             },
             display() { // Everything else displayed in the buyable button after the title
                 if (player.tab != "uv" || player.subtabs.uv.mainTabs != "UnBoosted Viruses") return
                 let extra = ""
-                let dis = "Reduce 'Max All' severe symptoms cooldown by 30%"
+                let dis = "Reduce 'Max All' severe symptoms cooldown by "+(player.uv.buyables[this.id].gte(13)?"10":"30")+"%"
                 let i = tmp.uv.buyables[21].int
                 if (tmp[this.layer].buyables[this.id].effect.eq(i)) dis+= ' (MAXED)'
                 return dis + ".\n\
@@ -7596,8 +7938,10 @@ addLayer("uv", {
                 let s = player.uv.virus
                 let base = tmp.uv.buyables[21].costb
                 let exp = tmp.uv.buyables[21].coste
-                let target = s.log(base).root(exp)
-                return target.floor().add(1)
+                let target = s.log(base).root(exp).floor().add(1)
+                if (!hasUpgrade("uv",124)) return target.min(13)
+                if (target.gte(13)) target = s.div("e440").log(1e10).root(1.4).floor().add(14)
+                return target
             },
         },
         22: {
@@ -7605,8 +7949,13 @@ addLayer("uv", {
             cost() { // cost for buying xth buyable, can be an object if there are multiple currencies
                 let base = tmp.uv.buyables[22].costb
                 let exp = tmp.uv.buyables[22].coste
+                let mult = decimalTen
                 let x = player.uv.buyables[22]
-                let cost = Decimal.pow(base,x.pow(exp)).mul(10)
+                if (x.gte(15)) {
+                    x = x.sub(15).pow(1.4).mul(Decimal.log(1e15,base))
+                    mult = new Decimal("e450")
+                }
+                let cost = Decimal.pow(base,x.pow(exp)).mul(mult)
                 return cost
             },
             costb() { // cost for buying xth buyable, can be an object if there are multiple currencies
@@ -7619,17 +7968,18 @@ addLayer("uv", {
             },
             int() {
                 let i = 0.1
+                if (hasUpgrade("uv",124)) i = 0.01
                 return i
             },
             effect() { // Effects of owning x of the items, x is a decimal
                 let x = player.uv.buyables[22]
                 let i = tmp.uv.buyables[22].int
-                return Decimal.pow(0.7, x).mul(15).max(i);
+                return Decimal.pow(0.7, x).mul(15).max(0.1).mul(Decimal.pow(0.9, x.sub(15).max(0))).max(i);
             },
             display() { // Everything else displayed in the buyable button after the title
                 if (player.tab != "uv" || player.subtabs.uv.mainTabs != "UnBoosted Viruses") return
                 let extra = ""
-                let dis = "Reduce 'Max All' unvaxxed tRNA buyables cooldown by 30%"
+                let dis = "Reduce 'Max All' unvaxxed tRNA buyables cooldown by "+(player.uv.buyables[this.id].gte(15)?"10":"30")+"%"
                 let i = tmp.uv.buyables[22].int
                 if (tmp[this.layer].buyables[this.id].effect.eq(i)) dis+= ' (MAXED)'
                 return dis + ".\n\
@@ -7657,6 +8007,8 @@ addLayer("uv", {
                 let base = tmp.uv.buyables[22].costb
                 let exp = tmp.uv.buyables[22].coste
                 let target = s.div(10).log(base).root(exp)
+                if (!hasUpgrade("uv",124)) return target.min(15)
+                if (target.gte(15)) target = s.div("e450").log(1e15).root(1.4).floor().add(16)
                 return target.floor().add(1)
             },
         },
@@ -7665,8 +8017,13 @@ addLayer("uv", {
             cost() { // cost for buying xth buyable, can be an object if there are multiple currencies
                 let base = tmp.uv.buyables[23].costb
                 let exp = tmp.uv.buyables[23].coste
+                let mult = new Decimal(1e4)
                 let x = player.uv.buyables[23]
-                let cost = Decimal.pow(base,x.pow(exp)).mul(1e4)
+                if (x.gte(18)) {
+                    x = x.sub(18).pow(1.4).mul(Decimal.log(1e18,base))
+                    mult = new Decimal("e460")
+                }
+                let cost = Decimal.pow(base,x.pow(exp)).mul(mult)
                 return cost
             },
             costb() { // cost for buying xth buyable, can be an object if there are multiple currencies
@@ -7679,17 +8036,18 @@ addLayer("uv", {
             },
             int() {
                 let i = 0.1
+                if (hasUpgrade("uv",124)) i = 0.01
                 return i
             },
             effect() { // Effects of owning x of the items, x is a decimal
                 let x = player.uv.buyables[23]
                 let i = tmp.uv.buyables[23].int
-                return Decimal.pow(0.7, x).mul(60).max(i);
+                return Decimal.pow(0.7, x).mul(60).max(0.1).mul(Decimal.pow(0.9, x.sub(18).max(0))).max(i);
             },
             display() { // Everything else displayed in the buyable button after the title
                 if (player.tab != "uv" || player.subtabs.uv.mainTabs != "UnBoosted Viruses") return
                 let extra = ""
-                let dis = "Reduce US upgrade autobuyer cooldown by 30%"
+                let dis = "Reduce US upgrade autobuyer cooldown by "+(player.uv.buyables[this.id].gte(18)?"10":"30")+"%"
                 let i = tmp.uv.buyables[23].int
                 if (tmp[this.layer].buyables[this.id].effect.eq(i)) dis+= ' (MAXED)'
                 return dis + ".\n\
@@ -7717,6 +8075,8 @@ addLayer("uv", {
                 let base = tmp.uv.buyables[23].costb
                 let exp = tmp.uv.buyables[23].coste
                 let target = s.div(1e4).log(base).root(exp)
+                if (!hasUpgrade("uv",124)) return target.min(18)
+                if (target.gte(18)) target = s.div("e460").log(1e18).root(1.4).floor().add(19)
                 return target.floor().add(1)
             },
         },
@@ -7725,8 +8085,13 @@ addLayer("uv", {
             cost() { // cost for buying xth buyable, can be an object if there are multiple currencies
                 let base = tmp.uv.buyables[31].costb
                 let exp = tmp.uv.buyables[31].coste
+                let mult = new Decimal(1e8)
                 let x = player.uv.buyables[31]
-                let cost = Decimal.pow(base,x.pow(exp)).mul(1e8)
+                if (x.gte(18)) {
+                    x = x.sub(18).pow(1.4).mul(Decimal.log(1e22,base))
+                    mult = new Decimal("e470")
+                }
+                let cost = Decimal.pow(base,x.pow(exp)).mul(mult)
                 return cost
             },
             costb() { // cost for buying xth buyable, can be an object if there are multiple currencies
@@ -7739,17 +8104,18 @@ addLayer("uv", {
             },
             int() {
                 let i = 0.1
+                if (hasUpgrade("uv",124)) i = 0.01
                 return i
             },
             effect() { // Effects of owning x of the items, x is a decimal
                 let x = player.uv.buyables[31]
                 let i = tmp.uv.buyables[31].int
-                return Decimal.pow(0.7, x).mul(60).max(i);
+                return Decimal.pow(0.7, x).mul(60).max(0.1).mul(Decimal.pow(0.9, x.sub(18).max(0))).max(i);
             },
             display() { // Everything else displayed in the buyable button after the title
                 if (player.tab != "uv" || player.subtabs.uv.mainTabs != "UnBoosted Viruses") return
                 let extra = ""
-                let dis = "Reduce mRNA mutation autobuyer cooldown by 30%"
+                let dis = "Reduce mRNA mutation autobuyer cooldown by "+(player.uv.buyables[this.id].gte(18)?"10":"30")+"%"
                 let i = tmp.uv.buyables[31].int
                 if (tmp[this.layer].buyables[this.id].effect.eq(i)) dis+= ' (MAXED)'
                 return dis + ".\n\
@@ -7777,6 +8143,8 @@ addLayer("uv", {
                 let base = tmp.uv.buyables[31].costb
                 let exp = tmp.uv.buyables[31].coste
                 let target = s.div(1e8).log(base).root(exp)
+                if (!hasUpgrade("uv",124)) return target.min(18)
+                if (target.gte(18)) target = s.div("e470").log(1e22).root(1.4).floor().add(19)
                 return target.floor().add(1)
             },
         },
@@ -7785,8 +8153,13 @@ addLayer("uv", {
             cost() { // cost for buying xth buyable, can be an object if there are multiple currencies
                 let base = tmp.uv.buyables[32].costb
                 let exp = tmp.uv.buyables[32].coste
+                let mult = new Decimal(1e12)
                 let x = player.uv.buyables[32]
-                let cost = Decimal.pow(base,x.pow(exp)).mul(1e12)
+                if (x.gte(18)) {
+                    x = x.sub(18).pow(1.4).mul(Decimal.log(1e25,base))
+                    mult = new Decimal("e480")
+                }
+                let cost = Decimal.pow(base,x.pow(exp)).mul(mult)
                 return cost
             },
             costb() { // cost for buying xth buyable, can be an object if there are multiple currencies
@@ -7799,17 +8172,18 @@ addLayer("uv", {
             },
             int() {
                 let i = 0.1
+                if (hasUpgrade("uv",124)) i = 0.01
                 return i
             },
             effect() { // Effects of owning x of the items, x is a decimal
                 let x = player.uv.buyables[32]
                 let i = tmp.uv.buyables[32].int
-                return Decimal.pow(0.7, x).mul(60).max(i);
+                return Decimal.pow(0.7, x).mul(60).max(0.1).mul(Decimal.pow(0.9, x.sub(18).max(0))).max(i);
             },
             display() { // Everything else displayed in the buyable button after the title
                 if (player.tab != "uv" || player.subtabs.uv.mainTabs != "UnBoosted Viruses") return
                 let extra = ""
-                let dis = "Reduce tRNA mutation autobuyer cooldown by 30%"
+                let dis = "Reduce tRNA mutation autobuyer cooldown by "+(player.uv.buyables[this.id].gte(18)?"10":"30")+"%"
                 let i = tmp.uv.buyables[32].int
                 if (tmp[this.layer].buyables[this.id].effect.eq(i)) dis+= ' (MAXED)'
                 return dis + ".\n\
@@ -7837,6 +8211,8 @@ addLayer("uv", {
                 let base = tmp.uv.buyables[32].costb
                 let exp = tmp.uv.buyables[32].coste
                 let target = s.div(1e12).log(base).root(exp)
+                if (!hasUpgrade("uv",124)) return target.min(18)
+                if (target.gte(18)) target = s.div("e480").log(1e25).root(1.4).floor().add(19)
                 return target.floor().add(1)
             },
         },
@@ -7845,8 +8221,13 @@ addLayer("uv", {
             cost() { // cost for buying xth buyable, can be an object if there are multiple currencies
                 let base = tmp.uv.buyables[33].costb
                 let exp = tmp.uv.buyables[33].coste
+                let mult = new Decimal(1e19)
                 let x = player.uv.buyables[33]
-                let cost = Decimal.pow(base,x.pow(exp)).mul(1e19)
+                if (x.gte(18)) {
+                    x = x.sub(18).pow(1.4).mul(Decimal.log(1e30,base))
+                    mult = new Decimal("e570")
+                }
+                let cost = Decimal.pow(base,x.pow(exp)).mul(mult)
                 return cost
             },
             costb() { // cost for buying xth buyable, can be an object if there are multiple currencies
@@ -7859,17 +8240,18 @@ addLayer("uv", {
             },
             int() {
                 let i = 0.1
+                if (hasUpgrade("uv",124)) i = 0.01
                 return i
             },
             effect() { // Effects of owning x of the items, x is a decimal
                 let x = player.uv.buyables[33]
                 let i = tmp.uv.buyables[33].int
-                return Decimal.pow(0.7, x).mul(60).max(i);
+                return Decimal.pow(0.7, x).mul(60).max(0.1).mul(Decimal.pow(0.9, x.sub(18).max(0))).max(i);
             },
             display() { // Everything else displayed in the buyable button after the title
                 if (player.tab != "uv" || player.subtabs.uv.mainTabs != "UnBoosted Viruses") return
                 let extra = ""
-                let dis = "Reduce auto-reset cooldown by 30%"
+                let dis = "Reduce auto-reset cooldown by "+(player.uv.buyables[this.id].gte(18)?"10":"30")+"%"
                 let i = tmp.uv.buyables[33].int
                 if (tmp[this.layer].buyables[this.id].effect.eq(i)) dis+= ' (MAXED)'
                 return dis + ".\n\
@@ -7897,6 +8279,8 @@ addLayer("uv", {
                 let base = tmp.uv.buyables[33].costb
                 let exp = tmp.uv.buyables[33].coste
                 let target = s.div(1e19).log(base).root(exp)
+                if (!hasUpgrade("uv",124)) return target.min(18)
+                if (target.gte(18)) target = s.div("e570").log(1e30).root(1.4).floor().add(19)
                 return target.floor().add(1)
             },
         },
@@ -7905,8 +8289,13 @@ addLayer("uv", {
             cost() { // cost for buying xth buyable, can be an object if there are multiple currencies
                 let base = tmp.uv.buyables[41].costb
                 let exp = tmp.uv.buyables[41].coste
+                let mult = new Decimal(1e23)
                 let x = player.uv.buyables[41]
-                let cost = Decimal.pow(base,x.pow(exp)).mul(1e23)
+                if (x.gte(16)) {
+                    x = x.sub(16).pow(1.4).mul(Decimal.log(1e35,base))
+                    mult = new Decimal("e590")
+                }
+                let cost = Decimal.pow(base,x.pow(exp)).mul(mult)
                 return cost
             },
             costb() { // cost for buying xth buyable, can be an object if there are multiple currencies
@@ -7919,17 +8308,18 @@ addLayer("uv", {
             },
             int() {
                 let i = 0.1
+                if (hasUpgrade("uv",124)) i = 0.01
                 return i
             },
             effect() { // Effects of owning x of the items, x is a decimal
                 let x = player.uv.buyables[41]
                 let i = tmp.uv.buyables[41].int
-                return Decimal.pow(0.7, x).mul(30).max(i);
+                return Decimal.pow(0.7, x).mul(30).max(0.1).mul(Decimal.pow(0.9, x.sub(16).max(0))).max(i);
             },
             display() { // Everything else displayed in the buyable button after the title
                 if (player.tab != "uv" || player.subtabs.uv.mainTabs != "UnBoosted Viruses") return
                 let extra = ""
-                let dis = "Reduce 'Max All' mutated rRNA buyables cooldown by 30%"
+                let dis = "Reduce 'Max All' mutated rRNA buyables cooldown by "+(player.uv.buyables[this.id].gte(16)?"10":"30")+"%"
                 let i = tmp.uv.buyables[41].int
                 if (tmp[this.layer].buyables[this.id].effect.eq(i)) dis+= ' (MAXED)'
                 return dis + ".\n\
@@ -7957,6 +8347,8 @@ addLayer("uv", {
                 let base = tmp.uv.buyables[41].costb
                 let exp = tmp.uv.buyables[41].coste
                 let target = s.div(1e23).log(base).root(exp)
+                if (!hasUpgrade("uv",124)) return target.min(16)
+                if (target.gte(16)) target = s.div("e590").log(1e35).root(1.4).floor().add(17)
                 return target.floor().add(1)
             },
         },
@@ -7965,8 +8357,13 @@ addLayer("uv", {
             cost() { // cost for buying xth buyable, can be an object if there are multiple currencies
                 let base = tmp.uv.buyables[42].costb
                 let exp = tmp.uv.buyables[42].coste
+                let mult = new Decimal(1e87)
                 let x = player.uv.buyables[42]
-                let cost = Decimal.pow(base,x.pow(exp)).mul(1e87)
+                if (x.gte(16)) {
+                    x = x.sub(16).pow(1.4).mul(Decimal.log(1e40,base))
+                    mult = new Decimal("e600")
+                }
+                let cost = Decimal.pow(base,x.pow(exp)).mul(mult)
                 return cost
             },
             costb() { // cost for buying xth buyable, can be an object if there are multiple currencies
@@ -7979,17 +8376,18 @@ addLayer("uv", {
             },
             int() {
                 let i = 0.1
+                if (hasUpgrade("uv",124)) i = 0.01
                 return i
             },
             effect() { // Effects of owning x of the items, x is a decimal
                 let x = player.uv.buyables[42]
                 let i = tmp.uv.buyables[42].int
-                return Decimal.pow(0.7, x).mul(30).max(i);
+                return Decimal.pow(0.7, x).mul(30).max(0.1).mul(Decimal.pow(0.9, x.sub(16).max(0))).max(i);
             },
             display() { // Everything else displayed in the buyable button after the title
                 if (player.tab != "uv" || player.subtabs.uv.mainTabs != "UnBoosted Viruses") return
                 let extra = ""
-                let dis = "Reduce 'Max All' unvaxxed death buyables cooldown by 30%"
+                let dis = "Reduce 'Max All' unvaxxed death buyables cooldown by "+(player.uv.buyables[this.id].gte(16)?"10":"30")+"%"
                 let i = tmp.uv.buyables[42].int
                 if (tmp[this.layer].buyables[this.id].effect.eq(i)) dis+= ' (MAXED)'
                 return dis + ".\n\
@@ -8017,6 +8415,8 @@ addLayer("uv", {
                 let base = tmp.uv.buyables[42].costb
                 let exp = tmp.uv.buyables[42].coste
                 let target = s.div(1e87).log(base).root(exp)
+                if (!hasUpgrade("uv",124)) return target.min(16)
+                if (target.gte(16)) target = s.div("e600").log(1e40).root(1.4).floor().add(17)
                 return target.floor().add(1)
             },
         },
@@ -8025,8 +8425,13 @@ addLayer("uv", {
             cost() { // cost for buying xth buyable, can be an object if there are multiple currencies
                 let base = tmp.uv.buyables[43].costb
                 let exp = tmp.uv.buyables[43].coste
+                let mult = new Decimal(1e130)
                 let x = player.uv.buyables[43]
-                let cost = Decimal.pow(base,x.pow(exp)).mul(1e130)
+                if (x.gte(18)) {
+                    x = x.sub(18).pow(1.4).mul(Decimal.log(1e50,base))
+                    mult = new Decimal("e620")
+                }
+                let cost = Decimal.pow(base,x.pow(exp)).mul(mult)
                 return cost
             },
             costb() { // cost for buying xth buyable, can be an object if there are multiple currencies
@@ -8039,17 +8444,18 @@ addLayer("uv", {
             },
             int() {
                 let i = 0.1
+                if (hasUpgrade("uv",124)) i = 0.01
                 return i
             },
             effect() { // Effects of owning x of the items, x is a decimal
                 let x = player.uv.buyables[43]
                 let i = tmp.uv.buyables[43].int
-                return Decimal.pow(0.7, x).mul(60).max(i);
+                return Decimal.pow(0.7, x).mul(60).max(0.1).mul(Decimal.pow(0.9, x.sub(18).max(0))).max(i);
             },
             display() { // Everything else displayed in the buyable button after the title
                 if (player.tab != "uv" || player.subtabs.uv.mainTabs != "UnBoosted Viruses") return
                 let extra = ""
-                let dis = "Reduce UD upgrade autobuyer cooldown by 30%"
+                let dis = "Reduce UD upgrade autobuyer cooldown by "+(player.uv.buyables[this.id].gte(18)?"10":"30")+"%"
                 let i = tmp.uv.buyables[43].int
                 if (tmp[this.layer].buyables[this.id].effect.eq(i)) dis+= ' (MAXED)'
                 return dis + ".\n\
@@ -8077,6 +8483,8 @@ addLayer("uv", {
                 let base = tmp.uv.buyables[43].costb
                 let exp = tmp.uv.buyables[43].coste
                 let target = s.div(1e130).log(base).root(exp)
+                if (!hasUpgrade("uv",124)) return target.min(18)
+                if (target.gte(18)) target = s.div("e620").log(1e50).root(1.4).floor().add(19)
                 return target.floor().add(1)
             },
         },
@@ -8085,8 +8493,13 @@ addLayer("uv", {
             cost() { // cost for buying xth buyable, can be an object if there are multiple currencies
                 let base = tmp.uv.buyables[51].costb
                 let exp = tmp.uv.buyables[51].coste
+                let mult = new Decimal(1e147)
                 let x = player.uv.buyables[51]
-                let cost = Decimal.pow(base,x.pow(exp)).mul(1e147)
+                if (x.gte(18)) {
+                    x = x.sub(18).pow(1.4).mul(Decimal.log(1e60,base))
+                    mult = new Decimal("e624")
+                }
+                let cost = Decimal.pow(base,x.pow(exp)).mul(mult)
                 return cost
             },
             costb() { // cost for buying xth buyable, can be an object if there are multiple currencies
@@ -8099,17 +8512,18 @@ addLayer("uv", {
             },
             int() {
                 let i = 0.1
+                if (hasUpgrade("uv",124)) i = 0.01
                 return i
             },
             effect() { // Effects of owning x of the items, x is a decimal
                 let x = player.uv.buyables[51]
                 let i = tmp.uv.buyables[51].int
-                return Decimal.pow(0.7, x).mul(60).max(i);
+                return Decimal.pow(0.7, x).mul(60).max(0.1).mul(Decimal.pow(0.9, x.sub(18).max(0))).max(i);
             },
             display() { // Everything else displayed in the buyable button after the title
                 if (player.tab != "uv" || player.subtabs.uv.mainTabs != "UnBoosted Viruses") return
                 let extra = ""
-                let dis = "Reduce 'Max All' deadly mutation buyables cooldown by 30%"
+                let dis = "Reduce 'Max All' deadly mutation buyables cooldown by "+(player.uv.buyables[this.id].gte(18)?"10":"30")+"%"
                 let i = tmp.uv.buyables[51].int
                 if (tmp[this.layer].buyables[this.id].effect.eq(i)) dis+= ' (MAXED)'
                 return dis + ".\n\
@@ -8137,6 +8551,8 @@ addLayer("uv", {
                 let base = tmp.uv.buyables[51].costb
                 let exp = tmp.uv.buyables[51].coste
                 let target = s.div(1e147).log(base).root(exp)
+                if (!hasUpgrade("uv",124)) return target.min(18)
+                if (target.gte(18)) target = s.div("e624").log(1e60).root(1.4).floor().add(19)
                 return target.floor().add(1)
             },
         },
@@ -8145,8 +8561,13 @@ addLayer("uv", {
             cost() { // cost for buying xth buyable, can be an object if there are multiple currencies
                 let base = tmp.uv.buyables[52].costb
                 let exp = tmp.uv.buyables[52].coste
+                let mult = new Decimal(1e186)
                 let x = player.uv.buyables[52]
-                let cost = Decimal.pow(base,x.pow(exp)).mul(1e186)
+                if (x.gte(18)) {
+                    x = x.sub(18).pow(1.4).mul(Decimal.log(1e60,base))
+                    mult = new Decimal("e4624")
+                }
+                let cost = Decimal.pow(base,x.pow(exp)).mul(mult)
                 return cost
             },
             costb() { // cost for buying xth buyable, can be an object if there are multiple currencies
@@ -8159,17 +8580,18 @@ addLayer("uv", {
             },
             int() {
                 let i = 0.1
+                if (hasUpgrade("uv",124)) i = 0.01
                 return i
             },
             effect() { // Effects of owning x of the items, x is a decimal
                 let x = player.uv.buyables[52]
                 let i = tmp.uv.buyables[52].int
-                return Decimal.pow(0.7, x).mul(60).max(i);
+                return Decimal.pow(0.7, x).mul(60).max(0.1).mul(Decimal.pow(0.9, x.sub(18).max(0))).max(i);
             },
             display() { // Everything else displayed in the buyable button after the title
                 if (player.tab != "uv" || player.subtabs.uv.mainTabs != "UnBoosted Viruses") return
                 let extra = ""
-                let dis = "Reduce 'Max All' deadly mutant buyabkes cooldown by 30%"
+                let dis = "Reduce 'Max All' deadly mutant buyables cooldown by "+(player.uv.buyables[this.id].gte(18)?"10":"30")+"%"
                 let i = tmp.uv.buyables[52].int
                 if (tmp[this.layer].buyables[this.id].effect.eq(i)) dis+= ' (MAXED)'
                 return dis + ".\n\
@@ -8200,13 +8622,80 @@ addLayer("uv", {
                 return target.floor().add(1)
             },
         },
+        53: {
+            title: "Deadly Crow Cooldown",
+            cost() { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let base = tmp.uv.buyables[53].costb
+                let exp = tmp.uv.buyables[53].coste
+                let mult = new Decimal("e444")
+                let x = player.uv.buyables[53]
+                if (x.gte(18)) {
+                    x = x.sub(18).pow(1.4).mul(Decimal.log(1e60,base))
+                    mult = new Decimal("e4624")
+                }
+                let cost = Decimal.pow(base,x.pow(exp)).mul(mult)
+                return cost
+            },
+            costb() { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let cost = new Decimal(1e10)
+                return cost
+            },
+            coste() { 
+                let cost = decimalOne
+                return cost
+            },
+            int() {
+                let i = 0.1
+                if (hasUpgrade("uv",124)) i = 0.01
+                return i
+            },
+            effect() { // Effects of owning x of the items, x is a decimal
+                let x = player.uv.buyables[53]
+                let i = tmp.uv.buyables[53].int
+                return Decimal.pow(0.7, x).mul(60).max(0.1).mul(Decimal.pow(0.9, x.sub(18).max(0))).max(i);
+            },
+            display() { // Everything else displayed in the buyable button after the title
+                if (player.tab != "uv" || player.subtabs.uv.mainTabs != "UnBoosted Viruses") return
+                let extra = ""
+                let dis = "Reduce 'Max All' deadly crow buyables cooldown by "+(player.uv.buyables[this.id].gte(18)?"10":"30")+"%"
+                let i = tmp.uv.buyables[53].int
+                if (tmp[this.layer].buyables[this.id].effect.eq(i)) dis+= ' (MAXED)'
+                return dis + ".\n\
+                Cost: " + formatWhole(tmp[this.layer].buyables[this.id].cost)+" UnBoosted "+(tmp.uv.buyables[53].cost.eq(1)?"Virus":"Viruses")+"\n\
+                Cooldown: " + formatTime(tmp[this.layer].buyables[this.id].effect)+"\n\
+                Amount: " + formatWhole(getBuyableAmount("uv", 53))
+            },
+            unlocked() { return hasUpgrade("ct",591) }, 
+            canAfford() {
+                    return player.uv.virus.gte(tmp[this.layer].buyables[this.id].cost) && tmp[this.layer].buyables[this.id].effect.gt(tmp.uv.buyables[53].int)},
+            buy() { 
+                cost = tmp[this.layer].buyables[this.id].cost
+                let max = tmp.uv.buyables[53].maxAfford
+                let b = max.max(1)
+                if (tmp[this.layer].buyables[this.id].canAfford) {
+                    if (false) player[this.layer].buyables[this.id] = b
+                    else {
+                        player.uv.virus = player.uv.virus.sub(cost)
+                        player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1).max(1)
+                    }
+                }
+            },
+            maxAfford() {
+                let s = player.uv.virus
+                let base = tmp.uv.buyables[53].costb
+                let exp = tmp.uv.buyables[53].coste
+                let target = s.div("e444").log(base).root(exp)
+                return target.floor().add(1)
+            },
+        },
         101: {
-            title: "UnBoosted Virus Multiplier",
+            title()  {return (player.uv.buyables[101].gte(287)?"Distant ":"")+"UnBoosted Virus Multiplier"},
             cost() { // cost for buying xth buyable, can be an object if there are multiple currencies
                 let base = tmp.uv.buyables[101].costb
                 let exp = tmp.uv.buyables[101].coste
                 let x = player.uv.buyables[101]
-                let cost = Decimal.pow(base,x.pow(exp)).mul(1e22)
+                let cost = Decimal.pow(base,x).mul(1e22)
+                if (x.gte(287)) cost = base.pow(x.sub(286).pow(exp).add(286)).mul(1e22)
                 return cost
             },
             costb() { // cost for buying xth buyable, can be an object if there are multiple currencies
@@ -8214,11 +8703,11 @@ addLayer("uv", {
                 return cost
             },
             coste() { 
-                let cost = decimalOne
+                let cost = new Decimal(1.2)
                 return cost
             },
             base() { 
-                let base = decimalTwo
+                let base = tmp.uv.buyables[111].effect.add(2)
                 return base
             },
             effect() { // Effects of owning x of the items, x is a decimal
@@ -8251,12 +8740,13 @@ addLayer("uv", {
                     }
                 }
             },
-            maxAfford() {
+            maxAfford() { //logr(s(r-1)/a1+1)=(n)
                 let s = player.uv.virus
                 let base = tmp.uv.buyables[101].costb
                 let exp = tmp.uv.buyables[101].coste
-                let target = s.div(1e22).log(base).root(exp)
-                return target.floor().add(1)
+                let target = s.div(tmp.uv.buyables[101].cost).mul(base.sub(1)).add(1).log(base)
+                if (target.add(player.uv.buyables[101]).gte(287)) target = s.div(1e22).log(base).sub(286).root(exp).add(287)
+                return target.floor()
             },
         },
         102: {
@@ -8338,6 +8828,8 @@ addLayer("uv", {
             },
             base() { 
                 let base = new Decimal(0.1)
+                if (hasMilestone("ct",22)) base = base.add(0.1)
+                if (hasUpgrade("uv",125)) base = base.add(0.05)
                 return base
             },
             effect() { // Effects of owning x of the items, x is a decimal
@@ -8375,6 +8867,76 @@ addLayer("uv", {
                 let base = tmp.uv.buyables[103].costb
                 let exp = tmp.uv.buyables[103].coste
                 let target = s.div(1e272).log(base).root(exp)
+                return target.floor().add(1)
+            },
+        },
+        111: {
+            title: "UnBoosted Base",
+            cost() { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let base = tmp.uv.buyables[111].costb
+                let exp = tmp.uv.buyables[111].coste
+                let x = player.uv.buyables[111]
+                let cost = Decimal.pow(base,x.pow(exp)).mul("e324")
+                return cost
+            },
+            costb() { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let cost = new Decimal(1e10)
+                return cost
+            },
+            coste() { 
+                let cost = new Decimal(1.5)
+                return cost
+            },
+            base() { 
+                let base = new Decimal(0.01)
+                return base
+            },
+            base2() { 
+                let base = new Decimal(1.1)
+                if (hasMilestone("Ud",61) && player.ct.LaBas.gte("7871e7868")) base = base.add(0.2)
+                if (hasUpgrade("uv",126)) base = base.add(0.1)
+                return base
+            },
+            effect() { // Effects of owning x of the items, x is a decimal
+                let x = player.uv.buyables[111]
+                let base = tmp.uv.buyables[111].base
+                return Decimal.mul(base, x);
+            },
+            effect2() { // Effects of owning x of the items, x is a decimal
+                let x = player.uv.buyables[111]
+                let base = tmp.uv.buyables[111].base2
+                return Decimal.pow(base, x);
+            },
+            display() { // Everything else displayed in the buyable button after the title
+                if (player.tab != "uv" || player.subtabs.uv.mainTabs != "Buyables") return
+                let extra = ""
+                let dis = "Increase 'UnBoosted Virus Multiplier' base by " + format(tmp[this.layer].buyables[this.id].base) + " and multiply UnBoosted Virus gain base by " + format(tmp[this.layer].buyables[this.id].base2)
+                return dis + ".\n\
+                Cost: " + formatWhole(tmp[this.layer].buyables[this.id].cost)+" UnBoosted "+(tmp.uv.buyables[111].cost.eq(1)?"Virus":"Viruses")+"\n\
+                Effect: +" + format(tmp[this.layer].buyables[this.id].effect) + ", " + format(tmp[this.layer].buyables[this.id].effect2)+"x\n\
+                Amount: " + formatWhole(getBuyableAmount("uv", 111))
+            },
+            unlocked() { return hasUpgrade("uv",35) }, 
+            canAfford() {
+                    return player.uv.virus.gte(tmp[this.layer].buyables[this.id].cost)},
+            buy() { 
+                cost = tmp[this.layer].buyables[this.id].cost
+                let max = tmp.uv.buyables[111].maxAfford
+                let b = max.max(1)
+                if (tmp[this.layer].buyables[this.id].canAfford) {
+                    if (false) player[this.layer].buyables[this.id] = b
+                    else {
+                        player.uv.virus = player.uv.virus.sub(cost)
+                        player.uv.uvReset = player.uv.uvReset.mul(tmp[this.layer].buyables[this.id].base)
+                        player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1).max(1)
+                    }
+                }
+            },
+            maxAfford() {
+                let s = player.uv.virus
+                let base = tmp.uv.buyables[111].costb
+                let exp = tmp.uv.buyables[111].coste
+                let target = s.div("e324").log(base).root(exp)
                 return target.floor().add(1)
             },
         },
@@ -14526,7 +15088,7 @@ addLayer("f", {
                 return eff.max(1.001)
             },
             effectDisplay() {
-                return "1.2x -> "+format(getFUpgEff(184)) +'x'
+                return "1.2x → "+format(getFUpgEff(184)) +'x'
             },
             unlocked() {
                 return hasFUpg(183)
@@ -15874,6 +16436,11 @@ addLayer("e", {
         if (hasUpgrade("Ud",71)) eff = eff.pow(tmp.Ud.upgrades[71].effect)
         return eff
     },
+    mutamt() {
+        let amt = player.e.mu2
+        if (player.Ud.buyables[43].gte(1)) amt = amt.add(tmp.Ud.mueff2[0])
+        return amt
+    },
     mueff(){
         let mu = player.e.mu.add(tmp.e.mueff2.e1)
         if (hasUpgrade("e",402)) mu = mu.mul(1.3)
@@ -15910,7 +16477,7 @@ addLayer("e", {
         return {e1:eff,e2:eff2,e3:eff3.floor(),e4:eff4,e5:eff5.sub(1),e6:eff6}
     },
     mueff2(){
-        let mu = player.e.mu2
+        let mu = tmp.e.mutamt
         if (inChallenge("ct",32)) mu = mu.div(5)
         if (hasUpgrade("e",403)) mu = mu.add(1)
         if (hasUpgrade("e",411)) mu = mu.add(upgradeEffect("e",411))
@@ -15979,6 +16546,7 @@ addLayer("e", {
         if (hasUpgrade("ct",93)) eff = powExp2(eff,1.1)
         if (inChallenge("ct",32)) {
             if (eff.gte("ee7")) eff = eff.log10().div(1e7).pow(0.4).mul(1e7).pow10()
+            if (eff.gte("ee3e6")) eff = eff.log10().log10().div(3e6).pow(0.9).mul(15e5).add(15e5).pow10().pow10()
         }
         return eff
     },
@@ -15987,6 +16555,8 @@ addLayer("e", {
         let eff = powExp(player.e.mm,0.4).root(Decimal.pow(st,0.4)).div(10).pow(20)
         if (inChallenge("ct",32)) {
             if (eff.gte(Decimal.pow(10,1e100))) eff = eff.log10().div(1e100).pow(0.3).mul(1e100).pow10()
+            if (eff.gte(Decimal.pow(10,Decimal.pow(10,4500)))) eff = eff.log10().log10().div(4500).pow(0.5).mul(9e3).sub(4500).pow10().pow10()
+            if (eff.gte(Decimal.pow(10,Decimal.pow(10,58e4)))) eff = eff.log10().log10().div(58e4).pow(0.3).mul(38e4).add(2e5).pow10().pow10()
             if (hasUpgrade("uv",74)) eff = eff.mul(tmp.uv.upgrades[74].effect)
             if (hasUpgrade("uv",76)) eff = eff.mul(tmp.uv.upgrades[76].effect)
             if (hasUpgrade("uv",82)) eff = eff.mul(tmp.uv.upgrades[82].effect)
@@ -16111,6 +16681,7 @@ addLayer("e", {
             if (hasUpgrade("Ud",92)) x = x.mul(tmp.Ud.upgrades[92].effect)
             if (hasMilestone("Ud",37)) x = x.mul(tmp.Ud.milestones[37].effect)
             if (hasMilestone("Ud",43)) x = x.mul(tmp.Ud.milestones[43].effect)
+            if (hasMilestone("Ud",76)) x = x.mul(tmp.Ud.milestones[76].effect)
             eff = eff.mul(x)
         }
         else {
@@ -16150,6 +16721,10 @@ addLayer("e", {
         if (inChallenge("ct",32)) {
             if (hasMilestone("Ud",12)) eff = eff.add(tmp.Ud.milestones[12].effect)
             if (eff.gte(2.14)) eff = eff.div(2.14).pow(0.3).mul(2.14)
+            if (hasMilestone("Ud",71)) eff = eff.mul(1.75)
+            if (hasMilestone("Ud",72)) eff = eff.mul(1.4)
+            if (hasMilestone("Ud",74)) eff = eff.mul(1.3)
+            if (hasMilestone("Ud",76)) eff = eff.mul(1.05)
         }
         else {
             eff = tmp.ct.buyables[13].effect.add(tmp.ct.buyables[32].effect2).add(tmp.ct.buyables[33].effect)
@@ -16187,6 +16762,7 @@ addLayer("e", {
             if (hasUpgrade("Ud",151)) eff = eff.sub(0.03)
             if (hasUpgrade("Ud",103)) eff = eff.sub(0.02)
             if (hasUpgrade("Ud",104)) eff = eff.sub(0.015)
+            if (hasUpgrade("Ud",192)) eff = eff.sub(0.005)
             if (hasMilestone("Ud",34)) eff = eff.sub(0.05)
             if (hasMilestone("Ud",45)) eff = eff.sub(0.015)
         }
@@ -16218,7 +16794,10 @@ addLayer("e", {
         let eff = decimalOne
         if (inChallenge("ct",32)) {
             if (hasUpgrade("uv",75)) eff = eff.mul(tmp.uv.upgrades[75].effect)
-            if (hasUpgrade("Ud",14)) eff = eff.mul(tmp.Ud.upgrades[14].effect)
+            if (hasUpgrade("Ud",14)) {
+                eff = eff.mul(tmp.Ud.upgrades[14].effect)
+                if (hasMilestone("Ud",76)) eff = eff.pow(tmp.Ud.upgrades[14].effect2)
+            }
         }
         else {
         if (hasUpgrade("e",426)) eff= eff.mul(upgradeEffect("e",426))
@@ -25834,6 +26413,7 @@ addLayer("e", {
             cost: Decimal.pow(10,16600000),
             effect(){
                 let Chaeyoung = player.e.buyables[31].div(1e3)
+                if (Chaeyoung.gte("ee35e14") && inChallenge("ct",32)) Chaeyoung = Chaeyoung.log10().log10().div(35e14).pow(0.7).mul(35e14).pow10().pow10()
                 return Chaeyoung
             },
             effectDisplay(){
@@ -26548,12 +27128,19 @@ addLayer("ct", {
             bestAps: decimalZero,
             bestCases: decimalZero,
             Aspent: decimalZero,
+            AnTNA: decimalZero,
+            AnTBH: decimalZero,
             resetTime: 0,
+            AnTBHCool: 0,
             number: 0,
             red:[1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36],
             black:[2,4,6,8,10,11,13,15,17,20,22,24,26,28,29,31,33,35],
             distBuyId:[261,262,263,271,272,273,281,282,283],
             distBuy:[decimalZero,decimalZero,decimalZero,decimalZero,decimalZero,decimalZero,decimalZero,decimalZero,decimalZero],
+            AnTNABuyId:[291,292,293,294,301,302,303,304,311,312,313,314],
+            AnTBHBuyId:[321,322,323,324],
+            AnTNABuy:Array(12).fill(decimalZero),
+            AnTBHBuy:Array(4).fill(decimalZero),
             AdV0:decimalZero,
             AdVax0:decimalZero,
             AdV1:decimalZero,
@@ -26663,6 +27250,13 @@ addLayer("ct", {
         if (hasMilestone("ct",18)) exp = exp.mul(milestoneEffect("ct",18))
         }
         return exp.min(tet10(10))
+    },
+    gainSlogMult() {
+        let exp = decimalOne
+        if (inChallenge("ct",32)) return exp
+        if (hasUpgrade("ct",486)) exp = exp.mul(tmp.ct.upgrades[486].effect)
+        if (hasMilestone("ct",25)) exp = exp.mul(milestoneEffect("ct",25))
+        return exp
     },
     row: 4,
     hotkeys: [
@@ -26822,7 +27416,8 @@ addLayer("ct", {
         if (hasUpgrade("ct",362)) cmult = cmult.mul(2)
         if (hasUpgrade("ct",376)) cmult = cmult.mul(tmp.ct.upgrades[376].effect2)
         if (hasUpgrade("ct",396)) cpow = cpow.mul(1.03)
-        let eff = tet10(slog(player.ct.points.max(10)).mul(cmult).pow(cpow).add(3))
+        if (hasMilestone("uv",49)) cpow = cpow.mul(1.2)
+        let eff = slog(player.ct.points.max(10)).mul(cmult).pow(cpow).add(3)
         return eff
     },
     getBest() {
@@ -26858,7 +27453,7 @@ addLayer("ct", {
         if (hasUpgrade("ct",275)) gain = gain.mul(tmp.ct.upgrades[275].effect)
         if (Vax.lt(start)) gain = decimalZero
         gain = gain.mul(tmp.ct.buyables[163].effect).mul(tmp.ct.buyables[164].effect)
-        return gain.min("eee51555")
+        return gain
     },
     AdVaxGain() { 
         let gain = tmp.ct.buyables[201].gain
@@ -26928,6 +27523,7 @@ addLayer("ct", {
     getDist() {
         let dist = new Decimal(1.8288).div(tmp.ct.AntiDistEff[0])
         if (hasUpgrade("ct",512)) dist = dist.div(tmp.ct.upgrades[512].effect)
+        if (hasUpgrade("ct",573)) dist = dist.div(tmp.ct.upgrades[573].effect)
         if (hasUpgrade("uv",25)) dist = dist.div(tmp.uv.upgrades[25].effect)
         for (i = 0; i < player.ct.distBuyId.length && i < 6; i++){
             dist = dist.div(tmp.ct.buyables[player.ct.distBuyId[i]].effect)
@@ -27020,6 +27616,7 @@ addLayer("ct", {
         return gain
     },
     getUIEff() { 
+        if (inChallenge("ct",11)) return decimalZero
         let eff = player.ct.Ui.max(1).log10()
         if (hasUpgrade("ct",284)) eff = eff.pow(1.1)
         if (hasUpgrade("ct",366)) eff = eff.pow(1.05)
@@ -27027,7 +27624,7 @@ addLayer("ct", {
         if (hasUpgrade("ct",395)) eff = eff.pow(tmp.ct.upgrades[395].effect)
         if (hasUpgrade("uv",13)) eff = eff.pow(tmp.uv.upgrades[13].effect)
         if (hasUpgrade("ct",413) && inChallenge("ct",32)) eff = eff.pow(1.1)
-        if (inChallenge("ct",11)) eff = decimalZero
+        if (eff.gte(5e67)) eff = eff.mul(2).log10().div(68).pow(0.75).mul(68).pow10().div(10).add(4e67)
         return eff
     },
     getVaxEff() { 
@@ -27104,11 +27701,11 @@ addLayer("ct", {
         let mult = decimalOne
         if (hasUpgrade("ct",224)) mult = mult.mul(1.015)
         if (hasUpgrade("ct",226)) mult = mult.mul(1.005)
-        if (hasUpgrade("ct",214)) Sana = mulSlog(Sana,1.01)
-        if (hasChallenge("ct",12)) Sana = mulSlog(Sana,tmp.ct.challenges[12].rewardEffect)
-        Sana = mulSlog(Sana,mult)
+        if (hasUpgrade("ct",214)) mult = mult.mul(1.01)
+        if (hasChallenge("ct",12)) mult = mult.mul(tmp.ct.challenges[12].rewardEffect)
+        Sana = Sana.mul(mult)
         if (inChallenge("ct",12)) Sana = decimalOne
-        return Sana.min(tet10(1.79769e308))
+        return Sana
     },
     aBoostEff() { 
         let eff = player.ct.aBoost.add(1).pow(10)
@@ -27281,6 +27878,7 @@ addLayer("ct", {
         if (hasUpgrade("uv",66)) eff = eff.mul(tmp.uv.upgrades[66].effect)
         if (hasUpgrade("uv",32)) eff = eff.mul(tmp.uv.upgrades[32].effect)
         if (hasUpgrade("ct",565)) eff = eff.mul(tmp.ct.upgrades[565].effect)
+        if (hasUpgrade("ct",571)) eff = eff.mul(tmp.ct.upgrades[571].effect)
         if (hasAchievement("a",252)) eff = eff.mul(tmp.a.achievements[252].effect)
         if (hasAchievement("a",255)) eff = eff.mul(tmp.a.achievements[255].effect)
         if (hasAchievement("a",263)) eff = eff.mul(tmp.a.achievements[263].effect)
@@ -27292,12 +27890,13 @@ addLayer("ct", {
         return eff
     },
     crex() {
-        return tmp.ct.getCorEff.e2.mul(player.e.mu2.pow(tmp.e.crx))
+        return tmp.ct.getCorEff.e2.mul(tmp.e.mutamt.pow(tmp.e.crx))
     },
     AntiDistEff() {
         let ad = tmp.ct.getAntiDist.mul(1e33)
         let eff = ad.add(10).log10()
         let eff2 = powExp(ad.add(1),0.5).pow(3)
+        if (eff2.gte(1e35)) eff2 = eff2.log10().div(35).pow(0.8).mul(20).add(15).pow10()
         if (hasAchievement("a",263)) {
             eff = eff.pow(1.01)
             eff2 = eff2.pow(1.01)
@@ -27314,16 +27913,86 @@ addLayer("ct", {
             eff = eff.pow(1.0295)
             eff2 = eff2.pow(1.0295)
         }
+        if (hasMilestone("uv",45)) {
+            eff = eff.pow(1.00335)
+            eff2 = eff2.pow(1.00335)
+        }
+        if (hasMilestone("uv",46)) {
+            eff = eff.pow(1.00353)
+            eff2 = eff2.pow(1.00353)
+        }
+        if (hasMilestone("uv",44)) {
+            eff = eff.pow(tmp.uv.milestones[44].effect)
+            eff2 = eff2.pow(tmp.uv.milestones[44].effect)
+        }
         return [eff,eff2]
     },
+    AnTNAGain() {
+        if (inChallenge("ct",32)) return decimalZero
+        let eff = tmp.ct.buyables[291].effect.mul(tmp.ct.buyables[292].effect).mul(tmp.ct.buyables[321].effect)
+        if (hasUpgrade("ct",581)) eff = eff.mul(tmp.ct.upgrades[581].effect)
+        if (hasUpgrade("ct",582)) eff = eff.mul(tmp.ct.upgrades[582].effect)
+        if (hasUpgrade("ct",583)) eff = eff.mul(tmp.ct.upgrades[583].effect)
+        if (hasUpgrade("ct",591)) eff = eff.mul(tmp.ct.upgrades[591].effect)
+        if (hasUpgrade("ct",642)) eff = eff.mul(tmp.ct.upgrades[642].effect)
+        if (hasUpgrade("uv",122)) eff = eff.mul(tmp.uv.upgrades[122].effect)
+        if (hasMilestone("ct",21)) eff = eff.mul(2.2)
+        if (hasMilestone("ct",22)) eff = eff.mul(2.3)
+        if (hasMilestone("ct",23)) eff = eff.mul(24)
+        if (hasMilestone("ct",24)) eff = eff.mul(tmp.ct.milestones[24].effect)
+        if (hasMilestone("ct",26)) eff = eff.mul(2.7)
+        if (hasMilestone("uv",47)) eff = eff.mul(40)
+        if (hasMilestone("uv",48)) eff = eff.mul(4.15)
+        if (hasMilestone("uv",49)) eff = eff.mul(5)
+        if (hasMilestone("uv",51)) eff = eff.mul(5.2)
+        return eff
+    },
+    AnTNAEffect() {
+        let exp = tmp.ct.buyables[294].effect.div(2)
+        let eff = player.ct.AnTNA.add(1)
+        if (eff.gte(1e100)) eff = eff.log10().div(100).pow(0.7).mul(100).pow10().div(0.7).sub(3e100/7)
+        eff = eff.pow(exp)
+        return eff
+    },
+    getHawkingRadiation() {
+        let a = new Decimal(1.01)
+        return a
+    },
+    AnTBHEffect() {
+        let exp = decimalOne
+        let eff = powExp(player.ct.AnTBH.div(1.06959715e-64).add(1).div(100),0.7).mul(100).pow(exp)
+        return eff
+    },
     timeSpeed() {
-        let eff = tmp.ct.AntiDistEff[1]
+        let dil = tmp.ct.timeDilationStart
+        let dilLog = dil.div(31556952).log10()
+        let eff = tmp.ct.timeSpeedBase
+        if (eff.gte(dil)) eff = eff.div(31556952).log10().div(dilLog).pow(0.5).mul(dilLog).pow10().mul(31556952*2).sub(dil)
+        return eff
+    },
+    timeDilationStart() {
+        let eff = new Decimal(31556952e100)
+        if (hasMilestone("ct",27)) eff = eff.mul(tmp.ct.milestones[27].effect)
+        if (hasUpgrade("ct",596)) eff = eff.mul(tmp.ct.AnTBHEffect)
+        return eff
+    },
+    timeSpeedBase() {
+        let eff = tmp.ct.AntiDistEff[1].mul(tmp.ct.AnTNAEffect)
         if (hasUpgrade("uv",31)) eff = Decimal.mul(eff,tmp.uv.upgrades[31].effect)
         if (hasUpgrade("uv",66)) eff = eff.mul(3)
         if (hasUpgrade("ct",453)) eff = eff.mul(tmp.ct.upgrades[453].effect)
+        if (hasUpgrade("ct",572)) eff = eff.mul(tmp.ct.upgrades[572].effect)
+        if (hasUpgrade("ct",574)) eff = eff.mul(tmp.ct.upgrades[574].effect)
+        if (hasUpgrade("ct",576)) eff = eff.mul(tmp.ct.upgrades[576].effect)
+        if (hasUpgrade("ct",573)) eff = eff.mul(3)
+        if (hasUpgrade("ct",641)) eff = eff.mul(5)
+        if (hasUpgrade("uv",115)) eff = eff.mul(3.16)
         if (hasMilestone("uv",21)) eff = eff.mul(3.2)
         if (hasMilestone("uv",42)) eff = eff.mul(2.91)
+        if (hasMilestone("uv",45)) eff = eff.mul(3.35)
+        if (hasMilestone("uv",46)) eff = eff.mul(3.54)
         if (hasAchievement("a",271)) eff = eff.mul(6)
+        if (hasAchievement("a",282)) eff = eff.mul(tmp.a.achievements[282].effect)
         return eff
     },
     update(diff) {
@@ -27541,12 +28210,28 @@ addLayer("ct", {
         if (hasMilestone("uv",23) && player.ct.autoaest) {
             layers.ct.buyables[251].buy()
         }
+        if (hasUpgrade("ct",601)) {
+            for (i = 0; i < player.ct.distBuyId.length; i++){
+                layers.ct.buyables[player.ct.distBuyId[i]].buy()
+            }
+        }
         if (hasUpgrade("ct",513)) player.ct.extraBoost = player.ct.extraBoost.add(tmp.ct.upgrades[513].effect.mul(Decimal.mul(diff,tmp.ct.timeSpeed)))
         if (hasUpgrade("ct",541) && !inChallenge("ct",32)) {
             player.ct.ADgain = tmp.ct.getAntiDist
             player.ct.AntiDist = player.ct.AntiDist.add(tmp.ct.getAntiDistGain.mul(diff))
             let ad = powExp(player.ct.AntiDist.div(1.616255e-35),tmp.ct.getAntiDistDil).pow(tmp.ct.getAntiDistE).mul(1.616255e-35)
             player.ct.ADgain = ad.sub(player.ct.ADgain).div(diff)
+        }
+        if (hasUpgrade("ct",576) && !inChallenge("ct",32)) {
+            player.ct.AnTNA = player.ct.AnTNA.add(tmp.ct.AnTNAGain.mul(diff))
+        }
+        if (hasUpgrade("ct",596)) {
+            player.ct.AnTBHCool = Math.max(0,(player.ct.AnTBHCool-diff))
+            let de30 = Decimal.div(1e-30,1.06959715e-64).pow(tmp.ct.getHawkingRadiation.sub(1))
+            let dexp = de30.log10().recip().mul(tmp.ct.getHawkingRadiation.log10())
+            if (player.ct.AnTBH.lt(1.06959715e-64)) player.ct.AnTBH = player.ct.AnTBH.sub(tmp.ct.getHawkingRadiation.sub(1).mul(1.06959715e-64*diff)).max(0)
+            else if (player.ct.AnTBH.lt(1e-30)) player.ct.AnTBH = player.ct.AnTBH.div(tmp.ct.getHawkingRadiation.pow(diff))
+            else player.ct.AnTBH = player.ct.AnTBH.div(1.06959715e-64).root(tmp.ct.getHawkingRadiation.pow(diff).pow(dexp)).mul(1.06959715e-64)
         }
     },
     canReset() {return player.e.crna.gte(tmp.ct.requires) && player.e.mu.gte(1800)},
@@ -27599,15 +28284,15 @@ addLayer("ct", {
         }
         else {
             if (player.ct.points.gte(Decimal.pow(10,1e10-1e5)) && player.ct.CorVid.eq(0)) gain = Decimal.pow(10,1e10-1.5)
-            if (hasUpgrade("ct",486)) gain = mulSlog(gain,tmp.ct.upgrades[486].effect)
         }
+        gain = mulSlog(gain,tmp.ct.gainSlogMult)
         return gain.floor()
     },
     getResetGainb() { 
         let c = tmp.ct.getCRNA
         if (c.lt(tmp.ct.requires)) return decimalZero
         let gain = powExp(c.div(tmp.ct.requires).pow(tmp.ct.exponent),0.5).pow(tmp.ct.gainExp).mul(tmp.ct.gainMult)
-        if (hasUpgrade("ct",486) && !inChallenge("ct",32)) gain = mulSlog(gain,tmp.ct.upgrades[486].effect)
+        gain = mulSlog(gain,tmp.ct.gainSlogMult)
         return gain.floor()
     },
     getCTNAsc() { 
@@ -27869,9 +28554,11 @@ addLayer("ct", {
                     function () {
                         if (player.tab == "ct" && player.subtabs.ct.mainTabs == "Anti-Maskers" && player.subtabs.ct.Anti == "Vaccination") {
                             let a = "You have "+colorText("h2", "#153d63", formatWhole(player.ct.Uv))+" Unvaccinated "+pluralize(player.ct.Uv,'Vaxxer','Vaxxers',true)+", which "+pluralize(player.ct.Uv,'produces','produce',true)+" "+colorText("h2", "#153d63", format(tmp.ct.getUIGain))+" Unvaccinated "+pluralize(tmp.ct.getUIGain,'Infection','Infections')+" per second<br>"
-                            let b = "You have "+colorText("h2", "#153d63", formatWhole(player.ct.Ui))+" Unvaccinated "+pluralize(player.ct.Ui,'Infection','Infections',true)+", which "+pluralize(player.ct.Ui,'adds','add',true)+" "+colorText("h2", "#153d63", format(tmp.ct.getUIEff))+" to 'Anti-Capped' slog<br>"
-                            let c = hasUpgrade("ct",541)?" Time Speed: "+colorText("h2", "#153d63",format(tmp.ct.timeSpeed))+"x<br>":""
-                        return a+b+c
+                            let b2 = tmp.ct.getUIEff.gte(5e67)?" (softcapped)":""
+                            let b = "You have "+colorText("h2", "#153d63", formatWhole(player.ct.Ui))+" Unvaccinated "+pluralize(player.ct.Ui,'Infection','Infections',true)+", which "+pluralize(player.ct.Ui,'adds','add',true)+" "+colorText("h2", "#153d63", format(tmp.ct.getUIEff))+" to 'Anti-Capped' slog"+b2+"<br>"
+                            let c = hasUpgrade("ct",541)?" Time Speed: "+colorText("h2", "#153d63",format(tmp.ct.timeSpeed))+"x ("+colorText("h2", "#153d63",formatTimeLong(tmp.ct.timeSpeed))+"/s)<br>":""
+                            let d = hasUpgrade("ct",541)&&tmp.ct.timeSpeed.gte(31556952e100)?"Time is dilated. Time Speed is ^"+colorText("h2", "#153d63",format(tmp.ct.timeSpeed.log(tmp.ct.timeSpeedBase)))+" ("+colorText("h2", "#153d63",format(tmp.ct.timeSpeedBase.div(tmp.ct.timeSpeed)))+"x slower, starts at "+formatTimeLong(tmp.ct.timeDilationStart)+"/s)<br>":""
+                        return a+b+c+d
                         }
                     }],
                     function () {if (player.tab == "ct" && player.subtabs.ct.mainTabs == "Anti-Maskers" && player.subtabs.ct.Anti == "Vaccination") return ["row", [["clickable",31]]]},
@@ -27895,9 +28582,11 @@ addLayer("ct", {
                     function () {
                         if (player.tab == "ct" && player.subtabs.ct.mainTabs == "Anti-Maskers" && player.subtabs.ct.Anti == "Adverse Vaccines") {
                             let a = "You have "+colorText("h2", "#153d63", formatWhole(player.ct.Uv))+" Unvaccinated "+pluralize(player.ct.Uv,'Vaxxer','Vaxxers',true)+", which "+pluralize(player.ct.Uv,'produces','produce',true)+" "+colorText("h2", "#153d63", format(tmp.ct.getUIGain))+" Unvaccinated "+pluralize(tmp.ct.getUIGain,'Infection','Infections')+" per second<br>"
-                            let b = "You have "+colorText("h2", "#153d63", formatWhole(player.ct.Ui))+" Unvaccinated "+pluralize(player.ct.Ui,'Infection','Infections',true)+", which "+pluralize(player.ct.Ui,'adds','add',true)+" "+colorText("h2", "#153d63", format(tmp.ct.getUIEff))+" to 'Anti-Capped' slog<br>"
-                            let c = hasUpgrade("ct",541)?" Time Speed: "+colorText("h2", "#153d63",format(tmp.ct.timeSpeed))+"x<br>":""
-                        return a+b+c
+                            let b2 = tmp.ct.getUIEff.gte(5e67)?" (softcapped)":""
+                            let b = "You have "+colorText("h2", "#153d63", formatWhole(player.ct.Ui))+" Unvaccinated "+pluralize(player.ct.Ui,'Infection','Infections',true)+", which "+pluralize(player.ct.Ui,'adds','add',true)+" "+colorText("h2", "#153d63", format(tmp.ct.getUIEff))+" to 'Anti-Capped' slog"+b2+"<br>"
+                            let c = hasUpgrade("ct",541)?" Time Speed: "+colorText("h2", "#153d63",format(tmp.ct.timeSpeed))+"x ("+colorText("h2", "#153d63",formatTimeLong(tmp.ct.timeSpeed))+"/s)<br>":""
+                            let d = hasUpgrade("ct",541)&&tmp.ct.timeSpeed.gte(31556952e100)?"Time is dilated. Time Speed is ^"+colorText("h2", "#153d63",format(tmp.ct.timeSpeed.log(tmp.ct.timeSpeedBase)))+" ("+colorText("h2", "#153d63",format(tmp.ct.timeSpeedBase.div(tmp.ct.timeSpeed)))+"x slower, starts at "+formatTimeLong(tmp.ct.timeDilationStart)+"/s)<br>":""
+                        return a+b+c+d
                         }
                     }],
                     ["microtabs","Av"]
@@ -28009,7 +28698,7 @@ addLayer("ct", {
                         return a+b
                         }
                     }],
-                    function () {if (player.tab == "ct" && player.subtabs.ct.mainTabs == "Anti-Maskers" && player.subtabs.ct.Av == "Booster Upgrades") return ["upgrades",[41,42,43,44,45]]},
+                    function () {if (player.tab == "ct" && player.subtabs.ct.mainTabs == "Anti-Maskers" && player.subtabs.ct.Av == "Booster Upgrades") return ["upgrades",[41,42,43,44,45,64,65]]},
                 ],
                 buttonStyle: {"border-color": "#153d63"},
                 unlocked() {
@@ -28049,13 +28738,71 @@ addLayer("ct", {
                         }
                     }],
                     function () {if (player.tab == "ct" && player.subtabs.ct.mainTabs == "Anti-Maskers" && player.subtabs.ct.Av == "Anti-Distancing") return ["buyables",[26,27,28]]},
-                    function () {if (player.tab == "ct" && player.subtabs.ct.mainTabs == "Anti-Maskers" && player.subtabs.ct.Av == "Anti-Distancing") return ["upgrades",[51,52,53,54,55,56]]},
+                    function () {if (player.tab == "ct" && player.subtabs.ct.mainTabs == "Anti-Maskers" && player.subtabs.ct.Av == "Anti-Distancing") return ["upgrades",[51,52,53,54,55,56,57]]},
                 ],
                 buttonStyle: {"border-color": "#fa5f9c"},
                 unlocked() {
                     return hasUpgrade("ct",443)}
             },
-        }
+        },
+        AnTBH: {
+            "Upgrades": {
+                content: [
+                    "blank",
+                    function () {if (player.tab == "ct" && player.subtabs.ct.mainTabs == "AnTNA" && player.subtabs.ct.AnTBH == "Upgrades") return ["buyables",[29,30,31]]},
+                    function () {if (player.tab == "ct" && player.subtabs.ct.mainTabs == "AnTNA" && player.subtabs.ct.AnTBH == "Upgrades") return ["upgrades",[58,59,60,61]]},
+                ],
+                buttonStyle: {"border-color": "#5a3c72"},
+            },
+            "AnT-Black Hole": {
+                content: [
+                    ["raw-html", 
+                    function () {
+                        if (player.tab == "ct" && player.subtabs.ct.mainTabs == "AnTNA" && player.subtabs.ct.AnTBH == "AnT-Black Hole") {
+                            let di = player.ct.AnTBH.div(1.06959715e-64).pow(tmp.ct.getHawkingRadiation.sub(1))
+                            let de30 = Decimal.div(1e-30,1.06959715e-64).pow(tmp.ct.getHawkingRadiation.sub(1))
+                            let dexp = de30.log10().recip().mul(tmp.ct.getHawkingRadiation.log10())
+                            let a = "The AnT-Black Hole's mass is "+colorText("h2", "#5a3c72", formatMass(player.ct.AnTBH))+", which makes time dilation start "+colorText("h2", "#5a3c72", format(tmp.ct.AnTBHEffect))+"x later<br>"
+                            let b = "AnT-Hawking Radiation "+(player.ct.AnTBH.lt(1.06959715e-64)?"reduces":"divides")+" the AnT-Black Hole's mass by "+colorText("h2", "#5a3c72", (player.ct.AnTBH.lt(1.06959715e-64)?formatMass(tmp.ct.getHawkingRadiation.sub(1).mul(1.06959715e-64)):player.ct.AnTBH.lt(1e-30)?format(tmp.ct.getHawkingRadiation):format(di.pow(dexp))))+" per second"
+                        return a+b
+                        }
+                    }],
+                    "blank",
+                    ["clickable",[51]],
+                    "blank",
+                    function () {if (player.tab == "ct" && player.subtabs.ct.mainTabs == "AnTNA" && player.subtabs.ct.AnTBH == "AnT-Black Hole") return ["buyables",[32]]},
+                ],
+                buttonStyle: {"border-color": "#5a3c72"},
+                unlocked() {
+                    return hasUpgrade("ct",596)}
+            },
+            "Scalings": {
+                content: [
+                    function () {if (player.tab == "ct" && player.subtabs.ct.mainTabs == "AnTNA" && player.subtabs.ct.AnTBH == "Scalings") return ["microtabs","scalings"]},
+                ],
+                buttonStyle: {"border-color": "#5a3c72"},
+                unlocked() {
+                    return player.ct.buyables[292].gte(45) || player.ct.buyables[293].gte(45)}
+            },
+        },
+        scalings: {
+            "Distant": {
+                content: [
+                    ["raw-html", 
+                    function () {
+                        if (player.tab == "ct" && player.subtabs.ct.mainTabs == "AnTNA" && player.subtabs.ct.AnTBH == "Scalings") {
+                            let form = "Formula: x → (x - start)<sup>exponent</sup> + start<br><br>"
+                            let a = player.ct.buyables[292].gte(45)?"'AnTNA Boost': starts at "+colorText("h2", "#5a3c72", format(tmp.ct.buyables[292].distantStart))+", exponent: "+colorText("h2", "#5a3c72", format(tmp.ct.buyables[292].distantExp))+"<br>":""
+                            let b = player.ct.buyables[293].gte(45)?"'AnTNA Base': starts at "+colorText("h2", "#5a3c72", format(tmp.ct.buyables[293].distantStart))+", exponent: "+colorText("h2", "#5a3c72", format(tmp.ct.buyables[293].distantExp))+"<br>":""
+                        return form+a+b
+                        }
+                    }],
+                ],
+                buttonStyle: {"border-color": "#5a3c72"},
+                unlocked() {
+                    return player.ct.buyables[292].gte(45) || player.ct.buyables[293].gte(45)}
+            },
+        },
     },
     tabFormat: {
         "Main": {
@@ -28160,6 +28907,40 @@ addLayer("ct", {
             ["microtabs","Anti"]
             ],
             unlocked () {return hasMilestone("ct",20)}
+        },
+        "AnTNA": {
+            content:[
+            function() {if (player.tab == "ct") return "main-display"},
+            function() {if (player.tab == "ct" && !hasMilestone("ct",10)) return "prestige-button"},
+            ["raw-html",function() {if (player.tab == "ct" && hasMilestone("ct",10)) return "You are gaining "+layerText("h2", "ct", format(tmp.ct.getResetGain.div(inChallenge("ct",32)?100:1)))+ " CTNA per second (starts at "+format(tmp.ct.requires)+" CRNA and COVID-19 Mutation)"}],
+            ["raw-html",function() {if (player.tab == "ct" && tmp.ct.getResetGain.gte(Decimal.pow(10,tmp.ct.getCTNAsc))) return "CTNA gain is ^"+layerText("h2", "ct", format(tmp.ct.getResetGain.log(tmp.ct.getResetGainb)))+ "." + "(starts at "+format(tmp.ct.getCTNAsc.pow10()) + ")"}],
+            function() {if (player.tab == "ct") return "resource-display"},
+            "blank",
+            ["raw-html", 
+            function () {
+                if (player.tab == "ct" && player.subtabs.ct.mainTabs == "AnTNA") {
+                    let ap = player.ct.bestAps
+                    let aps = format(ap.mul(3600))+"/hr"
+                    if (ap.gte(10)) aps = format(ap)+"/s"
+                    else if (ap.gte(1/6)) aps = format(ap.mul(60))+"/min"
+                    let best = player.ct.bestTime
+                    let ti = hasUpgrade("ct",541)?" Time Speed: "+colorText("h2", "#153d63",format(tmp.ct.timeSpeed))+"x ("+colorText("h2", "#153d63",formatTimeLong(tmp.ct.timeSpeed))+"/s)<br>":""
+                    let tis = hasUpgrade("ct",541)&&tmp.ct.timeSpeed.gte(31556952e100)?"Time is dilated. Time Speed is ^"+colorText("h2", "#153d63",format(tmp.ct.timeSpeed.log(tmp.ct.timeSpeedBase)))+" ("+colorText("h2", "#153d63",format(tmp.ct.timeSpeedBase.div(tmp.ct.timeSpeed)))+"x slower, starts at "+formatTimeLong(tmp.ct.timeDilationStart)+"/s)<br>":""
+                    let a = "You have "+colorText("h2", "#153d63", formatWhole(player.ct.Advaxxers))+" Adverse "+pluralize(player.ct.Advaxxers,'Vaxxer','Vaxxers',true) 
+                    if (hasUpgrade("ct",381)) a+=" (" + colorText("h2", "#153d63",format(tmp.ct.clickables[32].gain.div(100)))+"/s)"
+                    a += "<br>"
+                    let b = "Your best Adverse Vaxxers is "+formatWhole(player.ct.bestAdvax)+"<br>"
+                    let c = "Reset Time: "+colorText("h2", "#153d63", (player.ct.AdvTime>=31556952e3?formatTimeLong(player.ct.AdvVaxTime):formatTime(player.ct.AdvTime)))+"<br>"
+                    let d = "Your longest Adverse Vaxxer reset is "+(player.ct.bestTime.gte(31556952e3)?formatTimeLong(best):formatTime(best))+"<br><br>"
+                    let e = "You have "+colorText("h2", "#5a3c72", formatWhole(player.ct.AnTNA))+" AnTNA, which boosts time speed by "+colorText("h2", "#5a3c72", format(tmp.ct.AnTNAEffect))+"<br>"
+                    let f = "You are gaining "+colorText("h2", "#5a3c72", formatWhole(tmp.ct.AnTNAGain))+" AnTNA per second (0 in 'Booster Vaccine')"+"<br><br>"
+                return ti+tis+a+b+c+d+e+f
+                }
+            }],
+            ["microtabs","AnTBH"]
+            ],
+            buttonStyle: {"border-color": "#5a3c72"},
+            unlocked () {return hasUpgrade("ct",576)}
         },
     },
     milestones: {
@@ -28311,6 +29092,128 @@ addLayer("ct", {
                 ,
             done() { return player.ct.total.gte(Decimal.pow(10,Decimal.pow(10,1e4))) },
             unlocked() { return hasMilestone("ct",19)}
+        },
+        21: {
+            requirementDescription() {return "1 'AnTNA Base' (22)"},
+            effectDescription() {
+                return "Multiply AnTNA gain by 2.2."}
+                ,
+            done() { return player.ct.buyables[293].gte(1) },
+            doneColor: "#5a3c72",
+            notdoneColor: "#ed8bc99d",
+            style: {"background-color"() {return hasMilestone("ct",21)?tmp.ct.milestones[21].doneColor:tmp.ct.milestones[21].notdoneColor}},
+            unlocked() { return hasUpgrade("ct",576)}
+        },
+        22: {
+            requirementDescription() {return "300,000,000 AnTNA (23)"},
+            effectDescription() {
+                return "Multiply AnTNA gain by 2.3. Add 0.1 to 'UnBoosted Layer' base."}
+                ,
+            done() { return player.ct.AnTNA.gte(3e8) },
+            doneColor: "#5a3c72",
+            notdoneColor: "#ed8bc99d",
+            style: {"background-color"() {return hasMilestone("ct",22)?tmp.ct.milestones[22].doneColor:tmp.ct.milestones[22].notdoneColor}},
+            unlocked() { return hasUpgrade("ct",576)}
+        },
+        23: {
+            requirementDescription() {return format(1e17)+" AnTNA (24)"},
+            effectDescription() {
+                return "Multiply AnTNA gain by 24."}
+                ,
+            done() { return player.ct.AnTNA.gte(1e17) },
+            doneColor: "#5a3c72",
+            notdoneColor: "#ed8bc99d",
+            style: {"background-color"() {return hasMilestone("ct",23)?tmp.ct.milestones[23].doneColor:tmp.ct.milestones[23].notdoneColor}},
+            unlocked() { return hasUpgrade("ct",576)}
+        },
+        24: {
+            requirementDescription() {return format(1e31)+" AnTNA (25)"},
+            effect() {
+                let eff = slog(player.ct.points.max(10)).div(1e26).pow(2)
+                return eff
+            },
+            effectDescription() {
+                return "CTNA boosts AnTNA gain.<br>Currently: "+format(milestoneEffect("ct",24))+"x"}
+                ,
+            done() { return player.ct.AnTNA.gte(1e31) },
+            doneColor: "#5a3c72",
+            notdoneColor: "#ed8bc99d",
+            style: {"background-color"() {return hasMilestone("ct",24)?tmp.ct.milestones[24].doneColor:tmp.ct.milestones[24].notdoneColor}},
+            unlocked() { return hasUpgrade("ct",576)}
+        },
+        25: {
+            requirementDescription() {return format(tet10(48e25))+" Total CTNA (26)"},
+            effect() {
+                let eff = player.ct.AnTNA.add(10).log10().add(10).log10().sub(1).div(5).add(1)
+                return eff
+            },
+            effectDescription() {
+                return "AnTNA boosts CTNA gain slog.<br>Currently: "+format(milestoneEffect("ct",25))+"x"}
+                ,
+            done() { return player.ct.total.gte(tet10(48e25)) },
+            doneColor: "#5a3c72",
+            notdoneColor: "#ed8bc99d",
+            style: {"background-color"() {return hasMilestone("ct",25)?tmp.ct.milestones[25].doneColor:tmp.ct.milestones[25].notdoneColor}},
+            unlocked() { return hasUpgrade("ct",576)}
+        },
+        26: {
+            requirementDescription() {return format(1e60)+" AnTNA (27)"},
+            effectDescription() {
+                return "Reduce 'AnTNA Gain' cost base by 0.05 and multiply AnTNA gain, Deadly Crow birth and death rate by 2.7."}
+                ,
+            done() { return player.ct.AnTNA.gte(1e60) },
+            doneColor: "#5a3c72",
+            notdoneColor: "#ed8bc99d",
+            style: {"background-color"() {return hasMilestone("ct",26)?tmp.ct.milestones[26].doneColor:tmp.ct.milestones[26].notdoneColor}},
+            unlocked() { return hasUpgrade("ct",576)}
+        },
+        27: {
+            requirementDescription() {return "50 'AnTNA Gain' (28)"},
+            effect() {
+                let eff = tmp.ct.buyables[291].effect.add(1)
+                if (eff.gte(1e12)) eff = eff.log10().div(12).pow(0.5).mul(12).pow10().mul(2).sub(1e12)
+                return eff
+            },
+            effectDescription() {
+                return "Base AnTNA gain makes time dilation start later. Add 0.0185 to 'AnTNA Base' base.<br>Currently: "+format(milestoneEffect("ct",27))+"x"}
+                ,
+            done() { return player.ct.buyables[291].gte(50) },
+            doneColor: "#5a3c72",
+            notdoneColor: "#ed8bc99d",
+            style: {"background-color"() {return hasMilestone("ct",27)?tmp.ct.milestones[27].doneColor:tmp.ct.milestones[27].notdoneColor}},
+            unlocked() { return hasUpgrade("ct",576)}
+        },
+        28: {
+            requirementDescription() {return formatMass(1.78266192e-31*3)+" of AnT-Black Hole mass (29)"},
+            effect() {
+                let eff = player.ct.AnTBH.div(1.78266192e-31).add(10).log10().pow(2)
+                if (eff.gte(2.5)) eff = eff.div(2.5).pow(0.75).div(2).add(2)
+                return eff
+            },
+            effectDescription() {
+                return "AnT-Black Hole mass boosts Adverse Vaxxer gain.<br>Currently: ^"+format(milestoneEffect("ct",28))}
+                ,
+            done() { return player.ct.AnTBH.gte(1.78266192e-31*3) },
+            doneColor: "#5a3c72",
+            notdoneColor: "#ed8bc99d",
+            style: {"background-color"() {return hasMilestone("ct",28)?tmp.ct.milestones[28].doneColor:tmp.ct.milestones[28].notdoneColor}},
+            unlocked() { return hasUpgrade("ct",576)}
+        },
+        29: {
+            requirementDescription() {return formatMass(1e-18)+" of AnT-Black Hole mass (30)"},
+            effect() {
+                let eff = player.ct.AnTBH.div(1e-19).add(10).log10().pow(0.8).sub(1).mul(3)
+                if (eff.gte(4.3)) eff = eff.div(4.3).pow(0.85).mul(0.8).add(3.5)
+                return eff
+            },
+            effectDescription() {
+                return "AnT-Black Hole mass increases 'AnTNA 7' exponent. UI boost to 'Tragedy' exp<sup>2</sup>^1.6. Reduce 'AnTNA Gain' cost base and exponent by 0.05.<br>Currently: +"+format(milestoneEffect("ct",29))}
+                ,
+            done() { return player.ct.AnTBH.gte(1e-18) },
+            doneColor: "#5a3c72",
+            notdoneColor: "#ed8bc99d",
+            style: {"background-color"() {return hasMilestone("ct",29)?tmp.ct.milestones[29].doneColor:tmp.ct.milestones[29].notdoneColor}},
+            unlocked() { return hasUpgrade("ct",576)}
         },
     },
     upgrades: {
@@ -28944,7 +29847,7 @@ addLayer("ct", {
             currencyDisplayName: "LaBas",
             currencyLayer: "ct",
             effect(){
-                let Sana = player.e.mu2.add(1).pow(0.4)
+                let Sana = tmp.e.mutamt.add(1).pow(0.4)
                 if (Sana.gte(12)) Sana = powExp(Sana.div(1.2),5).mul(1.2)
                 if (Sana.gte(1e15)) Sana = powExp(Sana.div(1e14),1.3).mul(1e14)
                 if (Sana.gte(1e300)) Sana = powExp(Sana.div(1e299),1.3).mul(1e299)
@@ -29298,7 +30201,7 @@ addLayer("ct", {
             currencyDisplayName: "LaBas",
             currencyLayer: "ct",
             effect(){
-                let Jisoo = player.e.mu2.add(1).pow(0.15)
+                let Jisoo = tmp.e.mutamt.add(1).pow(0.15)
                 if (hasUpgrade("ct",111)) Jisoo=Jisoo.pow(upgradeEffect("ct",111))
                 return Jisoo
             },
@@ -30367,9 +31270,11 @@ addLayer("ct", {
                 if (hasUpgrade("ct",265)) plus = plus.add(tmp.ct.getUIEff)
                 if (hasUpgrade("ct",224)) mult = mult.mul(1.015)
                 if (hasUpgrade("ct",226)) mult = mult.mul(1.005)
-                Sana = tet10(slog(Sana).add(plus.mul(mult)).min(1.79769e308))
+                let effslog = Sana.add(plus.mul(mult))
+                if (effslog.gte(1e55)) effslog = effslog.log10().div(55).pow(0.5).mul(55).pow10().mul(2).sub(1e55)
+                Sana = tet10(effslog.min(1.797693e308))
                 if (inChallenge("ct",12)) Sana = decimalOne
-                return Sana.min(tet10(1.79769e308))
+                return Sana
             },
             effect2(){
                 let Jihyo = tet10(slog(player.points).div(1.025).sub(8).max(0))
@@ -30378,7 +31283,9 @@ addLayer("ct", {
                 return Jihyo.min(tet10(3))
             },
             effectDisplay(){
-                return "^"+format(tmp.ct.upgrades[194].effect)+", "+format(tmp.ct.upgrades[194].effect2)+"x"
+                let dis = ''
+                if (tmp.ct.upgrades[194].effect.gte(tet10(1e55))) dis += " (softcapped)"
+                return "^"+format(tmp.ct.upgrades[194].effect)+dis+", "+format(tmp.ct.upgrades[194].effect2)+"x"
             },
             unlocked() {
                 return hasUpgrade("ct",193)
@@ -31771,6 +32678,7 @@ addLayer("ct", {
                 let Rosé = powExp(player.ct.Ui.max(1),exp).pow(exp)
                 if (hasUpgrade("ct",475)) Rosé = powExp2(Rosé,1.45)
                 if (hasUpgrade("ct",494)) Rosé = powExp2(Rosé,1.2)
+                if (hasMilestone("ct",29)) Rosé = powExp2(Rosé,1.6)
                 if (player.ct.inC) Rosé = powExp(Rosé,0.2)
                 if (Rosé.gte("ee5e9")) Rosé = Rosé.log10().log10().div(5e9).pow(0.4).mul(5e9).pow10().pow10()
                 if (hasUpgrade("ct",476) && hasUpgrade("ct",256)) Rosé = Rosé.pow(tmp.ct.upgrades[256].effect)
@@ -32379,6 +33287,7 @@ addLayer("ct", {
                 if (hasUpgrade("ct",426)) d = d.div(10)
                 let cTime = new Decimal(player.ct.AdvTime)
                 if (cTime>3600) cTime = player.ct.AdvVaxTime
+                if (cTime.gte(1e180)) cTime = cTime.log10().div(180).pow(0.7).mul(140).add(40).pow10()
                 if (cTime.gte(31556952e40)) cTime = cTime.div(31556952e40).pow(0.4).mul(31556952e40*.5).add(31556952e40*.5)
                 if (cTime.gte(31556952e9)) cTime = cTime.div(31556952e9).pow(0.5).mul(31556952e9*.3).add(31556952e9*.7)
                 if (cTime.gte(3600)) cTime = cTime.div(3600).pow(0.45).mul(300).add(3300)
@@ -32573,6 +33482,8 @@ addLayer("ct", {
             currencyLayer: "ct",
             effect(){
                 let Tzuyu = player.ct.Ui.max(10).log10().pow(0.5)
+                if (Tzuyu.gte(25e14)) Tzuyu = Tzuyu.div(2.5).log10().div(15).pow(0.7).mul(6).add(9).pow10().mul(2.5)
+                if (Tzuyu.gte(15e15)) Tzuyu = Tzuyu.div(1.5).log10().div(16).pow(0.7).mul(5).add(11).pow10().mul(1.5)
                 return Tzuyu
             },
             effectDisplay(){
@@ -32771,6 +33682,7 @@ addLayer("ct", {
                 let Rosé = player.ct.Advaxxers.add(1).pow(.2).mul(10)
                 if (Rosé.gte(50)) Rosé = Rosé.mul(2).log10().mul(25)
                 if (Rosé.gte(5e8)) Rosé = Rosé.div(5e8).pow(0.4).mul(5e8)
+                if (Rosé.gte(1e13)) Rosé = Rosé.log10().div(13).pow(0.7).mul(6).add(7).pow10()
                 return Rosé
             },
             effectDisplay(){
@@ -33656,8 +34568,10 @@ addLayer("ct", {
                 if (hasUpgrade("ct",405)) Jisoo = Jisoo.pow(1.1)
                 if (hasUpgrade("ct",406)) Jisoo = Jisoo.pow(1.2)
                 if (hasUpgrade("ct",451)) Jisoo = Jisoo.pow(1.2)
+                if (hasUpgrade("ct",575)) Jisoo = Jisoo.pow(1.2)
                 if (hasMilestone("uv",15)) Jisoo = Jisoo.pow(1.3)
                 if (hasMilestone("uv",17)) Jisoo = Jisoo.pow(1.1)
+                if (hasMilestone("uv",57)) Jisoo = Jisoo.pow(1.3)
                 return Jisoo
             },
             effectDisplay(){
@@ -33849,6 +34763,8 @@ addLayer("ct", {
                 if (hasUpgrade("ct",444)) Lisa = powExp(Lisa,1.15)
                 if (hasUpgrade("ct",446)) Lisa = powExp(Lisa,1.15)
                 if (hasUpgrade("ct",456)) Lisa = powExp(Lisa,1.4)
+                if (hasUpgrade("ct",642)) Lisa = powExp(Lisa,1.15)
+                if (hasUpgrade("ct",643)) Lisa = powExp(Lisa,1.2)
                 if (hasMilestone("uv",42)) Lisa = powExp(Lisa,1.1)
                 return Lisa
             },
@@ -33967,6 +34883,8 @@ addLayer("ct", {
                 if (Cov.gte(3)) Cov = Cov.div(3).pow(0.2).mul(3)
                 if (Cov.gte(4)) Cov = Cov.div(4).pow(0.5).mul(4)
                 if (hasUpgrade("ct",445)) Cov = Cov.pow(2)
+                if (hasUpgrade("ct",642)) Cov = Cov.pow(1.15)
+                if (hasUpgrade("ct",643)) Cov = Cov.pow(1.5)
                 if (hasMilestone("uv",42)) Cov = Cov.pow(1.5)
                 return Cov
             },
@@ -34537,6 +35455,7 @@ addLayer("ct", {
             effect(){
                 let Giselle = tmp.ct.getBest.max(10).log10().div(1e50).max(1).pow(0.2)
                 if (hasUpgrade("ct",455)) Giselle = powExp(Giselle,2)
+                if (hasUpgrade("ct",641)) Giselle = powExp(Giselle,1.25)
                 return Giselle
             },
             effectDisplay(){
@@ -35187,6 +36106,7 @@ addLayer("ct", {
                 let Wendy = powExp(player.ct.Advaxxers.add(1),0.5).pow(0.01)
                 if (hasUpgrade("ct",515)) Wendy = powExp(Wendy,1.5)
                 if (hasUpgrade("ct",521)) Wendy = powExp(Wendy,1.15)
+                if (hasUpgrade("ct",576)) Wendy = powExp(Wendy,1.05)
                 return Wendy
             },
             effectDisplay(){
@@ -35616,6 +36536,10 @@ addLayer("ct", {
                 }
                 if (hasUpgrade("uv",114)) exp = exp.mul(tmp.uv.upgrades[114].effect)
                 if (hasUpgrade("ct",561)) exp = exp.pow(1.2)
+                if (exp.gte(1e7)) exp = exp.div(1e7).pow(0.8).mul(7e6).add(3e6)
+                if (exp.gte(66e6)) exp = exp.div(66e6).pow(0.9).mul(3e7).add(36e6)
+                if (exp.gte(18e7)) exp = exp.div(18e7).pow(0.8).mul(11e7).add(7e7)
+                if (exp.gte(15e9)) exp = exp.div(15e9).pow(0.9).mul(7e9).add(8e9)
                 let Seulgi = Decimal.pow(1.2,exp)
                 return Seulgi
             },
@@ -36259,6 +37183,11 @@ addLayer("ct", {
                 let Taeyeon = powExp(player.ct.bestBoost.div("e7e9").add(1),0.75).pow(1.5e-7).mul(10)
                 if (Taeyeon.gte(1e12)) Taeyeon = Taeyeon.div(1e12).pow(0.4).mul(1e12)
                 if (Taeyeon.gte(1e45)) Taeyeon = Taeyeon.div(1e45).pow(0.3).mul(1e45)
+                if (Taeyeon.gte(1e74)) Taeyeon = Taeyeon.log10().div(74).pow(0.8).mul(40).add(34).pow10()
+                if (Taeyeon.gte(1e85)) Taeyeon = Taeyeon.log10().div(85).pow(0.8).mul(40).add(45).pow10()
+                if (Taeyeon.gte(1e122)) Taeyeon = Taeyeon.log10().div(122).pow(0.85).mul(72).add(50).pow10()
+                if (Taeyeon.gte(1e128)) Taeyeon = Taeyeon.log10().div(128).pow(0.8).mul(18).add(110).pow10()
+                if (Taeyeon.gte(1e170)) Taeyeon = Taeyeon.log10().div(170).pow(0.7).mul(70).add(100).pow10().min(1e180)
                 return Taeyeon
             },
             effectDisplay(){
@@ -36364,7 +37293,13 @@ addLayer("ct", {
             currencyDisplayName: "Anti-Boosters",
             currencyLayer: "ct",
             effect(){
-                let Somi = player.ct.AdvVaxTime.div(31556952e16).max(1).log10().pow(0.5).div(50)
+                let exp = 0.5
+                let d = 50
+                if (hasUpgrade("ct",604)) {
+                    exp += 0.5
+                    d *= 5
+                }
+                let Somi = player.ct.AdvVaxTime.div(31556952e16).max(1).log10().pow(exp).div(d)
                 return Somi
             },
             effectDisplay(){
@@ -36440,8 +37375,8 @@ addLayer("ct", {
             currencyDisplayName: "Anti-Boosters",
             currencyLayer: "ct",
             effect(){
-                let Somi = tmp.ct.getAntiDist.div(8.8e26).max(1).log10().mul(10).add(1).factorial()
-                return Somi
+                let Sejeong = tmp.ct.getAntiDist.div(8.8e26).max(1).log10().mul(10).add(1).factorial()
+                return Sejeong
             },
             effectDisplay(){
                 return format(tmp.ct.upgrades[565].effect)+"x"
@@ -36471,8 +37406,8 @@ addLayer("ct", {
             currencyLayer: "ct",
             effect(){
                 if (player.ct.aBoost.lt("e98e10")) return decimalOne
-                let Somi = tmp.ct.buyables[171].effect.div(1e42).add(1).pow(0.2)
-                return Somi
+                let Chungha = tmp.ct.buyables[171].effect.div(1e42).add(1).pow(0.2)
+                return Chungha
             },
             effectDisplay(){
                 return "^"+format(tmp.ct.upgrades[566].effect)
@@ -36488,6 +37423,810 @@ addLayer("ct", {
                     if (!hasUpgrade("ct",566)) {
                     let color = "#bf8f8f"
                     if (tmp.ct.upgrades[566].canAfford) color = "radial-gradient(#fa5f9c, #9a3d72)"
+                    return color
+                    }
+                }
+            }
+        },
+        571: {
+            fullDisplay() {return "<h3>Anti-A</h3><br>Reset time boosts base Anti-Distance gain.<br>Currently: "+layers.ct.upgrades[571].effectDisplay()+"<br><br>Req: "+distShort(tmp.ct.upgrades[571].cost)+" Anti-Distance"},
+            cost: new Decimal(352e75),
+            effect(){
+                let Somi = powExp(player.ct.AdvVaxTime.div(1e50).add(1).pow(30),1.2)
+                return Somi
+            },
+            effectDisplay(){
+                return format(tmp.ct.upgrades[571].effect)+"x"
+            },
+            unlocked() {
+                return hasUpgrade("ct",566) && player.uv.uvUnlocked
+            },
+            canAfford() {
+                return tmp.ct.getAntiDist.gte(352e75) 
+            },
+            pay(){
+
+            },
+            style: {
+                "background"() {
+                    if (!hasUpgrade("ct",571)) {
+                    let color = "#bf8f8f"
+                    if (tmp.ct.upgrades[571].canAfford) color = "radial-gradient(#05a063, #65c28d)"
+                    return color
+                    }
+                }
+            }
+        },
+        572: {
+            fullDisplay() {return "<h3>Anti-B</h3><br>Anti-Boosters boost time speed.<br>Currently: "+layers.ct.upgrades[572].effectDisplay()+"<br><br>Req: "+distShort(tmp.ct.upgrades[572].cost)+" Anti-Distance"},
+            cost: new Decimal(132e98),
+            effect(){
+                let Sejeong = powExp(player.ct.aBoost.div("e182e10").add(1),0.2).pow(0.005)
+                return Sejeong
+            },
+            effectDisplay(){
+                return format(tmp.ct.upgrades[572].effect)+"x"
+            },
+            unlocked() {
+                return hasUpgrade("ct",571) && player.uv.uvUnlocked
+            },
+            canAfford() {
+                return tmp.ct.getAntiDist.gte(132e98) 
+            },
+            pay(){
+
+            },
+            style: {
+                "background"() {
+                    if (!hasUpgrade("ct",572)) {
+                    let color = "#bf8f8f"
+                    if (tmp.ct.upgrades[572].canAfford) color = "radial-gradient(#05a063, #65c28d)"
+                    return color
+                    }
+                }
+            }
+        },
+        573: {
+            fullDisplay() {return "<h3>Anti-C</h3><br>Reset time divides distance, time speed*3.<br>Currently: "+layers.ct.upgrades[573].effectDisplay()+"<br><br>Req: "+distShort(tmp.ct.upgrades[573].cost)+" Anti-Distance"},
+            cost: new Decimal(88e115),
+            effect(){
+                let Chungha = powExp(player.ct.AdvVaxTime.div(1e57).sub(1).max(0).pow(0.2).mul(10),0.3).div(300).add(1)
+                return Chungha
+            },
+            effectDisplay(){
+                return "/"+format(tmp.ct.upgrades[573].effect)
+            },
+            unlocked() {
+                return hasUpgrade("ct",572) && player.uv.uvUnlocked
+            },
+            canAfford() {
+                return tmp.ct.getAntiDist.gte(88e115) 
+            },
+            pay(){
+
+            },
+            style: {
+                "background"() {
+                    if (!hasUpgrade("ct",573)) {
+                    let color = "#bf8f8f"
+                    if (tmp.ct.upgrades[573].canAfford) color = "radial-gradient(#05a063, #65c28d)"
+                    return color
+                    }
+                }
+            }
+        },
+        574: {
+            fullDisplay() {return "<h3>Anti-CT</h3><br>Each Anti-Distancing buyable after 8,200 boosts time speed by "+format(tmp.ct.upgrades[574].base)+".<br>Currently: "+layers.ct.upgrades[574].effectDisplay()+"<br><br>Req: "+distShort(tmp.ct.upgrades[574].cost)+" Anti-Distance"},
+            cost: new Decimal(132e132),
+            base(){
+                let base = new Decimal(1.01)
+                if (hasUpgrade("ct",594)) base = base.add(tmp.ct.upgrades[594].effect)
+                return base
+            },
+            effect(){
+                let base = tmp.ct.upgrades[574].base
+                let exp = decimalZero
+                for (i = 0; i < player.ct.distBuyId.length; i++){
+                    exp = exp.add(player.ct.buyables[player.ct.distBuyId[i]])
+                }
+                let Somi = Decimal.pow(base,exp.sub(8200).max(0))
+                return Somi
+            },
+            effectDisplay(){
+                return format(tmp.ct.upgrades[574].effect)+"x"
+            },
+            unlocked() {
+                return hasUpgrade("ct",573) && player.uv.uvUnlocked
+            },
+            canAfford() {
+                return tmp.ct.getAntiDist.gte(132e132) 
+            },
+            pay(){
+
+            },
+            style: {
+                "background"() {
+                    if (!hasUpgrade("ct",574)) {
+                    let color = "#bf8f8f"
+                    if (tmp.ct.upgrades[574].canAfford) color = "radial-gradient(#05a063, #65c28d)"
+                    return color
+                    }
+                }
+            }
+        },
+        575: {
+            fullDisplay() {return "<h3>Anti-CTN</h3><br>Remove Adverse Vaxxer 1st softcap, 'AdBases' effect^1.2.<br><br>Req: "+distShort(tmp.ct.upgrades[575].cost)+" Anti-Distance"},
+            cost: new Decimal(352e154),
+            unlocked() {
+                return hasUpgrade("ct",574) && player.uv.uvUnlocked
+            },
+            canAfford() {
+                return tmp.ct.getAntiDist.gte(352e154) 
+            },
+            pay(){
+
+            },
+            style: {
+                "background"() {
+                    if (!hasUpgrade("ct",575)) {
+                    let color = "#bf8f8f"
+                    if (tmp.ct.upgrades[575].canAfford) color = "radial-gradient(#05a063, #65c28d)"
+                    return color
+                    }
+                }
+            }
+        },
+        576: {
+            fullDisplay() {return "<h3>Anti-CTNA</h3><br>Adverse Vaxxers boost time speed, dilate 'I' to 1.05, and unlock AnTNA.<br>Currently: "+layers.ct.upgrades[576].effectDisplay()+"<br><br>Req: "+distShort(tmp.ct.upgrades[576].cost)+" Anti-Distance"},
+            cost: new Decimal(44e182),
+            effect(){
+                let Sejeong = powExp(player.ct.Advaxxers.div("e17e14").add(1),1/6).pow(0.005)
+                return Sejeong
+            },
+            effectDisplay(){
+                return format(tmp.ct.upgrades[576].effect)+"x"
+            },
+            unlocked() {
+                return hasUpgrade("ct",575) && player.uv.uvUnlocked
+            },
+            canAfford() {
+                return tmp.ct.getAntiDist.gte(44e182) 
+            },
+            pay(){
+
+            },
+            style: {
+                "background"() {
+                    if (!hasUpgrade("ct",576)) {
+                    let color = "#bf8f8f"
+                    if (tmp.ct.upgrades[576].canAfford) color = "radial-gradient(#05a063, #65c28d)"
+                    return color
+                    }
+                }
+            }
+        },
+        581: {//YooA
+            title: "AnTNA 1",
+            description() {return shiftDown?"Formula: log10(AnTNA + 10)<sup>"+format(tmp.ct.upgrades[581].exp)+"</sup>":"AnTNA boosts its gain."},
+            cost: new Decimal(1e3),
+            currencyInternalName: "AnTNA",
+            currencyDisplayName: "AnTNA",
+            currencyLayer: "ct",
+            exp(){
+                let exp = new Decimal(1.5)
+                if (hasUpgrade("ct",586)) exp = exp.add(tmp.ct.upgrades[586].effect)
+                return exp
+            },
+            effect(){
+                let exp = tmp.ct.upgrades[581].exp
+                let YooA = player.ct.AnTNA.add(10).log10().pow(exp)
+                return YooA
+            },
+            effectDisplay(){
+                return format(tmp.ct.upgrades[581].effect)+"x"
+            },
+            unlocked() {
+                return hasUpgrade("ct",576) && player.uv.uvUnlocked
+            },
+            canAfford() {
+                return player.ct.AnTNA.gte(1e3) 
+            },
+            style: {
+                "background"() {
+                    if (!hasUpgrade("ct",581)) {
+                    let color = "#bf8f8f"
+                    if (tmp.ct.upgrades[581].canAfford) color = "radial-gradient(#a5c38d, #5a3c72)"
+                    return color
+                    }
+                }
+            }
+        },
+        582: {
+            title: "AnTNA 2",
+            description() {return shiftDown?"Formula: max((log10(Adverse Vaxxers + 10) - "+format(25e14)+") / "+format(1e14)+", 1)<sup>"+format(tmp.ct.upgrades[582].exp)+"</sup>":"Adverse Vaxxers boost AnTNA gain."},
+            cost: new Decimal(4e4),
+            currencyInternalName: "AnTNA",
+            currencyDisplayName: "AnTNA",
+            currencyLayer: "ct",
+            exp(){
+                let exp = decimalOne
+                if (hasUpgrade("ct",594)) exp = exp.add(0.25)
+                if (hasUpgrade("ct",605)) exp = exp.add(0.75)
+                if (hasMilestone("uv",53)) exp = exp.add(0.25)
+                if (hasMilestone("uv",54)) exp = exp.add(0.25)
+                if (hasMilestone("uv",57)) exp = exp.add(1.5)
+                return exp
+            },
+            effect(){
+                let exp = tmp.ct.upgrades[582].exp
+                let YooA = player.ct.Advaxxers.add(10).log10().sub(25e14).div(1e14).max(1).pow(exp)
+                return YooA
+            },
+            effectDisplay(){
+                return format(tmp.ct.upgrades[582].effect)+"x"
+            },
+            unlocked() {
+                return hasUpgrade("ct",581) && player.uv.uvUnlocked
+            },
+            canAfford() {
+                return player.ct.AnTNA.gte(4e4) 
+            },
+            style: {
+                "background"() {
+                    if (!hasUpgrade("ct",582)) {
+                    let color = "#bf8f8f"
+                    if (tmp.ct.upgrades[582].canAfford) color = "radial-gradient(#a5c38d, #5a3c72)"
+                    return color
+                    }
+                }
+            }
+        },
+        583: {
+            title: "AnTNA 3",
+            description() {return shiftDown?"Formula: 'AnTNA Gain'<sup>"+format(tmp.ct.upgrades[583].exp)+"</sup> / 100 + 1":"'AnTNA Gain' buyables boost AnTNA gain."},
+            cost: new Decimal(2e6),
+            currencyInternalName: "AnTNA",
+            currencyDisplayName: "AnTNA",
+            currencyLayer: "ct",
+            exp(){
+                let exp = new Decimal(2.5)
+                if (hasUpgrade("ct",585)) exp = exp.add(tmp.ct.upgrades[585].effect)
+                return exp
+            },
+            effect(){
+                let exp = tmp.ct.upgrades[583].exp
+                let YooA = player.ct.buyables[291].pow(exp).div(100).add(1)
+                return YooA
+            },
+            effectDisplay(){
+                return format(tmp.ct.upgrades[583].effect)+"x"
+            },
+            unlocked() {
+                return hasUpgrade("ct",582) && player.uv.uvUnlocked
+            },
+            canAfford() {
+                return player.ct.AnTNA.gte(2e6) 
+            },
+            style: {
+                "background"() {
+                    if (!hasUpgrade("ct",583)) {
+                    let color = "#bf8f8f"
+                    if (tmp.ct.upgrades[583].canAfford) color = "radial-gradient(#a5c38d, #5a3c72)"
+                    return color
+                    }
+                }
+            }
+        },
+        584: {
+            title: "AnTNA 4",
+            description() {return shiftDown?"Formula: log10(AnTNA + 10)<sup>0.3</sup> - 1":"AnTNA adds to 'AnTNA Boost' base."},
+            cost: new Decimal(2e9),
+            currencyInternalName: "AnTNA",
+            currencyDisplayName: "AnTNA",
+            currencyLayer: "ct",
+            effect(){
+                let YooA = player.ct.AnTNA.add(10).log10().pow(0.3).sub(1)
+                return YooA
+            },
+            effectDisplay(){
+                return "+"+format(tmp.ct.upgrades[584].effect)
+            },
+            unlocked() {
+                return hasUpgrade("ct",583) && player.uv.uvUnlocked
+            },
+            canAfford() {
+                return player.ct.AnTNA.gte(2e9) 
+            },
+            style: {
+                "background"() {
+                    if (!hasUpgrade("ct",584)) {
+                    let color = "#bf8f8f"
+                    if (tmp.ct.upgrades[584].canAfford) color = "radial-gradient(#a5c38d, #5a3c72)"
+                    return color
+                    }
+                }
+            }
+        },
+        585: {
+            title: "AnTNA 5",
+            description() {return "Each 'AnTNA Base' adds "+format(tmp.ct.upgrades[585].base)+" to 'AnTNA 3' exponent."},
+            cost: new Decimal(5e13),
+            currencyInternalName: "AnTNA",
+            currencyDisplayName: "AnTNA",
+            currencyLayer: "ct",
+            base(){
+                let base = new Decimal(0.1)
+                if (hasUpgrade("ct",606)) base = base.add(0.05)
+                return base
+            },
+            effect(){
+                let base = tmp.ct.upgrades[585].base
+                let YooA = player.ct.buyables[293].mul(base)
+                return YooA
+            },
+            effectDisplay(){
+                return "+"+format(tmp.ct.upgrades[585].effect)
+            },
+            unlocked() {
+                return hasUpgrade("ct",584) && player.uv.uvUnlocked
+            },
+            canAfford() {
+                return player.ct.AnTNA.gte(5e13) 
+            },
+            style: {
+                "background"() {
+                    if (!hasUpgrade("ct",585)) {
+                    let color = "#bf8f8f"
+                    if (tmp.ct.upgrades[585].canAfford) color = "radial-gradient(#a5c38d, #5a3c72)"
+                    return color
+                    }
+                }
+            }
+        },
+        586: {
+            title: "AnTNA 6",
+            description() {return shiftDown?"Formula: (log10(AnTNA + 10)<sup>"+format(tmp.ct.upgrades[586].exp)+"</sup> - 1) / 2":"AnTNA adds to 'AnTNA 1' exponent."},
+            cost: new Decimal(2626e23),
+            currencyInternalName: "AnTNA",
+            currencyDisplayName: "AnTNA",
+            currencyLayer: "ct",
+            exp(){
+                let exp = new Decimal(0.35)
+                if (hasMilestone("uv",52) && player.uv.virusTotal.gte("481e479")) exp = exp.add(0.05)
+                return exp
+            },
+            effect(){
+                let exp = tmp.ct.upgrades[586].exp
+                let YooA = player.ct.AnTNA.add(10).log10().pow(exp).sub(1).div(2)
+                return YooA
+            },
+            effectDisplay(){
+                return "+"+format(tmp.ct.upgrades[586].effect)
+            },
+            unlocked() {
+                return hasUpgrade("ct",585) && player.uv.uvUnlocked
+            },
+            canAfford() {
+                return player.ct.AnTNA.gte(2626e23) 
+            },
+            style: {
+                "background"() {
+                    if (!hasUpgrade("ct",586)) {
+                    let color = "#bf8f8f"
+                    if (tmp.ct.upgrades[586].canAfford) color = "radial-gradient(#a5c38d, #5a3c72)"
+                    return color
+                    }
+                }
+            }
+        },
+        591: {
+            title: "AnTNA 7",
+            description() {return shiftDown?"Formula: (slog10(cases + 10) / "+format(1e57)+" + 1)<sup>"+format(tmp.ct.upgrades[591].exp)+"</sup>":"Cases boost AnTNA gain and unlock 'Max All' 1st row Deadly Crow buyables."},
+            cost: new Decimal(3e45),
+            currencyInternalName: "AnTNA",
+            currencyDisplayName: "AnTNA",
+            currencyLayer: "ct",
+            exp(){
+                let exp = new Decimal(0.7)
+                if (hasMilestone("ct",29)) exp = exp.add(tmp.ct.milestones[29].effect)
+                return exp
+            },
+            effect(){
+                let exp = tmp.ct.upgrades[591].exp
+                let YooA = slog(player.points.add(10)).div(1e57).add(1).pow(exp)
+                return YooA
+            },
+            effectDisplay(){
+                return format(tmp.ct.upgrades[591].effect)+"x"
+            },
+            unlocked() {
+                return hasUpgrade("ct",586) && player.uv.uvUnlocked
+            },
+            canAfford() {
+                return player.ct.AnTNA.gte(3e45) 
+            },
+            style: {
+                "background"() {
+                    if (!hasUpgrade("ct",591)) {
+                    let color = "#bf8f8f"
+                    if (tmp.ct.upgrades[591].canAfford) color = "radial-gradient(#a5c38d, #5a3c72)"
+                    return color
+                    }
+                }
+            }
+        },
+        592: {
+            title: "AnTNA 8",
+            description() {return "Reduce 'AnTNA Gain' cost base by 0.2 and Adverse Vaxxer 2nd softcap is weaker."},
+            cost: new Decimal(5353e50),
+            currencyInternalName: "AnTNA",
+            currencyDisplayName: "AnTNA",
+            currencyLayer: "ct",
+            unlocked() {
+                return hasUpgrade("ct",591) && player.uv.uvUnlocked
+            },
+            canAfford() {
+                return player.ct.AnTNA.gte(5353e50) 
+            },
+            style: {
+                "background"() {
+                    if (!hasUpgrade("ct",592)) {
+                    let color = "#bf8f8f"
+                    if (tmp.ct.upgrades[592].canAfford) color = "radial-gradient(#a5c38d, #5a3c72)"
+                    return color
+                    }
+                }
+            }
+        },
+        593: {
+            title: "AnTNA 9",
+            description() {return "Adverse Vaxxer 2nd softcap is weaker and upgrades that cost less than Deadly Crows<sup>"+format(tmp.ct.upgrades[593].exp)+"</sup> don't divide their population."},
+            cost: new Decimal(5656e53),
+            currencyInternalName: "AnTNA",
+            currencyDisplayName: "AnTNA",
+            currencyLayer: "ct",
+            exp() {
+                let exp = 0.6
+                if (hasMilestone("uv",50)) exp += 0.15
+                if (hasMilestone("uv",51)) exp += 0.1
+                if (hasMilestone("uv",52)) exp += 0.05
+                if (hasMilestone("uv",55)) exp += 0.005
+                if (hasMilestone("uv",58)) exp += 0.005
+                if (hasUpgrade("uv",125)) exp += 0.05
+                if (hasUpgrade("ct",602)) exp += 0.02
+                if (hasUpgrade("ct",605)) exp += 0.005
+                if (hasUpgrade("ct",606)) exp += 0.005
+                return exp
+            },
+            unlocked() {
+                return hasUpgrade("ct",592) && player.uv.uvUnlocked
+            },
+            canAfford() {
+                return player.ct.AnTNA.gte(5656e53) 
+            },
+            style: {
+                "background"() {
+                    if (!hasUpgrade("ct",593)) {
+                    let color = "#bf8f8f"
+                    if (tmp.ct.upgrades[593].canAfford) color = "radial-gradient(#a5c38d, #5a3c72)"
+                    return color
+                    }
+                }
+            }
+        },
+        594: {
+            title: "AnTNA 10",
+            description() {return "Each 'AnTNA Gain' adds 0.0001 to 'Anti-CT' base. Add 0.25 to 'AnTNA 2' exponent"},
+            cost: new Decimal(2e67),
+            currencyInternalName: "AnTNA",
+            currencyDisplayName: "AnTNA",
+            currencyLayer: "ct",
+            effect(){
+                let YooA = player.ct.buyables[291].div(1e4)
+                return YooA
+            },
+            effectDisplay(){
+                return "+"+format(tmp.ct.upgrades[594].effect)
+            },
+            unlocked() {
+                return hasUpgrade("ct",593) && player.uv.uvUnlocked
+            },
+            canAfford() {
+                return player.ct.AnTNA.gte(2e67) 
+            },
+            style: {
+                "background"() {
+                    if (!hasUpgrade("ct",594)) {
+                    let color = "#bf8f8f"
+                    if (tmp.ct.upgrades[594].canAfford) color = "radial-gradient(#a5c38d, #5a3c72)"
+                    return color
+                    }
+                }
+            }
+        },
+        595: {
+            title: "AnTNA 11",
+            description() {return "Add 0.5 to base AnTNA gain exponent"},
+            cost: new Decimal(75e74),
+            currencyInternalName: "AnTNA",
+            currencyDisplayName: "AnTNA",
+            currencyLayer: "ct",
+            unlocked() {
+                return hasUpgrade("ct",594) && player.uv.uvUnlocked
+            },
+            canAfford() {
+                return player.ct.AnTNA.gte(75e74) 
+            },
+            style: {
+                "background"() {
+                    if (!hasUpgrade("ct",595)) {
+                    let color = "#bf8f8f"
+                    if (tmp.ct.upgrades[595].canAfford) color = "radial-gradient(#a5c38d, #5a3c72)"
+                    return color
+                    }
+                }
+            }
+        },
+        596: {
+            title: "AnTNA 12",
+            description() {return  shiftDown?"Formula: (slog10(infecters + 10) / "+format(1e26)+")<sup>1.2</sup>":"Infecters boost base AnTNA gain and unlock AnT-Black Hole"},
+            cost: new Decimal(2e82),
+            currencyInternalName: "AnTNA",
+            currencyDisplayName: "AnTNA",
+            currencyLayer: "ct",
+            effect(){
+                let YooA = slog(player.e.points.add(10)).div(1e26).pow(1.2)
+                return YooA
+            },
+            effectDisplay(){
+                return format(tmp.ct.upgrades[596].effect)+"x"
+            },
+            unlocked() {
+                return hasUpgrade("ct",595) && player.uv.uvUnlocked
+            },
+            canAfford() {
+                return player.ct.AnTNA.gte(2e82) 
+            },
+            style: {
+                "background"() {
+                    if (!hasUpgrade("ct",596)) {
+                    let color = "#bf8f8f"
+                    if (tmp.ct.upgrades[596].canAfford) color = "radial-gradient(#a5c38d, #5a3c72)"
+                    return color
+                    }
+                }
+            }
+        },
+        601: {
+            title: "AnTNA 13",
+            description() {return  shiftDown?"Formula: log10(Anti-Distance / "+distShort("88e585")+" + 1)<sup>0.45</sup> / 5":"Anti-Distance increases base AnTNA gain exponent and autobuy Anti-Distancing buyables."},
+            cost: new Decimal(1e95),
+            currencyInternalName: "AnTNA",
+            currencyDisplayName: "AnTNA",
+            currencyLayer: "ct",
+            effect(){
+                let YooA = tmp.ct.getAntiDist.div("88e585").add(1).log10().pow(0.45).div(5)
+                return YooA
+            },
+            effectDisplay(){
+                return "+"+format(tmp.ct.upgrades[601].effect)
+            },
+            unlocked() {
+                return hasUpgrade("ct",596) && player.uv.uvUnlocked
+            },
+            canAfford() {
+                return player.ct.AnTNA.gte(1e95) 
+            },
+            style: {
+                "background"() {
+                    if (!hasUpgrade("ct",601)) {
+                    let color = "#bf8f8f"
+                    if (tmp.ct.upgrades[601].canAfford) color = "radial-gradient(#a5c38d, #5a3c72)"
+                    return color
+                    }
+                }
+            }
+        },
+        602: {
+            title: "AnTNA 14",
+            description() {return "Add 0.02 to 'AnTNA 9' exponent. Divide Deadly Bird intervals by 1.5 and multiply CorVid gain in 'BV' by 137."},
+            cost: new Decimal(137e135),
+            currencyInternalName: "AnTNA",
+            currencyDisplayName: "AnTNA",
+            currencyLayer: "ct",
+            unlocked() {
+                return hasUpgrade("ct",601) && player.uv.uvUnlocked
+            },
+            canAfford() {
+                return player.ct.AnTNA.gte(137e135) 
+            },
+            style: {
+                "background"() {
+                    if (!hasUpgrade("ct",602)) {
+                    let color = "#bf8f8f"
+                    if (tmp.ct.upgrades[602].canAfford) color = "radial-gradient(#a5c38d, #5a3c72)"
+                    return color
+                    }
+                }
+            }
+        },
+        603: {
+            title: "AnTNA 15",
+            description() {return shiftDown?"Formula: 10<sup>log10(AnTNA / "+format(1e150)+" + 1)<sup>0.65</sup> * 0.1</sup>":"AnTNA boosts CorVid gain in 'Booster Vaccine'."},
+            cost: new Decimal(161e159),
+            currencyInternalName: "AnTNA",
+            currencyDisplayName: "AnTNA",
+            currencyLayer: "ct",
+            effect(){
+                let YooA = powExp(player.ct.AnTNA.div(1e150).add(1),0.65).pow(0.1)
+                return YooA
+            },
+            effectDisplay(){
+                return format(tmp.ct.upgrades[603].effect)+"x"
+            },
+            unlocked() {
+                return hasUpgrade("ct",602) && player.uv.uvUnlocked
+            },
+            canAfford() {
+                return player.ct.AnTNA.gte(161e159) 
+            },
+            style: {
+                "background"() {
+                    if (!hasUpgrade("ct",603)) {
+                    let color = "#bf8f8f"
+                    if (tmp.ct.upgrades[603].canAfford) color = "radial-gradient(#a5c38d, #5a3c72)"
+                    return color
+                    }
+                }
+            }
+        },
+        604: {
+            fullDisplay() {return "<h3>AnTNA 16</h3><br>Add 0.5 to 'Anti-Time' exponent and divide it by 5. Divide Deadly Bird intervals by 1.5.<br><br>Cost: "+formatMass(tmp.ct.upgrades[604].cost)+" AnT-Black Hole Mass"},
+            cost: new Decimal(1.06959715e-48),
+            currencyInternalName: "AnTBH",
+            currencyDisplayName: "AnT-Black Hole Mass",
+            currencyLayer: "ct",
+            unlocked() {
+                return hasUpgrade("ct",603) && player.uv.uvUnlocked
+            },
+            canAfford() {
+                return player.ct.AnTBH.gte(1.06959715e-48) 
+            },
+            style: {
+                "background"() {
+                    if (!hasUpgrade("ct",604)) {
+                    let color = "#bf8f8f"
+                    if (tmp.ct.upgrades[604].canAfford) color = "radial-gradient(#a5c38d, #5a3c72)"
+                    return color
+                    }
+                }
+            }
+        },
+        605: {
+            fullDisplay() {return "<h3>AnTNA 17</h3><br>Add 0.75 to 'AnTNA 2' and 0.005 to 'AnTNA 9' exponent. Divide Deadly Bird intervals by 1.5.<br><br>Cost: "+formatMass(tmp.ct.upgrades[605].cost)+" AnT-Black Hole Mass"},
+            cost: new Decimal(1.06959715e-38),
+            currencyInternalName: "AnTBH",
+            currencyDisplayName: "AnT-Black Hole Mass",
+            currencyLayer: "ct",
+            unlocked() {
+                return hasUpgrade("ct",604) && player.uv.uvUnlocked
+            },
+            canAfford() {
+                return player.ct.AnTBH.gte(1.06959715e-38) 
+            },
+            style: {
+                "background"() {
+                    if (!hasUpgrade("ct",605)) {
+                    let color = "#bf8f8f"
+                    if (tmp.ct.upgrades[605].canAfford) color = "radial-gradient(#a5c38d, #5a3c72)"
+                    return color
+                    }
+                }
+            }
+        },
+        606: {
+            fullDisplay() {return "<h3>AnTNA 18</h3><br>Add 0.05 to 'AnTNA Base' and 'AnTNA 5' base and 0.005 to 'AnTNA 9' exponent.<br><br>Cost: "+formatMass(tmp.ct.upgrades[606].cost)+" AnT-Black Hole Mass"},
+            cost: new Decimal(4e-19),
+            currencyInternalName: "AnTBH",
+            currencyDisplayName: "AnT-Black Hole Mass",
+            currencyLayer: "ct",
+            unlocked() {
+                return hasUpgrade("ct",605) && player.uv.uvUnlocked
+            },
+            canAfford() {
+                return player.ct.AnTBH.gte(4e-19) 
+            },
+            style: {
+                "background"() {
+                    if (!hasUpgrade("ct",606)) {
+                    let color = "#bf8f8f"
+                    if (tmp.ct.upgrades[606].canAfford) color = "radial-gradient(#a5c38d, #5a3c72)"
+                    return color
+                    }
+                }
+            }
+        },
+        641: {
+            title: "AnSofter",
+            description: "Adverse Vaxxer gain 2nd softcap is weaker, dilate 'An-Distance'^1.25, time speed*5.",
+            cost: new Decimal("eeeee38075"),
+            currencyDisplayName: "cases in 'Booster Vaccine'",
+            unlocked() {
+                return hasUpgrade("ct",456)
+            },
+            canAfford() {
+                return player.points.gte("eeeee38075") && inChallenge("ct",32)
+            },
+            pay() {
+                player.points = player.points.sub("eeeee38075")
+            },
+            style: {
+                "background"() {
+                    if (!hasUpgrade("ct",641)) {
+                    let color = "#bf8f8f"
+                    if (tmp.ct.upgrades[641].canAfford) color = "radial-gradient(#383434, #153d63)"
+                    return color
+                    }
+                }
+            }
+        },
+        642: {
+            title: "Cased AnTNA",
+            description() {return  "Best cases boost AnTNA gain. Dilate 'AdBstr' and raise 'AdVxd Boost' ^1.15. UBV gain base*1.5 at "+format("eeeee7144e3")+" cases."},
+            cost: new Decimal("eeeee7139e3"),
+            currencyDisplayName: "cases in 'Booster Vaccine'",
+            effect(){
+                let YooA = powExp(tmp.ct.getBest.max(10).log10(),1.2).div(1e225).pow(0.3).add(1)
+                return YooA
+            },
+            effectDisplay(){
+                return format(tmp.ct.upgrades[642].effect)+"x"
+            },
+            unlocked() {
+                return hasUpgrade("ct",641)
+            },
+            canAfford() {
+                return player.points.gte("eeeee7139e3") && inChallenge("ct",32)
+            },
+            pay() {
+                player.points = player.points.sub("eeeee7139e3")
+            },
+            style: {
+                "background"() {
+                    if (!hasUpgrade("ct",642)) {
+                    let color = "#bf8f8f"
+                    if (tmp.ct.upgrades[642].canAfford) color = "radial-gradient(#383434, #153d63)"
+                    return color
+                    }
+                }
+            }
+        },
+        643: {
+            title: "Cased Hole",
+            description() {return  "Best cases boost AnT-Black Hole mass gain. Dilate 'AdBstr' ^1.2 and raise 'AdVxd Boost' ^1.5."},
+            cost: new Decimal("eeeeee10"),
+            currencyDisplayName: "cases in 'Booster Vaccine'",
+            effect(){
+                let YooA = powExp(tmp.ct.getBest.max(10).log10(),0.9).div(1e58).pow(0.25).add(1)
+                return YooA
+            },
+            effectDisplay(){
+                return format(tmp.ct.upgrades[643].effect)+"x"
+            },
+            unlocked() {
+                return hasUpgrade("ct",642)
+            },
+            canAfford() {
+                return player.points.gte("eeeeee10") && inChallenge("ct",32)
+            },
+            pay() {
+                player.points = player.points.sub("eeeeee10")
+            },
+            style: {
+                "background"() {
+                    if (!hasUpgrade("ct",643)) {
+                    let color = "#bf8f8f"
+                    if (tmp.ct.upgrades[643].canAfford) color = "radial-gradient(#383434, #153d63)"
                     return color
                     }
                 }
@@ -36770,7 +38509,7 @@ addLayer("ct", {
             }
             
 		},
-        showRespec() { return player.subtabs.ct.mainTabs=="Coronas" || (player.subtabs.ct.Anti=="Adverse Vaccines" && player.subtabs.ct.Av=="Anti-Vaxxed Vaxxers")},
+        showRespec() { return player.subtabs.ct.mainTabs=="Coronas" || (player.subtabs.ct.mainTabs=="Anti-Maskers" && player.subtabs.ct.Anti=="Adverse Vaccines" && player.subtabs.ct.Av=="Anti-Vaxxed Vaxxers")},
         respecText() { return player.subtabs.ct.mainTabs=="Coronas"?"Respec Coronas":"Respec Adverse Vaccines"},
 		rows: 19,
         cols: 4,
@@ -37172,9 +38911,12 @@ addLayer("ct", {
         23: {
 			title: "CTNA Boost",
 			cost(x=player[this.layer].buyables[this.id]) { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let st3 = inChallenge("ct",32)?21e3:5e4
+                let st4 = inChallenge("ct",32)?6e4:3e6
+                let st4sc = inChallenge("ct",32)?1.00005:1.000001
                 if (x.gte(1e40)) x = x.div(1e40).pow(3).mul(1e40)
-                if (x.gte(3e6)) x = Decimal.pow(1.000001,x.sub(3e6)).mul(3e6)
-                if (x.gte(5e4)) x = x.div(5e4).pow(3).mul(5e4)
+                if (x.gte(st4)) x = Decimal.pow(st4sc,x.sub(st4)).mul(st4)
+                if (x.gte(st3)) x = x.div(st3).pow(3).mul(st3)
                 if (x.gte(150)) x = x.div(150).pow(2.5).mul(150)
                 if (x.gte(50)) x = x.div(50).pow(2).mul(50)
                 let cost = Decimal.pow(1e10, x.pow(2.5).add(1505.95))
@@ -37259,11 +39001,14 @@ addLayer("ct", {
             },
             buyMax() {
                 let s = player.ct.points
+                let st3 = inChallenge("ct",32)?21e3:5e4
+                let st4 = inChallenge("ct",32)?6e4:3e6
+                let st4sc = inChallenge("ct",32)?1.00005:1.000001
                 let target = Decimal.log10(s.div(Decimal.pow(10,15059.5))).div(10).root(2.5)
                 if (target.gte(50)) target = target.div(50).pow(0.5).mul(50)
                 if (target.gte(150)) target = target.div(150).pow(0.4).mul(150)
-                if (target.gte(5e4)) target = target.div(5e4).pow(1/3).mul(5e4)
-                if (target.gte(3e6)) target = target.div(3e6).log(1.000001).add(3e6)
+                if (target.gte(st3)) target = target.div(st3).pow(1/3).mul(st3)
+                if (target.gte(st4)) target = target.div(st4).log(st4sc).add(st4)
                 if (target.gte(1e40)) target = target.div(1e40).pow(1/3).mul(1e40)
                 target = target.ceil()
                 let cost = Decimal.pow(1e10, target.sub(1).pow(2.5)).mul(Decimal.pow(10,15059.5))
@@ -37510,6 +39255,9 @@ addLayer("ct", {
                     if (hasUpgrade("Ud",164)) base = base.mul(upgradeEffect("Ud",164))
                     if (hasUpgrade("uv",112)) base = base.mul(upgradeEffect("uv",112))
                     if (hasMilestone("Ud",52)) base = base.mul(7.23)
+                    if (hasMilestone("Ud",53)) base = base.mul(10.44)
+                    if (hasMilestone("Ud",75)) base = base.mul(tmp.Ud.milestones[75].effect)
+                    if (hasMilestone("Ud",79)) base = base.mul(tmp.Ud.milestones[79].effect)
                     base = base.mul(tmp.Ud.buyables[31].effect).mul(tmp.Ud.crowEff)
                 }
                 else {
@@ -37533,6 +39281,7 @@ addLayer("ct", {
                     if (hasMilestone("Ud",43)) exp = exp.add(1)
                     if (hasMilestone("Ud",46)) exp = exp.add(1)
                     if (hasMilestone("Ud",44)) exp = exp.add(tmp.Ud.milestones[44].effect)
+                    if (hasMilestone("Ud",57)) exp = exp.add(tmp.Ud.milestones[57].effect)
                     if (hasUpgrade("Ud",161)) exp = exp.add(tmp.Ud.upgrades[161].effect)
                     if (hasUpgrade("Ud",171)) exp = exp.add(tmp.Ud.upgrades[171].effect)
                     if (player.Ud.buyables[42].gte(11)) exp = exp.add(tmp.Ud.mueff[11])
@@ -37852,25 +39601,50 @@ addLayer("ct", {
                 if (x.gte(tet10(10))) x = tet10(slog(x).div(10).root(0.6).mul(10))
                 if (x.gte(1e15)) x = x.div(1e15).pow(2).mul(1e15)
                 if (x.gte(1e8)) x = Decimal.pow(1.008,x.sub(1e8).div(1e6)).mul(1e8)
-                let cost = Decimal.pow(1e10,x.pow(1.7)).mul(Decimal.pow(10,13061))
+                let cost = Decimal.pow(1e10,x.pow(1.7)).mul(Decimal.pow(10,inChallenge("ct",32)?13010:13061))
                 return cost.floor()
             },
             base(x=player[this.layer].buyables[this.id]) { 
                 let base = x.pow(x.pow(this.exp())).div(100).add(1)
-                if (hasUpgrade("ct",105)) base = base.mul(upgradeEffect("ct",105))
-                if (hasUpgrade("ct",106)) base = base.mul(upgradeEffect("ct",106))
-                if (hasUpgrade("ct",62)) base = base.mul(upgradeEffect("ct",62))
-                if (hasUpgrade("ct",63)) base = base.mul(upgradeEffect("ct",63))
-                if (hasUpgrade("ct",112)) base = base.mul(upgradeEffect("ct",112))
-                if (hasMilestone("ct",20)) base = base.mul(milestoneEffect("ct",20))
-                return base.mul(tmp.ct.buyables[63].effect2).mul(tmp.ct.buyables[71].effect).mul(tmp.ct.buyables[81].effect)
+                if (inChallenge("ct",32)) {
+                    base = base.div(2740).mul(tmp.Ud.buyables[33].effect)
+                    if (hasUpgrade("ct",602)) base = base.mul(137)
+                    if (hasUpgrade("ct",603)) base = base.mul(tmp.ct.upgrades[603].effect)
+                    if (hasUpgrade("uv",132)) base = base.mul(tmp.uv.upgrades[132].effect)
+                    if (hasUpgrade("Ud",214)) base = base.mul(tmp.Ud.upgrades[214].effect)
+                    if (hasUpgrade("Ud",215)) base = base.mul(tmp.Ud.upgrades[215].effect)
+                    if (hasMilestone("Ud",77)) base = base.mul(tmp.Ud.milestones[77].effect)
+                    if (hasMilestone("Ud",78)) base = base.mul(tmp.Ud.milestones[78].effect)
+                    if (hasMilestone("Ud",79)) base = base.mul(tmp.Ud.milestones[79].effect2)
+                    if (hasUpgrade("Ud",213)) base = base.mul(13.37)
+                    if (player.Ud.buyables[42].gte(13)) base = base.mul(tmp.Ud.mueff[13])
+                }
+                else {
+                    if (hasUpgrade("ct",105)) base = base.mul(upgradeEffect("ct",105))
+                    if (hasUpgrade("ct",106)) base = base.mul(upgradeEffect("ct",106))
+                    if (hasUpgrade("ct",62)) base = base.mul(upgradeEffect("ct",62))
+                    if (hasUpgrade("ct",63)) base = base.mul(upgradeEffect("ct",63))
+                    if (hasUpgrade("ct",112)) base = base.mul(upgradeEffect("ct",112))
+                    if (hasMilestone("ct",20)) base = base.mul(milestoneEffect("ct",20))
+                    base = base.mul(tmp.ct.buyables[63].effect2).mul(tmp.ct.buyables[71].effect).mul(tmp.ct.buyables[81].effect)
+                }
+                return base
             },
             exp() {
                 let exp = new Decimal(0.05)
-                if (hasUpgrade("ct",63)) exp = exp.add(0.05)
-                if (hasUpgrade("ct",66)) exp = exp.add(0.05)
-                if (hasUpgrade("ct",113)) exp = exp.add(upgradeEffect("ct",113))
-                return exp.add(tmp.ct.buyables[73].effect)
+                if (inChallenge("ct",32)) {
+                    if (!hasMilestone("uv",56)) exp = exp.sub(0.05)
+                    if (hasMilestone("uv",56) && player.uv.virusTotal.gte("e591")) exp = exp.add(0.05)
+                    if (hasMilestone("uv",58)) exp = exp.add(0.03)
+                    if (hasUpgrade("uv",133)) exp = exp.add(0.02)
+                }
+                else {
+                    if (hasUpgrade("ct",63)) exp = exp.add(0.05)
+                    if (hasUpgrade("ct",66)) exp = exp.add(0.05)
+                    if (hasUpgrade("ct",113)) exp = exp.add(upgradeEffect("ct",113))
+                    exp = exp.add(tmp.ct.buyables[73].effect)
+                }
+                return exp
             },
             total() {
                 let total = getBuyableAmount("ct", 61)
@@ -37885,7 +39659,7 @@ addLayer("ct", {
                 if (player.tab != "ct" || player.subtabs.ct.mainTabs != "CorVids") return
                 let extra = ""
                 let dis = "Gain "+ format(this.base()) +" CorVids per second"
-                let shift = shiftDown?" (1+x^x<sup>"+ format(this.exp()) +"</sup>/100)":""
+                let shift = shiftDown?" (1+x^x<sup>"+ format(this.exp()) +"</sup>/100)"+(inChallenge("ct",32)?hasUpgrade("ct",602)?"/20":"/2,740":""):""
                 return dis + shift + ".\n\
                 Cost: " + formatWhole(tmp[this.layer].buyables[this.id].cost)+" LaBas\n\
                 Effect: +" + format(tmp[this.layer].buyables[this.id].effect)+"\n\
@@ -37903,12 +39677,12 @@ addLayer("ct", {
             },
             buyMax() {
                 let s = player.ct.LaBas
-                let target = s.div(Decimal.pow(10,13061)).log(1e10).root(1.7)
+                let target = s.div(Decimal.pow(10,inChallenge("ct",32)?13010:13061)).log(1e10).root(1.7)
                 if (target.gte(1e8)) target = target.div(1e8).log(1.008).mul(1e6).add(1e8)
                 if (target.gte(1e15)) target = target.div(1e15).pow(.5).mul(1e15)
                 if (target.gte(tet10(10))) target = tet10(slog(target).div(10).pow(0.6).mul(10))
                 target = target.ceil()
-                let cost = Decimal.pow(1e10,target.sub(1).pow(1.7)).mul(Decimal.pow(10,13061))
+                let cost = Decimal.pow(1e10,target.sub(1).pow(1.7)).mul(Decimal.pow(10,inChallenge("ct",32)?13010:13061))
                 let diff = target.sub(player.ct.buyables[61])
                 if (tmp[this.layer].buyables[this.id].canAfford) {
                     if (!hasMilestone("ct",15)) player.ct.LaBas = player.ct.LaBas.sub(cost).max(0)
@@ -38043,6 +39817,7 @@ addLayer("ct", {
         71: {
 			title: "Anti-Masker",
 			cost(x=player[this.layer].buyables[this.id]) { // cost for buying xth buyable, can be an object if there are multiple currencies
+                if (x.gte(tet10(7+Math.log10(1.6)))) x = tet10(slog(x).sub(7+Math.log10(1.6)).pow10().mul(7+Math.log10(1.6)))
                 if (x.gte(tet10(6.9))) x = tet10(slog(x).div(6.9).root(0.1).mul(6.9))
                 if (x.gte(tet10(5.34))) x = tet10(slog(x).div(5.34).root(0.2).mul(5.34))
                 if (x.gte(tet10(5.2))) x = tet10(slog(x).div(5.2).root(0.3).mul(5.2))
@@ -38051,7 +39826,8 @@ addLayer("ct", {
                 if (x.gte(slogadd(1e30,2))) x = x.log10().root(3.33333e28).pow10().pow10()
                 if (x.gte(Decimal.pow(10,Decimal.pow(10,1e5)))) x = Decimal.pow(1.0001,x.log10().log10().sub(1e5)).mul(1e5).pow10().pow10()
                 if (x.gte(Decimal.pow(10,1e9))) x = Decimal.pow(1.02,x.log10().div(1e7).sub(100)).mul(1e9).pow10()
-                let cost = Decimal.pow(10,x.pow(1.25)).mul(1e58)
+                let c = inChallenge("ct",32)?"e1000":1e58
+                let cost = Decimal.pow(10,x.pow(1.25)).mul(c)
                 return cost.floor()
             },
             base(x=player[this.layer].buyables[this.id]) { 
@@ -38091,7 +39867,8 @@ addLayer("ct", {
             },
             buyMax() {//10^(1.01^(log10(x)/1e7-100)*1e9)
                 let s = player.ct.CorVid
-                let target = s.div(1e58).log(10).root(1.25)
+                let c = inChallenge("ct",32)?"e1000":1e58
+                let target = s.div(c).log(10).root(1.25)
                 if (target.gte(Decimal.pow(10,1e9))) target = target.log10().div(1e9).log(1.02).add(100).mul(1e7).pow10()
                 if (target.gte(Decimal.pow(10,Decimal.pow(10,1e5)))) target = target.log10().log10().div(1e5).log(1.0001).add(1e5).pow10().pow10()
                 if (target.gte(slogadd(1e30,2))) target = target.log10().log10().pow(3.33333e28).pow10()
@@ -38100,6 +39877,7 @@ addLayer("ct", {
                 if (target.gte(tet10(5.2))) target = tet10(slog(target).div(5.2).pow(0.3).mul(5.2))
                 if (target.gte(tet10(5.34))) target = tet10(slog(target).div(5.34).pow(0.2).mul(5.34))
                 if (target.gte(tet10(6.9))) target = tet10(slog(target).div(6.9).pow(0.1).mul(6.9))
+                if (target.gte(tet10(7+Math.log10(1.6)))) target = tet10(slog(target).div(7+Math.log10(1.6)).log10().add(7+Math.log10(1.6)))
                 target = target.ceil()
                 let cost = Decimal.pow(10,target.sub(1).pow(1.25)).mul(1e58)
                 let diff = target.sub(player.ct.buyables[71])
@@ -38114,6 +39892,7 @@ addLayer("ct", {
         72: {
 			title: "Upgrade Boost",
 			cost(x=player[this.layer].buyables[this.id]) { // cost for buying xth buyable, can be an object if there are multiple currencies
+                if (x.gte(tet10(7+Math.log10(1.6)))) x = tet10(slog(x).sub(7+Math.log10(1.6)).pow10().mul(7+Math.log10(1.6)))
                 if (x.gte(tet10(6.9))) x = tet10(slog(x).div(6.9).root(0.1).mul(6.9))
                 if (x.gte(tet10(5.34))) x = tet10(slog(x).div(5.34).root(0.2).mul(5.34))
                 if (x.gte(tet10(5.2))) x = tet10(slog(x).div(5.2).root(0.3).mul(5.2))
@@ -38182,6 +39961,7 @@ addLayer("ct", {
                 if (target.gte(tet10(5.2))) target = tet10(slog(target).div(5.2).pow(0.3).mul(5.2))
                 if (target.gte(tet10(5.34))) target = tet10(slog(target).div(5.34).pow(0.2).mul(5.34))
                 if (target.gte(tet10(6.9))) target = tet10(slog(target).div(6.9).pow(0.1).mul(6.9))
+                if (target.gte(tet10(7+Math.log10(1.6)))) target = tet10(slog(target).div(7+Math.log10(1.6)).log10().add(7+Math.log10(1.6)))
                 target = target.ceil()
                 let cost = Decimal.pow(1e3,target.sub(1).pow(1.4)).mul(1e113)
                 let diff = target.sub(player.ct.buyables[72])
@@ -40273,7 +42053,7 @@ addLayer("ct", {
                 let max = tmp.ct.buyables[191].maxAfford
                 let b = max.sub(player.ct.buyables[191]).max(1)
                 if (tmp[this.layer].buyables[this.id].canAfford) {
-                    player.ct.Ui = player.ct.Ui.sub(cost)
+                    if (!hasUpgrade("ct",361)) player.ct.Ui = player.ct.Ui.sub(cost)
                     if (hasUpgrade("ct",343)) {
                         player.ct.Av = player.ct.Av.add(b).max(1)
                         player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(b).max(1)
@@ -40760,21 +42540,26 @@ addLayer("ct", {
             },
             exp() { // cost for buying xth buyable, can be an object if there are multiple currencies
                 let exp = 1.6
-                if (hasUpgrade("ct",515)) exp = 1.59
+                if (hasUpgrade("ct",515)) exp -= 0.01
                 if (hasUpgrade("ct",531)) {
-                    exp = 1.58
-                    if (player.ct.aBoost.gte("e5573000")) exp = 1.57
-                    if (player.ct.aBoost.gte("e5705000")) exp = 1.56
+                    exp -= 0.01
+                    if (player.ct.aBoost.gte("e5573000")) exp -= 0.01
+                    if (player.ct.aBoost.gte("e5705000")) exp -= 0.01
                 }
                 if (hasUpgrade("ct",534)) {
-                    if (player.ct.aBoost.gte("e1009e4")) exp = 1.55
-                    if (player.ct.aBoost.gte("e1103e4")) exp = 1.54
+                    if (player.ct.aBoost.gte("e1009e4")) exp -= 0.01
+                    if (player.ct.aBoost.gte("e1103e4")) exp -= 0.01
                 }
                 if (hasUpgrade("ct",535)) {
-                    if (player.ct.aBoost.gte("e14745e3")) exp = 1.53
+                    if (player.ct.aBoost.gte("e14745e3")) exp -= 0.01
                 }
                 if (hasUpgrade("ct",542)) {
-                    if (player.ct.aBoost.gte("e2927e4")) exp = 1.52
+                    if (player.ct.aBoost.gte("e2927e4")) exp -= 0.01
+                }
+                if (hasMilestone("uv",44)) {
+                    if (player.uv.virusTotal.gte(1e302)) exp -= 0.02
+                    if (player.uv.virusTotal.gte("e312")) exp -= 0.01
+                    if (player.uv.virusTotal.gte("e329")) exp -= 0.01
                 }
                 return exp
             },
@@ -41194,10 +42979,17 @@ addLayer("ct", {
 			title: "Antiest-Booster Gain",
 			cost() { // cost for buying xth buyable, can be an object if there are multiple currencies
                 let x = player.ct.aB7
+                let exp = tmp.ct.buyables[251].exp
                 if (x.gte(1e3)) x = x.mul(1.5).sub(500).div(1e3).pow(1.2).mul(1e3)
                 if (x.gte(540)) x = x.mul(1.5).sub(270).div(540).pow(1.1).mul(540)
-                let cost = Decimal.pow(1e6,x.pow(1.5)).mul("e500")
+                let cost = Decimal.pow(1e6,x.pow(exp)).mul("e500")
                 return cost.floor()
+            },
+            exp() { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let exp = 1.5
+                if (hasMilestone("uv",50)) exp -= 0.05
+                if (hasMilestone("uv",51)) exp -= 0.02
+                return exp
             },
             base(x=player[this.layer].buyables[this.id]) { 
                 let base = player.ct.buyables[243].max(10).log10().pow(0.6).add(1)
@@ -41248,7 +43040,8 @@ addLayer("ct", {
             },
             maxAfford() {
                 let s = player.ct.buyables[241]
-                let target = s.div("e500").log(1e6).root(1.5)
+                let exp = tmp.ct.buyables[251].exp
+                let target = s.div("e500").log(1e6).root(exp)
                 if (target.gte(540)) target = target.div(540).root(1.1).mul(540).add(270).div(1.5)
                 if (target.gte(1e3)) target = target.div(1e3).root(1.2).mul(1e3).add(500).div(1.5)
                 return target.floor().add(1)
@@ -41266,6 +43059,7 @@ addLayer("ct", {
                 let base = tmp.ct.buyables[261].costb
                 let exp = tmp.ct.buyables[261].coste
                 let x = player.ct.buyables[261]
+                if (x.gte(1866)) x = x.mul(1.5).sub(1866/2)
                 if (x.gte(300)) x = Decimal.pow(1+1/300*1.2,x.sub(300)).mul(300)
                 if (x.gte(180)) x = x.mul(1.5).sub(90)
                 let cost = Decimal.pow(base,x.pow(exp)).mul("e116000")
@@ -41326,7 +43120,10 @@ addLayer("ct", {
                 let max = tmp.ct.buyables[261].maxAfford
                 let b = max.max(1)
                 if (tmp[this.layer].buyables[this.id].canAfford) {
-                    if (false) player[this.layer].buyables[this.id] = b
+                    if (hasUpgrade("ct",601)) {
+                        player[this.layer].buyables[this.id] = b
+                        player.ct.distBuy[0] = b
+                    }
                     else {
                         player.ct.aBoost = player.ct.aBoost.sub(cost)
                         player.ct.distBuy[0] = player.ct.distBuy[0].add(1).max(1)
@@ -41339,6 +43136,9 @@ addLayer("ct", {
                 let base = tmp.ct.buyables[261].costb
                 let exp = tmp.ct.buyables[261].coste
                 let target = s.div("e116000").log(base).root(exp)
+                if (target.gte(180)) target = target.add(90).div(1.5)
+                if (target.gte(300)) target = target.div(300).log(1+1/300*1.2).add(300)
+                if (target.gte(1866)) target = target.add(1866/2).div(1.5)
                 return target.floor().add(1)
             },
             style: {"width":"180px","height":"180px","background"() {
@@ -41354,6 +43154,7 @@ addLayer("ct", {
                 let base = tmp.ct.buyables[262].costb
                 let exp = tmp.ct.buyables[262].coste
                 let x = player.ct.buyables[262]
+                if (x.gte(1425)) x = x.mul(1.5).sub(1425/2)
                 if (x.gte(230)) x = Decimal.pow(1+1/230*1.2,x.sub(230)).mul(230)
                 if (x.gte(140)) x = x.mul(1.5).sub(70)
                 let cost = Decimal.pow(base,x.pow(exp)).mul("e120500")
@@ -41371,6 +43172,7 @@ addLayer("ct", {
                 let base = player.ct.buyables[261].add(100).log10().div(2).sub(1).mul(5).add(1)
                 if (base.gte(1.13)) base = base.div(1.13).pow(0.2).mul(1.13)
                 if (base.gte(1.2)) base = base.div(1.2).pow(0.35).mul(1.2)
+                if (base.gte(1.3)) base = base.div(1.3).pow(2.5).mul(1.3)
                 return base
             },
             effect() { // Effects of owning x of the items, x is a decimal
@@ -41395,7 +43197,10 @@ addLayer("ct", {
                 let max = tmp.ct.buyables[262].maxAfford
                 let b = max.max(1)
                 if (tmp[this.layer].buyables[this.id].canAfford) {
-                    if (false) player[this.layer].buyables[this.id] = b
+                    if (hasUpgrade("ct",601)) {
+                        player[this.layer].buyables[this.id] = b
+                        player.ct.distBuy[1] = b
+                    }
                     else {
                         player.ct.aBoost = player.ct.aBoost.sub(cost)
                         player.ct.distBuy[1] = player.ct.distBuy[1].add(1).max(1)
@@ -41408,6 +43213,9 @@ addLayer("ct", {
                 let base = tmp.ct.buyables[262].costb
                 let exp = tmp.ct.buyables[262].coste
                 let target = s.div("e120500").log(base).root(exp)
+                if (target.gte(140)) target = target.add(70).div(1.5)
+                if (target.gte(230)) target = target.div(230).log(1+1/230*1.2).add(230)
+                if (target.gte(1425)) target = target.add(1425/2).div(1.5)
                 return target.floor().add(1)
             },
             style: {"width":"180px","height":"180px","background"() {
@@ -41423,6 +43231,7 @@ addLayer("ct", {
                 let base = tmp.ct.buyables[263].costb
                 let exp = tmp.ct.buyables[263].coste
                 let x = player.ct.buyables[263]
+                if (x.gte(1257)) x = x.mul(1.5).sub(1257/2)
                 if (x.gte(204)) x = Decimal.pow(1+1/204*1.2,x.sub(204)).mul(204)
                 if (x.gte(125)) x = x.mul(1.5).sub(62.5)
                 let cost = Decimal.pow(base,x.pow(exp)).mul("e127000")
@@ -41463,7 +43272,10 @@ addLayer("ct", {
                 let max = tmp.ct.buyables[263].maxAfford
                 let b = max.max(1)
                 if (tmp[this.layer].buyables[this.id].canAfford) {
-                    if (false) player[this.layer].buyables[this.id] = b
+                    if (hasUpgrade("ct",601)) {
+                        player[this.layer].buyables[this.id] = b
+                        player.ct.distBuy[2] = b
+                    }
                     else {
                         player.ct.aBoost = player.ct.aBoost.sub(cost)
                         player.ct.distBuy[2] = player.ct.distBuy[2].add(1).max(1)
@@ -41476,6 +43288,9 @@ addLayer("ct", {
                 let base = tmp.ct.buyables[263].costb
                 let exp = tmp.ct.buyables[263].coste
                 let target = s.div("e120500").log(base).root(exp)
+                if (target.gte(125)) target = target.add(62.5).div(1.5)
+                if (target.gte(204)) target = target.div(204).log(1+1/204*1.2).add(204)
+                if (target.gte(1257)) target = target.add(1257/2).div(1.5)
                 return target.floor().add(1)
             },
             style: {"width":"180px","height":"180px","background"() {
@@ -41491,6 +43306,7 @@ addLayer("ct", {
                 let base = tmp.ct.buyables[271].costb
                 let exp = tmp.ct.buyables[271].coste
                 let x = player.ct.buyables[271]
+                if (x.gte(1117)) x = x.mul(1.5).sub(1117/2)
                 if (x.gte(182)) x = Decimal.pow(1+1/182*1.2,x.sub(182)).mul(182)
                 if (x.gte(110)) x = x.mul(1.5).sub(55)
                 let cost = Decimal.pow(base,x.pow(exp)).mul("e170300")
@@ -41532,7 +43348,10 @@ addLayer("ct", {
                 let max = tmp.ct.buyables[271].maxAfford
                 let b = max.max(1)
                 if (tmp[this.layer].buyables[this.id].canAfford) {
-                    if (false) player[this.layer].buyables[this.id] = b
+                    if (hasUpgrade("ct",601)) {
+                        player[this.layer].buyables[this.id] = b
+                        player.ct.distBuy[3] = b
+                    }
                     else {
                         player.ct.aBoost = player.ct.aBoost.sub(cost)
                         player.ct.distBuy[3] = player.ct.distBuy[3].add(1).max(1)
@@ -41545,6 +43364,9 @@ addLayer("ct", {
                 let base = tmp.ct.buyables[271].costb
                 let exp = tmp.ct.buyables[271].coste
                 let target = s.div("e170300").log(base).root(exp)
+                if (target.gte(110)) target = target.add(55).div(1.5)
+                if (target.gte(182)) target = target.div(182).log(1+1/182*1.2).add(182)
+                if (target.gte(1117)) target = target.add(1117/2).div(1.5)
                 return target.floor().add(1)
             },
             style: {"width":"180px","height":"180px","background"() {
@@ -41560,6 +43382,7 @@ addLayer("ct", {
                 let base = tmp.ct.buyables[272].costb
                 let exp = tmp.ct.buyables[272].coste
                 let x = player.ct.buyables[272]
+                if (x.gte(1008)) x = x.mul(1.5).sub(1008/2)
                 if (x.gte(165)) x = Decimal.pow(1+1/165*1.2,x.sub(165)).mul(165)
                 if (x.gte(100)) x = x.mul(1.5).sub(50)
                 let cost = Decimal.pow(base,x.pow(exp)).mul("e192000")
@@ -41600,7 +43423,10 @@ addLayer("ct", {
                 let max = tmp.ct.buyables[272].maxAfford
                 let b = max.max(1)
                 if (tmp[this.layer].buyables[this.id].canAfford) {
-                    if (false) player[this.layer].buyables[this.id] = b
+                    if (hasUpgrade("ct",601)) {
+                        player[this.layer].buyables[this.id] = b
+                        player.ct.distBuy[4] = b
+                    }
                     else {
                         player.ct.aBoost = player.ct.aBoost.sub(cost)
                         player.ct.distBuy[4] = player.ct.distBuy[4].add(1).max(1)
@@ -41613,6 +43439,9 @@ addLayer("ct", {
                 let base = tmp.ct.buyables[272].costb
                 let exp = tmp.ct.buyables[272].coste
                 let target = s.div("e192000").log(base).root(exp)
+                if (target.gte(100)) target = target.add(50).div(1.5)
+                if (target.gte(165)) target = target.div(165).log(1+1/165*1.2).add(165)
+                if (target.gte(1008)) target = target.add(1008/2).div(1.5)
                 return target.floor().add(1)
             },
             style: {"width":"180px","height":"180px","background"() {
@@ -41628,6 +43457,7 @@ addLayer("ct", {
                 let base = tmp.ct.buyables[273].costb
                 let exp = tmp.ct.buyables[273].coste
                 let x = player.ct.buyables[273]
+                if (x.gte(923)) x = x.mul(1.5).sub(923/2)
                 if (x.gte(152)) x = Decimal.pow(1+1/152*1.2,x.sub(152)).mul(152)
                 if (x.gte(95)) x = x.mul(1.5).sub(47.5)
                 let cost = Decimal.pow(base,x.pow(exp)).mul("e341000")
@@ -41669,7 +43499,10 @@ addLayer("ct", {
                 let max = tmp.ct.buyables[273].maxAfford
                 let b = max.max(1)
                 if (tmp[this.layer].buyables[this.id].canAfford) {
-                    if (false) player[this.layer].buyables[this.id] = b
+                    if (hasUpgrade("ct",601)) {
+                        player[this.layer].buyables[this.id] = b
+                        player.ct.distBuy[5] = b
+                    }
                     else {
                         player.ct.aBoost = player.ct.aBoost.sub(cost)
                         player.ct.distBuy[5] = player.ct.distBuy[5].add(1).max(1)
@@ -41682,6 +43515,9 @@ addLayer("ct", {
                 let base = tmp.ct.buyables[273].costb
                 let exp = tmp.ct.buyables[273].coste
                 let target = s.div("e341000").log(base).root(exp)
+                if (target.gte(95)) target = target.add(47.5).div(1.5)
+                if (target.gte(152)) target = target.div(152).log(1+1/152*1.2).add(152)
+                if (target.gte(923)) target = target.add(923/2).div(1.5)
                 return target.floor().add(1)
             },
             style: {"width":"180px","height":"180px","background"() {
@@ -41743,7 +43579,10 @@ addLayer("ct", {
                 let max = tmp.ct.buyables[281].maxAfford
                 let b = max.max(1)
                 if (tmp[this.layer].buyables[this.id].canAfford) {
-                    if (false) player[this.layer].buyables[this.id] = b
+                    if (hasUpgrade("ct",601)) {
+                        player[this.layer].buyables[this.id] = b
+                        player.ct.distBuy[6] = b
+                    }
                     else {
                         player.ct.distBuy[6] = player.ct.distBuy[6].add(1).max(1)
                         player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1).max(1)
@@ -41755,6 +43594,11 @@ addLayer("ct", {
                 let base = tmp.ct.buyables[281].costb
                 let exp = tmp.ct.buyables[281].coste
                 let target = s.div(1.616255e-35*3).log(base).root(exp)
+                if (target.gte(40)) target = target.add(14).div(1.35)
+                if (target.gte(45)) target = target.add(9).div(1.2)
+                if (target.gte(85)) target = target.div(85).root(1.3).mul(85).add(25.5).div(1.3)
+                if (target.gte(98)) target = target.sub(1)
+                if (target.gte(100)) target = target.div(100).root(1.3).mul(100).add(30).div(1.3)
                 return target.floor().add(1)
             },
             style: {"width":"180px","height":"180px","background"() {
@@ -41770,6 +43614,7 @@ addLayer("ct", {
                 let base = tmp.ct.buyables[282].costb
                 let exp = tmp.ct.buyables[282].coste
                 let x = player.ct.buyables[282]
+                if (x.gte(280)) x = x.mul(1.3).sub(84).div(280).pow(1.15).mul(280)
                 if (x.gte(100)) x = x.mul(1.3).sub(30).div(100).pow(1.3).mul(100)
                 if (x.gte(96)) x = x.add(1)
                 if (x.gte(85)) x = x.mul(1.3).sub(25.5).div(85).pow(1.3).mul(85)
@@ -41813,7 +43658,10 @@ addLayer("ct", {
                 let max = tmp.ct.buyables[282].maxAfford
                 let b = max.max(1)
                 if (tmp[this.layer].buyables[this.id].canAfford) {
-                    if (false) player[this.layer].buyables[this.id] = b
+                    if (hasUpgrade("ct",601)) {
+                        player[this.layer].buyables[this.id] = b
+                        player.ct.distBuy[7] = b
+                    }
                     else {
                         player.ct.distBuy[7] = player.ct.distBuy[7].add(1).max(1)
                         player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1).max(1)
@@ -41825,6 +43673,12 @@ addLayer("ct", {
                 let base = tmp.ct.buyables[282].costb
                 let exp = tmp.ct.buyables[282].coste
                 let target = s.div(1.616255e-35*4).log(base).root(exp)
+                if (target.gte(40)) target = target.add(14).div(1.35)
+                if (target.gte(45)) target = target.add(9).div(1.2)
+                if (target.gte(85)) target = target.div(85).root(1.3).mul(85).add(25.5).div(1.3)
+                if (target.gte(96)) target = target.sub(1)
+                if (target.gte(100)) target = target.div(100).root(1.3).mul(100).add(30).div(1.3)
+                if (target.gte(280)) target = target.div(280).root(1.15).mul(280).add(84).div(1.3)
                 return target.floor().add(1)
             },
             style: {"width":"180px","height":"180px","background"() {
@@ -41840,6 +43694,7 @@ addLayer("ct", {
                 let base = tmp.ct.buyables[283].costb
                 let exp = tmp.ct.buyables[283].coste
                 let x = player.ct.buyables[283]
+                if (x.gte(79)) x = x.div(79).pow(1.6).mul(100).sub(21)
                 if (x.gte(39)) x = x.div(39).pow(1.6).mul(50).sub(11)
                 if (x.gte(30)) x = x.div(30).pow(1.5).mul(40).sub(10)
                 if (x.gte(17)) x = x.mul(1.2).sub(3.4)
@@ -41856,6 +43711,7 @@ addLayer("ct", {
             },
             base() { 
                 let base = player.ct.aBoost.max(10).log10().max(10).log10().pow(2).sub(1).div(5e3)
+                if (base.gte(0.06)) base = base.div(0.06).pow(0.5).mul(0.04).add(0.02)
                 return base
             },
             effect() { // Effects of owning x of the items, x is a decimal
@@ -41880,7 +43736,10 @@ addLayer("ct", {
                 let max = tmp.ct.buyables[283].maxAfford
                 let b = max.max(1)
                 if (tmp[this.layer].buyables[this.id].canAfford) {
-                    if (false) player[this.layer].buyables[this.id] = b
+                    if (hasUpgrade("ct",601)) {
+                        player[this.layer].buyables[this.id] = b
+                        player.ct.distBuy[8] = b
+                    }
                     else {
                         player.ct.distBuy[8] = player.ct.distBuy[8].add(1).max(1)
                         player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1).max(1)
@@ -41892,11 +43751,626 @@ addLayer("ct", {
                 let base = tmp.ct.buyables[283].costb
                 let exp = tmp.ct.buyables[283].coste
                 let target = s.div(1.616255e-35*4.9).log(base).root(exp)
+                if (target.gte(17)) target = target.add(3.4).div(1.2)
+                if (target.gte(30)) target = target.add(10).div(40).root(1.5).mul(30)
+                if (target.gte(39)) target = target.add(11).div(50).root(1.6).mul(39)
+                if (target.gte(79)) target = target.add(21).div(100).root(1.6).mul(79)
                 return target.floor().add(1)
             },
             style: {"width":"180px","height":"180px","background"() {
                 let color = "#bf8f8f"
                 if (tmp.ct.buyables[283].canAfford) color = "radial-gradient(#05a063, #65c28d)"
+                return color
+                }
+            }
+        },
+        291: {
+            title: "AnTNA Gain",
+            cost() { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let base = tmp.ct.buyables[291].costb
+                let exp = tmp.ct.buyables[291].coste
+                let x = player.ct.buyables[291]
+                let cost = Decimal.pow(base,x.pow(exp)).mul(31556952e63)
+                return cost
+            },
+            costb() { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let cost = new Decimal(1.7)
+                if (hasUpgrade("ct",592)) cost = cost.sub(0.2)
+                if (hasMilestone("ct",26)) cost = cost.sub(0.05)
+                if (hasMilestone("ct",29)) cost = cost.sub(0.05)
+                return cost
+            },
+            coste() { 
+                let cost = new Decimal(1.5)
+                if (hasMilestone("ct",29)) cost = cost.sub(0.05)
+                return cost
+            },
+            base() { 
+                let base = tmp.ct.buyables[322].effect
+                if (hasUpgrade("ct",596)) base = base.mul(tmp.ct.upgrades[596].effect)
+                return base
+            },
+            exp() { 
+                let exp = decimalOne
+                if (hasUpgrade("ct",595)) exp = exp.add(0.5)
+                if (hasUpgrade("ct",601)) exp = exp.add(tmp.ct.upgrades[601].effect)
+                if (hasMilestone("uv",53)) exp = exp.add(0.25)
+                if (hasMilestone("uv",54)) exp = exp.add(0.25)
+                return exp
+            },
+            effectBase() { // Effects of owning x of the items, x is a decimal
+                let x = player.ct.buyables[291]
+                let base = tmp[this.layer].buyables[this.id].base
+                return Decimal.mul(base, x);
+            },
+            effect() { // Effects of owning x of the items, x is a decimal
+                let exp = tmp.ct.buyables[291].exp
+                let base = tmp[this.layer].buyables[this.id].effectBase
+                return Decimal.pow(base, exp);
+            },
+            display() { // Everything else displayed in the buyable button after the title
+                if (player.tab != "ct" || player.subtabs.ct.mainTabs != "AnTNA") return
+                let base  = tmp.ct.buyables[291].costb
+                let exp = tmp.ct.buyables[291].coste
+                if (shiftDown) return "<span style='font-size:16px'>Cost formula: "+formatTimeLong(31556952e63)+" * "+format(base) + "<sup>x<sup>"+format(exp)+"</sup></sup></span>"
+                let extra = ""
+                let dis = "Gain "+format(tmp.ct.buyables[291].base) + " base AnTNA per second"
+                return dis + ".\n\
+                Cost: " + formatTimeLong(tmp[this.layer].buyables[this.id].cost)+" Adverse Vaxxer reset time\n\
+                Effect: +" + format(tmp[this.layer].buyables[this.id].effect)+" ("+format(tmp[this.layer].buyables[this.id].effectBase)+"<sup>"+format(tmp[this.layer].buyables[this.id].exp)+"</sup>)\n\
+                Amount: " + formatWhole(getBuyableAmount("ct", 291))
+            },
+            unlocked() { return hasUpgrade("ct",541) }, 
+            canAfford() {
+                    return player.ct.AdvVaxTime.gte(tmp[this.layer].buyables[this.id].cost)},
+            buy() { 
+                cost = tmp[this.layer].buyables[this.id].cost
+                let max = tmp.ct.buyables[291].maxAfford
+                let b = max.max(1)
+                if (tmp[this.layer].buyables[this.id].canAfford) {
+                    if (false) player[this.layer].buyables[this.id] = b
+                    else {
+                        player.ct.AdvVaxTime = player.ct.AdvVaxTime.sub(cost).max(0)
+                        player.ct.AdvTime = player.ct.AdvVaxTime.min(1e308).toNumber()
+                        player.ct.AnTNABuy[0] = player.ct.AnTNABuy[0].add(1).max(1)
+                        player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1).max(1)
+                    }
+                }
+            },
+            maxAfford() {
+                let s = player.ct.AdvVaxTime
+                let base = tmp.ct.buyables[291].costb
+                let exp = tmp.ct.buyables[291].coste
+                let target = s.div(31556952e63).log(base).root(exp)
+                return target.floor().add(1)
+            },
+            style: {"width":"180px","height":"180px","background"() {
+                let color = "#bf8f8f"
+                if (tmp.ct.buyables[291].canAfford) color = "radial-gradient(#a5c38d, #5a3c72)"
+                return color
+                }
+            }
+        },
+        292: {
+            title() {
+                let d = "AnTNA Boost"
+                let dist = tmp.ct.buyables[292].distantStart
+                let sc = player.ct.buyables[292].gte(dist)?"Distant ":""
+                let dis = sc+d
+                return dis
+            },
+            cost() { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let base = tmp.ct.buyables[292].costb
+                let exp = tmp.ct.buyables[292].coste
+                let dist = tmp.ct.buyables[292].distantStart
+                let distexp = tmp.ct.buyables[292].distantExp
+                let x = player.ct.buyables[292]
+                if (x.gte(dist)) x = x.sub(dist).pow(distexp).add(dist)
+                let cost = Decimal.pow(base,x.pow(exp)).mul(300)
+                return cost
+            },
+            distantStart(){
+                let start = new Decimal(45)
+                return start
+            },
+            distantExp(){
+                let start = new Decimal(1.5)
+                return start
+            },
+            costb() { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let cost = decimalFive
+                return cost
+            },
+            coste() { 
+                let cost = new Decimal(1.3)
+                return cost
+            },
+            base() { 
+                let base = tmp.ct.buyables[293].effect.add(2)
+                if (hasUpgrade("ct",584)) base = base.add(tmp.ct.upgrades[584].effect)
+                return base
+            },
+            effect() { // Effects of owning x of the items, x is a decimal
+                let x = player.ct.buyables[292]
+                let base = tmp[this.layer].buyables[this.id].base
+                return Decimal.pow(base, x);
+            },
+            display() { // Everything else displayed in the buyable button after the title
+                if (player.tab != "ct" || player.subtabs.ct.mainTabs != "AnTNA") return
+                let base  = tmp.ct.buyables[292].costb
+                let exp = tmp.ct.buyables[292].coste
+                let dist = tmp.ct.buyables[292].distantStart
+                if (shiftDown) return "<span style='font-size:16px'>Cost formula: "+format(300)+" * "+format(base) + "<sup>x<sup>"+format(exp)+"</sup></sup></span>"
+                let extra = ""
+                let dis = "Multiply AnTNA gain by "+format(tmp.ct.buyables[292].base)
+                return dis + ".\n\
+                Cost: " + formatWhole(tmp[this.layer].buyables[this.id].cost)+" AnTNA\n\
+                Effect: " + format(tmp[this.layer].buyables[this.id].effect)+"x\n\
+                Amount: " + formatWhole(getBuyableAmount("ct", 292))
+            },
+            unlocked() { return hasUpgrade("ct",541) }, 
+            canAfford() {
+                    return player.ct.AnTNA.gte(tmp[this.layer].buyables[this.id].cost)},
+            buy() { 
+                cost = tmp[this.layer].buyables[this.id].cost
+                let max = tmp.ct.buyables[292].maxAfford
+                let b = max.max(1)
+                if (tmp[this.layer].buyables[this.id].canAfford) {
+                    if (false) player[this.layer].buyables[this.id] = b
+                    else {
+                        player.ct.AnTNA = player.ct.AnTNA.sub(cost).max(0)
+                        player.ct.AnTNABuy[1] = player.ct.AnTNABuy[1].add(1).max(1)
+                        player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1).max(1)
+                    }
+                }
+            },
+            maxAfford() {
+                let s = player.ct.AnTNA
+                let base = tmp.ct.buyables[292].costb
+                let exp = tmp.ct.buyables[292].coste
+                let dist = tmp.ct.buyables[292].distantStart
+                let distexp = tmp.ct.buyables[292].distantExp
+                let target = s.div(300).log(base).root(exp)
+                if (target.gte(dist)) target = target.sub(dist).root(distexp).add(dist)
+                return target.floor().add(1)
+            },
+            style: {"width":"180px","height":"180px","background"() {
+                let color = "#bf8f8f"
+                if (tmp.ct.buyables[292].canAfford) color = "radial-gradient(#a5c38d, #5a3c72)"
+                return color
+                }
+            }
+        },
+        293: {
+            title() {
+                let d = "AnTNA Base"
+                let dist = tmp.ct.buyables[293].distantStart
+                let sc = player.ct.buyables[293].gte(dist)?"Distant ":""
+                let dis = sc+d
+                return dis
+            },
+            cost() { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let base = tmp.ct.buyables[293].costb
+                let exp = tmp.ct.buyables[293].coste
+                let dist = tmp.ct.buyables[293].distantStart
+                let distexp = tmp.ct.buyables[293].distantExp
+                let x = player.ct.buyables[293]
+                if (x.gte(dist)) x = x.sub(dist).pow(distexp).add(dist)
+                let cost = Decimal.pow(base,x.pow(exp)).mul(1e5)
+                return cost
+            },
+            distantStart(){
+                let start = new Decimal(45)
+                return start
+            },
+            distantExp(){
+                let start = new Decimal(1.5)
+                return start
+            },
+            costb() { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let cost = decimalTen
+                return cost
+            },
+            coste() { 
+                let cost = new Decimal(1.25)
+                return cost
+            },
+            base() { 
+                let base = new Decimal(0.1)
+                if (hasMilestone("uv",48)) base = base.add(0.0415)
+                if (hasMilestone("ct",27)) base = base.add(0.0185)
+                if (hasUpgrade("ct",606)) base = base.add(0.05)
+                return base
+            },
+            effect() { // Effects of owning x of the items, x is a decimal
+                let x = player.ct.buyables[293]
+                let base = tmp[this.layer].buyables[this.id].base
+                return Decimal.mul(base, x);
+            },
+            display() { // Everything else displayed in the buyable button after the title
+                if (player.tab != "ct" || player.subtabs.ct.mainTabs != "AnTNA") return
+                let base  = tmp.ct.buyables[293].costb
+                let exp = tmp.ct.buyables[293].coste
+                let dist = tmp.ct.buyables[293].distantStart
+                if (shiftDown) return "<span style='font-size:16px'>Cost formula: "+format(1e5)+" * "+format(base) + "<sup>x<sup>"+format(exp)+"</sup></sup></span>"
+                let extra = ""
+                let dis = "Increase 'AnTNA Boost' base by "+format(tmp.ct.buyables[293].base)
+                return dis + ".\n\
+                Cost: " + formatWhole(tmp[this.layer].buyables[this.id].cost)+" AnTNA\n\
+                Effect: +" + format(tmp[this.layer].buyables[this.id].effect)+"\n\
+                Amount: " + formatWhole(getBuyableAmount("ct", 293))
+            },
+            unlocked() { return hasUpgrade("ct",541) }, 
+            canAfford() {
+                    return player.ct.AnTNA.gte(tmp[this.layer].buyables[this.id].cost)},
+            buy() { 
+                cost = tmp[this.layer].buyables[this.id].cost
+                let max = tmp.ct.buyables[293].maxAfford
+                let b = max.max(1)
+                if (tmp[this.layer].buyables[this.id].canAfford) {
+                    if (false) player[this.layer].buyables[this.id] = b
+                    else {
+                        player.ct.AnTNA = player.ct.AnTNA.sub(cost).max(0)
+                        player.ct.AnTNABuy[2] = player.ct.AnTNABuy[2].add(1).max(1)
+                        player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1).max(1)
+                    }
+                }
+            },
+            maxAfford() {
+                let s = player.ct.AnTNA
+                let base = tmp.ct.buyables[293].costb
+                let exp = tmp.ct.buyables[293].coste
+                let dist = tmp.ct.buyables[293].distantStart
+                let distexp = tmp.ct.buyables[293].distantExp
+                let target = s.div(1e5).log(base).root(exp)
+                if (target.gte(dist)) target = target.sub(dist).root(distexp).add(dist)
+                return target.floor().add(1)
+            },
+            style: {"width":"180px","height":"180px","background"() {
+                let color = "#bf8f8f"
+                if (tmp.ct.buyables[293].canAfford) color = "radial-gradient(#a5c38d, #5a3c72)"
+                return color
+                }
+            }
+        },
+        294: {
+            title: "AnTNA Power",
+            cost() { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let base = tmp.ct.buyables[294].costb
+                let exp = tmp.ct.buyables[294].coste
+                let x = player.ct.buyables[294]
+                let cost = Decimal.pow(base,x.pow(exp)).mul(1e16).pow10()
+                return cost
+            },
+            costb() { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let cost = decimalTen
+                return cost
+            },
+            coste() { 
+                let cost = new Decimal(1.5)
+                return cost
+            },
+            base() { 
+                let base = new Decimal(1.1)
+                return base
+            },
+            effect() { // Effects of owning x of the items, x is a decimal
+                let x = player.ct.buyables[294]
+                let base = tmp[this.layer].buyables[this.id].base
+                return Decimal.pow(base, x);
+            },
+            display() { // Everything else displayed in the buyable button after the title
+                if (player.tab != "ct" || player.subtabs.ct.mainTabs != "AnTNA") return
+                let base  = tmp.ct.buyables[294].costb
+                let exp = tmp.ct.buyables[294].coste
+                if (shiftDown) return "<span style='font-size:16px'>Cost formula: 10<sup>"+format(1e16)+" * "+format(base) + "<sup>x<sup>"+format(exp)+"</sup></sup></sup></span>"
+                let extra = ""
+                let dis = "Raise AnTNA effect to "+format(tmp.ct.buyables[294].base)
+                return dis + ".\n\
+                Cost: " + formatWhole(tmp[this.layer].buyables[this.id].cost)+" Adverse Vaxxers\n\
+                Effect: ^" + format(tmp[this.layer].buyables[this.id].effect)+"\n\
+                Amount: " + formatWhole(getBuyableAmount("ct", 294))
+            },
+            unlocked() { return hasUpgrade("ct",541) }, 
+            canAfford() {
+                    return player.ct.Advaxxers.gte(tmp[this.layer].buyables[this.id].cost)},
+            buy() { 
+                cost = tmp[this.layer].buyables[this.id].cost
+                let max = tmp.ct.buyables[294].maxAfford
+                let b = max.max(1)
+                if (tmp[this.layer].buyables[this.id].canAfford) {
+                    if (false) player[this.layer].buyables[this.id] = b
+                    else {
+                        player.ct.Advaxxers = player.ct.Advaxxers.sub(cost).max(0)
+                        player.ct.AnTNABuy[3] = player.ct.AnTNABuy[3].add(1).max(1)
+                        player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1).max(1)
+                    }
+                }
+            },
+            maxAfford() {
+                let s = player.ct.Advaxxers
+                let base = tmp.ct.buyables[294].costb
+                let exp = tmp.ct.buyables[294].coste
+                let target = s.log10().div(1e16).log(base).root(exp)
+                return target.floor().add(1)
+            },
+            style: {"width":"180px","height":"180px","background"() {
+                let color = "#bf8f8f"
+                if (tmp.ct.buyables[294].canAfford) color = "radial-gradient(#a5c38d, #5a3c72)"
+                return color
+                }
+            }
+        },
+        321: {
+            title: "AnTNH",
+            cost() { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let base = tmp.ct.buyables[321].costb
+                let exp = tmp.ct.buyables[321].coste
+                let x = player.ct.buyables[321]
+                let cost = Decimal.pow(base,x.pow(exp)).mul(1.06959715e-64)
+                return cost
+            },
+            costb() { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let cost = decimalTwo
+                return cost
+            },
+            coste() { 
+                let cost = new Decimal(1.3)
+                return cost
+            },
+            base() { 
+                let base = powExp(player.ct.AnTBH.div(1.06959715e-64).add(1).mul(10),0.6).div(10).pow(0.5).add(0.7)
+                return base
+            },
+            effect() { // Effects of owning x of the items, x is a decimal
+                let x = player.ct.buyables[321]
+                let base = tmp[this.layer].buyables[this.id].base
+                return Decimal.pow(base, x);
+            },
+            display() { // Everything else displayed in the buyable button after the title
+                if (player.tab != "ct" || player.subtabs.ct.mainTabs != "AnTNA") return
+                let base  = tmp.ct.buyables[321].costb
+                let exp = tmp.ct.buyables[321].coste
+                if (shiftDown) return "<span style='font-size:16px'>Cost formula: "+formatMass(1.06959715e-64)+" * "+format(base) + "<sup>x<sup>"+format(exp)+"</sup></sup></span>"
+                let extra = ""
+                let dis = "Multiply AnTNA gain by "+format(tmp.ct.buyables[321].base)+" (based on AnT-Black Hole mass)"
+                return dis + ".\n\
+                Cost: " + formatMass(tmp[this.layer].buyables[this.id].cost)+" of AnT-Black Hole Mass\n\
+                Effect: " + format(tmp[this.layer].buyables[this.id].effect)+"x\n\
+                Amount: " + formatWhole(getBuyableAmount("ct", 321))
+            },
+            unlocked() { return hasUpgrade("ct",596) }, 
+            canAfford() {
+                    return player.ct.AnTBH.gte(tmp[this.layer].buyables[this.id].cost)},
+            buy() { 
+                cost = tmp[this.layer].buyables[this.id].cost
+                let max = tmp.ct.buyables[321].maxAfford
+                let b = max.max(1)
+                if (tmp[this.layer].buyables[this.id].canAfford) {
+                    if (false) player[this.layer].buyables[this.id] = b
+                    else {
+                        player.ct.AnTBH = player.ct.AnTBH.sub(cost).max(0)
+                        player.ct.AnTBHBuy[0] = player.ct.AnTBHBuy[0].add(1).max(1)
+                        player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1).max(1)
+                    }
+                }
+            },
+            maxAfford() {
+                let s = player.ct.AnTBH
+                let base = tmp.ct.buyables[321].costb
+                let exp = tmp.ct.buyables[321].coste
+                let target = s.div(1.06959715e-64).log(base).root(exp)
+                return target.floor().add(1)
+            },
+            style: {"width":"180px","height":"180px","background"() {
+                let color = "#bf8f8f"
+                if (tmp.ct.buyables[321].canAfford) color = "radial-gradient(#a5c38d, #5a3c72)"
+                return color
+                }
+            }
+        },
+        322: {
+            title: "AnTNH",
+            cost() { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let base = tmp.ct.buyables[322].costb
+                let exp = tmp.ct.buyables[322].coste
+                let x = player.ct.buyables[322]
+                let cost = Decimal.pow(base,x.pow(exp)).mul(1.06959715e-64*200)
+                return cost
+            },
+            costb() { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let cost = decimalFive
+                return cost
+            },
+            coste() { 
+                let cost = new Decimal(1.5)
+                return cost
+            },
+            base() { 
+                let base = powExp(player.ct.AnTBH.div(1.06959715e-64*200).add(1).mul(10),0.5).div(10).pow(0.4).add(0.4)
+                if (base.gte(10)) base = base.log10().pow(0.8).mul(0.8).add(0.2).pow10()
+                return base
+            },
+            effect() { // Effects of owning x of the items, x is a decimal
+                let x = player.ct.buyables[322]
+                let base = tmp[this.layer].buyables[this.id].base
+                return Decimal.pow(base, x);
+            },
+            display() { // Everything else displayed in the buyable button after the title
+                if (player.tab != "ct" || player.subtabs.ct.mainTabs != "AnTNA") return
+                let base  = tmp.ct.buyables[322].costb
+                let exp = tmp.ct.buyables[322].coste
+                if (shiftDown) return "<span style='font-size:16px'>Cost formula: "+formatMass(1.06959715e-64*200)+" * "+format(base) + "<sup>x<sup>"+format(exp)+"</sup></sup></span>"
+                let extra = ""
+                let dis = "Multiply base AnTNA gain by "+format(tmp.ct.buyables[322].base)+" (based on AnT-Black Hole mass)"
+                return dis + ".\n\
+                Cost: " + formatMass(tmp[this.layer].buyables[this.id].cost)+" of AnT-Black Hole Mass\n\
+                Effect: " + format(tmp[this.layer].buyables[this.id].effect)+"x\n\
+                Amount: " + formatWhole(getBuyableAmount("ct", 322))
+            },
+            unlocked() { return hasUpgrade("ct",596) }, 
+            canAfford() {
+                    return player.ct.AnTBH.gte(tmp[this.layer].buyables[this.id].cost)},
+            buy() { 
+                cost = tmp[this.layer].buyables[this.id].cost
+                let max = tmp.ct.buyables[322].maxAfford
+                let b = max.max(1)
+                if (tmp[this.layer].buyables[this.id].canAfford) {
+                    if (false) player[this.layer].buyables[this.id] = b
+                    else {
+                        player.ct.AnTBH = player.ct.AnTBH.sub(cost).max(0)
+                        player.ct.AnTBHBuy[1] = player.ct.AnTBHBuy[1].add(1).max(1)
+                        player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1).max(1)
+                    }
+                }
+            },
+            maxAfford() {
+                let s = player.ct.AnTBH
+                let base = tmp.ct.buyables[322].costb
+                let exp = tmp.ct.buyables[322].coste
+                let target = s.div(1.06959715e-64*200).log(base).root(exp)
+                return target.floor().add(1)
+            },
+            style: {"width":"180px","height":"180px","background"() {
+                let color = "#bf8f8f"
+                if (tmp.ct.buyables[322].canAfford) color = "radial-gradient(#a5c38d, #5a3c72)"
+                return color
+                }
+            }
+        },
+        323: {
+            title: "AnTNH",
+            cost() { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let base = tmp.ct.buyables[323].costb
+                let exp = tmp.ct.buyables[323].coste
+                let x = player.ct.buyables[323]
+                let cost = Decimal.pow(base,x.pow(exp)).mul(1.06959715e-58*25)
+                return cost
+            },
+            costb() { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let cost = decimalTen
+                return cost
+            },
+            coste() { 
+                let cost = new Decimal(1.6)
+                return cost
+            },
+            base() { 
+                let base = player.ct.AdvVaxTime.add(10).log10().div(150).pow(2).add(1)
+                return base
+            },
+            effect() { // Effects of owning x of the items, x is a decimal
+                let x = player.ct.buyables[323]
+                let base = tmp[this.layer].buyables[this.id].base
+                return Decimal.pow(base, x);
+            },
+            display() { // Everything else displayed in the buyable button after the title
+                if (player.tab != "ct" || player.subtabs.ct.mainTabs != "AnTNA") return
+                let base  = tmp.ct.buyables[323].costb
+                let exp = tmp.ct.buyables[323].coste
+                if (shiftDown) return "<span style='font-size:16px'>Cost formula: "+formatMass(1.06959715e-58*25)+" * "+format(base) + "<sup>x<sup>"+format(exp)+"</sup></sup></span>"
+                let extra = ""
+                let dis = "Multiply AnT-Black Hole mass gain by "+format(tmp.ct.buyables[323].base)+" (based on Adverse Vaxxer reset time)"
+                return dis + ".\n\
+                Cost: " + formatMass(tmp[this.layer].buyables[this.id].cost)+" of AnT-Black Hole Mass\n\
+                Effect: " + format(tmp[this.layer].buyables[this.id].effect)+"x\n\
+                Amount: " + formatWhole(getBuyableAmount("ct", 323))
+            },
+            unlocked() { return hasUpgrade("ct",596) }, 
+            canAfford() {
+                    return player.ct.AnTBH.gte(tmp[this.layer].buyables[this.id].cost)},
+            buy() { 
+                cost = tmp[this.layer].buyables[this.id].cost
+                let max = tmp.ct.buyables[323].maxAfford
+                let b = max.max(1)
+                if (tmp[this.layer].buyables[this.id].canAfford) {
+                    if (false) player[this.layer].buyables[this.id] = b
+                    else {
+                        player.ct.AnTBH = player.ct.AnTBH.sub(cost).max(0)
+                        player.ct.AnTBHBuy[2] = player.ct.AnTBHBuy[2].add(1).max(1)
+                        player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1).max(1)
+                    }
+                }
+            },
+            maxAfford() {
+                let s = player.ct.AnTBH
+                let base = tmp.ct.buyables[323].costb
+                let exp = tmp.ct.buyables[323].coste
+                let target = s.div(1.06959715e-58*25).log(base).root(exp)
+                return target.floor().add(1)
+            },
+            style: {"width":"180px","height":"180px","background"() {
+                let color = "#bf8f8f"
+                if (tmp.ct.buyables[323].canAfford) color = "radial-gradient(#a5c38d, #5a3c72)"
+                return color
+                }
+            }
+        },
+        324: {
+            title: "AnTNH",
+            cost() { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let base = tmp.ct.buyables[324].costb
+                let exp = tmp.ct.buyables[324].coste
+                let x = player.ct.buyables[324]
+                let cost = Decimal.pow(base,x.pow(exp)).mul(1.06959715e-55*6)
+                return cost
+            },
+            costb() { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let cost = new Decimal(20)
+                return cost
+            },
+            coste() { 
+                let cost = new Decimal(1.65)
+                return cost
+            },
+            base() { 
+                let base = tmp.ct.getAntiDist.add(10).log10().div(800).pow(3).add(1)
+                if (base.gte(40)) base = base.div(40).pow(0.4).mul(20).add(20)
+                return base
+            },
+            effect() { // Effects of owning x of the items, x is a decimal
+                let x = player.ct.buyables[324]
+                let base = tmp[this.layer].buyables[this.id].base
+                return Decimal.pow(base, x);
+            },
+            display() { // Everything else displayed in the buyable button after the title
+                if (player.tab != "ct" || player.subtabs.ct.mainTabs != "AnTNA") return
+                let base  = tmp.ct.buyables[324].costb
+                let exp = tmp.ct.buyables[324].coste
+                if (shiftDown) return "<span style='font-size:16px'>Cost formula: "+formatMass(1.06959715e-55*6)+" * "+format(base) + "<sup>x<sup>"+format(exp)+"</sup></sup></span>"
+                let extra = ""
+                let dis = "Multiply AnT-Black Hole mass gain by "+format(tmp.ct.buyables[324].base)+" (based on Anti-Distance)"
+                return dis + ".\n\
+                Cost: " + formatMass(tmp[this.layer].buyables[this.id].cost)+" of AnT-Black Hole Mass\n\
+                Effect: " + format(tmp[this.layer].buyables[this.id].effect)+"x\n\
+                Amount: " + formatWhole(getBuyableAmount("ct", 324))
+            },
+            unlocked() { return hasUpgrade("ct",596) }, 
+            canAfford() {
+                    return player.ct.AnTBH.gte(tmp[this.layer].buyables[this.id].cost)},
+            buy() { 
+                cost = tmp[this.layer].buyables[this.id].cost
+                let max = tmp.ct.buyables[324].maxAfford
+                let b = max.max(1)
+                if (tmp[this.layer].buyables[this.id].canAfford) {
+                    if (false) player[this.layer].buyables[this.id] = b
+                    else {
+                        player.ct.AnTBH = player.ct.AnTBH.sub(cost).max(0)
+                        player.ct.AnTBHBuy[3] = player.ct.AnTBHBuy[3].add(1).max(1)
+                        player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1).max(1)
+                    }
+                }
+            },
+            maxAfford() {
+                let s = player.ct.AnTBH
+                let base = tmp.ct.buyables[324].costb
+                let exp = tmp.ct.buyables[324].coste
+                let target = s.div(1.06959715e-55*6).log(base).root(exp)
+                return target.floor().add(1)
+            },
+            style: {"width":"180px","height":"180px","background"() {
+                let color = "#bf8f8f"
+                if (tmp.ct.buyables[324].canAfford) color = "radial-gradient(#a5c38d, #5a3c72)"
                 return color
                 }
             }
@@ -42112,7 +44586,7 @@ addLayer("ct", {
                 player.ct.inC = player.ct.inC ? false : true
                 if (player.ct.inC) {
                     doReset("ct",true)
-                    layerDataReset("ct",["upgrades","milestones","challenges","inC","auto","autom","autoc","autov","autoroll","Uv","Ui","bestAdv","Uib","Av","Aspent","Advaxxers","bestAdvax","AdvTime","AdvVaxTime","bestTime","bestAps","AdVax","arna","aav","aiv","asv","AdV0","AdVax0","AdV1","AdVax1","AdV2","AdVax2","AdV3","AdVax3","AdV4","AdVax4","Atb","bestCases","aBoost","bestBoost","autoaest","extraBoost","aB","aB2","aB3","aB4","aB5","aB6","aB7","distBuy","AntiDist"])
+                    layerDataReset("ct",["upgrades","milestones","challenges","inC","auto","autom","autoc","autov","autoroll","Uv","Ui","bestAdv","Uib","Av","Aspent","Advaxxers","bestAdvax","AdvTime","AdvVaxTime","bestTime","bestAps","AdVax","arna","aav","aiv","asv","AdV0","AdVax0","AdV1","AdVax1","AdV2","AdVax2","AdV3","AdVax3","AdV4","AdVax4","Atb","bestCases","aBoost","bestBoost","autoaest","extraBoost","aB","aB2","aB3","aB4","aB5","aB6","aB7","distBuy","AntiDist","AnTNA","AnTBH","AnTNABuy","AnTBHBuy"])
                     player.ct.buyables[211]= player.ct.AdV4
                     player.ct.buyables[221]= player.ct.Atb
                     player.ct.buyables[231]= player.ct.aB
@@ -42124,6 +44598,12 @@ addLayer("ct", {
                     player.ct.buyables[251]= player.ct.aB7
                     for (i = 0; i < player.ct.distBuyId.length; i++){
                         player.ct.buyables[player.ct.distBuyId[i]]= player.ct.distBuy[i]
+                    }
+                    for (i = 0; i < player.ct.AnTNABuyId.length; i++){
+                        player.ct.buyables[player.ct.AnTNABuyId[i]]= player.ct.AnTNABuy[i]
+                    }
+                    for (i = 0; i < player.ct.AnTBHBuyId.length; i++){
+                        player.ct.buyables[player.ct.AnTBHBuyId[i]]= player.ct.AnTBHBuy[i]
                     }
                     updateTemp()
                     updateTemp()
@@ -42146,9 +44626,10 @@ addLayer("ct", {
                 if (cTime>=1e308) cTime = player.ct.AdvVaxTime
                 let aps = tmp.ct.clickables[32].gain.div(Decimal.max(cTime,0.0001))
                 let dis = "Reset Vaccination for <h3>"+formatWhole(tmp.ct.clickables[32].gain)+"</h3> Adverse "+pluralize(tmp.ct.clickables[32].gain,'Vaxxer','Vaxxers',true)+"<br>"
-                if (gain.gte(Decimal.pow(2,1024))) dis += " (softcapped)"
-                if (gain.gte("e5e6")) dis += "<sup>3</sup>"
-                else if (gain.gte("e55e4")) dis += "<sup>2</sup>"
+                let softdis = " (softcapped)"
+                if (gain.gte(Decimal.pow(2,1024)) && !hasUpgrade("ct",575)) dis += softdis
+                if (gain.gte("e5e6")) dis += softdis + "<sup>3</sup>"
+                else if (gain.gte("e55e4")) dis += softdis + "<sup>2</sup>"
                 if (tmp.ct.clickables[32].gain.lt(1e6)) dis += "Next at " + formatWhole(tmp.ct.clickables[32].next)+"<br>"
                 if (aps.gte(10)) dis += "<br>" + format(aps) + "/s"
                 else if (aps.gte(1/6)) dis += "<br>" + format(aps.mul(60)) + "/min"
@@ -42157,7 +44638,7 @@ addLayer("ct", {
             },
             gain() {
                 let gain = tmp.ct.clickables[32].gainb
-                gain = gain.mul(tmp.ct.clickables[32].aftermult)
+                gain = gain.mul(tmp.ct.clickables[32].aftermult).pow(tmp.ct.clickables[32].gainexp2)
                 if (player.ct.Ui.lt(Decimal.pow(2,4096))) gain = decimalZero
                 return gain.floor()
             },
@@ -42165,14 +44646,18 @@ addLayer("ct", {
                 let exp = tmp.ct.clickables[32].gainexp
                 let mult = tmp.ct.clickables[32].gainmult
                 let ex = .75
-                if (hasUpgrade("ct",436)) ex = 0.8
-                if (hasUpgrade("ct",441)) ex = 0.81
-                if (hasUpgrade("ct",442)) ex = 0.815
-                if (hasUpgrade("ct",451)) ex = 0.82
-                if (hasUpgrade("ct",456)) ex = 0.969696969
+                if (hasUpgrade("ct",436)) ex += 0.05
+                if (hasUpgrade("ct",441)) ex += 0.01
+                if (hasUpgrade("ct",442)) ex += 0.005
+                if (hasUpgrade("ct",451)) ex += 0.005
+                if (hasUpgrade("ct",456)) ex += 0.149696969
+                let ex2 = 0.8
+                if (hasUpgrade("ct",641)) ex2 += 0.01
+                if (hasUpgrade("ct",592)) ex2 += 0.04
+                if (hasUpgrade("ct",593)) ex2 += 0.05
                 let gain = player.ct.Ui.div(Decimal.pow(2,4096)).pow(exp).mul(mult)
-                if (gain.gte(Decimal.pow(2,1024))) gain = Decimal.pow(2,gain.log(2).div(1024).pow(ex).mul(1024))
-                if (gain.gte("e55e4")) gain = Decimal.pow(10,gain.log(10).div(55e4).pow(0.8).mul(55e4))
+                if (gain.gte(Decimal.pow(2,1024)) && !hasUpgrade("ct",575)) gain = Decimal.pow(2,gain.log(2).div(1024).pow(ex).mul(1024))
+                if (gain.gte("e55e4")) gain = Decimal.pow(10,gain.log(10).div(55e4).pow(ex2).mul(55e4))
                 if (gain.gte("e5e6")) gain = Decimal.pow(10,gain.log(10).div(5e6).pow(0.6).mul(5e6))
                 if (player.ct.Ui.lt(Decimal.pow(2,4096))) gain = decimalZero
                 return gain.floor()
@@ -42218,6 +44703,11 @@ addLayer("ct", {
                 if (hasUpgrade("ct",306)) exp = new Decimal(1/308)
                 return exp
             },
+            gainexp2() {
+                let exp = decimalOne
+                if (hasMilestone("ct",28)) exp = exp.mul(tmp.ct.milestones[28].effect)
+                return exp
+            },
             next() {
                 let gain = tmp.ct.clickables[32].gain
                 let exp = tmp.ct.clickables[32].gainexp
@@ -42233,7 +44723,7 @@ addLayer("ct", {
                 let a = 270
                 player.ct.bestTime = player.ct.AdvVaxTime.max(player.ct.bestTime)
                 let best = player.ct.bestTime
-                let keep = ["upgrades","milestones","challenges","auto","autom","autoc","autov","autoroll","Advaxxers","bestAdvax","bestAps","arna","aav","aiv","asv","AdV0","AdV1","AdV2","AdV3","AdVax4","AdV4","Atb","bestCases","aB","aB2","aB3","aB4","aB5","aB6","aB7","bestTime","bestBoost","autoaest","distBuy","AntiDist"]
+                let keep = ["upgrades","milestones","challenges","auto","autom","autoc","autov","autoroll","Advaxxers","bestAdvax","bestAps","arna","aav","aiv","asv","AdV0","AdV1","AdV2","AdV3","AdVax4","AdV4","Atb","bestCases","aB","aB2","aB3","aB4","aB5","aB6","aB7","bestTime","bestBoost","autoaest","distBuy","AntiDist","AnTNA","AnTBH","AnTNABuy","AnTBHBuy"]
                 if (hasUpgrade("ct",342)) a = 280
                 if (hasUpgrade("ct",345)) a = 290
                 if (hasUpgrade("ct",346)) {
@@ -42247,6 +44737,12 @@ addLayer("ct", {
                 layerDataReset("ct",keep)
                 for (i = 0; i < player.ct.distBuyId.length; i++){
                     player.ct.buyables[player.ct.distBuyId[i]]= player.ct.distBuy[i]
+                }
+                for (i = 0; i < player.ct.AnTNABuyId.length; i++){
+                    player.ct.buyables[player.ct.AnTNABuyId[i]]= player.ct.AnTNABuy[i]
+                }
+                for (i = 0; i < player.ct.AnTBHBuyId.length; i++){
+                    player.ct.buyables[player.ct.AnTBHBuyId[i]]= player.ct.AnTBHBuy[i]
                 }
                 player.ct.upgrades = player.ct.upgrades.filter(n=>(n<a || n>340))
                 player.ct.AdVax0 = player.ct.AdV0
@@ -42350,6 +44846,43 @@ addLayer("ct", {
                 player.ct.wchance = 1
             },
             style: {'height':'120px', 'width':'120px','background-color':'#00aa00','color':'#ffffff'},
+        },
+        51: {
+            display() {
+                return "<span style='font-size:13px'>Feed the AnT-Black Hole with AnTNA<br><br>Gain <h3>"+formatMass(tmp.ct.clickables[51].gain)+"</h3> of AnT-Black Hole Mass<br><br>Req: "+format(2e85)+" AnTNA<br>Cooldown: "+formatTime(player.ct.AnTBHCool)+"</span>"
+            },
+            gain() {
+                let gain = player.ct.AnTNA.div(2e85).pow(0.1).mul(1.06959715e-64)
+                if (gain.gte(3*1.06959715e-60)) gain = gain.div(3*1.06959715e-64).log10().div(4).pow(0.75).mul(1.7).add(2.3).pow10().mul(3*1.06959715e-64)
+                if (gain.gte(5e-43)) gain = gain.div(5e-43).pow(0.5).mul(5e-43)
+                if (hasMilestone("uv",57)) gain = gain.div(1.06959715e-64).pow(1.1).mul(1.06959715e-64)
+                if (hasMilestone("uv",54)) {
+                    gain = gain.mul(5.05)
+                    if (player.uv.virusTotal.gte("e514")) gain = gain.mul(5.14)
+                }
+                if (hasMilestone("uv",55)) {
+                    if (player.uv.virusTotal.gte("e548")) gain = gain.mul(10.96)
+                }
+                if (hasUpgrade("uv",131)) gain = gain.mul(tmp.uv.upgrades[131].effect)
+                if (hasUpgrade("ct",643)) gain = gain.mul(tmp.ct.upgrades[643].effect)
+                gain = gain.mul(tmp.ct.buyables[323].effect).mul(tmp.ct.buyables[324].effect)
+                return gain
+            },
+            canClick() {return player.ct.AnTNA.gte(2e85) && player.ct.AnTBHCool == 0},
+            unlocked() {
+                return hasUpgrade("ct",596)
+            },
+            onClick() {
+                player.ct.AnTNA = decimalZero
+                player.ct.AnTBH = player.ct.AnTBH.add(tmp.ct.clickables[51].gain)
+                player.ct.AnTBHCool = hasMilestone("uv",55)?2:1
+            },
+            style: {"width":"160px","height":"160px","background"() {
+                let color = "#bf8f8f"
+                if (tmp.ct.clickables[51].canClick) color = "radial-gradient(#a5c38d, #5a3c72)"
+                return color
+                }
+            }
         },
     }
 })
@@ -44071,7 +46604,7 @@ addLayer("Ur", {
         },
         33: {
             title: "Replicant Boost",
-            description: "Unvaxxed Replicant formula is better (log10(10x)<sup>50</sup> -> √x).",
+            description: "Unvaxxed Replicant formula is better (log10(10x)<sup>50</sup> → √x).",
             cost: new Decimal(130),
             canAfford(){
                 return player.Ur.points.gte(130) && (!inChallenge("Up",41) || (inChallenge("Up",41) && player.Ur.upgrades.length<3))
@@ -50271,6 +52804,7 @@ addLayer("Us", {
         let eff = tmp.Us.effbase
         let points = tmp.Us.sympAmt
         eff = eff.pow(points).sub(1)
+        if (player.Ud.buyables[43].gte(6)) eff = powExp(eff,tmp.Ud.mueff2[5])
         return eff
     },
     effectSymp() {
@@ -50496,6 +53030,7 @@ addLayer("Us", {
     },
     z(x = tmp.Us.x) {//getZ 
         let eff = tmp.Us.a.mul(tmp.Us.b).mul(tmp.Us.c).mul(tmp.Us.d).mul(x.max(10).log10()).max(10).log10().sub(85.8).mul(5)
+        if (hasUpgrade("Ud",194)) eff = tmp.Us.a.max(10).log10().mul(tmp.Us.b.max(10).log10()).mul(tmp.Us.c.max(10).log10()).mul(tmp.Us.d.max(10).log10()).mul(tmp.Us.x.max(10).log10().max(10).log10()).mul(tmp.Us.y).pow(0.3).div(10)
         if (player.Ud.challPoints[3].lt(40)) return decimalZero
         return eff.max(0)
     },
@@ -50515,6 +53050,7 @@ addLayer("Us", {
         if (hasUpgrade("Ud",92)) eff = eff.pow(3)
         if (hasUpgrade("Ud",94)) eff = eff.pow(2)
         if (hasUpgrade("Ud",102)) eff = eff.pow(1.5)
+        if (hasMilestone("Ud",58) && player.ct.LaBas.gte("4976e4973")) eff = eff.pow(10)
         return eff
     },
     trnaBase(x = tmp.Us.x) {
@@ -50619,6 +53155,7 @@ addLayer("Us", {
         if (hasChallenge("Ud", 11)) exp = exp.add(tmp.Ud.challenges[11].rewardEffect)
         if (hasChallenge("Ud", 21)) exp = exp.mul(tmp.Ud.challenges[21].rewardEffect)
         if (hasMilestone("Ud",42)) exp = exp.mul(tmp.Ud.milestones[42].effect)
+        if (hasMilestone("Ud",61)) exp = exp.mul(tmp.Ud.milestones[61].effect)
         return [tetbase,slogMult,slogSub,exp]
     },
     rrnaAmt() {
@@ -50632,7 +53169,10 @@ addLayer("Us", {
     },
     rrnaGain() {
         if (player.e.mm.lt(1e223)) return decimalZero
-        let eff = player.e.mm.div(1e223).pow(0.1).sub(1).mul(tmp.Us.buyables[91].effect).mul(tmp.Us.buyables[92].effect).mul(tmp.Us.buyables[93].effect).mul(tmp.Us.buyables[94].effect)
+        let eff = player.e.mm.div(1e223).pow(0.1)
+        if (eff.gte("ee45e4")) eff = eff.log10().log10().div(45e4).pow(0.3).mul(2e5).add(25e4).pow10().pow10()
+        if (eff.gte("eee6")) eff = eff.log10().log10().div(1e6).pow(0.25).mul(5e5).add(5e5).pow10().pow10()
+        eff = eff.sub(1).mul(tmp.Us.buyables[91].effect).mul(tmp.Us.buyables[92].effect).mul(tmp.Us.buyables[93].effect).mul(tmp.Us.buyables[94].effect)
         if (hasUpgrade("Us",72)) eff = eff.mul(3)
         if (hasUpgrade("Us",73)) eff = eff.mul(3)
         if (hasUpgrade("ct",552)) eff = eff.mul(tmp.ct.upgrades[552].effect)
@@ -50641,8 +53181,9 @@ addLayer("Us", {
     },
     rrnaEff() {
         let amt = tmp.Us.rrnaAmt
-        let mut = player.e.mu.mul(player.e.mu2.pow(2)).mul(player.Us.mu.mul(player.Us.mu2.pow(2)))
+        let mut = player.e.mu.mul(tmp.e.mutamt.pow(2)).mul(player.Us.mu.mul(tmp.Us.mutamt.pow(2)))
         if (hasUpgrade("Ud",114)) mut = mut.pow(1.5)
+        if (hasMilestone("Ud",62)) mut = mut.pow(1.3)
         if (mut.gte(195e8)) mut = mut.div(195e8).pow(2).mul(195e9).sub(195e8*9)
         let exp = mut.pow(0.1)
         if (hasUpgrade("Ud",15)) exp = exp.mul(1.1)
@@ -50652,12 +53193,17 @@ addLayer("Us", {
         let eff2 = amt.add(10).log10().pow(exp2)
         return [eff,eff2]
     },
+    mutamt() {
+        let amt = player.Us.mu2
+        if (player.Ud.buyables[43].gte(1)) amt = amt.add(tmp.Ud.mueff2[0])
+        return amt
+    },
     trnaMutEff() {
         let eff = player.Us.mu.pow(0.75).div(20).add(1)
         return eff
     },
     sarsMutEff() {
-        let eff = player.Us.mu2.pow(1.1).div(10).add(1)
+        let eff = tmp.Us.mutamt.pow(1.1).div(10).add(1)
         return eff
     },
     getTotaltRNA() {
@@ -50825,7 +53371,9 @@ addLayer("Us", {
                 if (tmp.Us.y.gte(120)) y = ty + " = 30log10(√log10("+tx+")/2-21)<sup>2</sup> = "+format(tmp.Us.y)
                 if (tmp.Us.y.gte(430)) y = ty + " = min(107.5√(log10(√log10("+tx+")/2-21)<sup>2</sup>+5/3), 470"+(hasMilestone("Ud",20)?"+"+colorText("span","#3030C0","z"):"")+") = "+format(tmp.Us.y)
                 if (tmp.Us.y.gte(5e5)) y = ty + " = min((107.5√(log10(√log10("+tx+")/2-21)<sup>2</sup>+5/3)/500,000)<sup>0.3</sup>*500,000, 470"+(hasMilestone("Ud",20)?"+"+colorText("span","#3030C0","z"):"")+") = "+format(tmp.Us.y)
-                let z = player.Ud.challPoints[3].gte(40)?(", "+tz+" = 5(log10("+ta+tb+tc+td+"log10("+tx+"))-85.8) = "+format(tmp.Us.z)):""
+                let z1 = ", "+tz+" = 5(log10("+ta+tb+tc+td+"log10("+tx+"))-85.8) = "+format(tmp.Us.z)
+                let z2 = ", "+tz+" = (log10("+ta+")log10("+tb+")log10("+tc+")log10("+td+")log10(log10("+tx+"))"+ty+")<sup>0.3</sup>/10 = "+format(tmp.Us.z)
+                let z = player.Ud.challPoints[3].gte(40)?hasUpgrade("Ud",194)?z2:z1:""
                 let e = shiftDown?colorText("span","#C00000","a")+" = "+format(tmp.Us.a)+", "+colorText("span","#0000C0","b")+" = "+format(tmp.Us.b)+", "+colorText("span","#C000C0","c")+" = "+format(tmp.Us.c)+", "+colorText("span","#808050","d")+" = "+format(tmp.Us.d)+", "+colorText("span","#308030","x")+" = "+format(tmp.Us.x)+", "+y+z+"<br>":""
                 let f = shiftDown?"Gain: "+layers.Us.trnaFormula(player.Us.buyables[81])+"<br>":""
                 return a+b+c+d+e+f
@@ -51776,6 +54324,7 @@ addLayer("Us", {
             effect2(){
                 let eff = player.e.in.add(10).log10().add(10).log10().pow(0.2)
                 if (hasUpgrade("Ud",81)) eff = powExp(eff,2)
+                if (eff.gte("e2e14")) eff = eff.log10().div(2e14).pow(0.6).mul(8e13).add(12e13).pow10()
                 return eff
             },
             effectDisplay(){
@@ -52065,6 +54614,7 @@ addLayer("Us", {
             },
             effect2(){
                 let eff = powExp(tmp.Us.upgrades[72].e.add(10).log10().div("e8e5").add(1),0.8).pow(0.5)
+                if (eff.gte("e3e21")) eff = eff.log10().div(3e21).pow(0.75).mul(5e20).add(25e20).pow10()
                 return eff
             },
             effectDisplay(){
@@ -52505,6 +55055,7 @@ addLayer("Us", {
                 if (hasUpgrade("Ud",142)) eff = eff.pow(5)
                 if (hasUpgrade("Ud",154)) eff = eff.pow(10)
                 if (hasMilestone("Ud",40)) eff = eff.pow(2)
+                if (hasMilestone("Ud",58) && player.ct.LaBas.gte("4976e4973")) eff = powExp(eff,1.25)
                 return eff
             },
             effectDisplay(){
@@ -52601,6 +55152,7 @@ addLayer("Us", {
             effect(){
                 let eff = tmp.Us.rrnaAmt.sub(56e8).max(0).div(1e9).add(1).log10().pow(0.4).div(2)
                 if (eff.gte(1e21)) eff = eff.div(1e21).pow(0.4).mul(1e21)
+                if (eff.gte("e500")) eff = eff.log10().div(500).pow(0.75).mul(300).add(200).pow10()
                 return eff
             },
             effectDisplay(){
@@ -53774,7 +56326,11 @@ addLayer("Us", {
             base() { 
                 let base = powExp(player.s.points.max(10).log10(),.8).div(1e84).pow(0.4).max(1)
                 if (base.gte(1e60)) base = base.log10().div(60).pow(0.65).mul(60).pow10().div(1e60).pow(0.65).mul(1e60)
-                if (hasUpgrade("Ud",41)) base = player.s.points.max(10).log10().max(10).log10().pow(0.11).div(1e7)
+                if (hasUpgrade("Ud",41)) {
+                    base = player.s.points.max(10).log10().max(10).log10().pow(0.11).div(1e7)
+                    if (base.gte("e2e17")) base = base.log10().div(2e17).pow(0.95).mul(4e16).add(16e16).pow10()
+                    if (base.gte("ee29")) base = base.log10().div(1e29).pow(0.9).mul(4e28).add(6e28).pow10()
+                }
                 return base
             },
             effect() { // Effects of owning x of the items, x is a decimal
@@ -54263,7 +56819,7 @@ addLayer("Us", {
                 let reqdis = req.gt(0)?"Req: "+format(req)+" unvaxxed severity<br>":""
                 let f1 = layers.Us.trnaFormula(x)
                 let f2 = layers.Us.trnaFormula(x.add(1))
-                let dis = "Unvaxxed tRNA gain formula is better.<br>"+f1+" --> "+f2
+                let dis = "Unvaxxed tRNA gain formula is better.<br>"+f1+" → "+f2
                 if (x.gte(19)) dis = "Unvaxxed tRNA gain formula is better.<br>"+f1+" (MAXED)"
                 return reqdis + dis + ".\n\
                 Cost: " + formatWhole(tmp[this.layer].buyables[this.id].cost)+" unvaxxed tRNA\n\
@@ -54303,6 +56859,7 @@ addLayer("Us", {
                 let base = tmp.Us.buyables[82].costb
                 let exp = tmp.Us.buyables[82].coste
                 let x = player.Us.buyables[82]
+                if (x.gte("e7e10")) x = x.div("e7e10").pow(1.7).mul("e7e10")
                 if (x.gte(135)) x = x.mul(1.3).sub(135*.3).div(135).pow(1.1).mul(135)
                 let cost = Decimal.pow(base,x.pow(exp)).mul(1e34)
                 return cost
@@ -54358,6 +56915,7 @@ addLayer("Us", {
                 let exp = tmp.Us.buyables[82].coste
                 let target = s.div(1e34).log(base).root(exp)
                 if (target.gte(135)) target = target.div(135).root(1.1).mul(135).add(135*.3).div(1.3)
+                if (target.gte("e7e10")) target = target.div("e7e10").root(1.7).mul("e7e10")
                 return target.floor().add(1)
             },
             buyMax() { 
@@ -54540,6 +57098,8 @@ addLayer("Us", {
             },
             base() { 
                 let base = player.e.mm.div(1e300).max(1).pow(0.1).add(1)
+                if (base.gte("ee45e4")) base = base.log10().log10().div(45e4).pow(0.3).mul(2e5).add(25e4).pow10().pow10()
+                if (base.gte("eee6")) base = base.log10().log10().div(1e6).pow(0.25).mul(5e5).add(5e5).pow10().pow10()
                 return base
             },
             effect() { // Effects of owning x of the items, x is a decimal
@@ -54614,7 +57174,7 @@ addLayer("Us", {
                 return cost
             },
             base() { 
-                let mut = player.e.mu.mul(player.e.mu2.pow(2)).mul(player.Us.mu.mul(player.Us.mu2.pow(2)))
+                let mut = player.e.mu.mul(tmp.e.mutamt.pow(2)).mul(player.Us.mu.mul(tmp.Us.mutamt.pow(2)))
                 if (hasMilestone("Ud",19)) mut = mut.pow(1.3)
                 let base = mut.div(4.6e7).pow(7).add(1)
                 if (base.gte(1e16)) base = base.log10().div(16).pow(3).mul(16).pow10().div(1e16).pow(3).mul(1e16)
@@ -54701,6 +57261,8 @@ addLayer("Us", {
                 if (base.gte("ee11")) base = base.log10().div(1e11).pow(0.5).mul(1e11).pow10().div("ee11").pow(0.5).mul("ee11")
                 if (base.gte("ee125e3")) base = base.log10().log10().div(125e3).pow(0.5).mul(125e3).pow10().pow10()
                 if (base.gte("ee15e4")) base = base.log10().log10().div(15e4).pow(0.5).mul(8e4).add(7e4).pow10().pow10()
+                if (base.gte("ee45e4")) base = base.log10().log10().div(45e4).pow(0.3).mul(2e5).add(25e4).pow10().pow10()
+                if (base.gte("eee6")) base = base.log10().log10().div(1e6).pow(0.25).mul(5e5).add(5e5).pow10().pow10()
                 return base
             },
             effect() { // Effects of owning x of the items, x is a decimal
@@ -54763,6 +57325,7 @@ addLayer("Us", {
                 let base = tmp.Us.buyables[101].costb
                 let exp = tmp.Us.buyables[101].coste
                 let x = player.Us.buyables[101]
+                if (x.gte(1e270)) x = x.div(1e270).pow(1.75).mul(1e270)
                 if (x.gte(1e5)) x = x.div(1e5).pow(1.2).mul(13e4).sub(3e4)
                 if (x.gte(3e4)) x = x.div(3e4).pow(1.3).mul(4e4).sub(1e4)
                 if (x.gte(1500)) x = x.div(1500).pow(1.2).mul(2000).sub(500)
@@ -54822,6 +57385,7 @@ addLayer("Us", {
                 if (target.gte(1500)) target = target.add(500).div(2000).root(1.2).mul(1500)
                 if (target.gte(3e4)) target = target.add(1e4).div(4e4).root(1.3).mul(3e4)
                 if (target.gte(1e5)) target = target.add(3e4).div(13e4).root(1.2).mul(1e5)
+                if (target.gte(1e270)) target = target.div(1e270).root(1.75).mul(1e270)
                 return target.floor().add(1)
             },
             buyMax() { 
@@ -54848,6 +57412,7 @@ addLayer("Us", {
                 let base = tmp.Us.buyables[102].costb
                 let exp = tmp.Us.buyables[102].coste
                 let x = player.Us.buyables[102]
+                if (x.gte(1e270)) x = x.div(1e270).pow(1.75).mul(1e270)
                 if (x.gte(1e5)) x = x.div(1e5).pow(1.2).mul(13e4).sub(3e4)
                 if (x.gte(3e4)) x = x.div(3e4).pow(1.3).mul(4e4).sub(1e4)
                 if (x.gte(1500)) x = x.div(1500).pow(1.2).mul(2000).sub(500)
@@ -54907,6 +57472,7 @@ addLayer("Us", {
                 if (target.gte(1500)) target = target.add(500).div(2000).root(1.2).mul(1500)
                 if (target.gte(3e4)) target = target.add(1e4).div(4e4).root(1.3).mul(3e4)
                 if (target.gte(1e5)) target = target.add(3e4).div(13e4).root(1.2).mul(1e5)
+                if (target.gte(1e270)) target = target.div(1e270).root(1.75).mul(1e270)
                 return target.floor().add(1)
             },
             buyMax() { 
@@ -54933,6 +57499,7 @@ addLayer("Us", {
                 let base = tmp.Us.buyables[103].costb
                 let exp = tmp.Us.buyables[103].coste
                 let x = player.Us.buyables[103]
+                if (x.gte(1e270)) x = x.div(1e270).pow(1.75).mul(1e270)
                 if (x.gte(1e5)) x = x.div(1e5).pow(1.2).mul(13e4).sub(3e4)
                 if (x.gte(3e4)) x = x.div(3e4).pow(1.3).mul(4e4).sub(1e4)
                 if (x.gte(1500)) x = x.div(1500).pow(1.2).mul(2000).sub(500)
@@ -54949,7 +57516,7 @@ addLayer("Us", {
                 return cost
             },
             base() { 
-                let mu = player.e.mu.mul(player.e.mu2.pow(2)).mul(player.Us.mu.mul(player.Us.mu2.pow(2))) 
+                let mu = player.e.mu.mul(tmp.e.mutamt.pow(2)).mul(player.Us.mu.mul(tmp.Us.mutamt.pow(2))) 
                 if (hasMilestone("Ud",19)) mu = mu.pow(1.05)
                 if (hasUpgrade("Ud",104)) mu = mu.pow(5)
                 let base = tet10(slog(mu.div(22e7).max(1)).mul(0.8)).div(2e3).add(0.016)
@@ -54993,6 +57560,7 @@ addLayer("Us", {
                 if (target.gte(1500)) target = target.add(500).div(2000).root(1.2).mul(1500)
                 if (target.gte(3e4)) target = target.add(1e4).div(4e4).root(1.3).mul(3e4)
                 if (target.gte(1e5)) target = target.add(3e4).div(13e4).root(1.2).mul(1e5)
+                if (target.gte(1e270)) target = target.div(1e270).root(1.75).mul(1e270)
                 return target.floor().add(1)
             },
             buyMax() { 
@@ -55019,6 +57587,7 @@ addLayer("Us", {
                 let base = tmp.Us.buyables[104].costb
                 let exp = tmp.Us.buyables[104].coste
                 let x = player.Us.buyables[104]
+                if (x.gte(1e270)) x = x.div(1e270).pow(1.75).mul(1e270)
                 if (x.gte(1e5)) x = x.div(1e5).pow(1.2).mul(13e4).sub(3e4)
                 if (x.gte(3e4)) x = x.div(3e4).pow(1.3).mul(4e4).sub(1e4)
                 if (x.gte(1500)) x = x.div(1500).pow(1.2).mul(2000).sub(500)
@@ -55080,6 +57649,7 @@ addLayer("Us", {
                 if (target.gte(1500)) target = target.add(500).div(2000).root(1.2).mul(1500)
                 if (target.gte(3e4)) target = target.add(1e4).div(4e4).root(1.3).mul(3e4)
                 if (target.gte(1e5)) target = target.add(3e4).div(13e4).root(1.2).mul(1e5)
+                if (target.gte(1e270)) target = target.div(1e270).root(1.75).mul(1e270)
                 return target.floor().add(1)
             },
             buyMax() { 
@@ -55106,6 +57676,8 @@ addLayer("Us", {
                 let base = tmp.Us.buyables[111].costb
                 let exp = tmp.Us.buyables[111].coste
                 let x = player.Us.buyables[111]
+                if (x.gte(4e34)) x = x.sub(3e34).div(1e34).pow10().pow(34).mul(4)
+                if (x.gte(1e33)) x = x.log10().div(33).pow(4).mul(33).pow10().mul(4).sub(3e33)
                 if (x.gte(2e21)) x = x.div(2).log10().div(21).pow(3).mul(21).pow10().mul(4).sub(2e21)
                 if (x.gte(1e13)) x = x.log10().div(13).pow(1.3).mul(13).pow10().mul(1.7).sub(7e12)
                 if (x.gte(1e3)) x = x.log10().div(3).pow(1.2).mul(3).pow10().mul(1.3).sub(300)
@@ -55164,6 +57736,8 @@ addLayer("Us", {
                 if (target.gte(1e3)) target = target.add(300).div(1.3).log10().div(3).root(1.2).mul(3).pow10()
                 if (target.gte(1e13)) target = target.add(7e12).div(1.7).log10().div(13).root(1.3).mul(13).pow10()
                 if (target.gte(2e21)) target = target.add(2e21).div(4).log10().div(21).root(3).mul(21).pow10().mul(2)
+                if (target.gte(1e33)) target = target.add(3e33).div(4).log10().div(33).root(4).mul(33).pow10()
+                if (target.gte(4e34)) target = target.div(4).root(34).log10().mul(1e34).add(3e34)
                 return target.floor().add(1)
             },
             buyMax() { 
@@ -55190,6 +57764,8 @@ addLayer("Us", {
                 let base = tmp.Us.buyables[112].costb
                 let exp = tmp.Us.buyables[112].coste
                 let x = player.Us.buyables[112]
+                if (x.gte(4e34)) x = x.sub(3e34).div(1e34).pow10().pow(34).mul(4)
+                if (x.gte(1e33)) x = x.log10().div(33).pow(4).mul(33).pow10().mul(4).sub(3e33)
                 if (x.gte(2e21)) x = x.div(2).log10().div(21).pow(3).mul(21).pow10().mul(4).sub(2e21)
                 if (x.gte(1e13)) x = x.log10().div(13).pow(1.3).mul(13).pow10().mul(1.7).sub(7e12)
                 if (x.gte(1e3)) x = x.log10().div(3).pow(1.2).mul(3).pow10().mul(1.3).sub(300)
@@ -55247,6 +57823,8 @@ addLayer("Us", {
                 if (target.gte(1e3)) target = target.add(300).div(1.3).log10().div(3).root(1.2).mul(3).pow10()
                 if (target.gte(1e13)) target = target.add(7e12).div(1.7).log10().div(13).root(1.3).mul(13).pow10()
                 if (target.gte(2e21)) target = target.add(2e21).div(4).log10().div(21).root(3).mul(21).pow10().mul(2)
+                if (target.gte(1e33)) target = target.add(3e33).div(4).log10().div(33).root(4).mul(33).pow10()
+                if (target.gte(4e34)) target = target.div(4).root(34).log10().mul(1e34).add(3e34)
                 return target.floor().add(1)
             },
             buyMax() { 
@@ -55273,6 +57851,8 @@ addLayer("Us", {
                 let base = tmp.Us.buyables[113].costb
                 let exp = tmp.Us.buyables[113].coste
                 let x = player.Us.buyables[113]
+                if (x.gte(4e34)) x = x.sub(3e34).div(1e34).pow10().pow(34).mul(4)
+                if (x.gte(1e33)) x = x.log10().div(33).pow(4).mul(33).pow10().mul(4).sub(3e33)
                 if (x.gte(2e21)) x = x.div(2).log10().div(21).pow(3).mul(21).pow10().mul(4).sub(2e21)
                 if (x.gte(1e13)) x = x.log10().div(13).pow(1.3).mul(13).pow10().mul(1.7).sub(7e12)
                 if (x.gte(1e3)) x = x.log10().div(3).pow(1.2).mul(3).pow10().mul(1.3).sub(300)
@@ -55289,7 +57869,7 @@ addLayer("Us", {
                 return cost
             },
             base() { 
-                let mu = player.e.mu.mul(player.e.mu2.pow(2)).mul(player.Us.mu.mul(player.Us.mu2.pow(2))) 
+                let mu = player.e.mu.mul(tmp.e.mutamt.pow(2)).mul(player.Us.mu.mul(tmp.Us.mutamt.pow(2))) 
                 let base = slog(mu.sub(3e9).pow(2).div(1e16).max(10)).pow(1.2).div(5)
                 return base
             },
@@ -55331,6 +57911,8 @@ addLayer("Us", {
                 if (target.gte(1e3)) target = target.add(300).div(1.3).log10().div(3).root(1.2).mul(3).pow10()
                 if (target.gte(1e13)) target = target.add(7e12).div(1.7).log10().div(13).root(1.3).mul(13).pow10()
                 if (target.gte(2e21)) target = target.add(2e21).div(4).log10().div(21).root(3).mul(21).pow10().mul(2)
+                if (target.gte(1e33)) target = target.add(3e33).div(4).log10().div(33).root(4).mul(33).pow10()
+                if (target.gte(4e34)) target = target.div(4).root(34).log10().mul(1e34).add(3e34)
                 return target.floor().add(1)
             },
             buyMax() { 
@@ -55357,6 +57939,8 @@ addLayer("Us", {
                 let base = tmp.Us.buyables[114].costb
                 let exp = tmp.Us.buyables[114].coste
                 let x = player.Us.buyables[114]
+                if (x.gte(4e34)) x = x.sub(3e34).div(1e34).pow10().pow(34).mul(4)
+                if (x.gte(1e33)) x = x.log10().div(33).pow(4).mul(33).pow10().mul(4).sub(3e33)
                 if (x.gte(2e21)) x = x.div(2).log10().div(21).pow(3).mul(21).pow10().mul(4).sub(2e21)
                 if (x.gte(1e13)) x = x.log10().div(13).pow(1.3).mul(13).pow10().mul(1.7).sub(7e12)
                 if (x.gte(1e3)) x = x.log10().div(3).pow(1.2).mul(3).pow10().mul(1.3).sub(300)
@@ -55415,6 +57999,8 @@ addLayer("Us", {
                 if (target.gte(1e3)) target = target.add(300).div(1.3).log10().div(3).root(1.2).mul(3).pow10()
                 if (target.gte(1e13)) target = target.add(7e12).div(1.7).log10().div(13).root(1.3).mul(13).pow10()
                 if (target.gte(2e21)) target = target.add(2e21).div(4).log10().div(21).root(3).mul(21).pow10().mul(2)
+                if (target.gte(1e33)) target = target.add(3e33).div(4).log10().div(33).root(4).mul(33).pow10()
+                if (target.gte(4e34)) target = target.div(4).root(34).log10().mul(1e34).add(3e34)
                 return target.floor().add(1)
             },
             buyMax() { 
@@ -55713,9 +58299,8 @@ addLayer("Us", {
                 let ud = player.Ud.mu.add(1)
                 if (m.gte(16)) virus+="<sup>"+formatWhole(m.sub(14))+"</sup>"
                 if (m.gte(15e3)) virus="VorC"+"<sup>"+formatWhole(m.sub(14999))+"</sup>"
-                let vir = "Virus:SARS<sup>"+(ud.eq(1)?"":formatWhole(ud))+"</sup>-"+virus+"-"+format(num,1)
                 let mmna = hasMilestone("Ud",24) || !inChallenge("ct",32)?"":formatWhole(tmp.Us.clickables[32].mmnacost)+" MMNA<br>"
-                let dis = "Virus:SARS-"+virus+"-"+format(num,1)+(m.gte(max)?" (MAXED)":"")+"<br>Cost:"+ formatWhole(tmp.Us.clickables[32].trnacost)
+                let dis = "Virus:SARS<sup>"+(ud.eq(1)?"":formatWhole(ud))+"</sup>-"+virus+"-"+format(num,1)+(m.gte(max)?" (MAXED)":"")+"<br>Cost:"+ formatWhole(tmp.Us.clickables[32].trnacost)
                 dis += " unvaxxed tRNA<br>"+format(m.add(15).div(10),1)+" Virus Number<br>"+mmna+"Chance: "+ format(tmp.Us.clickables[32].chance.mul(100))+"%"
                 return dis
             },
@@ -55885,11 +58470,14 @@ addLayer("Ud", {
         mutants: decimalZero,
         dmutants: decimalZero,
         crows: decimalZero,
+        crowBirds: decimalZero,
         time: 0,
         crowtime: 1,
+        crowBirdtime: 1,
         maxCool: 0,
         maxMutCool: 0,
         maxMutantCool: 0,
+        maxCrowCool: 0,
         upgCool: 0,
         crowCool: 0,
         challPoints: [decimalZero,decimalZero,decimalZero,decimalZero],
@@ -55897,6 +58485,8 @@ addLayer("Ud", {
         autoupg: false,
         autorew: false,
         automutant: false,
+        autocrow: false,
+        maxDC2: false,
     unlocked: true
     }},
     row: 3,
@@ -55907,17 +58497,25 @@ addLayer("Ud", {
     baseResource: "unvaxxed severity",
     baseSingular: "unvaxxed severity",
     baseAmount() { 
-        return player.Us.severity
+        let amt = player.Us.severity
+        if (player.Ud.buyables[43].gte(5)) amt = powExp(amt,tmp.Ud.mueff2[4])
+        return amt
     },
     scStart() { 
         let x = new Decimal("e1.4e47")
         if (player.Ud.buyables[42].gte(4) && tmp.Ud.mueff[4]) x = x.pow(tmp.Ud.mueff[4])
         return x
     },
+    scStart2() { 
+        let x = new Decimal("eee17")
+        return x
+    },
     baseAmountEff() { 
         let x = tmp.Ud.baseAmount
         let sc = tmp.Ud.scStart
+        let sc2 = tmp.Ud.scStart2
         if (x.gte(sc)) x = x.log10().log10().div(sc.log10().log10()).pow(0.5).mul(sc.log10().log10()).pow10().pow10()
+        if (x.gte(sc2)) x = x.log10().log10().div(sc2.log10().log10()).pow(0.35).mul(sc2.log10().log10()).pow10().pow10()
         return x
     },
     type: "custom",
@@ -55939,6 +58537,7 @@ addLayer("Ud", {
                 if (hasMilestone("uv",27) && tmp.Ud.clickables[11].canClick) layers.Ud.clickables[11].onClick()
                 if (hasMilestone("uv",31) && tmp.Ud.clickables[12].canClick) layers.Ud.clickables[12].onClick()
                 if (hasUpgrade("uv",106) && tmp.Ud.clickables[13].canClick) layers.Ud.clickables[13].onClick()
+                if (hasUpgrade("ct",591) && tmp.Ud.clickables[22].canClick) layers.Ud.clickables[22].onClick()
             },
             unlocked() {return hasMilestone("uv",27)},
         },
@@ -55953,7 +58552,7 @@ addLayer("Ud", {
         return hasMilestone("uv",30) && player.Ud.autoupg && player.Ud.upgCool==0
     },
     doReset(resettingLayer) {
-        let keep = [];
+        let keep = ["maxDC2"];
         if (resettingLayer == "Ud") {
             player.Ud.bestPer = player.Ud.bestPer.max(tmp.Ud.getResetGain.div(player.Ud.time+1e-11))
             player.Ud.time = 0
@@ -55988,17 +58587,19 @@ addLayer("Ud", {
     effectDescription() {
         let dis = "which "+pluralize(player.Ud.points,'boosts','boost')+" base CRNA gain by "+layerText("h2", "Ud", format(tmp.Ud.effect))
         if (tmp.Ud.baseAmount.gte(tmp.Ud.scStart)) {
-            dis += "<br><br>Unvaxxed severity effective amount exponent in UD layer is ^"+layerText("h2", "Ud", format(tmp.Ud.baseAmountEff.max(10).log10().log(tmp.Ud.baseAmount.max(10).log10())))+" (starts at "+format(tmp.Ud.scStart)+")"
+            dis += "<br><br>Unvaxxed severity effective amount exponent in UD layer is ^"+layerText("h2", "Ud", format(tmp.Ud.baseAmountEff.max(10).log10().log(tmp.Ud.baseAmount.max(10).log10())))+" (starts at "+format(tmp.Ud.scStart)+(tmp.Ud.baseAmountEff.gte(tmp.Ud.scStart2)?", "+format(tmp.Ud.scStart2):"")+")"
             if (shiftDown) dis += "<br>You have "+format(tmp.Ud.baseAmountEff)+" effective unvaxxed severity"
         }
         return dis
     },
-    rewardPower() {//let eff = tmp.Ud.buyables[51].effect.add(tmp.Ud.buyables[52].effect).add(tmp.Ud.buyables[53].effect).add(tmp.Ud.buyables[54].effect).add(tmp.Ud.buyables[61].effect).add(1).add(tmp.Ud.mutantEff)
+    rewardPower() {
         let eff = tmp.Ud.mutantEff.add(1)
         for (let i in player.Ud.buyables){
             if (i>50&&i<70) eff = eff.add(tmp.Ud.buyables[i].effect)
         }
         eff = eff.mul(tmp.Ud.buyables[71].effect).mul(tmp.Ud.buyables[72].effect)
+        if (hasUpgrade("Ud",183)) eff = eff.mul(tmp.Ud.upgrades[183].effect)
+        if (hasUpgrade("Ud",191)) eff = eff.mul(tmp.Ud.upgrades[191].effect)
         return eff
     },
     mueff() {
@@ -56006,6 +58607,8 @@ addLayer("Ud", {
         if (power.gte(250)) power = power.div(250).pow(0.6).mul(180).add(70)
         if (power.gte(11500)) power = power.div(11500).pow(0.7).mul(8000).add(3500)
         if (power.gte(333333)) power = power.div(333333).pow(0.5).mul(3e5).add(33333)
+        if (power.gte(107e5)) power = power.div(107e5).pow(0.75).mul(8e6).add(27e5)
+        if (power.gte(17e7)) power = power.div(17e7).pow(0.5).mul(17e7)
         let mut = player.Ud.mu.mul(power)
         let eff = mut
         if (eff.gte(20)) eff = eff.div(20).pow(0.7).mul(15).add(5)
@@ -56014,14 +58617,21 @@ addLayer("Ud", {
         if (eff2.gte(1.2)) eff2 = eff2.div(1.2).pow(0.6).mul(0.6).add(0.6)
         if (eff2.gte(1.22)) eff2 = eff2.div(1.22).pow(0.6).mul(0.6).add(0.62)
         if (eff2.gte(2.33)) eff2 = eff2.div(2.33).pow(0.8).mul(1.1).add(1.23)
+        if (eff2.gte(130)) eff2 = eff2.div(130).pow(0.7).mul(100).add(30)
+        if (eff2.gte(400)) eff2 = eff2.div(400).pow(0.6).mul(200).add(200)
         let eff3 = mut.pow(0.7)
+        if (player.Ud.buyables[43].gte(3)) eff3 = eff3.pow(1.1)
         let eff4 = mut.pow(1.3).mul(10)
+        if (hasUpgrade("Ud",191)) eff4 = eff4.pow(1.3)
+        if (hasUpgrade("Ud",194)) eff4 = eff4.pow(1.2)
         let eff5 = Decimal.pow(2,mut)
         if (eff5.gte(1e80)) eff5 = eff5.log10().div(80).pow(0.6).mul(60).add(20).pow10()
         if (eff5.gte(1e308)) eff5 = eff5.log10().div(308).pow(0.8).mul(200).add(108).pow10()
+        if (player.Ud.buyables[43].gte(5)) eff5 = powExp(eff5,1.1)
         let eff6 = Decimal.pow(5,mut.pow(1.25))
         if (eff6.gte("e777")) eff6 = eff6.log10().div(777).pow(0.6).mul(600).add(177).pow10()
         if (eff6.gte("e1050")) eff6 = eff6.log10().div(1050).pow(0.8).mul(600).add(450).pow10()
+        if (player.Ud.buyables[43].gte(5)) eff6 = powExp(eff6,1.5)
         let eff7 = mut.pow(0.6).div(2)
         let eff8 = mut.pow(0.5).div(2.4)
         let eff9 = Decimal.pow(1.003,mut.pow(0.5))
@@ -56031,7 +58641,27 @@ addLayer("Ud", {
         if (eff10.gte(1.9)) eff10 = eff10.div(1.9).pow(0.5).add(0.9)
         let eff11 = mut.pow(0.3).div(300)
         let eff12 = mut.add(1).log10().pow(2).mul(player.Ud.mu).pow(0.75).div(400)
-        return [eff.floor(),eff2,eff3.floor(),eff4.floor(),eff5,eff6,eff7.floor(),eff8.floor(),eff9,eff10,eff11,eff12]
+        let eff13 = mut.add(10).log10().pow(player.Ud.mu.sub(1000).mul(mut.add(10).log10().add(10).log10()).div(300))
+        let eff14 = mut.add(10).log10().pow(player.Ud.mu.sub(7000).mul(mut.add(10).log10().add(10).log10()).div(1500))
+        return [eff.floor(),eff2,eff3.floor(),eff4.floor(),eff5,eff6,eff7.floor(),eff8.floor(),eff9,eff10,eff11,eff12,eff13,eff14]
+    },
+    mueff2() {
+        let eff = tmp.Ud.mueff[0].pow(0.75).div(3)
+        let eff2 = tmp.Ud.mueff[1].pow(0.4).div(100)
+        let eff3 = tmp.Ud.mueff[2]
+        if (eff3.gte(130)) eff3 = eff3.sub(30).div(100).root(0.7).mul(130)
+        eff3 = eff3.pow(1/3).div(100).add(1)
+        let eff4 = tmp.Ud.mueff[3].pow(0.2).div(1e6).add(1)
+        let eff5 = tmp.Ud.mueff[4].max(10).log10().pow(0.3).div(100).add(1)
+        let eff6 = tmp.Ud.mueff[5].max(10).log10().pow(0.275).div(300).add(1)
+        return [eff.floor(),eff2,eff3,eff4,eff5,eff6]
+    },
+    buyablePower(x) {
+        x = new Decimal(x)
+        let eff = decimalOne
+        if (player.Ud.buyables[42].gte(1)) eff = tmp.Ud.mueff[1]
+        if (player.Ud.buyables[43].gte(2)) eff = eff.mul(x.div(100).add(10).log10().pow(tmp.Ud.mueff2[1]))
+        return eff
     },
     mutantGain() {
         if (player.ct.points.lt("e38846")) return decimalZero
@@ -56050,7 +58680,7 @@ addLayer("Ud", {
         if (hasMilestone("Ud",31)) eff = eff.mul(344.444)
         if (hasMilestone("Ud",32)) eff = eff.mul(559.73)
         if (hasUpgrade("uv",105)) eff = eff.mul(tmp.uv.upgrades[105].effect)
-        if (player.Ud.buyables[42].gte(8)) eff = eff.mul(tmp.Ud.mueff[8].pow(player.e.mu2))
+        if (player.Ud.buyables[42].gte(8)) eff = eff.mul(tmp.Ud.mueff[8].pow(tmp.e.mutamt))
         return eff.mul(tmp.Ud.dmutantEff)
     },
     mutantEff() {
@@ -56102,35 +58732,191 @@ addLayer("Ud", {
         if (hasUpgrade("Ud",163)) eff = eff.pow(tmp.Ud.upgrades[163].effect)
         return eff
     },
-    crowBirthRate() {
-        if (player.Ud.crows.lt(2)) return decimalZero
-        let crowDiv = powExp(player.Ud.crows.add(10).log10().mul(10),1.3).div(10)
-        if (player.Ud.crows.gte(3e14)) crowDiv = crowDiv.mul(powExp(player.Ud.crows.div(3e14).add(9).log10().mul(10),1.7).div(10))
-        if (player.Ud.crows.gte(1e25)) crowDiv = crowDiv.mul(powExp(player.Ud.crows.div(1e25).add(9).log10().mul(10),2).div(10))
-        if (player.Ud.crows.gte(1e40)) crowDiv = crowDiv.mul(player.Ud.crows.div(1e40).pow(0.5))
-        crowDiv = crowDiv.pow(tmp.Ud.buyables[112].effect2)
-        let eff = new Decimal(0.01).div(crowDiv).mul(tmp.Ud.buyables[102].effect).div(tmp.Ud.buyables[111].effect)
-        if (hasUpgrade("Ud",162)) eff = eff.mul(tmp.Ud.upgrades[162].effect)
-        if (hasUpgrade("Ud",174)) eff = eff.mul(tmp.Ud.upgrades[174].effect)
-        if (hasUpgrade("uv",113)) eff = eff.mul(tmp.uv.upgrades[113].effect)
-        if (hasMilestone("Ud",49)) eff = eff.mul(5)
-        if (hasMilestone("Ud",50)) eff = eff.mul(5)
+    crowBirdEff() {
+        let exp = tmp.Ud.buyables[121].effect.add(1).mul(tmp.Ud.buyables[134].effect2)
+        if (hasUpgrade("Ud",212)) exp = exp.mul(2)
+        let eff = player.Ud.crowBirds.div(10).add(1).pow(exp)
         return eff
     },
-    crowDeathRate() {
-        let exp = tmp.Ud.buyables[113].effect2.div(2)
-        if (hasUpgrade("Ud",165)) exp = exp.mul(tmp.Ud.upgrades[165].effect)
-        let eff = player.Ud.crows.div(10).add(1).pow(exp).div(1e3).div(tmp.Ud.buyables[103].effect).div(tmp.Ud.buyables[111].effect2)
+    crowBirthRate(x=player.Ud.crows) {
+        let inf2 = Decimal.pow(2,2048) //inf^2
+        x = new Decimal(x)
+        if (x.lt(2)) return decimalZero
+        let crowDiv = decimalOne
+        let exp = tmp.Ud.crowBirthReduc
+        if (x.gte(1e40)) crowDiv = crowDiv.mul(x.min(inf2).div(1e40).pow(exp))
+        if (x.gte(inf2)) crowDiv = crowDiv.mul(Decimal.pow(2,x.div(inf2).log(2).pow(tmp.Ud.crowBirthDeathDil).div(2).mul(exp)))
+        let eff = layers.Ud.baseBirthRate(x).div(crowDiv)
+        return eff
+    },
+    baseBirthRate(x=player.Ud.crows) {
+        x = new Decimal(x)
+        if (x.lt(2)) return decimalZero
+        let eff = new Decimal(0.01).mul(tmp.Ud.buyables[102].effect).div(tmp.Ud.buyables[111].effect)
+        if (hasUpgrade("Ud",162)) eff = eff.mul(tmp.Ud.upgrades[162].effect)
+        if (hasUpgrade("Ud",174)) eff = eff.mul(tmp.Ud.upgrades[174].effect)
+        if (hasUpgrade("Ud",181)) eff = eff.mul(tmp.Ud.upgrades[181].effect)
+        if (hasUpgrade("Ud",184)) eff = eff.mul(tmp.Ud.upgrades[184].effect)
+        if (hasUpgrade("Ud",202)) eff = eff.mul(tmp.Ud.upgrades[202].effect)
+        if (hasUpgrade("Ud",194)) eff = eff.mul(tmp.Ud.crowBirdEff)
+        if (hasUpgrade("uv",113)) eff = eff.mul(tmp.uv.upgrades[113].effect)
+        if (hasUpgrade("uv",125)) {
+            eff = eff.mul(2)
+            if (player.uv.virusTotal.gte("468e466")) eff = eff.mul(2)
+        }
+        if (hasMilestone("ct",26)) eff = eff.mul(2.7)
         if (hasMilestone("Ud",49)) eff = eff.mul(5)
         if (hasMilestone("Ud",50)) eff = eff.mul(5)
+        if (hasMilestone("uv",52)) eff = eff.mul(4.77)
+        if (hasMilestone("Ud",58)) eff = eff.div(1e3)
+        if (hasMilestone("Ud",59) && player.ct.LaBas.gte("e6045")) eff = eff.div(10)
+        if (hasMilestone("Ud",62)) eff = eff.div(100)
+        if (hasMilestone("Ud",64)) eff = eff.mul(2)
+        if (hasMilestone("Ud",70)) eff = eff.mul(tmp.Ud.milestones[70].effect)
+        if (hasAchievement("a",285) && player.ct.CorVid.sub(player.ct.buyables[41]).gte(19)) eff = eff.mul(19)
+        if (hasUpgrade("Ud",204)) eff = eff.mul(10)
+        if (hasUpgrade("Ud",205)) eff = eff.div(300)
+        if (player.Ud.buyables[42].gte(12)) eff = eff.mul(tmp.Ud.mueff[12])
+        let crowDiv = powExp(x.add(10).log10().mul(10),1.3).div(10)
+        if (x.gte(3e14)) crowDiv = crowDiv.mul(powExp(x.div(3e14).add(9).max(10).log10().mul(10),1.7).div(10))
+        if (x.gte(1e25)) crowDiv = crowDiv.mul(powExp(x.div(1e25).add(9).max(10).log10().mul(10),2).div(10))
+        crowDiv = crowDiv.pow(tmp.Ud.buyables[112].effect2)
+        eff = eff.div(crowDiv)
         return eff
+    },
+    crowBirthReduc() {
+        let exp = tmp.Ud.buyables[112].effect2.div(2)
+        if (hasUpgrade("Ud",211)) exp = exp.mul(tmp.Ud.upgrades[211].effect)
+        return exp
+    },
+    crowBirthDeathDil() {
+        let exp = new Decimal(1.5)
+        return exp
+    },
+    crowDeathRate(x=player.Ud.crows) {
+        let inf2 = Decimal.pow(2,2048) //inf^2
+        x = new Decimal(x)
+        let exp = tmp.Ud.crowDeathIncre
+        let eff = x.min(inf2).div(10).add(1).pow(exp).mul(tmp.Ud.baseDeathRate)
+        if (x.gte(inf2)) eff = eff.mul(Decimal.pow(2,x.div(inf2).log(2).pow(tmp.Ud.crowBirthDeathDil).div(2).mul(exp)))
+        return eff
+    },
+    baseDeathRate() {
+        let eff = new Decimal(0.001).div(tmp.Ud.buyables[103].effect).div(tmp.Ud.buyables[111].effect2)
+        if (hasUpgrade("uv",125)) {
+            eff = eff.mul(2)
+            if (player.uv.virusTotal.gte("468e466")) eff = eff.mul(2)
+        }
+        if (hasMilestone("ct",26)) eff = eff.mul(2.7)
+        if (hasMilestone("Ud",49)) eff = eff.mul(5)
+        if (hasMilestone("Ud",50)) eff = eff.mul(5)
+        if (hasMilestone("uv",52)) eff = eff.mul(4.77)
+        if (hasMilestone("Ud",58)) eff = eff.div(1e4)
+        if (hasMilestone("Ud",59) && player.ct.LaBas.gte("e6045")) eff = eff.div(20)
+        if (hasMilestone("Ud",62)) eff = eff.div(200)
+        if (hasMilestone("Ud",64)) eff = eff.mul(2)
+        if (hasMilestone("Ud",70)) eff = eff.div(tmp.Ud.milestones[70].effect)
+        if (hasUpgrade("Ud",204)) eff = eff.mul(10)
+        if (hasUpgrade("Ud",205)) eff = eff.div(100)
+        return eff
+    },
+    crowDeathIncre() {
+        let exp = tmp.Ud.buyables[113].effect2.div(2)
+        if (hasUpgrade("Ud",165)) exp = exp.mul(tmp.Ud.upgrades[165].effect)
+        if (hasUpgrade("Ud",211)) exp = exp.mul(tmp.Ud.upgrades[211].effect)
+        return exp
+    },
+    carryingCapacity(){
+        return getCarryingCapacity(player.Ud.crows,tmp.Ud.baseBirthRate,tmp.Ud.baseDeathRate,tmp.Ud.crowBirthReduc,tmp.Ud.crowBirthDeathDil,tmp.Ud.crowDeathIncre,layers.Ud.crowBirthRate,layers.Ud.crowDeathRate,10)
     },
     crowInterval() {
         let eff = decimalOne.div(tmp.Ud.buyables[104].effect)
+        if (hasUpgrade("uv",116)) eff = eff.div(tmp.uv.upgrades[116].effect)
+        if (hasUpgrade("uv",121)) eff = eff.div(tmp.uv.upgrades[121].effect)
+        if (hasUpgrade("uv",123)) eff = eff.div(tmp.uv.upgrades[123].effect)
+        if (hasUpgrade("Ud",193)) eff = eff.mul(tmp.Ud.upgrades[193].effect)
+        if (hasUpgrade("Ud",203)) eff = eff.div(5)
+        if (hasUpgrade("ct",602)) eff = eff.div(1.5)
+        if (hasUpgrade("ct",604)) eff = eff.div(1.5)
+        if (hasUpgrade("ct",605)) eff = eff.div(1.5)
         if (hasMilestone("uv",38)) {
             eff = eff.div(2)
             if (player.uv.virusTotal.gte(1e264)) eff = eff.div(2)
         }
+        return eff
+    },
+    crowBirdBirthRate(x=player.Ud.crowBirds) {
+        let inf2 = Decimal.pow(2,2048) //inf^2
+        x = new Decimal(x)
+        let crowDiv = decimalOne
+        let exp = tmp.Ud.crowBirdBirthReduc
+        if (x.gte(1e40)) crowDiv = crowDiv.mul(x.min(inf2).div(1e40).pow(exp))
+        if (x.gte(inf2)) crowDiv = crowDiv.mul(Decimal.pow(2,x.div(inf2).log(2).pow(tmp.Ud.crowBirdBirthDeathDil).div(2).mul(exp)))
+        let eff = layers.Ud.baseBirdBirthRate(x).div(crowDiv)
+        return eff
+    },
+    baseBirdBirthRate(x=player.Ud.crowBirds,y=player.Ud.crows) {
+        x = new Decimal(x)
+        y = new Decimal(y)
+        if (y.lt(1e300)) return decimalZero
+        if (y.gte(Decimal.pow(2,2048))) y = Decimal.pow(2,y.log(2).div(2048).pow(0.5).mul(1024).add(1024))
+        let base = y.log10().div(300).pow(0.5).sub(1).mul(10).pow10()
+        if (hasMilestone("Ud",70)) base = base.pow(1.2)
+        if (hasMilestone("Ud",71)) base = base.pow(1.5).div(100)
+        if (hasMilestone("Ud",74) && player.Ud.crows.gte("e851")) base = base.pow(1.5).div(1e3)
+        if (hasUpgrade("Ud",213)) base = base.pow(tmp.Ud.upgrades[213].effect)
+        let eff = base.div(20).mul(tmp.Ud.buyables[122].effect).mul(tmp.Ud.buyables[124].effect2).div(tmp.Ud.buyables[131].effect)
+        if (hasUpgrade("Ud",201)) eff = eff.div(10)
+        if (hasUpgrade("Ud",204)) eff = eff.div(100)
+        if (hasUpgrade("Ud",212)) eff = eff.div(10)
+        if (hasUpgrade("Ud",215)) eff = eff.div(300)
+        if (hasUpgrade("Ud",202)) eff = eff.mul(1.5)
+        if (hasMilestone("Ud",67) && player.Ud.crows.gte("e600")) eff = eff.div(20)
+        if (hasMilestone("Ud",69) && player.Ud.crows.gte("e682")) eff = eff.div(20)
+        let crowDiv = decimalOne
+        if (x.gte(1e5)) crowDiv = crowDiv.mul(powExp(x.div(1e5).add(9).max(10).log10().mul(10),1.5).div(10))
+        if (x.gte(1e20)) crowDiv = crowDiv.mul(powExp(x.div(1e20).add(9).max(10).log10().mul(10),1.8).div(10))
+        if (x.gte(1e33)) crowDiv = crowDiv.mul(powExp(x.div(1e33).add(9).max(10).log10().mul(10),2.1).div(10))
+        crowDiv = crowDiv.pow(tmp.Ud.buyables[132].effect2)
+        eff = eff.div(crowDiv)
+        return eff
+    },
+    crowBirdBirthReduc() {
+        let exp = tmp.Ud.buyables[132].effect2
+        return exp
+    },
+    crowBirdBirthDeathDil() {
+        let exp = new Decimal(1.5)
+        return exp
+    },
+    crowBirdDeathRate(x=player.Ud.crowBirds) {
+        let exp = tmp.Ud.crowBirdDeathIncre
+        let eff = x.div(1).add(1).pow(exp).mul(tmp.Ud.baseBirdDeathRate)
+        return eff
+    },
+    baseBirdDeathRate() {
+        let eff = new Decimal(0.001).div(tmp.Ud.buyables[123].effect).div(tmp.Ud.buyables[131].effect2)
+        if (hasUpgrade("Ud",201)) eff = eff.div(15)
+        if (hasUpgrade("Ud",204)) eff = eff.div(111)
+        if (hasUpgrade("Ud",212)) eff = eff.div(15)
+        if (hasUpgrade("Ud",215)) eff = eff.div(1000)
+        if (hasMilestone("Ud",67) && player.Ud.crows.gte("e600")) eff = eff.div(30)
+        if (hasMilestone("Ud",69) && player.Ud.crows.gte("e682")) eff = eff.div(40)
+        return eff
+    },
+    crowBirdDeathIncre() {
+        let exp = tmp.Ud.buyables[133].effect2
+        return exp
+    },
+    BirdcarryingCapacity(){
+        return getCarryingCapacity(player.Ud.crowBirds,tmp.Ud.baseBirdBirthRate,tmp.Ud.baseBirdDeathRate,tmp.Ud.crowBirdBirthReduc,tmp.Ud.crowBirdBirthDeathDil,tmp.Ud.crowBirdDeathIncre,layers.Ud.crowBirdBirthRate,layers.Ud.crowBirdDeathRate,1,true)
+    },
+    crowBirdInterval() {
+        let eff = decimalOne.div(tmp.Ud.buyables[124].effect)
+        if (hasUpgrade("uv",126)) eff = eff.div(1.5)
+        if (hasUpgrade("ct",602)) eff = eff.div(1.5)
+        if (hasUpgrade("ct",604)) eff = eff.div(1.5)
+        if (hasUpgrade("ct",605)) eff = eff.div(1.5)
         return eff
     },
     gainMult () {
@@ -56165,6 +58951,10 @@ addLayer("Ud", {
     },
     gainExp2 () {
         let exp = decimalOne
+        if (hasMilestone("Ud",54)) exp = exp.mul(tmp.Ud.milestones[54].effect)
+        if (hasMilestone("Ud",55)) exp = exp.mul(tmp.Ud.milestones[55].effect)
+        if (hasMilestone("Ud",56)) exp = exp.mul(tmp.Ud.milestones[56].effect)
+        if (hasUpgrade("Ud",195)) exp = exp.mul(tmp.Ud.upgrades[195].effect)
         return exp
     },
     getResetGain() {
@@ -56181,6 +58971,8 @@ addLayer("Ud", {
         if (next.gte("e2183") && hasUpgrade("Ud",43)) next = next.sub("e2183").mul(1e18).add("e2183")
         next = next.root(tmp.Ud.gainExp2).div(tmp.Ud.gainMult).root(tmp.Ud.gainExp).div(tmp.Ud.baseMult).pow10().mul("e115e12")
         let sc = tmp.Ud.scStart
+        let sc2 = tmp.Ud.scStart2
+        if (next.gte(sc2)) next = next.log10().log10().div(sc2.log10().log10()).root(0.35).mul(sc2.log10().log10()).pow10().pow10()
         if (next.gte(sc)) next = next.log10().log10().div(sc.log10().log10()).root(0.5).mul(sc.log10().log10()).pow10().pow10()
 		return next.max("e215e12");
     },
@@ -56228,19 +59020,28 @@ addLayer("Ud", {
         if (hasMilestone("Ud",40) && player.Ud.automutant && player.Ud.maxMutantCool==0) {
             layers.Ud.clickables[13].onClick()
         }
+        if (hasMilestone("uv",51) && player.Ud.autocrow && player.Ud.maxCrowCool==0) {
+            layers.Ud.clickables[22].onClick()
+        }
         if (hasUpgrade("Ud",73)) player.Ud.mutants = player.Ud.mutants.add(tmp.Ud.mutantGain.mul(diff))
         if (hasUpgrade("Ud",142)) player.Ud.dmutants = player.Ud.dmutants.add(tmp.Ud.dmutantGain.mul(diff))
         if (hasUpgrade("Ud",105)) {
            player.Ud.crowtime -= diff
            if (player.Ud.crowtime <= 0 || tmp.Ud.crowInterval.toNumber()/player.devSpeed <= player.ms/1e3) {
            player.Ud.crowtime += Math.max(tmp.Ud.crowInterval.toNumber(),diff)
-           player.Ud.crows = getPopulation(player.Ud.crows,tmp.Ud.crowBirthRate,tmp.Ud.crowDeathRate,tmp.Ud.crowInterval,diff).round()
+           player.Ud.crows = getPopulation(player.Ud.crows,tmp.Ud.crowBirthRate,tmp.Ud.crowDeathRate,tmp.Ud.crowInterval,tmp.Ud.carryingCapacity,layers.Ud.crowBirthRate,layers.Ud.crowDeathRate,diff).round()
+            }
+            player.Ud.crowBirdtime -= diff
+           if (player.Ud.crowBirdtime <= 0 || tmp.Ud.crowBirdInterval.toNumber()/player.devSpeed <= player.ms/1e3) {
+           player.Ud.crowBirdtime += Math.max(tmp.Ud.crowBirdInterval.toNumber(),diff)
+           player.Ud.crowBirds = getPopulation(player.Ud.crowBirds,tmp.Ud.crowBirdBirthRate,tmp.Ud.crowBirdDeathRate,tmp.Ud.crowBirdInterval,tmp.Ud.BirdcarryingCapacity,layers.Ud.crowBirdBirthRate,layers.Ud.crowDeathRate,diff,true).round()
             }
         }
         player.Ud.upgCool = Math.max(player.Ud.upgCool-diff,0)
         player.Ud.maxCool = Math.max(player.Ud.maxCool-diff,0)
         player.Ud.maxMutCool = Math.max(player.Ud.maxMutCool-diff,0)
         player.Ud.maxMutantCool = Math.max(player.Ud.maxMutantCool-diff,0)
+        player.Ud.maxCrowCool = Math.max(player.Ud.maxCrowCool-diff,0)
         player.Ud.crowCool = Math.max(player.Ud.crowCool-diff,0)
     },
     microtabs: {
@@ -56252,19 +59053,27 @@ addLayer("Ud", {
                         let ct = "You have " + layerText("h2", "ct", formatWhole(player.ct.points)) +  ' CTNA ('+layerText("h2", "ct", format(tmp.ct.getResetGain.div(inChallenge("ct",32)?100:1)))+'/s)<br>'
                         let re = "Reward Power: " + layerText("h2", "Ud", formatPercent(tmp.Ud.rewardPower)) + "<br>"
                         let a = "You have " + layerText("h2", "Ud", formatWhole(player.Ud.mu)) +  ' Deadly '+pluralize(player.Ud.mu,'Mutation','Mutations',true)+', which:<br>'
-                        let b = pluralize(player.Ud.mu,'Increases','Increase',true)+" Corona and SARS Mutation limit by " + layerText("h2", "Ud", formatWhole(tmp.Ud.mueff[0]))+"<br>"
-                        let c = player.Ud.buyables[42].lt(1)?"":pluralize(player.Ud.mu,'Makes','Make',true)+" unvaxxed death buyables " + layerText("h2", "Ud", formatPercent(tmp.Ud.mueff[1], true))+" stronger<br>"
-                        let d = player.Ud.buyables[42].lt(2)?"":pluralize(player.Ud.mu,'Makes','Make',true)+" 'Distant Deadly Exponent' start " + layerText("h2", "Ud", formatWhole(tmp.Ud.mueff[2]))+" later<br>"
-                        let e = player.Ud.buyables[42].lt(3)?"":pluralize(player.Ud.mu,'Gives','Give',true)+" " + layerText("h2", "Ud", formatWhole(tmp.Ud.mueff[3]))+" free 'Deadly CRNA' and 'Deadly Deaths' levels<br>"
-                        let f = player.Ud.buyables[42].lt(4)?"":pluralize(player.Ud.mu,'Makes','Make',true)+" unvaxxed severity UD softcap start ^" + layerText("h2", "Ud", format(tmp.Ud.mueff[4]))+" later<br>"
-                        let g = player.Ud.buyables[42].lt(5)?"":pluralize(player.Ud.mu,'Makes','Make',true)+" base unvaxxed severity gain softcap start ^" + layerText("h2", "Ud", format(tmp.Ud.mueff[5]))+" later<br>"
+                        let b2 = player.Ud.buyables[43].gte(1)?makeUDText(" and effective amount by "+layerText("h2", "Ud", formatWhole(tmp.Ud.mueff2[0]))):""
+                        let c2 = player.Ud.buyables[43].gte(2)?layerText("h2", "Ud", format(tmp.Ud.mueff[1]))+makeUDText("*log10(bought/100+10)<sup>"+layerText("h2", "Ud", format(tmp.Ud.mueff2[1])))+"</sup>x stronger":layerText("h2", "Ud", formatPercent(tmp.Ud.mueff[1], true))+" stronger"
+                        let d2 = player.Ud.buyables[43].gte(3)?makeUDText(" and "+layerText("h2", "Ud", format(tmp.Ud.mueff2[2]))+"*(bought/"+format(1e20)+"+1)<sup>0.1</sup>")+"x ":""
+                        let e2 = player.Ud.buyables[43].gte(4)?makeUDText(" and they are "+layerText("h2", "Ud", format(tmp.Ud.mueff2[3]))+"*(free levels/"+format(1e25)+"+1)<sup>0.05</sup>")+"x stronger":""
+                        let f2 = player.Ud.buyables[43].gte(5)?makeUDText(" and dilate base unvaxxed severity UD amount ^"+layerText("h2", "Ud", format(tmp.Ud.mueff2[4]))):""
+                        let g2 = player.Ud.buyables[43].gte(6)?makeUDText(" and dilate base unvaxxed severity gain ^"+layerText("h2", "Ud", format(tmp.Ud.mueff2[5]))):""
+                        let b = pluralize(player.Ud.mu,'Increases','Increase',true)+" Corona and SARS Mutation limit by " + layerText("h2", "Ud", formatWhole(tmp.Ud.mueff[0]))+b2+"<br>"
+                        let c = player.Ud.buyables[42].lt(1)?"":pluralize(player.Ud.mu,'Makes','Make',true)+" unvaxxed death buyables " +c2+"<br>"
+                        let d = player.Ud.buyables[42].lt(2)?"":pluralize(player.Ud.mu,'Makes','Make',true)+" 'Distant Deadly Exponent' start " + layerText("h2", "Ud", formatWhole(tmp.Ud.mueff[2]))+" "+d2+"later<br>"
+                        let e = player.Ud.buyables[42].lt(3)?"":pluralize(player.Ud.mu,'Gives','Give',true)+" " + layerText("h2", "Ud", formatWhole(tmp.Ud.mueff[3]))+" free 'Deadly CRNA' and 'Deadly Deaths' levels"+e2+"<br>"
+                        let f = player.Ud.buyables[42].lt(4)?"":pluralize(player.Ud.mu,'Makes','Make',true)+" unvaxxed severity UD softcap start ^" + layerText("h2", "Ud", format(tmp.Ud.mueff[4]))+" later"+f2+"<br>"
+                        let g = player.Ud.buyables[42].lt(5)?"":pluralize(player.Ud.mu,'Makes','Make',true)+" base unvaxxed severity gain softcap start ^" + layerText("h2", "Ud", format(tmp.Ud.mueff[5]))+" later"+g2+"<br>"
                         let h = player.Ud.buyables[42].lt(6)?"":pluralize(player.Ud.mu,'Makes','Make',true)+" 'Distant Deadly CTNA' start " + layerText("h2", "Ud", formatWhole(tmp.Ud.mueff[6]))+" later<br>"
                         let i = player.Ud.buyables[42].lt(7)?"":pluralize(player.Ud.mu,'Makes','Make',true)+" 'Distant Deadlier Softcap' start " + layerText("h2", "Ud", formatWhole(tmp.Ud.mueff[7]))+" later<br>"
-                        let j = player.Ud.buyables[42].lt(8)?"":pluralize(player.Ud.mu,'Multiplies','Multiply',true)+" Deadly Mutant gain by " + layerText("h2", "Ud", format(tmp.Ud.mueff[8]))+" per corona mutation ("+layerText("h2", "Ud", format(tmp.Ud.mueff[8].pow(player.e.mu2)))+"x total)<br>"
+                        let j = player.Ud.buyables[42].lt(8)?"":pluralize(player.Ud.mu,'Multiplies','Multiply',true)+" Deadly Mutant gain by " + layerText("h2", "Ud", format(tmp.Ud.mueff[8]))+" per corona mutation ("+layerText("h2", "Ud", format(tmp.Ud.mueff[8].pow(tmp.e.mutamt)))+"x total)<br>"
                         let k = player.Ud.buyables[42].lt(9)?"":pluralize(player.Ud.mu,'Increases','Increase',true)+" Deadly Mutant gain exponent by " + layerText("h2", "Ud", format(tmp.Ud.mueff[9]))+" per corona (+"+layerText("h2", "Ud", format(tmp.Ud.mueff[9].mul(tmp.ct.getCorGain)))+" total)<br>"
                         let l = player.Ud.buyables[42].lt(10)?"":pluralize(player.Ud.mu,'Increases','Increase',true)+" Deadlier Mutant gain exponent by " + layerText("h2", "Ud", format(tmp.Ud.mueff[10]))+" per bought CorVid (+"+layerText("h2", "Ud", format(tmp.Ud.mueff[10].mul(player.ct.buyables[41])))+" total)<br>"
                         let m = player.Ud.buyables[42].lt(11)?"":pluralize(player.Ud.mu,'Increases','Increase',true)+" 'LaBas Gain' CorVid exponent by " + layerText("h2", "Ud", format(tmp.Ud.mueff[11]))+"<br>"
-                        return ct+re+a+b+c+d+e+f+g+h+i+j+k+l+m
+                        let n = player.Ud.buyables[42].lt(12)?"":pluralize(player.Ud.mu,'Multiplies','Multiply',true)+" Deadly Crow birth rate by " + layerText("h2", "Ud", format(tmp.Ud.mueff[12]))+"<br>"
+                        let o = player.Ud.buyables[42].lt(13)?"":pluralize(player.Ud.mu,'Multiplies','Multiply',true)+" CorVid gain by " + layerText("h2", "Ud", format(tmp.Ud.mueff[13]))+"<br>"
+                        return ct+re+a+b+c+d+e+f+g+h+i+j+k+l+m+n+o
                     }
                     ],
                     ["clickable",[12]],
@@ -56368,16 +59177,20 @@ addLayer("Ud", {
                     let ct = "You have " + layerText("h2", "ct", formatWhole(player.ct.points)) +  ' CTNA ('+layerText("h2", "ct", format(tmp.ct.getResetGain.div(inChallenge("ct",32)?100:1)))+'/s)<br>'
                     let co =  "You have " + layerText("h2", "ct", formatWhole(player.ct.CorVid)) +  ' '+pluralize(player.ct.CorVid,'CorVid','CorVids',true)+' ('+layerText("h2", "ct", formatWhole(player.ct.buyables[41]))+' bought, next at '+formatWhole(tmp.ct.buyables[41].cost)+' CTNA) ('+layerText("h2", "ct", format(tmp.ct.getCorVidGain))+'/s)<br>'
                     let la =  "You have " + layerText("h2", "ct", formatWhole(player.ct.LaBas)) +  ' '+pluralize(player.ct.LaBas,'LaBa','LaBas',true)+' ('+layerText("h2", "ct", format(tmp.ct.getLaGain))+'/s)<br>'
-                    let a = "You have " + layerText("h2", "Ud", formatWhole(player.Ud.crows)) +  ' Deadly '+pluralize(player.Ud.crows,'Crow','Crows',true)+' (Birth rate: '+formatPercent(tmp.Ud.crowBirthRate)+', Death rate: '+formatPercent(tmp.Ud.crowDeathRate)+'), which boost LaBas gain by '+layerText("h2", "Ud", format(tmp.Ud.crowEff))+'<br>'
+                    let a = "You have " + layerText("h2", "Ud", formatWhole(player.Ud.crows)) +  ' Deadly '+pluralize(player.Ud.crows,'Crow','Crows',true)+' (Birth rate: '+formatPercent(tmp.Ud.crowBirthRate)+', Death rate: '+formatPercent(tmp.Ud.crowDeathRate)+'), which '+pluralize(player.Ud.crows,'boosts','boost',true)+' LaBas gain by '+layerText("h2", "Ud", format(tmp.Ud.crowEff))+'<br>'
+                    let a2 = hasUpgrade("Ud",194)?"You have " + layerText("h2", "Ud", formatWhole(player.Ud.crowBirds)) +  ' Deadly '+pluralize(player.Ud.crowBirds,'CrowBird','CrowBirds',true)+' (Birth rate: '+formatPercent(tmp.Ud.crowBirdBirthRate)+', Death rate: '+formatPercent(tmp.Ud.crowBirdDeathRate)+', starts at '+format(1e300)+' Deadly Crows), which '+pluralize(player.Ud.crowBirds,'boosts','boost',true)+' Deadly Crow birth rate by '+layerText("h2", "Ud", format(tmp.Ud.crowBirdEff))+'<br>':""
+                    let cc = shiftDown?"Carrying capacity: " + layerText("h2", "Ud", formatWhole(tmp.Ud.carryingCapacity))+'<br>':""
+                    let cc2 = hasUpgrade("Ud",194)&&shiftDown?"Carrying capacity: " + layerText("h2", "Ud", formatWhole(tmp.Ud.BirdcarryingCapacity))+'<br>':""
                     let b = "Tick interval: " + formatTimeLong(tmp.Ud.crowInterval)+'<br>'
-                    let c = "Upgrades that cost Deadly Crows divide Deadly Crow population"
-                    return ct+co+la+a+b+c
+                    let b2 = hasUpgrade("Ud",194)?"Tick interval: " + formatTimeLong(tmp.Ud.crowBirdInterval)+'<br>':""
+                    let c = "Upgrades that cost Deadly Birds divide their population"
+                    return ct+co+la+a+cc+b+a2+b2+cc2+c
                 }
             ],
-            ["clickable",[21]],
+            ["clickables",[2]],
             ["buyables",[10,11,12,13]],
             "blank",
-            ["upgrades",[16,17,18,19,20]],
+            ["upgrades",[16,17,18,19,20,21]],
             ],
             unlocked() {return hasUpgrade("Ud",105)}
         },
@@ -56502,6 +59315,7 @@ addLayer("Ud", {
             requirementDescription() {return format("e27790")+" total unvaxxed deaths (18)"},
             effect() {
                 let eff = powExp(tmp.Us.getTotaltRNA,0.7).div(3e11).add(1).pow(0.015)
+                eff = eff.min(eff.log10().div(15e11).pow(0.65).mul(25e10).add(125e10).pow10())
                 return eff
             },
             effectDescription() {return "'Chancer' and 'Deadly Limit' boosts MMNA gain.<br>Currently: ^"+format(tmp.Ud.milestones[17].effect)+", "+format(tmp.Ud.upgrades[21].effect)+"x"},
@@ -56606,6 +59420,7 @@ addLayer("Ud", {
             requirementDescription() {return format("e1824200")+" CTNA (34)"},
             effect() {
                 let eff = tmp.e.mmlim.max(10).log10().div(1e80).pow(0.03)
+                if (eff.gte("e7e4")) eff = eff.log10().div(7e4).pow(0.7).mul(3e4).add(4e4).pow10()
                 return eff
             },
             effectDescription() {return "'MMNA Boost' 2nd exponent+0.2, dilate 'Deadly Softcap' to 1.5, 'CRNA Boost' 1st base+0.5, 1st exponent+0.25, MMNA limit boosts MMNA gain.<br>Currently: ^"+format(tmp.Ud.milestones[33].effect)},
@@ -56647,7 +59462,7 @@ addLayer("Ud", {
         39: {
             requirementDescription() {return format("2e1302")+" Deadly Mutants (40)"},
             effect() {
-                let eff = player.Us.mu2.pow(0.8).div(1e3).add(1)
+                let eff = tmp.Us.mutamt.pow(0.8).div(1e3).add(1)
                 return eff
             },
             effectDescription() {return "SARS Mutations reduce Corona Mutation scaling.<br>Currently: /"+format(tmp.Ud.milestones[39].effect)},
@@ -56667,7 +59482,7 @@ addLayer("Ud", {
         42: {
             requirementDescription() {return format("e41740")+" Deadly Mutants (43)"},
             effect() {
-                let eff = player.Us.mu2.mul(player.e.mu2).pow(0.3).div(300).pow10()
+                let eff = tmp.Us.mutamt.mul(tmp.e.mutamt).pow(0.3).div(300).pow10()
                 return eff
             },
             effectDescription() {return "Corona and SARS Mutations boost base mutated rRNA exponent.<br>Currently: "+format(tmp.Ud.milestones[42].effect)+"x"},
@@ -56675,11 +59490,17 @@ addLayer("Ud", {
         },
         43: {
             requirementDescription() {return format("e119900")+" Deadly Mutants (44)"},
-            effect() {
-                let eff = Decimal.pow(player.Ud.milestones.length-40, 3).div(5).add(1).max(1)
+            exp() {
+                let eff = decimalThree
+                if (hasMilestone("Ud",59)) eff = eff.add(tmp.Ud.milestones[59].effect)
                 return eff
             },
-            effectDescription() {return "Multiply 'CRNA Exponent' base by (milestones-40)<sup>3</sup>/5+1, 'LaBas Gain' CorVid exponent+1.<br>Currently: "+format(tmp.Ud.milestones[43].effect)+"x"},
+            effect() {
+                let exp = tmp.Ud.milestones[43].exp
+                let eff = Decimal.pow(player.Ud.milestones.length-40, exp).div(5).add(1).max(1)
+                return eff
+            },
+            effectDescription() {return "Multiply 'CRNA Exponent' base by (milestones-40)<sup>"+format(tmp.Ud.milestones[43].exp)+"</sup>/5+1, 'LaBas Gain' CorVid exponent+1.<br>Currently: "+format(tmp.Ud.milestones[43].effect)+"x"},
             done() { return player.Ud.mutants.gte("e119900") }
         },
         44: {
@@ -56735,6 +59556,202 @@ addLayer("Ud", {
             effectDescription() {return "Multiply LaBas gain by 7.23 and they make 'Deadly CTNA' softcap later. UnBoosted Virus dilation+0.1 at "+format("3e725")+"/"+format("3e737")+"/"+format("3e747")+" LaBas.<br>Currently: "+format(tmp.Ud.milestones[52].effect)+"x"},
             done() { return player.ct.LaBas.gte("723e721") && inChallenge("ct",32) }
         },
+        53: {
+            requirementDescription() {return format("5e1044")+" LaBas (54)"},
+            effectDescription() {return "Multiply LaBas gain by 10.44. Dilate 'Deadlier Deaths' to 1.7 at "+format("e1073")+" LaBas."},
+            done() { return player.ct.LaBas.gte("5e1044") && inChallenge("ct",32) }
+        },
+        54: {
+            requirementDescription() {return format("e1110")+" LaBas (55)"},
+            effect() {
+                let eff = player.Ud.crows.div(8.75e60).max(10).log10().pow(0.5).sub(1).div(10).add(1)
+                return eff
+            },
+            effectDescription() {return "Deadly Crows boost unvaxxed death gain. Raise 'Deadlier tRNA' to 1.2 at "+format("3e1120")+" LaBas.<br>Currently: ^"+format(tmp.Ud.milestones[54].effect)},
+            done() { return player.ct.LaBas.gte("e1110") && inChallenge("ct",32) }
+        },
+        55: {
+            requirementDescription() {return format("e1463")+" LaBas (56)"},
+            effect() {
+                let eff = tmp.Ud.upgrades[13].effect2
+                return eff
+            },
+            effectDescription() {return "'Deadly rRNA' boosts unvaxxed death gain.<br>Currently: ^"+format(tmp.Ud.milestones[55].effect)},
+            done() { return player.ct.LaBas.gte("e1463") && inChallenge("ct",32) }
+        },
+        56: {
+            requirementDescription() {return format("3e1528")+" LaBas (57)"},
+            effect() {
+                let eff = tmp.Ud.buyables[13].effect.div(1e18).max(1).pow(0.05)
+                return eff
+            },
+            effectDescription() {return "'Deadly Exponent' boosts unvaxxed death gain at (x/"+format(1e18)+")<sup>0.05</sup> effect and multiply its UD exponent by 1.065.<br>Currently: ^"+format(tmp.Ud.milestones[56].effect)},
+            done() { return player.ct.LaBas.gte("3e1528") && inChallenge("ct",32) }
+        },
+        57: {
+            requirementDescription() {return format("e2396")+" LaBas (58)"},
+            effect() {
+                let eff = tmp.ct.buyables[53].effect.div(5)
+                return eff
+            },
+            effectDescription() {return "'LaBas Exponent 2' increases 'LaBas Gain' exponent at 20% effect. Raise 'ExpoCT-Deadly' to 1.13, 'ExpoSoft-Deadly' to 1.15.<br>Currently: +"+format(tmp.Ud.milestones[57].effect)},
+            done() { return player.ct.LaBas.gte("e2396") && inChallenge("ct",32) }
+        },
+        58: {
+            requirementDescription() {return format("4778e4775")+" LaBas (59)"},
+            effectDescription() {return "Divide Deadly Crow birth rate by 1,000 and death rate by 10,000. Raise unvaxxed tRNA 2nd effect to 10 and dilate 'LSU' to 1.25 at "+format("4976e4973")+" LaBas."},
+            done() { return player.ct.LaBas.gte("4778e4775") && inChallenge("ct",32) }
+        },
+        59: {
+            requirementDescription() {return format("5697e5694")+" LaBas (60)"},
+            exp() {
+                let eff = new Decimal(0.8)
+                if (hasMilestone("Ud",67)) eff = eff.add(0.2)
+                if (hasMilestone("Ud",71)) eff = eff.add(0.2)
+                if (hasMilestone("Ud",72)) eff = eff.add(0.2)
+                if (hasMilestone("Ud",78)) eff = eff.add(0.2)
+                return eff
+            },
+            effect() {
+                let exp = tmp.Ud.milestones[59].exp
+                let eff = Decimal.pow(player.Ud.milestones.length-59, exp).div(3)
+                return eff
+            },
+            effectDescription() {return "Increase UD milestone 44 exponent and 'Mutant Crows' (/3) by (milestones-59)<sup>"+format(tmp.Ud.milestones[59].exp)+"</sup>/3. Divide Deadly Crow birth rate by 10 and death rate by 20 at "+format("e6045")+" LaBas.<br>Currently: +"+format(tmp.Ud.milestones[59].effect)},
+            done() { return player.ct.LaBas.gte("5697e5694") && inChallenge("ct",32) }
+        },
+        60: {
+            requirementDescription() {return format("6178e6175")+" LaBas (61)"},
+            effectDescription() {return "Multiply UBV gain base by 3.08 at "+format(Decimal.pow(2,1024))+" Deadly Crows."},
+            done() { return player.ct.LaBas.gte("6178e6175") && inChallenge("ct",32) }
+        },
+        61: {
+            requirementDescription() {return format("7834e7831")+" LaBas (62)"},
+            effect() {
+                let eff = player.e.crna.max(10).log10().div("e3600").add(1).pow(0.05)
+                return eff
+            },
+            effectDescription() {return "CRNA boosts mutated rRNA gain. Increase 'UnBoosted Base' 2nd base by 0.2 at "+format("7871e7868")+" LaBas.<br>Currently: ^"+format(tmp.Ud.milestones[61].effect)},
+            done() { return player.ct.LaBas.gte("7834e7831") && inChallenge("ct",32) }
+        },
+        62: {
+            requirementDescription() {return format("8358e8355")+" LaBas (63)"},
+            effectDescription() {return "Raise effective mutation amount in mutated rRNA effect to 1.3. Divide Deadly Crow birth rate by 100 and death rate by 200."},
+            done() { return player.ct.LaBas.gte("8358e8355") && inChallenge("ct",32) }
+        },
+        63: {
+            requirementDescription() {return format("526e447")+" Deadly Crows (64)"},
+            effectDescription() {return "Unlock Deadly CrowBird buyables. Add 0.5 to 'C+-' 1st base and 2 to 2nd base."},
+            done() { return player.Ud.crows.gte("526e447") }
+        },
+        64: {
+            requirementDescription() {return format("2e534")+" Deadly Crows (65)"},
+            effectDescription() {return "Double Deadly Crow birth and death rate."},
+            done() { return player.Ud.crows.gte("2e534") }
+        },
+        65: {
+            requirementDescription() {return format("6e546")+" Deadly Crows (66)"},
+            effectDescription() {return "Dilate 'UnrRNA' to 1.4."},
+            done() { return player.Ud.crows.gte("6e546") }
+        },
+        66: {
+            requirementDescription() {return format("52e574")+" Deadly Crows (67)"},
+            effectDescription() {return "Add 0.2 to 'C+-' 1st base and 1 to 2nd base."},
+            done() { return player.Ud.crows.gte("52e574") }
+        },
+        67: {
+            requirementDescription() {return format("e577")+" Deadly Crows (68)"},
+            effectDescription() {return "Add 0.2 to UD milestone 60 exponent. Divide Deadly CrowBird birth rate by 20 and death rate by 30 at "+format("e600")+" Deadly Crows."},
+            done() { return player.Ud.crows.gte("e577") }
+        },
+        68: {
+            requirementDescription() {return format("2e628")+" Deadly Crows (69)"},
+            effectDescription() {return "Add 0.5 to 'C+-' 1st base and 3 to 2nd base. Add 0.05 to 'LaBirth' dilation."},
+            done() { return player.Ud.crows.gte("2e628") }
+        },
+        69: {
+            requirementDescription() {return format("e676")+" Deadly Crows (70)"},
+            effectDescription() {return "Add 6.8 to 'C+-' 1st base and 44 to 2nd base. Divide Deadly CrowBird birth rate by 20 and death rate by 40 at "+format("e682")+" Deadly Crows."},
+            done() { return player.Ud.crows.gte("e676") }
+        },
+        70: {
+            requirementDescription() {return format("e684")+" Deadly Crows (71)"},
+            effect() {
+                let eff = player.ct.CorVid.div(100).add(1).pow(2)
+                return eff
+            },
+            effectDescription() {return "CorVids boost Deadly Crow birth rate and divide death rate. Raise Deadly Crow boost to Deadly CrowBird birth rate to 1.2. Unlock a row of Deadly Crow buyables.<br>Currently: "+format(tmp.Ud.milestones[70].effect)+"x"},
+            done() { return player.Ud.crows.gte("e684") }
+        },
+        71: {
+            requirementDescription() {return format("e708")+" Deadly Crows (72)"},
+            effectDescription() {return "Add 0.2 to UD milestone 60 exponent. Multiply After log exponent by 1.75. Raise Deadly Crow boost to Deadly CrowBird birth rate to 1.5 and divide it by 100."},
+            done() { return player.Ud.crows.gte("e708") }
+        },
+        72: {
+            requirementDescription() {return format("e774")+" Deadly Crows (73)"},
+            effectDescription() {return "Add 0.2 to UD milestone 60 exponent. Multiply After log exponent by 1.4. Divide 'C+-' cost base by 3."},
+            done() { return player.Ud.crows.gte("e774") }
+        },
+        73: {
+            requirementDescription() {return format("e798")+" Deadly Crows (74)"},
+            effectDescription() {return "Add 0.005 to 'I^' 2nd base."},
+            done() { return player.Ud.crows.gte("e798") }
+        },
+        74: {
+            requirementDescription() {return format("e842")+" Deadly Crows (75)"},
+            effectDescription() {return "Add 0.015 to 'I^' 2nd base. Multiply After log exponent and divide 'C+-' cost base by 1.3. Raise Deadly Crow boost to Deadly CrowBird birth rate to 1.5 and divide it by 1,000 at "+format("e851")+" Deadly Crows."},
+            done() { return player.Ud.crows.gte("e842") }
+        },
+        75: {
+            requirementDescription() {return format(1919e16)+" CorVids (76)"},
+            effect() {
+                let eff = tmp.ct.buyables[62].effect.pow(0.5)
+                return eff
+            },
+            effectDescription() {return "'LaBas Gain 3' boosts LaBas gain at √x effect.<br>Currently: "+format(tmp.Ud.milestones[75].effect)+"x"},
+            done() { return player.ct.CorVid.gte(1919e16) && inChallenge("ct",32) }
+        },
+        76: {
+            requirementDescription() {return format(5e25)+" CorVids (77)"},
+            effect() {
+                let eff = tmp.e.crMult.max(10).log10()
+                return eff
+            },
+            effectDescription() {return "After log multiplier boosts CRNA gain exponent at log10(x) effect. 'Deadly Log' raises After log multiplier and multiply After log exponent by 1.05. Divide 'C+-' cost base by 1.6.<br>Currently: "+format(tmp.Ud.milestones[76].effect)+"x"},
+            done() { return player.ct.CorVid.gte(5e25) && inChallenge("ct",32) }
+        },
+        77: {
+            requirementDescription() {return "6 'Deadlier Reward's (78)"},
+            effect() {
+                let eff = tmp.Ud.baseAmountEff.max(10).log10().max(10).log10().div(1e15).pow(4).add(1)
+                return eff
+            },
+            effectDescription() {return "Unvaxxed severity boosts CorVid gain.<br>Currently: "+format(tmp.Ud.milestones[77].effect)+"x"},
+            done() { return player.Ud.buyables[43].gte(6) }
+        },
+        78: {
+            requirementDescription() {return format(2e61)+" CorVids (79)"},
+            effect() {
+                let eff = tmp.Us.effectSymp.max(10).log10().max(10).log10().div(1e22).pow(2.2).add(1)
+                return eff
+            },
+            effectDescription() {return "Base unvaxxed severity gain boosts CorVid gain. Add 0.2 to UD milestone 60 exponent. Add 24 to 'C+-' 1st base and 140 to 2nd base.<br>Currently: "+format(tmp.Ud.milestones[78].effect)+"x"},
+            done() { return player.ct.CorVid.gte(2e61) && inChallenge("ct",32) }
+        },
+        79: {
+            requirementDescription() {return format(15e82)+" CorVids (80)"},
+            effect() {
+                let eff = tmp.ct.buyables[63].effect.pow(0.005)
+                return eff
+            },
+            effect2() {
+                let eff = tmp.ct.buyables[63].effect2.pow(0.6)
+                return eff
+            },
+            effectDescription() {return "'CorVid LaBaser' boosts LaBas gain at ^0.005 effect and CorVid gain at ^0.6 effect. UB37 exponent*100, UB38 exponent*10, UB39 exponent*3 at "+format(4e87)+" CorVids<br>Currently: "+format(tmp.Ud.milestones[79].effect)+"x, "+format(tmp.Ud.milestones[79].effect2)+"x"},
+            done() { return player.ct.CorVid.gte(15e82) && inChallenge("ct",32) }
+        },
     },
     upgrades: {
         rows: 10,
@@ -56762,6 +59779,7 @@ addLayer("Ud", {
             effect(){
                 let eff = player.Ud.points.mul(7).add(15).log10().pow(0.45).sub(1).div(3)
                 if (hasMilestone("Ud",49)) eff = eff.div(1e9).add(1)
+                if (hasMilestone("Ud",65)) eff = powExp(eff,1.4)
                 return eff
             },
             effectDisplay(){
@@ -56774,13 +59792,25 @@ addLayer("Ud", {
             title: "Deadly rRNA",
             cost: new Decimal(50),
             description: "Mutated rRNA boosts unvaxxed death gain.",
-            effect(){
+            e() {
                 let eff = tmp.Us.rrnaAmt.div(1e100).add(10).log10().pow(0.6).add(1)
                 if (hasChallenge("Ud",22)) eff = eff.pow(tmp.Ud.challenges[22].rewardEffect2)
                 return eff
             },
+            effect(){
+                let eff = tmp.Ud.upgrades[13].e.min("e2e24")
+                return eff
+            },
+            effect2(){
+                let eff = powExp(tmp.Ud.upgrades[13].e.add(10).log10().div(5e27).add(1),0.8).pow(0.15).sub(1).div(10).add(1)
+                if (eff.gte(1e5)) eff = eff.log10().div(5).pow(0.5).mul(5).pow10()
+                if (eff.gte(2e8)) eff = eff.div(2).log10().div(8).pow(0.3).mul(2).add(6).pow10().mul(2)
+                return eff
+            },
             effectDisplay(){
                 let dis = format(tmp.Ud.upgrades[13].effect)+"x"
+                if (tmp.Ud.upgrades[13].effect.gte("e2e24")) dis += " (hardcapped)"
+                if (hasMilestone("Ud",55)) dis += ", ^"+format(tmp.Ud.upgrades[13].effect2)
                 return dis
             },
         },
@@ -56798,8 +59828,13 @@ addLayer("Ud", {
                 if (hasUpgrade("Ud",52)) eff = eff.pow(tmp.Ud.upgrades[52].effect)
                 return eff
             },
+            effect2(){
+                let eff = tmp.Ud.upgrades[14].effect.max(10).log10().pow(0.7).add(1)
+                return eff
+            },
             effectDisplay(){
                 let dis = format(tmp.Ud.upgrades[14].effect)+"x"
+                if (hasMilestone("Ud",76)) dis += ", ^"+format(tmp.Ud.upgrades[14].effect2)
                 return dis
             },
         },
@@ -56918,6 +59953,8 @@ addLayer("Ud", {
                 let eff = player.ct.points.add(10).log10().div(100).pow(2).max(1)
                 if (eff.gte(50)) eff = eff.div(50).pow(0.75).mul(35).add(15)
                 if (hasUpgrade("Ud",141)) eff = powExp(eff,1.3)
+                if (hasUpgrade("Ud",192)) eff = powExp(eff,1.2)
+                if (hasMilestone("Ud",53) && player.ct.LaBas.gte("e1073")) eff = powExp(eff,1.7)
                 return eff
             },
             effectDisplay(){
@@ -56955,6 +59992,7 @@ addLayer("Ud", {
             effect(){
                 let eff = player.Us.trna.max(10).log10().max(10).log10().sub(20.2).max(0).div(2).add(1).pow(1.2)
                 if (eff.gte(4.7)) eff = eff.div(4.7).pow(0.5).mul(3.3).add(1.4)
+                if (hasMilestone("Ud",54) && player.ct.LaBas.gte("3e1120")) eff = eff.pow(1.2)
                 return eff
             },
             effectDisplay(){
@@ -57004,6 +60042,9 @@ addLayer("Ud", {
             description: "'Deadly Deaths' boosts itself after 2,165 levels.",
             effect(){
                 let eff = tmp.Ud.buyables[12].total.sub(2165).max(0).div(234).add(1).pow(0.4)
+                if (eff.gte(55e4)) eff = eff.div(55e4).pow(0.75).mul(45e4).add(1e5)
+                if (eff.gte(25e5)) eff = eff.div(25e5).pow(0.85).mul(15e5).add(1e6)
+                if (eff.gte(76e7)) eff = eff.div(76e7).pow(0.65).mul(3e8).add(46e7)
                 return eff
             },
             effectDisplay(){
@@ -57021,6 +60062,7 @@ addLayer("Ud", {
             effect(){
                 let eff = tmp.Ud.buyables[21].total.sub(50).max(0).mul(2)
                 if (hasUpgrade("Ud",155)) eff = eff.mul(20)
+                if (hasMilestone("Ud",57)) eff = eff.pow(1.13)
                 return eff
             },
             effectDisplay(){
@@ -57038,6 +60080,7 @@ addLayer("Ud", {
             effect(){
                 let eff = tmp.Ud.buyables[22].total.sub(44).max(0).mul(4)
                 if (hasUpgrade("Ud",155)) eff = eff.mul(20)
+                if (hasMilestone("Ud",57)) eff = eff.pow(1.15)
                 return eff
             },
             effectDisplay(){
@@ -57125,7 +60168,7 @@ addLayer("Ud", {
             cost: new Decimal("e489850"),
             description: "Corona 2nd effect/300 adds to CRNA exponent multiplier.",
             effect(){
-                let eff = tmp.ct.getCorEff.e2.mul(player.e.mu2).div(300)
+                let eff = tmp.ct.getCorEff.e2.mul(tmp.e.mutamt).div(300)
                 return eff
             },
             effectDisplay(){
@@ -57351,6 +60394,7 @@ addLayer("Ud", {
                 if (hasUpgrade("Ud",131)) exp = Decimal.pow(exp,1.3)
                 if (hasUpgrade("Ud",153)) exp = Decimal.pow(exp,1.3)
                 if (hasUpgrade("Ud",174)) exp = Decimal.pow(exp,1.8)
+                if (hasUpgrade("Ud",182)) exp = Decimal.pow(exp,1.2)
                 let eff = Decimal.factorial(Decimal.add(exp,1))
                 return eff
             },
@@ -57560,6 +60604,7 @@ addLayer("Ud", {
                 let exp = player.Ud.upgrades.filter(x=>x>140&&x<210).length
                 if (hasUpgrade("Ud",153)) exp = Decimal.pow(exp,1.3)
                 if (hasUpgrade("Ud",174)) exp = Decimal.pow(exp,1.3)
+                if (hasUpgrade("Ud",182)) exp = Decimal.pow(exp,1.2)
                 let eff = Decimal.factorial(exp)
                 return eff
             },
@@ -57634,6 +60679,8 @@ addLayer("Ud", {
             description: "Deadlier Mutants boost LaBas gain, 'CT-Mutant' and 'DT-Mutant' upgrade amounts^1.3",
             effect(){
                 let eff = powExp(slogadd(player.Ud.dmutants.add(10),-0.4),1.1).pow(0.42).div(1e5).add(1)
+                if (hasUpgrade("Ud",182)) eff = slogadd(eff,0.2).pow(0.15)
+                if (hasUpgrade("Ud",185)) eff = slogadd(eff,0.15).pow(0.2)
                 return eff
             },
             effectDisplay(){
@@ -57689,7 +60736,9 @@ addLayer("Ud", {
             cost: new Decimal(4500),
             description: "Deadlier Mutants boost Deadly Crow birth rate.",
             effect(){
-                let eff = player.Ud.dmutants.max(10).log10().sub(3550).max(0).div(40).pow(0.6).add(1)
+                let exp = new Decimal(0.6)
+                if (hasMilestone("Ud",59)) exp = exp.add(tmp.Ud.milestones[59].effect.div(3))
+                let eff = player.Ud.dmutants.max(10).log10().sub(3550).max(0).div(40).pow(exp).add(1)
                 return eff
             },
             effectDisplay(){
@@ -57700,7 +60749,8 @@ addLayer("Ud", {
                 return player.Ud.crows.gte(4500)
             },
             pay(){
-                player.Ud.crows = player.Ud.crows.div(4500).round()
+                let cost = tmp[this.layer].upgrades[this.id].cost
+                if (!hasUpgrade("ct",593) || (hasUpgrade("ct",593) && cost.gte(player.Ud.crows.pow(tmp.ct.upgrades[593].exp)))) player.Ud.crows = player.Ud.crows.div(cost).round()
             }
         },
         163: {
@@ -57738,7 +60788,8 @@ addLayer("Ud", {
                 return player.Ud.crows.gte(47e5)
             },
             pay(){
-                player.Ud.crows = player.Ud.crows.div(47e5).round()
+                let cost = tmp[this.layer].upgrades[this.id].cost
+                if (!hasUpgrade("ct",593) || (hasUpgrade("ct",593) && cost.gte(player.Ud.crows.pow(tmp.ct.upgrades[593].exp)))) player.Ud.crows = player.Ud.crows.div(cost).round()
             }
         },
         165: {
@@ -57776,7 +60827,8 @@ addLayer("Ud", {
                 return player.Ud.crows.gte(72e9)
             },
             pay(){
-                player.Ud.crows = player.Ud.crows.div(72e9).round()
+                let cost = tmp[this.layer].upgrades[this.id].cost
+                if (!hasUpgrade("ct",593) || (hasUpgrade("ct",593) && cost.gte(player.Ud.crows.pow(tmp.ct.upgrades[593].exp)))) player.Ud.crows = player.Ud.crows.div(cost).round()
             }
         },
         172: {
@@ -57798,7 +60850,8 @@ addLayer("Ud", {
                 return player.Ud.crows.gte(4e28)
             },
             pay(){
-                player.Ud.crows = player.Ud.crows.div(4e28).round()
+                let cost = tmp[this.layer].upgrades[this.id].cost
+                if (!hasUpgrade("ct",593) || (hasUpgrade("ct",593) && cost.gte(player.Ud.crows.pow(tmp.ct.upgrades[593].exp)))) player.Ud.crows = player.Ud.crows.div(cost).round()
             }
         },
         174: {
@@ -57809,7 +60862,9 @@ addLayer("Ud", {
             cost: new Decimal("25e601"),
             description: "Deadly Crow interval boosts their birth rate, 'CT-Mutant' and 'DT-Mutant' upgrade amounts^1.8.",
             effect(){
-                let eff = powExp(tmp.Ud.crowInterval.pow(-0.6).div(10).add(1),1.25)
+                let int = tmp.Ud.crowInterval
+                if (hasUpgrade("Ud",193)) int = int.div(tmp.Ud.upgrades[193].effect2)
+                let eff = powExp(int.pow(-0.6).div(10).add(1),1.25)
                 return eff
             },
             effectDisplay(){
@@ -57828,7 +60883,361 @@ addLayer("Ud", {
                 return player.Ud.crows.gte(3e45)
             },
             pay(){
-                player.Ud.crows = player.Ud.crows.div(3e45).round()
+                let cost = tmp[this.layer].upgrades[this.id].cost
+                if (!hasUpgrade("ct",593) || (hasUpgrade("ct",593) && cost.gte(player.Ud.crows.pow(tmp.ct.upgrades[593].exp)))) player.Ud.crows = player.Ud.crows.div(cost).round()
+            }
+        },
+        181: {
+            title: "LaBirth",
+            currencyDisplayName: "LaBas",
+            currencyInternalName: "LaBas",
+            currencyLayer: "ct",
+            cost: new Decimal("e919"),
+            description: "LaBas boost Deadly Crow birth rate, 'CT-Mutant' and 'DT-Mutant' upgrade amounts^1.8.",
+            effect(){
+                let exp = 0.3
+                if (hasUpgrade("Ud",205)) exp += 0.05
+                if (hasUpgrade("Ud",213)) exp += 0.05
+                if (hasMilestone("Ud",68)) exp += 0.05
+                let eff = powExp(player.ct.LaBas.div("e918").add(1).pow(0.1).mul(10),exp).div(10)
+                if (eff.gte(50)) eff = eff.div(50).pow(0.4).mul(50)
+                return eff
+            },
+            effectDisplay(){
+                let dis = format(tmp.Ud.upgrades[181].effect)+"x"
+                return dis
+            },
+        },
+        182: {
+            title: "CoDona-Mutantest",
+            currencyDisplayName: "Deadly Crows",
+            currencyInternalName: "crows",
+            currencyLayer: "Ud",
+            cost: new Decimal(157e59),
+            description: "Increase 'LT-Mutant' effect slog by 0.2 but raise it to 0.15, 'CT-Mutant' and 'DT-Mutant' upgrade amounts^1.2.",
+            canAfford(){
+                return player.Ud.crows.gte(157e59)
+            },
+            pay(){
+                let cost = tmp[this.layer].upgrades[this.id].cost
+                if (!hasUpgrade("ct",593) || (hasUpgrade("ct",593) && cost.gte(player.Ud.crows.pow(tmp.ct.upgrades[593].exp)))) player.Ud.crows = player.Ud.crows.div(cost).round()
+            }
+        },
+        183: {
+            title: "Deadlier Mutation",
+            currencyDisplayName: "LaBas",
+            currencyInternalName: "LaBas",
+            currencyLayer: "ct",
+            cost: new Decimal("e1348"),
+            description: "Each Deadly Mutation after 1,150 multiplies reward power by 1.002.",
+            effect(){
+                let eff = Decimal.pow(1.002,player.Ud.mu.sub(1150).max(0))
+                return eff
+            },
+            effectDisplay(){
+                let dis = format(tmp.Ud.upgrades[183].effect)+"x"
+                return dis
+            },
+        },
+        184: {
+            title: "CT-Crows",
+            currencyDisplayName: "Deadly Crows",
+            currencyInternalName: "crows",
+            currencyLayer: "Ud",
+            cost: new Decimal(12e78),
+            description: "CTNA boosts Deadly Crow birth rate.",
+            effect(){
+                let eff = player.ct.points.max(10).log10().div(4e20).max(1).pow(2)
+                return eff
+            },
+            effectDisplay(){
+                let dis = format(tmp.Ud.upgrades[184].effect)+"x"
+                return dis
+            },
+            canAfford(){
+                return player.Ud.crows.gte(12e78)
+            },
+            pay(){
+                let cost = tmp[this.layer].upgrades[this.id].cost
+                if (!hasUpgrade("ct",593) || (hasUpgrade("ct",593) && cost.gte(player.Ud.crows.pow(tmp.ct.upgrades[593].exp)))) player.Ud.crows = player.Ud.crows.div(cost).round()
+            }
+        },
+        185: {
+            title: "LT-Slog",
+            currencyDisplayName: "LaBas",
+            currencyInternalName: "LaBas",
+            currencyLayer: "ct",
+            cost: new Decimal("e1721"),
+            description: "Increase 'LT-Mutant' effect slog by 0.15 but raise it to 0.2.",
+        },
+        191: {
+            title: "Crow-Mutanter",
+            currencyDisplayName: "Deadly Crows",
+            currencyInternalName: "crows",
+            currencyLayer: "Ud",
+            cost: new Decimal(6e116),
+            description: "Deadly Crows boost Deadly Mutation reward power, raise 4th Deadly Mutation reward to 1.3.",
+            effect(){
+                let eff = player.Ud.crows.max(10).log10().sub(116).max(0).div(10).pow(1.3).add(1)
+                return eff
+            },
+            effectDisplay(){
+                let dis = format(tmp.Ud.upgrades[191].effect)+"x"
+                return dis
+            },
+            canAfford(){
+                return player.Ud.crows.gte(6e116)
+            },
+            pay(){
+                let cost = tmp[this.layer].upgrades[this.id].cost
+                if (!hasUpgrade("ct",593) || (hasUpgrade("ct",593) && cost.gte(player.Ud.crows.pow(tmp.ct.upgrades[593].exp)))) player.Ud.crows = player.Ud.crows.div(cost).round()
+            }
+        },
+        192: {
+            title: "Deadliest Deaths",
+            currencyDisplayName: "LaBas",
+            currencyInternalName: "LaBas",
+            currencyLayer: "ct",
+            cost: new Decimal("3e3981"),
+            description: "Dilate 'Deadlier Deaths' to 1.2, CRNA log-0.005 and unlock a Deadly Mutation buyable.",
+        },
+        193: {
+            title: "CI+-",
+            currencyDisplayName: "Deadly Crows",
+            currencyInternalName: "crows",
+            currencyLayer: "Ud",
+            cost: new Decimal(3e249),
+            description: "<span style='font-size:9px'>Each 'C+-' after 25 multiplies DC int. by 1.8 and divides 'CrowBirth' eff. int. by 1.9.</span>",
+            effect(){
+                let eff = Decimal.pow(1.8,player.Ud.buyables[111].sub(25).max(0))
+                return eff
+            },
+            effect2(){
+                let eff = Decimal.pow(1.9,player.Ud.buyables[111].sub(25).max(0))
+                return eff
+            },
+            effectDisplay(){
+                let dis = format(tmp.Ud.upgrades[193].effect)+"x, /"+format(tmp.Ud.upgrades[193].effect2)
+                return dis
+            },
+            canAfford(){
+                return player.Ud.crows.gte(3e249)
+            },
+            pay(){
+                let cost = tmp[this.layer].upgrades[this.id].cost
+                if (!hasUpgrade("ct",593) || (hasUpgrade("ct",593) && cost.gte(player.Ud.crows.pow(tmp.ct.upgrades[593].exp)))) player.Ud.crows = player.Ud.crows.div(cost).round()
+            }
+        },
+        194: {
+            title() {return "CrowBird"+colorText("b","#3030C0","z")},
+            currencyDisplayName: "LaBas",
+            currencyInternalName: "LaBas",
+            currencyLayer: "ct",
+            cost: new Decimal("e5628"),
+            description() {return colorText("span","#3030C0","z")+" formula is better, 4th Deadly Mutation reward^1.25, and unlock Deadly CrowBirds."},
+        },
+        195: {
+            title: "DeadBirds",
+            currencyDisplayName: "Deadly Crows",
+            currencyInternalName: "crows",
+            currencyLayer: "Ud",
+            cost: new Decimal(1e305),
+            description: "Deadly CrowBirds boost unvaxxed death gain.",
+            effect(){
+                let eff = player.Ud.crowBirds.div(30).add(10).log10()
+                return eff
+            },
+            effectDisplay(){
+                let dis = "^"+format(tmp.Ud.upgrades[195].effect)
+                return dis
+            },
+            canAfford(){
+                return player.Ud.crows.gte(1e305)
+            },
+            pay(){
+                let cost = tmp[this.layer].upgrades[this.id].cost
+                if (!hasUpgrade("ct",593) || (hasUpgrade("ct",593) && cost.gte(player.Ud.crows.pow(tmp.ct.upgrades[593].exp)))) player.Ud.crows = player.Ud.crows.div(cost).round()
+            }
+        },
+        201: {
+            title: "CRNABirds",
+            currencyDisplayName: "Deadly CrowBirds",
+            currencyInternalName: "crowBirds",
+            currencyLayer: "Ud",
+            cost: new Decimal(1135),
+            description: "Deadly CrowBirds boost 'Deadly CRNA' UD exponent and divide their birth rate by 10 and death rate by 15.",
+            effect(){
+                let eff = player.Ud.crowBirds.div(100).add(10).log10().pow(1.2)
+                return eff
+            },
+            effectDisplay(){
+                let dis = format(tmp.Ud.upgrades[201].effect)+"x"
+                return dis
+            },
+            canAfford(){
+                return player.Ud.crowBirds.gte(1135)
+            },
+            pay(){
+                let cost = tmp[this.layer].upgrades[this.id].cost
+                if (true) player.Ud.crowBirds = player.Ud.crowBirds.div(cost).round()
+            }
+        },
+        202: {
+            title() {return "Crow"+colorText("b","#3030C0","z")+"-Bird"},
+            currencyDisplayName: "LaBas",
+            currencyInternalName: "LaBas",
+            currencyLayer: "ct",
+            cost: new Decimal("e8213"),
+            description() {return colorText("span","#3030C0","z")+" boosts Deadly Crow birth rate, Deadly CrowBird birth rate*1.5."},
+            effect(){
+                let eff = tmp.Us.z.div(1e15).sub(1).max(0).pow(0.5).div(1.5).pow10()
+                if (eff.gte(1e50)) eff = eff.log10().div(50).pow(0.4).mul(50).pow10()
+                if (eff.gte(1e60)) eff = eff.log10().add(40).log10().div(2).pow(0.5).mul(2).pow10().div(4).add(35).pow10()
+                if (eff.gte("e500")) eff = eff.log10().div(500).pow(0.6).mul(300).add(200).pow10()
+                return eff
+            },
+            effectDisplay(){
+                let dis = format(tmp.Ud.upgrades[202].effect)+"x"
+                return dis
+            },
+        },
+        203: {
+            title: "Fast Crows",
+            currencyDisplayName: "Deadly Crows",
+            currencyInternalName: "crows",
+            currencyLayer: "Ud",
+            cost: new Decimal("e447"),
+            description: "Req: 1 'Deadlier CrowBird'<br>Divide Deadly Crow interval by 5.",
+            canAfford(){
+                return player.Ud.crows.gte("e447") && player.Ud.buyables[121].gte(1)
+            },
+            pay(){
+                let cost = tmp[this.layer].upgrades[this.id].cost
+                if (true) player.Ud.crows = player.Ud.crows.div(cost).round()
+            }
+        },
+        204: {
+            title: "DC+-",
+            currencyDisplayName: "Deadly CrowBirds",
+            currencyInternalName: "crowBirds",
+            currencyLayer: "Ud",
+            cost: new Decimal(25e4),
+            description: "Multiply DC birth and death rate by 10, divide DCB birth rate by 100 and death rate by 111.",
+            canAfford(){
+                return player.Ud.crowBirds.gte(25e4)
+            },
+            pay(){
+                let cost = tmp[this.layer].upgrades[this.id].cost
+                if (true) player.Ud.crowBirds = player.Ud.crowBirds.div(cost).round()
+            }
+        },
+        205: {
+            title: "LaBirther",
+            currencyDisplayName: "LaBas",
+            currencyInternalName: "LaBas",
+            currencyLayer: "ct",
+            cost: new Decimal("e12400"),
+            description() {return "Add 0.05 to 'LaBirth' dilation. Divide Deadly Crow birth rate by 300 and death rate by 100."},
+        },
+        211: {
+            title: "CorCrow",
+            currencyDisplayName: "Deadly Crows",
+            currencyInternalName: "crows",
+            currencyLayer: "Ud",
+            cost: new Decimal("e705"),
+            description: "CorVids reduce Deadly Crow birth rate reduction and death rate increase.",
+            effect(){
+                let eff = player.ct.CorVid.div(1e6).add(10).log10().div(30).add(1).pow(-0.4)
+                return eff
+            },
+            effectDisplay(){
+                let dis = "^"+format(tmp.Ud.upgrades[211].effect)
+                return dis
+            },
+            canAfford(){
+                return player.Ud.crows.gte("e705")
+            },
+            pay(){
+                let cost = tmp[this.layer].upgrades[this.id].cost
+                if (!hasUpgrade("ct",593) || (hasUpgrade("ct",593) && cost.gte(player.Ud.crows.pow(tmp.ct.upgrades[593].exp)))) player.Ud.crows = player.Ud.crows.div(cost).round()
+            }
+        },
+        212: {
+            title: "CB+-",
+            currencyDisplayName: "Deadly CrowBirds",
+            currencyInternalName: "crowBirds",
+            currencyLayer: "Ud",
+            cost: new Decimal(75e13),
+            description: "Square Deadly CrowBird effect and halve 'C+-' cost base. Divide DCB birth rate by 10 and death rate by 15.",
+            canAfford(){
+                return player.Ud.crowBirds.gte(75e13)
+            },
+            pay(){
+                let cost = tmp[this.layer].upgrades[this.id].cost
+                if (true) player.Ud.crowBirds = player.Ud.crowBirds.div(cost).round()
+            }
+        },
+        213: {
+            title: "CrowBirdth",
+            currencyDisplayName: "LaBas",
+            currencyInternalName: "LaBas",
+            currencyLayer: "ct",
+            cost: new Decimal("e133700"),
+            description: "CorVids boost DC boost to DCB birth rate. Add 0.05 to 'LaBirth' dilation and multiply CorVid gain by 13.37.",
+            effect(){
+                let eff = player.ct.CorVid.div(1e19).add(10).log10().div(10).add(1).pow(0.3)
+                if (eff.gte(1.55)) eff = eff.div(1.55).pow(0.7).add(0.55)
+                return eff
+            },
+            effectDisplay(){
+                let dis = "^"+format(tmp.Ud.upgrades[213].effect)
+                return dis
+            },
+        },
+        214: {
+            title: "CrowVid",
+            currencyDisplayName: "Deadly Crows",
+            currencyInternalName: "crows",
+            currencyLayer: "Ud",
+            cost: new Decimal("911e909"),
+            description: "Deadly Crows boost CorVid gain.",
+            effect(){
+                let eff = powExp(player.Ud.crows.div("e900"),0.65).pow(0.1).add(1)
+                return eff
+            },
+            effectDisplay(){
+                let dis = format(tmp.Ud.upgrades[214].effect)+"x"
+                return dis
+            },
+            canAfford(){
+                return player.Ud.crows.gte("911e909")
+            },
+            pay(){
+                let cost = tmp[this.layer].upgrades[this.id].cost
+                if (!hasUpgrade("ct",593) || (hasUpgrade("ct",593) && cost.gte(player.Ud.crows.pow(tmp.ct.upgrades[593].exp)))) player.Ud.crows = player.Ud.crows.div(cost).round()
+            }
+        },
+        215: {
+            title: "CrowVird",
+            currencyDisplayName: "Deadly CrowBirds",
+            currencyInternalName: "crowBirds",
+            currencyLayer: "Ud",
+            cost: new Decimal(65e20),
+            description: "Deadly CrowBirds boost CorVid gain and divide their birth rate by 300 and death rate by 1,000.",
+            effect(){
+                let eff = powExp(player.Ud.crowBirds.div(1e20),0.95).pow(0.2).add(1)
+                return eff
+            },
+            effectDisplay(){
+                let dis = format(tmp.Ud.upgrades[215].effect)+"x"
+                return dis
+            },
+            canAfford(){
+                return player.Ud.crowBirds.gte(65e20)
+            },
+            pay(){
+                let cost = tmp[this.layer].upgrades[this.id].cost
+                if (true) player.Ud.crowBirds = player.Ud.crowBirds.div(cost).round()
             }
         },
     },
@@ -57853,8 +61262,11 @@ addLayer("Ud", {
                 return cost
             },
             base() { 
-                let base = player.Ud.points.add(10).log10().add(10).log10().sub(1)
-                if (player.Ud.buyables[42].gte(1)) base = base.mul(tmp.Ud.mueff[1])
+                let exp = decimalOne
+                if (hasUpgrade("Ud",201)) exp = exp.mul(tmp.Ud.upgrades[201].effect)
+                let base = player.Ud.points.add(10).log10().add(10).log10().pow(exp).sub(1)
+                if (player.Ud.buyables[42].gte(1)) base = base.mul(layers.Ud.buyablePower(player.Ud.buyables[11]))
+                if (player.Ud.buyables[42].gte(4)) base = base.mul(tmp.Ud.buyables[11].extra.div(1e25).add(1).pow(0.05).mul(tmp.Ud.mueff2[3]))
                 return base
             },
             extra() {
@@ -57934,7 +61346,8 @@ addLayer("Ud", {
             },
             base() { 
                 let base = player.Ud.points.add(10).log10().pow(0.25).add(2)
-                if (player.Ud.buyables[42].gte(1)) base = base.pow(tmp.Ud.mueff[1])
+                if (player.Ud.buyables[42].gte(1)) base = base.pow(layers.Ud.buyablePower(player.Ud.buyables[12]))
+                if (player.Ud.buyables[42].gte(4)) base = base.pow(tmp.Ud.buyables[12].extra.div(1e25).add(1).pow(0.05).mul(tmp.Ud.mueff2[3]))
                 if (hasUpgrade("Ud",62)) base = base.pow(tmp.Ud.upgrades[62].effect)
                 return base
             },
@@ -58007,6 +61420,7 @@ addLayer("Ud", {
             distantStart() {
                 let start = new Decimal(28)
                 if (player.Ud.buyables[42].gte(2)) start = start.add(tmp.Ud.mueff[2])
+                if (player.Ud.buyables[43].gte(3)) start = start.mul(tmp.Ud.mueff2[2]).mul(player.Ud.buyables[13].div(1e20).add(1).pow(0.1))
                 return start
             },
             cost() { // cost for buying xth buyable, can be an object if there are multiple currencies
@@ -58030,9 +61444,10 @@ addLayer("Ud", {
                 let exp = 0.5
                 if (hasMilestone("Ud",48)) exp *= 5
                 if (hasMilestone("Ud",50)) exp *= 1.3
+                if (hasMilestone("Ud",56)) exp *= 1.065
                 let base = player.Ud.points.add(10).log10().add(10).log10().pow(exp).sub(1).mul(1.5)
                 if (base.gte(1.5)) base = base.div(1.5).pow(0.5).add(0.5)
-                if (player.Ud.buyables[42].gte(1)) base = base.mul(tmp.Ud.mueff[1])
+                if (player.Ud.buyables[42].gte(1)) base = base.mul(layers.Ud.buyablePower(player.Ud.buyables[13]))
                 return base
             },
             extra() {
@@ -58130,7 +61545,7 @@ addLayer("Ud", {
                 if (hasUpgrade("Ud",175)) exp *= 8.4
                 let base = player.Ud.points.add(10).log10().add(10).log10().pow(exp).sub(1.5).div(10).max(0)
                 if (base.gte(0.155)) base = base.div(0.155).pow(0.5).mul(0.155)
-                if (player.Ud.buyables[42].gte(1)) base = base.mul(tmp.Ud.mueff[1])
+                if (player.Ud.buyables[42].gte(1)) base = base.mul(layers.Ud.buyablePower(player.Ud.buyables[21]))
                 return base
             },
             extra() {
@@ -58235,7 +61650,7 @@ addLayer("Ud", {
             base() { 
                 let base = player.Ud.points.add(10).log10().add(10).log10().sub(3).pow(1.2).mul(10).add(1)
                 if (base.gte(4.1)) base = base.div(4.1).pow(0.2).mul(4.1)
-                if (player.Ud.buyables[42].gte(1)) base = base.pow(tmp.Ud.mueff[1])
+                if (player.Ud.buyables[42].gte(1)) base = base.pow(layers.Ud.buyablePower(player.Ud.buyables[22]))
                 return base
             },
             extra() {
@@ -58331,8 +61746,9 @@ addLayer("Ud", {
             base() { 
                 let base = player.Ud.points.add(10).log10().add(10).log10().sub(4).pow(0.45).mul(0.07).add(1)
                 if (base.gte(1.061)) base = base.div(1.061).pow(0.5).add(.061)
-                if (player.Ud.buyables[42].gte(1)) base = base.pow(tmp.Ud.mueff[1])
+                if (player.Ud.buyables[42].gte(1)) base = base.pow(layers.Ud.buyablePower(player.Ud.buyables[23]))
                 if (base.gte(2.63)) base = base.div(2.63).pow(0.5).add(1.63)
+                if (base.gte(11)) base = base.div(11).pow(0.4).mul(7).add(4)
                 return base
             },
             extra() {
@@ -58348,6 +61764,7 @@ addLayer("Ud", {
                 let base = tmp[this.layer].buyables[this.id].base
                 let eff = Decimal.pow(base, x)
                 if (eff.gte(6)) eff = powExp(eff.add(4),0.5).mul(0.3).add(3)
+                if (eff.gte(15e13)) eff = eff.div(15).log10().div(13).pow(0.7).mul(8).add(5).pow10().mul(15)
                 return eff;
             },
             display() { // Everything else displayed in the buyable button after the title
@@ -58358,7 +61775,7 @@ addLayer("Ud", {
                 let dis = "Raise CTNA softcap start to "+format(tmp.Ud.buyables[23].base)+" (based on unvaxxed deaths)"
                 return dis + ".\n\
                 Cost: " + formatWhole(tmp[this.layer].buyables[this.id].cost)+" unvaxxed deaths\n\
-                Effect: ^" + format(eff)+(eff.gte(6)?" (softcapped)":"")+"\n\
+                Effect: ^" + format(eff)+(eff.gte(15e13)?" (softcapped)<sup>2</sup>":eff.gte(6)?" (softcapped)":"")+"\n\
                 Amount: " + formatWhole(getBuyableAmount("Ud", 23))+extra
             },
             unlocked() { return true }, 
@@ -58427,7 +61844,7 @@ addLayer("Ud", {
             },
             base() { 
                 let base = player.Ud.points.add(10).log10().add(10).log10().sub(14).pow(0.35).mul(0.1).add(1)
-                if (player.Ud.buyables[42].gte(1)) base = base.pow(tmp.Ud.mueff[1])
+                if (player.Ud.buyables[42].gte(1)) base = base.pow(layers.Ud.buyablePower(player.Ud.buyables[31]))
                 if (base.gte(2.2)) base = base.div(2.2).pow(0.3).mul(2.2)
                 return base
             },
@@ -58453,7 +61870,7 @@ addLayer("Ud", {
                 let dis = "Multiply LaBas gain by "+format(tmp.Ud.buyables[31].base)+" (based on unvaxxed deaths)"
                 return dis + ".\n\
                 Cost: " + formatWhole(tmp[this.layer].buyables[this.id].cost)+" unvaxxed deaths\n\
-                Effect: " + format(eff)+"x"+(eff.gte("e3333")?" (softcapped)":"")+"\n\
+                Effect: " + format(eff)+"x\n\
                 Amount: " + formatWhole(getBuyableAmount("Ud", 31))+extra
             },
             unlocked() { return true }, 
@@ -58500,7 +61917,7 @@ addLayer("Ud", {
                 return dis
             },
             distantStart() {
-                let start = new Decimal(1000)
+                let start = new Decimal(100)
                 return start
             },
             cost() { // cost for buying xth buyable, can be an object if there are multiple currencies
@@ -58522,7 +61939,7 @@ addLayer("Ud", {
             },
             base() { 
                 let base = player.Ud.points.add(10).log10().add(10).log10().add(10).log10().pow(0.5).sub(1).div(1.5)
-                if (player.Ud.buyables[42].gte(1)) base = base.mul(tmp.Ud.mueff[1])
+                if (player.Ud.buyables[42].gte(1)) base = base.mul(layers.Ud.buyablePower(player.Ud.buyables[32]))
                 if (base.gte(0.85)) base = base.div(0.85).pow(0.3).mul(0.85)
                 return base
             },
@@ -58586,12 +62003,111 @@ addLayer("Ud", {
                 }
             },
         },
+        33: {
+            title() {
+                let d = "Deadly CorGain"
+                let dist = tmp.Ud.buyables[33].distantStart
+                let sc = player.Ud.buyables[33].gte(dist)?"Distant ":""
+                let dis = sc+d
+                return dis
+            },
+            distantStart() {
+                let start = new Decimal(16)
+                return start
+            },
+            cost() { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let base = tmp.Ud.buyables[33].costb
+                let exp = tmp.Ud.buyables[33].coste
+                let x = player.Ud.buyables[33]
+                let start = tmp.Ud.buyables[33].distantStart
+                if (x.gte(start)) x = x.div(start).pow(1.5).mul(start.mul(1.4)).sub(start.mul(0.4))
+                let cost = Decimal.pow(base,x.pow(exp)).mul(1e64).pow10()
+                return cost
+            },
+            costb() { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let cost = decimalFive
+                return cost
+            },
+            coste() { 
+                let cost = new Decimal(1.5)
+                return cost
+            },
+            base() { 
+                let base = player.Ud.points.add(10).log10().add(10).log10().div(60).pow(3)
+                let exp = layers.Ud.buyablePower(player.Ud.buyables[33]).max(10).log10().pow(2)
+                if (exp.gte(5.5)) exp = exp.div(5.5).pow(0.4).mul(1.5).add(4)
+                if (player.Ud.buyables[42].gte(1)) base = base.pow(exp)
+                if (base.gte(7)) base = base.div(7).pow(0.3).mul(7)
+                if (base.gte(50)) base = base.div(50).pow(0.3).mul(50)
+                return base
+            },
+            extra() {
+                let x = decimalZero
+                return x
+            },
+            total() {
+                let x = player.Ud.buyables[33].add(tmp.Ud.buyables[33].extra)
+                return x
+            },
+            effect() { // Effects of owning x of the items, x is a decimal
+                let x = tmp.Ud.buyables[33].total
+                let base = tmp[this.layer].buyables[this.id].base
+                let eff = Decimal.pow(base, x)
+                return eff;
+            },
+            display() { // Everything else displayed in the buyable button after the title
+                if (player.tab != "Ud" || player.subtabs.Ud.mainTabs != "Buyables") return
+                let x = tmp.Ud.buyables[33].extra
+                let eff = tmp[this.layer].buyables[this.id].effect
+                let extra = x.gt(0)?"+"+formatWhole(x):""
+                let dis = "Multiply CorVid gain by "+format(tmp.Ud.buyables[33].base)+" (based on unvaxxed deaths)"
+                return dis + ".\n\
+                Cost: " + formatWhole(tmp[this.layer].buyables[this.id].cost)+" unvaxxed deaths\n\
+                Effect: " + format(eff)+(eff.gte("ee3333")?" (softcapped)":"")+"x\n\
+                Amount: " + formatWhole(getBuyableAmount("Ud", 33))+extra
+            },
+            unlocked() { return true }, 
+            canAfford() {
+                    return player.Ud.points.gte(tmp[this.layer].buyables[this.id].cost)},
+            buy() { 
+                cost = tmp[this.layer].buyables[this.id].cost
+                let max = tmp.Ud.buyables[33].maxAfford
+                let b = max.max(1)
+                if (tmp[this.layer].buyables[this.id].canAfford) {
+                    if (hasMilestone("uv",27)) player[this.layer].buyables[this.id] = b
+                    else {
+                        if (true) player.Ud.points = player.Ud.points.sub(cost).max(0)
+                        player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1).max(1)
+                    }
+                }
+            },
+            maxAfford() {
+                let s = player.Ud.points
+                let base = tmp.Ud.buyables[33].costb
+                let exp = tmp.Ud.buyables[33].coste
+                let start = tmp.Ud.buyables[33].distantStart
+                let target = s.log10().div(1e64).log(base).root(exp)
+                if (target.gte(start)) target = target.add(start.mul(0.4)).div(start.mul(1.4)).root(1.5).mul(start)
+                return target.floor().add(1)
+            },
+            buyMax() { 
+                let target = tmp.Ud.buyables[33].maxAfford
+                let base = tmp.Ud.buyables[33].costb
+                let exp = tmp.Ud.buyables[33].coste
+                let cost = Decimal.pow(base,target.pow(exp)).mul(1e3).pow10().mul("e199e12")
+                if (tmp[this.layer].buyables[this.id].canAfford) {
+                    player.Ud.buyables[33] = player.Ud.buyables[33].max(target)
+                
+                }
+            },
+        },
         41: {
             title() {//Distant, Remote, Social Distant
                 let d = "Deadly Mutation"
                 let dist = tmp.Ud.buyables[41].distantStart
                 let rem = tmp.Ud.buyables[41].remoteStart
-                let sc = player.Ud.buyables[41].gte(rem)?"Remote ":player.Ud.buyables[41].gte(dist)?"Distant ":""
+                let soc = tmp.Ud.buyables[41].socialStart
+                let sc = player.Ud.buyables[41].gte(soc)?"Social Distant ":player.Ud.buyables[41].gte(rem)?"Remote ":player.Ud.buyables[41].gte(dist)?"Distant ":""
                 let dis = sc+d
                 return dis
             },
@@ -58601,6 +62117,10 @@ addLayer("Ud", {
             },
             remoteStart() {
                 let start = new Decimal(29)
+                return start
+            },
+            socialStart() {
+                let start = new Decimal(1150)
                 return start
             },
             display() {
@@ -58632,6 +62152,8 @@ addLayer("Ud", {
                 let x = player.Ud.buyables[41]
                 let start = tmp.Ud.buyables[41].distantStart
                 let remstart = tmp.Ud.buyables[41].remoteStart
+                let socstart = tmp.Ud.buyables[41].socialStart
+                if (x.gte(socstart)) x = socstart.recip().mul(3).add(1).pow(x.sub(socstart)).mul(socstart)
                 if (x.gte(remstart)) x = x.div(remstart).pow(3).mul(remstart.mul(1.8)).sub(remstart.mul(0.8))
                 if (x.gte(start)) x = x.div(start).pow(1.8).mul(start.mul(1.5)).sub(start.mul(0.5))
                 let cost = Decimal.pow(base,x.pow(exp)).mul("e4600")
@@ -58670,9 +62192,11 @@ addLayer("Ud", {
                 let exp = tmp.Ud.buyables[41].coste
                 let start = tmp.Ud.buyables[41].distantStart
                 let remstart = tmp.Ud.buyables[41].remoteStart
+                let socstart = tmp.Ud.buyables[41].socialStart
                 let target = s.div("e4600").log(base).root(exp)
                 if (target.gte(start)) target = target.add(start.mul(0.5)).div(start.mul(1.5)).root(1.8).mul(start)
                 if (target.gte(remstart)) target = target.add(remstart.mul(0.8)).div(remstart.mul(1.8)).root(3).mul(remstart)
+                if (target.gte(socstart)) target = target.div(socstart).log(socstart.recip().mul(3).add(1)).add(socstart)
                 return target.floor().add(1)
             },
             style: {"width":"140px","height":"140px",}
@@ -58681,7 +62205,7 @@ addLayer("Ud", {
             title: "Deadly Reward",
             cost() { // cost for buying xth buyable, can be an object if there are multiple currencies
                 let x = player.Ud.buyables[42]
-                let cost = [1e220,"3e482","e627","4e1719","e6095","5e9878","e33973","e582800","e4778e4","e7052e7","e11111e10","e7052e37"]
+                let cost = [1e220,"3e482","e627","4e1719","e6095","5e9878","e33973","e582800","e4778e4","e7052e7","e11111e10","e18181e15","e7e64","e7052e437"]
                 return new Decimal(cost[x])
             },
             display() { // Everything else displayed in the buyable button after the title
@@ -58709,12 +62233,53 @@ addLayer("Ud", {
             },
             maxAfford() {
                 let t = player.ct.points
-                let cost = [1e220,"3e482","e627","4e1719","e6095","5e9878","e33973","e582800","e4778e4","e7052e7","e11111e10","e7052e37"]
+                let cost = [1e220,"3e482","e627","4e1719","e6095","5e9878","e33973","e582800","e4778e4","e7052e7","e11111e10","e18181e15","e7e64","e7052e437"]
                 let target = new Decimal(0)
                 for (i = 0; i < cost.length; i++) {
                     if (t.gte(cost[i])) target = target.add(1)
                 }
                 return target.max(player.Ud.buyables[42])
+            },
+            style: {"width":"140px","height":"140px",}
+        },
+        43: {
+            title: "Deadlier Reward",
+            cost() { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let x = player.Ud.buyables[43]
+                let cost = ["e8e26","e11e27","e258e27","e955e29","ee56","ee64","ee4437"]
+                return new Decimal(cost[x])
+            },
+            display() { // Everything else displayed in the buyable button after the title
+                if (player.tab != "Ud" || player.subtabs.Ud.mainTabs != "Deadly Mutations") return
+                let extra = ""
+                let dis = "Make a Deadly Mutation reward stronger"
+                return dis + ".\n\
+                Cost: " + formatWhole(tmp[this.layer].buyables[this.id].cost)+" CTNA\n\
+                Amount: " + formatWhole(getBuyableAmount("Ud", 43))
+            },
+            unlocked() { return hasUpgrade("Ud",192) }, 
+            canAfford() {
+                    return player.ct.points.gte(tmp[this.layer].buyables[this.id].cost)},
+            buy() { 
+                cost = tmp[this.layer].buyables[this.id].cost
+                let max = tmp.Ud.buyables[43].maxAfford
+                let b = max.max(1)
+                if (tmp[this.layer].buyables[this.id].canAfford) {
+                    if (hasMilestone("uv",31)) player[this.layer].buyables[this.id] = b
+                    else {
+                        if (true) player.ct.points = player.ct.points.sub(cost).max(0)
+                        player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1).max(1)
+                    }
+                }
+            },
+            maxAfford() {
+                let t = player.ct.points
+                let cost = ["e8e26","e11e27","e258e27","e955e29","ee56","ee64","ee4437"]
+                let target = new Decimal(0)
+                for (i = 0; i < cost.length; i++) {
+                    if (t.gte(cost[i])) target = target.add(1)
+                }
+                return target.max(player.Ud.buyables[43])
             },
             style: {"width":"140px","height":"140px",}
         },
@@ -59151,6 +62716,7 @@ addLayer("Ud", {
             },
             base() { 
                 let base = player.ct.corona.add(10).log10().pow(0.75).sub(1).div(10).add(1)
+                if (base.gte(1.176)) base = base.div(1.176).pow(0.3).mul(1.176)
                 return base
             },
             effect() { // Effects of owning x of the items, x is a decimal
@@ -59219,7 +62785,7 @@ addLayer("Ud", {
                 return cost
             },
             base() { 
-                let base = player.e.mu2.add(10).log10().pow(0.6).sub(1).div(30).add(1)
+                let base = tmp.e.mutamt.add(10).log10().pow(0.6).sub(1).div(30).add(1)
                 return base
             },
             effect() { // Effects of owning x of the items, x is a decimal
@@ -59703,6 +63269,7 @@ addLayer("Ud", {
             },
             base() { 
                 let base = tmp.ct.getCorGain.add(1).pow(0.4).div(10).add(0.8)
+                if (base.gte(130)) base = base.div(130).pow(0.4).mul(80).add(50)
                 return base
             },
             effect() { // Effects of owning x of the items, x is a decimal
@@ -59961,11 +63528,23 @@ addLayer("Ud", {
             style: {"width":"150px","height":"150px",}
         },
         101: {
-            title: "Deadly Crow",
+            title() {
+                let d = "Deadly Crow"
+                let dist = tmp.Ud.buyables[101].distantStart
+                let sc = player.Ud.buyables[101].gte(dist)?"Distant ":""
+                let dis = sc+d
+                return dis
+            },
+            distantStart() {
+                let start = new Decimal(40)
+                return start
+            },
             cost() { // cost for buying xth buyable, can be an object if there are multiple currencies
                 let base = tmp.Ud.buyables[101].costb
                 let exp = tmp.Ud.buyables[101].coste
                 let x = player.Ud.buyables[101]
+                let start = tmp.Ud.buyables[101].distantStart
+                if (x.gte(start)) x = x.div(start).pow(1.5).mul(start.mul(1.4)).sub(start.mul(0.4))
                 let cost = Decimal.pow(base,x.pow(exp)).mul(1e121)
                 return cost
             },
@@ -59993,7 +63572,10 @@ addLayer("Ud", {
                 let max = tmp.Ud.buyables[101].maxAfford
                 let b = max.max(1)
                 if (tmp[this.layer].buyables[this.id].canAfford) {
-                    if (false) player[this.layer].buyables[this.id] = b
+                    if (hasUpgrade("ct",591)) {
+                        player.Ud.crows = player.Ud.crows.add(b.sub(player[this.layer].buyables[this.id]))
+                        player[this.layer].buyables[this.id] = b
+                    }
                     else {
                         if (true) player.ct.LaBas = player.ct.LaBas.sub(cost).max(0)
                         player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1).max(1)
@@ -60005,7 +63587,9 @@ addLayer("Ud", {
                 let s = player.ct.LaBas
                 let base = tmp.Ud.buyables[101].costb
                 let exp = tmp.Ud.buyables[101].coste
+                let start = tmp.Ud.buyables[101].distantStart
                 let target = s.div(1e121).log(base).root(exp)
+                if (target.gte(start)) target = target.add(start.mul(0.4)).div(start.mul(1.4)).root(1.5).mul(start)
                 return target.floor().add(1)
             },
             buyMax() { 
@@ -60064,7 +63648,7 @@ addLayer("Ud", {
                 let max = tmp.Ud.buyables[102].maxAfford
                 let b = max.max(1)
                 if (tmp[this.layer].buyables[this.id].canAfford) {
-                    if (false) player[this.layer].buyables[this.id] = b
+                    if (hasUpgrade("ct",591)) player[this.layer].buyables[this.id] = b
                     else {
                         if (true) player.ct.LaBas = player.ct.LaBas.sub(cost).max(0)
                         player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1).max(1)
@@ -60133,7 +63717,7 @@ addLayer("Ud", {
                 let max = tmp.Ud.buyables[103].maxAfford
                 let b = max.max(1)
                 if (tmp[this.layer].buyables[this.id].canAfford) {
-                    if (false) player[this.layer].buyables[this.id] = b
+                    if (hasUpgrade("ct",591)) player[this.layer].buyables[this.id] = b
                     else {
                         if (true) player.ct.LaBas = player.ct.LaBas.sub(cost).max(0)
                         player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1).max(1)
@@ -60160,11 +63744,23 @@ addLayer("Ud", {
             style: {"width":"160px","height":"160px",}
         },
         104: {
-            title: "I-",
+            title() {
+                let d = "I-"
+                let dist = tmp.Ud.buyables[104].distantStart
+                let sc = player.Ud.buyables[104].gte(dist)?"Distant ":""
+                let dis = sc+d
+                return dis
+            },
+            distantStart() {
+                let start = new Decimal(70)
+                return start
+            },
             cost() { // cost for buying xth buyable, can be an object if there are multiple currencies
                 let base = tmp.Ud.buyables[104].costb
                 let exp = tmp.Ud.buyables[104].coste
                 let x = player.Ud.buyables[104]
+                let start = tmp.Ud.buyables[104].distantStart
+                if (x.gte(start)) x = x.div(start).pow(1.5).mul(start.mul(1.4)).sub(start.mul(0.4))
                 let cost = Decimal.pow(base,x.pow(exp)).mul(1e146)
                 return cost
             },
@@ -60202,7 +63798,7 @@ addLayer("Ud", {
                 let max = tmp.Ud.buyables[104].maxAfford
                 let b = max.max(1)
                 if (tmp[this.layer].buyables[this.id].canAfford) {
-                    if (false) player[this.layer].buyables[this.id] = b
+                    if (hasUpgrade("ct",591)) player[this.layer].buyables[this.id] = b
                     else {
                         if (true) player.ct.LaBas = player.ct.LaBas.sub(cost).max(0)
                         player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1).max(1)
@@ -60213,7 +63809,9 @@ addLayer("Ud", {
                 let s = player.ct.LaBas
                 let base = tmp.Ud.buyables[104].costb
                 let exp = tmp.Ud.buyables[104].coste
+                let start = tmp.Ud.buyables[104].distantStart
                 let target = s.div(1e146).log(base).root(exp)
+                if (target.gte(start)) target = target.add(start.mul(0.4)).div(start.mul(1.4)).root(1.5).mul(start)
                 return target.floor().add(1)
             },
             buyMax() { 
@@ -60230,15 +63828,18 @@ addLayer("Ud", {
         },
         111: {
             title: "C+-",
-            cost() { // cost for buying xth buyable, can be an object if there are multiple currencies
+            cost(x = player.Ud.buyables[111]) { // cost for buying xth buyable, can be an object if there are multiple currencies
                 let base = tmp.Ud.buyables[111].costb
                 let exp = tmp.Ud.buyables[111].coste
-                let x = player.Ud.buyables[111]
                 let cost = Decimal.pow(base,x.pow(exp)).mul(44e10)
                 return cost
             },
             costb() { // cost for buying xth buyable, can be an object if there are multiple currencies
                 let cost = new Decimal(55)
+                if (hasMilestone("Ud",72)) cost = cost.div(3)
+                if (hasMilestone("Ud",74)) cost = cost.div(1.3)
+                if (hasMilestone("Ud",76)) cost = cost.div(1.6)
+                if (hasUpgrade("Ud",212)) cost = cost.div(2)
                 return cost
             },
             coste() { 
@@ -60247,10 +63848,20 @@ addLayer("Ud", {
             },
             base() { 
                 let base = decimalThree
+                if (hasMilestone("Ud",63)) base = base.add(0.5)
+                if (hasMilestone("Ud",66)) base = base.add(0.2)
+                if (hasMilestone("Ud",68)) base = base.add(0.5)
+                if (hasMilestone("Ud",69)) base = base.add(6.8)
+                if (hasMilestone("Ud",78)) base = base.add(24)
                 return base
             },
             base2() { 
                 let base = decimalTen
+                if (hasMilestone("Ud",63)) base = base.add(2)
+                if (hasMilestone("Ud",66)) base = base.add(1)
+                if (hasMilestone("Ud",68)) base = base.add(3)
+                if (hasMilestone("Ud",69)) base = base.add(44)
+                if (hasMilestone("Ud",78)) base = base.add(140)
                 return base
             },
             effect() { // Effects of owning x of the items, x is a decimal
@@ -60267,22 +63878,48 @@ addLayer("Ud", {
                 if (player.tab != "Ud" || player.subtabs.Ud.mainTabs != "Deadly Crows") return
                 let extra = ""
                 let dis = "Divide deadly crow birth rate by "+format(tmp.Ud.buyables[111].base)+" and death rate by "+format(tmp.Ud.buyables[111].base2)
+                let safedis = hasMilestone("uv",55)?"Safe Cost: " + formatWhole(tmp[this.layer].buyables[this.id].cost.root(tmp.ct.upgrades[593].exp))+" Deadly Crows\n":""
                 return dis + ".\n\
-                Cost: /" + formatWhole(tmp[this.layer].buyables[this.id].cost)+" Deadly Crows\n\
-                Effect: /" + format(tmp[this.layer].buyables[this.id].effect) + ", /" +format(tmp[this.layer].buyables[this.id].effect2)+"\n\
+                Cost: /" + formatWhole(tmp[this.layer].buyables[this.id].cost)+" Deadly Crows\n "+safedis+
+                "Effect: /" + format(tmp[this.layer].buyables[this.id].effect) + ", /" +format(tmp[this.layer].buyables[this.id].effect2)+"\n\
                 Amount: " + formatWhole(getBuyableAmount("Ud", 111))
             },
             unlocked() { return hasUpgrade("Ud",105) }, 
             canAfford() {
-                    return player.Ud.crows.gte(tmp[this.layer].buyables[this.id].cost)},
+                let max = player.Ud.maxDC2 && player.Ud.crows.gte(tmp[this.layer].buyables[this.id].cost)
+                let safe = !player.Ud.maxDC2 && player.Ud.crows.pow(tmp.ct.upgrades[593].exp).gte(tmp[this.layer].buyables[this.id].cost)
+                return max || safe
+            },
             buy() { 
                 cost = tmp[this.layer].buyables[this.id].cost
-                let max = tmp.Ud.buyables[111].maxAfford
+                let max = player.Ud.maxDC2?tmp.Ud.buyables[111].maxAfford:tmp.Ud.buyables[111].safeAfford
                 let b = max.max(1)
                 if (tmp[this.layer].buyables[this.id].canAfford) {
-                    if (false) player[this.layer].buyables[this.id] = b
+                    if (hasMilestone("uv",55)) {
+                        let maxcost = layers.Ud.buyables[111].cost(b.sub(1))
+                        player[this.layer].buyables[this.id] = b
+                        if (maxcost.gte(player.Ud.crows.pow(tmp.ct.upgrades[593].exp))) player.Ud.crows = player.Ud.crows.div(maxcost).max(1).round()
+                    }
                     else {
-                        if (true) player.Ud.crows = player.Ud.crows.div(cost).max(1).round()
+                        if (!hasUpgrade("ct",593) || (hasUpgrade("ct",593) && cost.gte(player.Ud.crows.pow(tmp.ct.upgrades[593].exp)))) {
+                            player.Ud.crows = player.Ud.crows.div(cost).max(1).round()
+                            updateTemp()
+                        }
+                        player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1).max(1)
+                    }
+                }
+            },
+            buySafe() { 
+                cost = tmp[this.layer].buyables[this.id].cost
+                let max = tmp.Ud.buyables[111].safeAfford
+                let b = max.max(1)
+                if (cost.lt(player.Ud.crows.pow(tmp.ct.upgrades[593].exp))) {
+                    if (hasMilestone("uv",55)) player[this.layer].buyables[this.id] = b
+                    else {
+                        if (!hasUpgrade("ct",593)) {
+                            player.Ud.crows = player.Ud.crows.div(cost).max(1).round()
+                            updateTemp()
+                        }
                         player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1).max(1)
                     }
                 }
@@ -60294,24 +63931,20 @@ addLayer("Ud", {
                 let target = s.div(44e10).log(base).root(exp)
                 return target.floor().add(1)
             },
-            buyMax() { 
-                let target = tmp.Ud.buyables[111].maxAfford
+            safeAfford() {
+                let s = player.Ud.crows.pow(tmp.ct.upgrades[593].exp)
                 let base = tmp.Ud.buyables[111].costb
                 let exp = tmp.Ud.buyables[111].coste
-                let cost = Decimal.pow(base,target.pow(exp)).mul(44e10)
-                if (tmp[this.layer].buyables[this.id].canAfford) {
-                    player.Ud.buyables[111] = player.Ud.buyables[111].max(target)
-                
-                }
+                let target = s.div(44e10).log(base).root(exp)
+                return target.floor().add(1)
             },
             style: {"width":"160px","height":"160px",}
         },
         112: {
             title: "B^",
-            cost() { // cost for buying xth buyable, can be an object if there are multiple currencies
+            cost(x = player.Ud.buyables[112]) { // cost for buying xth buyable, can be an object if there are multiple currencies
                 let base = tmp.Ud.buyables[112].costb
                 let exp = tmp.Ud.buyables[112].coste
-                let x = player.Ud.buyables[112]
                 if (x.gte(7)) x = Decimal.pow(1.2,x.sub(7)).mul(7)
                 let cost = Decimal.pow(base,x.pow(exp)).mul(28e13)
                 return cost
@@ -60325,7 +63958,7 @@ addLayer("Ud", {
                 return cost
             },
             base() { 
-                let base = new Decimal(0.02)
+                let base = tmp.Ud.buyables[132].effect.add(0.02)
                 return base
             },
             base2() { 
@@ -60346,22 +63979,48 @@ addLayer("Ud", {
                 if (player.tab != "Ud" || player.subtabs.Ud.mainTabs != "Deadly Crows") return
                 let extra = ""
                 let dis = "Increase 'B+' base by "+format(tmp.Ud.buyables[112].base)+" and raise deadly crow birth rate reduction to "+format(tmp.Ud.buyables[112].base2)
+                let safedis = hasMilestone("uv",55)?"Safe Cost: " + formatWhole(tmp[this.layer].buyables[this.id].cost.root(tmp.ct.upgrades[593].exp))+" Deadly Crows\n":""
                 return dis + ".\n\
-                Cost: /" + formatWhole(tmp[this.layer].buyables[this.id].cost)+" Deadly Crows\n\
-                Effect: +" + format(tmp[this.layer].buyables[this.id].effect) + ", ^" + format(tmp[this.layer].buyables[this.id].effect2) + "\n\
+                Cost: /" + formatWhole(tmp[this.layer].buyables[this.id].cost)+" Deadly Crows\n "+safedis+
+                "Effect: +" + format(tmp[this.layer].buyables[this.id].effect) + ", ^" + format(tmp[this.layer].buyables[this.id].effect2) + "\n\
                 Amount: " + formatWhole(getBuyableAmount("Ud", 112))
             },
             unlocked() { return hasUpgrade("Ud",105) }, 
             canAfford() {
-                    return player.Ud.crows.gte(tmp[this.layer].buyables[this.id].cost)},
+                let max = player.Ud.maxDC2 && player.Ud.crows.gte(tmp[this.layer].buyables[this.id].cost)
+                let safe = !player.Ud.maxDC2 && player.Ud.crows.pow(tmp.ct.upgrades[593].exp).gte(tmp[this.layer].buyables[this.id].cost)
+                return max || safe
+            },
             buy() { 
                 cost = tmp[this.layer].buyables[this.id].cost
-                let max = tmp.Ud.buyables[112].maxAfford
+                let max = player.Ud.maxDC2?tmp.Ud.buyables[112].maxAfford:tmp.Ud.buyables[112].safeAfford
                 let b = max.max(1)
                 if (tmp[this.layer].buyables[this.id].canAfford) {
-                    if (false) player[this.layer].buyables[this.id] = b
+                    if (hasMilestone("uv",55)) {
+                        let maxcost = layers.Ud.buyables[112].cost(b.sub(1))
+                        player[this.layer].buyables[this.id] = b
+                        if (maxcost.gte(player.Ud.crows.pow(tmp.ct.upgrades[593].exp))) player.Ud.crows = player.Ud.crows.div(maxcost).max(1).round()
+                    }
                     else {
-                        if (true) player.Ud.crows = player.Ud.crows.div(cost).max(1).round()
+                        if (!hasUpgrade("ct",593) || (hasUpgrade("ct",593) && cost.gte(player.Ud.crows.pow(tmp.ct.upgrades[593].exp)))) {
+                            player.Ud.crows = player.Ud.crows.div(cost).max(1).round()
+                            updateTemp()
+                        }
+                        player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1).max(1)
+                    }
+                }
+            },
+            buySafe() { 
+                cost = tmp[this.layer].buyables[this.id].cost
+                let max = tmp.Ud.buyables[112].safeAfford
+                let b = max.max(1)
+                if (cost.lt(player.Ud.crows.pow(tmp.ct.upgrades[593].exp))) {
+                    if (hasMilestone("uv",55)) player[this.layer].buyables[this.id] = b
+                    else {
+                        if (!hasUpgrade("ct",593)) {
+                            player.Ud.crows = player.Ud.crows.div(cost).max(1).round()
+                            updateTemp()
+                        }
                         player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1).max(1)
                     }
                 }
@@ -60374,24 +64033,21 @@ addLayer("Ud", {
                 if (target.gte(7)) target = target.div(7).log(1.2).add(7)
                 return target.floor().add(1)
             },
-            buyMax() { 
-                let target = tmp.Ud.buyables[112].maxAfford
+            safeAfford() {
+                let s = player.Ud.crows.pow(tmp.ct.upgrades[593].exp)
                 let base = tmp.Ud.buyables[112].costb
                 let exp = tmp.Ud.buyables[112].coste
-                let cost = Decimal.pow(base,target.pow(exp)).mul(28e13)
-                if (tmp[this.layer].buyables[this.id].canAfford) {
-                    player.Ud.buyables[112] = player.Ud.buyables[112].max(target)
-                
-                }
+                let target = s.div(28e13).log(base).root(exp)
+                if (target.gte(7)) target = target.div(7).log(1.2).add(7)
+                return target.floor().add(1)
             },
             style: {"width":"160px","height":"160px",}
         },
         113: {
             title: "D^",
-            cost() { // cost for buying xth buyable, can be an object if there are multiple currencies
+            cost(x = player.Ud.buyables[113]) { // cost for buying xth buyable, can be an object if there are multiple currencies
                 let base = tmp.Ud.buyables[113].costb
                 let exp = tmp.Ud.buyables[113].coste
-                let x = player.Ud.buyables[113]
                 if (x.gte(6)) x = Decimal.pow(1.3,x.sub(6)).mul(6)
                 let cost = Decimal.pow(base,x.pow(exp)).mul(6e14)
                 return cost
@@ -60405,7 +64061,7 @@ addLayer("Ud", {
                 return cost
             },
             base() { 
-                let base = new Decimal(0.02)
+                let base = tmp.Ud.buyables[133].effect.add(0.02)
                 return base
             },
             base2() { 
@@ -60426,23 +64082,49 @@ addLayer("Ud", {
             display() { // Everything else displayed in the buyable button after the title
                 if (player.tab != "Ud" || player.subtabs.Ud.mainTabs != "Deadly Crows") return
                 let extra = ""
-                let dis = "Increase 'D+' base by "+format(tmp.Ud.buyables[113].base)+" and raise deadly crow death rate increase to "+format(tmp.Ud.buyables[113].base2)
+                let dis = "Increase 'D-' base by "+format(tmp.Ud.buyables[113].base)+" and raise deadly crow death rate increase to "+format(tmp.Ud.buyables[113].base2)
+                let safedis = hasMilestone("uv",55)?"Safe Cost: " + formatWhole(tmp[this.layer].buyables[this.id].cost.root(tmp.ct.upgrades[593].exp))+" Deadly Crows\n":""
                 return dis + ".\n\
-                Cost: /" + formatWhole(tmp[this.layer].buyables[this.id].cost)+" Deadly Crows\n\
-                Effect: +" + format(tmp[this.layer].buyables[this.id].effect) + ", ^" + format(tmp[this.layer].buyables[this.id].effect2) + "\n\
+                Cost: /" + formatWhole(tmp[this.layer].buyables[this.id].cost)+" Deadly Crows\n "+safedis+
+                "Effect: +" + format(tmp[this.layer].buyables[this.id].effect) + ", ^" + format(tmp[this.layer].buyables[this.id].effect2) + "\n\
                 Amount: " + formatWhole(getBuyableAmount("Ud", 113))
             },
             unlocked() { return hasUpgrade("Ud",105) }, 
             canAfford() {
-                    return player.Ud.crows.gte(tmp[this.layer].buyables[this.id].cost)},
+                let max = player.Ud.maxDC2 && player.Ud.crows.gte(tmp[this.layer].buyables[this.id].cost)
+                let safe = !player.Ud.maxDC2 && player.Ud.crows.pow(tmp.ct.upgrades[593].exp).gte(tmp[this.layer].buyables[this.id].cost)
+                return max || safe
+            },
             buy() { 
                 cost = tmp[this.layer].buyables[this.id].cost
-                let max = tmp.Ud.buyables[113].maxAfford
+                let max = player.Ud.maxDC2?tmp.Ud.buyables[113].maxAfford:tmp.Ud.buyables[113].safeAfford
                 let b = max.max(1)
                 if (tmp[this.layer].buyables[this.id].canAfford) {
-                    if (false) player[this.layer].buyables[this.id] = b
+                    if (hasMilestone("uv",55)) {
+                        let maxcost = layers.Ud.buyables[113].cost(b.sub(1))
+                        player[this.layer].buyables[this.id] = b
+                        if (maxcost.gte(player.Ud.crows.pow(tmp.ct.upgrades[593].exp))) player.Ud.crows = player.Ud.crows.div(maxcost).max(1).round()
+                    }
                     else {
-                        if (true) player.Ud.crows = player.Ud.crows.div(cost).max(1).round()
+                        if (!hasUpgrade("ct",593) || (hasUpgrade("ct",593) && cost.gte(player.Ud.crows.pow(tmp.ct.upgrades[593].exp)))) {
+                            player.Ud.crows = player.Ud.crows.div(cost).max(1).round()
+                            updateTemp()
+                        }
+                        player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1).max(1)
+                    }
+                }
+            },
+            buySafe() { 
+                cost = tmp[this.layer].buyables[this.id].cost
+                let max = tmp.Ud.buyables[113].safeAfford
+                let b = max.max(1)
+                if (cost.lt(player.Ud.crows.pow(tmp.ct.upgrades[593].exp))) {
+                    if (hasMilestone("uv",55)) player[this.layer].buyables[this.id] = b
+                    else {
+                        if (!hasUpgrade("ct",593)) {
+                            player.Ud.crows = player.Ud.crows.div(cost).max(1).round()
+                            updateTemp()
+                        }
                         player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1).max(1)
                     }
                 }
@@ -60455,24 +64137,22 @@ addLayer("Ud", {
                 if (target.gte(6)) target = target.div(6).log(1.3).add(6)
                 return target.floor().add(1)
             },
-            buyMax() { 
-                let target = tmp.Ud.buyables[113].maxAfford
+            safeAfford() {
+                let s = player.Ud.crows.pow(tmp.ct.upgrades[593].exp)
                 let base = tmp.Ud.buyables[113].costb
                 let exp = tmp.Ud.buyables[113].coste
-                let cost = Decimal.pow(base,target.pow(exp)).mul(6e14)
-                if (tmp[this.layer].buyables[this.id].canAfford) {
-                    player.Ud.buyables[113] = player.Ud.buyables[113].max(target)
-                
-                }
+                let target = s.div(6e14).log(base).root(exp)
+                if (target.gte(6)) target = target.div(6).log(1.3).add(6)
+                return target.floor().add(1)
             },
             style: {"width":"160px","height":"160px",}
         },
         114: {
             title: "I^",
-            cost() { // cost for buying xth buyable, can be an object if there are multiple currencies
+            cost(x = player.Ud.buyables[114]) { // cost for buying xth buyable, can be an object if there are multiple currencies
                 let base = tmp.Ud.buyables[114].costb
                 let exp = tmp.Ud.buyables[114].coste
-                let x = player.Ud.buyables[114]
+                if (x.gte(18)) x = Decimal.pow(1.1,x.sub(18)).mul(18)
                 let cost = Decimal.pow(base,x.pow(exp)).mul(1e25)
                 return cost
             },
@@ -60485,11 +64165,13 @@ addLayer("Ud", {
                 return cost
             },
             base() { 
-                let base = new Decimal(.01)
+                let base = tmp.Ud.buyables[134].effect.add(0.01)
                 return base
             },
             base2() { 
                 let base = new Decimal(1.01)
+                if (hasMilestone("Ud",73)) base = base.add(0.005)
+                if (hasMilestone("Ud",74)) base = base.add(0.015)
                 return base
             },
             effect() { // Effects of owning x of the items, x is a decimal
@@ -60506,22 +64188,48 @@ addLayer("Ud", {
                 if (player.tab != "Ud" || player.subtabs.Ud.mainTabs != "Deadly Crows") return
                 let extra = ""
                 let dis = "Increase 'I-' base by "+format(tmp.Ud.buyables[114].base)+" and raise deadly crow effect to "+format(tmp.Ud.buyables[114].base2)
+                let safedis = hasMilestone("uv",55)?"Safe Cost: " + formatWhole(tmp[this.layer].buyables[this.id].cost.root(tmp.ct.upgrades[593].exp))+" Deadly Crows\n":""
                 return dis + ".\n\
-                Cost: /" + formatWhole(tmp[this.layer].buyables[this.id].cost)+" Deadly Crows\n\
-                Effect: +" + format(tmp[this.layer].buyables[this.id].effect) + ", ^" + format(tmp[this.layer].buyables[this.id].effect2) + "\n\
+                Cost: /" + formatWhole(tmp[this.layer].buyables[this.id].cost)+" Deadly Crows\n "+safedis+
+                "Effect: +" + format(tmp[this.layer].buyables[this.id].effect) + ", ^" + format(tmp[this.layer].buyables[this.id].effect2) + "\n\
                 Amount: " + formatWhole(getBuyableAmount("Ud", 114))
             },
             unlocked() { return hasUpgrade("Ud",105) }, 
             canAfford() {
-                    return player.Ud.crows.gte(tmp[this.layer].buyables[this.id].cost)},
+                let max = player.Ud.maxDC2 && player.Ud.crows.gte(tmp[this.layer].buyables[this.id].cost)
+                let safe = !player.Ud.maxDC2 && player.Ud.crows.pow(tmp.ct.upgrades[593].exp).gte(tmp[this.layer].buyables[this.id].cost)
+                return max || safe
+            },
             buy() { 
                 cost = tmp[this.layer].buyables[this.id].cost
-                let max = tmp.Ud.buyables[114].maxAfford
+                let max = player.Ud.maxDC2?tmp.Ud.buyables[114].maxAfford:tmp.Ud.buyables[114].safeAfford
                 let b = max.max(1)
                 if (tmp[this.layer].buyables[this.id].canAfford) {
-                    if (false) player[this.layer].buyables[this.id] = b
+                    if (hasMilestone("uv",55)) {
+                        let maxcost = layers.Ud.buyables[114].cost(b.sub(1))
+                        player[this.layer].buyables[this.id] = b
+                        if (maxcost.gte(player.Ud.crows.pow(tmp.ct.upgrades[593].exp))) player.Ud.crows = player.Ud.crows.div(maxcost).max(1).round()
+                    }
                     else {
-                        if (true) player.Ud.crows = player.Ud.crows.div(cost).max(1).round()
+                        if (!hasUpgrade("ct",593) || (hasUpgrade("ct",593) && cost.gte(player.Ud.crows.pow(tmp.ct.upgrades[593].exp)))) {
+                            player.Ud.crows = player.Ud.crows.div(cost).max(1).round()
+                            updateTemp()
+                        }
+                        player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1).max(1)
+                    }
+                }
+            },
+            buySafe() { 
+                cost = tmp[this.layer].buyables[this.id].cost
+                let max = tmp.Ud.buyables[114].safeAfford
+                let b = max.max(1)
+                if (tmp[this.layer].buyables[this.id].canAfford) {
+                    if (hasMilestone("uv",55)) player[this.layer].buyables[this.id] = b
+                    else {
+                        if (!hasUpgrade("ct",593)) {
+                            player.Ud.crows = player.Ud.crows.div(cost).max(1).round()
+                            updateTemp()
+                        }
                         player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1).max(1)
                     }
                 }
@@ -60531,15 +64239,742 @@ addLayer("Ud", {
                 let base = tmp.Ud.buyables[114].costb
                 let exp = tmp.Ud.buyables[114].coste
                 let target = s.div(1e25).log(base).root(exp)
+                if (target.gte(18)) target = target.div(18).log(1.1).add(18)
+                return target.floor().add(1)
+            },
+            safeAfford() {
+                let s = player.Ud.crows.pow(tmp.ct.upgrades[593].exp)
+                let base = tmp.Ud.buyables[114].costb
+                let exp = tmp.Ud.buyables[114].coste
+                let target = s.div(1e25).log(base).root(exp)
+                if (target.gte(18)) target = target.div(18).log(1.1).add(18)
+                return target.floor().add(1)
+            },
+            style: {"width":"160px","height":"160px",}
+        },
+        121: {
+            title() {
+                let d = "Deadlier CrowBird"
+                let dist = tmp.Ud.buyables[121].distantStart
+                let sc = player.Ud.buyables[121].gte(dist)?"Distant ":""
+                let dis = sc+d
+                return dis
+            },
+            distantStart() {
+                let start = new Decimal(40)
+                return start
+            },
+            cost(x = player.Ud.buyables[121]) { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let base = tmp.Ud.buyables[121].costb
+                let exp = tmp.Ud.buyables[121].coste
+                let start = tmp.Ud.buyables[121].distantStart
+                if (x.gte(start)) x = x.div(start).pow(1.5).mul(start.mul(1.4)).sub(start.mul(0.4))
+                let cost = Decimal.pow(base,x.pow(exp)).mul("e450")
+                return cost
+            },
+            costb() { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let cost = new Decimal(1e10)
+                return cost
+            },
+            coste() { 
+                let cost = decimalTwo
+                return cost
+            },
+            base() { 
+                let base = new Decimal(.1)
+                return base
+            },
+            effect() { // Effects of owning x of the items, x is a decimal
+                let x = player.Ud.buyables[121]
+                let base = tmp[this.layer].buyables[this.id].base
+                return Decimal.mul(base, x);
+            },
+            display() { // Everything else displayed in the buyable button after the title
+                if (player.tab != "Ud" || player.subtabs.Ud.mainTabs != "Deadly Crows") return
+                let extra = ""
+                let dis = "Increase Deadly CrowBird effect exponent by "+format(tmp.Ud.buyables[121].base)
+                let safedis = hasMilestone("uv",55)?"Safe Cost: " + formatWhole(tmp[this.layer].buyables[this.id].cost.root(tmp.ct.upgrades[593].exp))+" Deadly Crows\n":""
+                return dis + ".\n\
+                Cost: /" + formatWhole(tmp[this.layer].buyables[this.id].cost)+" Deadly Crows\n "+safedis+
+                "Effect: +" + format(tmp[this.layer].buyables[this.id].effect) + "\n\
+                Amount: " + formatWhole(getBuyableAmount("Ud", 121))
+            },
+            unlocked() { return hasMilestone("Ud",63) }, 
+            canAfford() {
+                let max = player.Ud.maxDC2 && player.Ud.crows.gte(tmp[this.layer].buyables[this.id].cost)
+                let safe = !player.Ud.maxDC2 && player.Ud.crows.pow(tmp.ct.upgrades[593].exp).gte(tmp[this.layer].buyables[this.id].cost)
+                return max || safe
+            },
+            buy() { 
+                cost = tmp[this.layer].buyables[this.id].cost
+                let max = player.Ud.maxDC2?tmp.Ud.buyables[121].maxAfford:tmp.Ud.buyables[121].safeAfford
+                let b = max.max(1)
+                if (tmp[this.layer].buyables[this.id].canAfford) {
+                    if (hasMilestone("uv",58)) {
+                        let maxcost = layers.Ud.buyables[121].cost(b.sub(1))
+                        player[this.layer].buyables[this.id] = b
+                        if (maxcost.gte(player.Ud.crows.pow(tmp.ct.upgrades[593].exp))) player.Ud.crows = player.Ud.crows.div(maxcost).max(1).round()
+                    }
+                    else {
+                        if (!hasUpgrade("ct",593) || (hasUpgrade("ct",593) && cost.gte(player.Ud.crows.pow(tmp.ct.upgrades[593].exp)))) {
+                            player.Ud.crows = player.Ud.crows.div(cost).max(1).round()
+                            updateTemp()
+                        }
+                        player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1).max(1)
+                    }
+                }
+            },
+            buySafe() { 
+                cost = tmp[this.layer].buyables[this.id].cost
+                let max = tmp.Ud.buyables[121].safeAfford
+                let b = max.max(1)
+                if (tmp[this.layer].buyables[this.id].canAfford) {
+                    if (hasMilestone("uv",58)) player[this.layer].buyables[this.id] = b
+                    else {
+                        if (!hasUpgrade("ct",593)) {
+                            player.Ud.crows = player.Ud.crows.div(cost).max(1).round()
+                            updateTemp()
+                        }
+                        player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1).max(1)
+                    }
+                }
+            },
+            maxAfford() {
+                let s = player.Ud.crows
+                let base = tmp.Ud.buyables[121].costb
+                let exp = tmp.Ud.buyables[121].coste
+                let start = tmp.Ud.buyables[121].distantStart
+                let target = s.div("e450").log(base).root(exp)
+                if (target.gte(start)) target = target.add(start.mul(0.4)).div(start.mul(1.4)).root(1.5).mul(start)
+                return target.floor().add(1)
+            },
+            safeAfford() {
+                let s = player.Ud.crows.pow(tmp.ct.upgrades[593].exp)
+                let base = tmp.Ud.buyables[121].costb
+                let exp = tmp.Ud.buyables[121].coste
+                let start = tmp.Ud.buyables[121].distantStart
+                let target = s.div("e450").log(base).root(exp)
+                if (target.gte(start)) target = target.add(start.mul(0.4)).div(start.mul(1.4)).root(1.5).mul(start)
+                return target.floor().add(1)
+            },
+            style: {"width":"160px","height":"160px",}
+        },
+        122: {
+            title: "CbB+",
+            cost(x = player.Ud.buyables[122]) { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let base = tmp.Ud.buyables[122].costb
+                let exp = tmp.Ud.buyables[122].coste
+                let cost = Decimal.pow(base,x.pow(exp)).mul("e543")
+                return cost
+            },
+            costb() { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let cost = new Decimal(1e5)
+                return cost
+            },
+            coste() { 
+                let cost = decimalTwo
+                return cost
+            },
+            base() { 
+                let base = tmp.Ud.buyables[132].effect.add(1.5)
+                return base
+            },
+            effect() { // Effects of owning x of the items, x is a decimal
+                let x = player.Ud.buyables[122]
+                let base = tmp[this.layer].buyables[this.id].base
+                return Decimal.pow(base, x);
+            },
+            display() { // Everything else displayed in the buyable button after the title
+                if (player.tab != "Ud" || player.subtabs.Ud.mainTabs != "Deadly Crows") return
+                let extra = ""
+                let dis = "Multiply Deadly CrowBird birth rate by "+format(tmp.Ud.buyables[122].base)
+                let safedis = hasMilestone("uv",55)?"Safe Cost: " + formatWhole(tmp[this.layer].buyables[this.id].cost.root(tmp.ct.upgrades[593].exp))+" Deadly Crows\n":""
+                return dis + ".\n\
+                Cost: /" + formatWhole(tmp[this.layer].buyables[this.id].cost)+" Deadly Crows\n "+safedis+
+                "Effect: " + format(tmp[this.layer].buyables[this.id].effect)+"x\n\
+                Amount: " + formatWhole(getBuyableAmount("Ud", 122))
+            },
+            unlocked() { return hasMilestone("Ud",63) }, 
+            canAfford() {
+                let max = player.Ud.maxDC2 && player.Ud.crows.gte(tmp[this.layer].buyables[this.id].cost)
+                let safe = !player.Ud.maxDC2 && player.Ud.crows.pow(tmp.ct.upgrades[593].exp).gte(tmp[this.layer].buyables[this.id].cost)
+                return max || safe
+            },
+            buy() { 
+                cost = tmp[this.layer].buyables[this.id].cost
+                let max = player.Ud.maxDC2?tmp.Ud.buyables[122].maxAfford:tmp.Ud.buyables[122].safeAfford
+                let b = max.max(1)
+                if (tmp[this.layer].buyables[this.id].canAfford) {
+                    if (hasMilestone("uv",58)) {
+                        let maxcost = layers.Ud.buyables[122].cost(b.sub(1))
+                        player[this.layer].buyables[this.id] = b
+                        if (maxcost.gte(player.Ud.crows.pow(tmp.ct.upgrades[593].exp))) player.Ud.crows = player.Ud.crows.div(maxcost).max(1).round()
+                    }
+                    else {
+                        if (!hasUpgrade("ct",593) || (hasUpgrade("ct",593) && cost.gte(player.Ud.crows.pow(tmp.ct.upgrades[593].exp)))) {
+                            player.Ud.crows = player.Ud.crows.div(cost).max(1).round()
+                            updateTemp()
+                        }
+                        player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1).max(1)
+                    }
+                }
+            },
+            buySafe() { 
+                cost = tmp[this.layer].buyables[this.id].cost
+                let max = tmp.Ud.buyables[122].safeAfford
+                let b = max.max(1)
+                if (tmp[this.layer].buyables[this.id].canAfford) {
+                    if (hasMilestone("uv",58)) player[this.layer].buyables[this.id] = b
+                    else {
+                        if (!hasUpgrade("ct",593)) {
+                            player.Ud.crows = player.Ud.crows.div(cost).max(1).round()
+                            updateTemp()
+                        }
+                        player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1).max(1)
+                    }
+                }
+            },
+            maxAfford() {
+                let s = player.Ud.crows
+                let base = tmp.Ud.buyables[122].costb
+                let exp = tmp.Ud.buyables[122].coste
+                let target = s.div("e543").log(base).root(exp)
+                return target.floor().add(1)
+            },
+            safeAfford() {
+                let s = player.Ud.crows.pow(tmp.ct.upgrades[593].exp)
+                let base = tmp.Ud.buyables[122].costb
+                let exp = tmp.Ud.buyables[122].coste
+                let target = s.div("e543").log(base).root(exp)
+                return target.floor().add(1)
+            },
+            style: {"width":"160px","height":"160px",}
+        },
+        123: {
+            title: "CbD-",
+            cost(x = player.Ud.buyables[123]) { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let base = tmp.Ud.buyables[123].costb
+                let exp = tmp.Ud.buyables[123].coste
+                let cost = Decimal.pow(base,x.pow(exp)).mul("e545")
+                return cost
+            },
+            costb() { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let cost = new Decimal(1e7)
+                return cost
+            },
+            coste() { 
+                let cost = decimalTwo
+                return cost
+            },
+            base() { 
+                let base = tmp.Ud.buyables[133].effect.add(1.5)
+                return base
+            },
+            effect() { // Effects of owning x of the items, x is a decimal
+                let x = player.Ud.buyables[123]
+                let base = tmp[this.layer].buyables[this.id].base
+                return Decimal.pow(base, x);
+            },
+            display() { // Everything else displayed in the buyable button after the title
+                if (player.tab != "Ud" || player.subtabs.Ud.mainTabs != "Deadly Crows") return
+                let extra = ""
+                let dis = "Divide Deadly CrowBird death rate by "+format(tmp.Ud.buyables[123].base)
+                let safedis = hasMilestone("uv",55)?"Safe Cost: " + formatWhole(tmp[this.layer].buyables[this.id].cost.root(tmp.ct.upgrades[593].exp))+" Deadly Crows\n":""
+                return dis + ".\n\
+                Cost: /" + formatWhole(tmp[this.layer].buyables[this.id].cost)+" Deadly Crows\n "+safedis+
+                "Effect: /" + format(tmp[this.layer].buyables[this.id].effect)+"\n\
+                Amount: " + formatWhole(getBuyableAmount("Ud", 123))
+            },
+            unlocked() { return hasMilestone("Ud",63) }, 
+            canAfford() {
+                let max = player.Ud.maxDC2 && player.Ud.crows.gte(tmp[this.layer].buyables[this.id].cost)
+                let safe = !player.Ud.maxDC2 && player.Ud.crows.pow(tmp.ct.upgrades[593].exp).gte(tmp[this.layer].buyables[this.id].cost)
+                return max || safe
+            },
+            buy() { 
+                cost = tmp[this.layer].buyables[this.id].cost
+                let max = player.Ud.maxDC2?tmp.Ud.buyables[123].maxAfford:tmp.Ud.buyables[123].safeAfford
+                let b = max.max(1)
+                if (tmp[this.layer].buyables[this.id].canAfford) {
+                    if (hasMilestone("uv",58)) {
+                        let maxcost = layers.Ud.buyables[123].cost(b.sub(1))
+                        player[this.layer].buyables[this.id] = b
+                        if (maxcost.gte(player.Ud.crows.pow(tmp.ct.upgrades[593].exp))) player.Ud.crows = player.Ud.crows.div(maxcost).max(1).round()
+                    }
+                    else {
+                        if (!hasUpgrade("ct",593) || (hasUpgrade("ct",593) && cost.gte(player.Ud.crows.pow(tmp.ct.upgrades[593].exp)))) {
+                            player.Ud.crows = player.Ud.crows.div(cost).max(1).round()
+                            updateTemp()
+                        }
+                        player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1).max(1)
+                    }
+                }
+            },
+            buySafe() { 
+                cost = tmp[this.layer].buyables[this.id].cost
+                let max = tmp.Ud.buyables[123].safeAfford
+                let b = max.max(1)
+                if (tmp[this.layer].buyables[this.id].canAfford) {
+                    if (hasMilestone("uv",58)) player[this.layer].buyables[this.id] = b
+                    else {
+                        if (!hasUpgrade("ct",593)) {
+                            player.Ud.crows = player.Ud.crows.div(cost).max(1).round()
+                            updateTemp()
+                        }
+                        player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1).max(1)
+                    }
+                }
+            },
+            maxAfford() {
+                let s = player.Ud.crows
+                let base = tmp.Ud.buyables[123].costb
+                let exp = tmp.Ud.buyables[123].coste
+                let target = s.div("e545").log(base).root(exp)
+                return target.floor().add(1)
+            },
+            safeAfford() {
+                let s = player.Ud.crows.pow(tmp.ct.upgrades[593].exp)
+                let base = tmp.Ud.buyables[123].costb
+                let exp = tmp.Ud.buyables[123].coste
+                let target = s.div("e545").log(base).root(exp)
+                return target.floor().add(1)
+            },
+            style: {"width":"160px","height":"160px",}
+        },
+        124: {
+            title: "CbI-",
+            cost(x = player.Ud.buyables[124]) { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let base = tmp.Ud.buyables[124].costb
+                let exp = tmp.Ud.buyables[124].coste
+                let cost = Decimal.pow(base,x.pow(exp)).mul("e587")
+                return cost
+            },
+            costb() { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let cost = new Decimal(1e9)
+                return cost
+            },
+            coste() { 
+                let cost = decimalTwo
+                return cost
+            },
+            base() { 
+                let base = tmp.Ud.buyables[134].effect.add(1.1)
+                return base
+            },
+            base2() { 
+                let int = tmp.Ud.crowBirdInterval
+                let base = powExp(int.pow(-0.6).div(10).add(1),1.3).pow(0.5)
+                return base
+            },
+            effect() { // Effects of owning x of the items, x is a decimal
+                let x = player.Ud.buyables[124]
+                let base = tmp[this.layer].buyables[this.id].base
+                return Decimal.pow(base, x);
+            },
+            effect2() { // Effects of owning x of the items, x is a decimal
+                let x = player.Ud.buyables[124]
+                let base = tmp[this.layer].buyables[this.id].base2
+                return Decimal.pow(base, x);
+            },
+            display() { // Everything else displayed in the buyable button after the title
+                if (player.tab != "Ud" || player.subtabs.Ud.mainTabs != "Deadly Crows") return
+                let extra = ""
+                let dis = "Divide Deadly CrowBird tick interval by "+format(tmp.Ud.buyables[124].base)+" and multiply their birth rate by "+format(tmp.Ud.buyables[124].base2)+" (based on Deadly CrowBird interval)"
+                let safedis = hasMilestone("uv",55)?"Safe Cost: " + formatWhole(tmp[this.layer].buyables[this.id].cost.root(tmp.ct.upgrades[593].exp))+" Deadly Crows\n":""
+                return dis + ".\n\
+                Cost: /" + formatWhole(tmp[this.layer].buyables[this.id].cost)+" Deadly Crows\n "+safedis+
+                "Effect: /" + format(tmp[this.layer].buyables[this.id].effect) + ", " + format(tmp[this.layer].buyables[this.id].effect2)+"x\n\
+                Amount: " + formatWhole(getBuyableAmount("Ud", 124))
+            },
+            unlocked() { return hasMilestone("Ud",63) }, 
+            canAfford() {
+                let max = player.Ud.maxDC2 && player.Ud.crows.gte(tmp[this.layer].buyables[this.id].cost)
+                let safe = !player.Ud.maxDC2 && player.Ud.crows.pow(tmp.ct.upgrades[593].exp).gte(tmp[this.layer].buyables[this.id].cost)
+                return max || safe
+            },
+            buy() { 
+                cost = tmp[this.layer].buyables[this.id].cost
+                let max = player.Ud.maxDC2?tmp.Ud.buyables[124].maxAfford:tmp.Ud.buyables[124].safeAfford
+                let b = max.max(1)
+                if (tmp[this.layer].buyables[this.id].canAfford) {
+                    if (hasMilestone("uv",58)) {
+                        let maxcost = layers.Ud.buyables[124].cost(b.sub(1))
+                        player[this.layer].buyables[this.id] = b
+                        if (maxcost.gte(player.Ud.crows.pow(tmp.ct.upgrades[593].exp))) player.Ud.crows = player.Ud.crows.div(maxcost).max(1).round()
+                    }
+                    else {
+                        if (!hasUpgrade("ct",593) || (hasUpgrade("ct",593) && cost.gte(player.Ud.crows.pow(tmp.ct.upgrades[593].exp)))) {
+                            player.Ud.crows = player.Ud.crows.div(cost).max(1).round()
+                            updateTemp()
+                        }
+                        player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1).max(1)
+                    }
+                }
+            },
+            buySafe() { 
+                cost = tmp[this.layer].buyables[this.id].cost
+                let max = tmp.Ud.buyables[124].safeAfford
+                let b = max.max(1)
+                if (tmp[this.layer].buyables[this.id].canAfford) {
+                    if (hasMilestone("uv",58)) player[this.layer].buyables[this.id] = b
+                    else {
+                        if (!hasUpgrade("ct",593)) {
+                            player.Ud.crows = player.Ud.crows.div(cost).max(1).round()
+                            updateTemp()
+                        }
+                        player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1).max(1)
+                    }
+                }
+            },
+            maxAfford() {
+                let s = player.Ud.crows
+                let base = tmp.Ud.buyables[124].costb
+                let exp = tmp.Ud.buyables[124].coste
+                let target = s.div("e587").log(base).root(exp)
+                return target.floor().add(1)
+            },
+            safeAfford() {
+                let s = player.Ud.crows.pow(tmp.ct.upgrades[593].exp)
+                let base = tmp.Ud.buyables[124].costb
+                let exp = tmp.Ud.buyables[124].coste
+                let target = s.div("e587").log(base).root(exp)
+                return target.floor().add(1)
+            },
+            style: {"width":"160px","height":"160px",}
+        },
+        131: {
+            title: "CbC+-",
+            cost() { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let base = tmp.Ud.buyables[131].costb
+                let exp = tmp.Ud.buyables[131].coste
+                let x = player.Ud.buyables[131]
+                let cost = Decimal.pow(base,x.pow(exp)).mul(12e8)
+                return cost
+            },
+            costb() { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let cost = new Decimal(55)
+                return cost
+            },
+            coste() { 
+                let cost = new Decimal(1.5)
+                return cost
+            },
+            base() { 
+                let base = decimalThree
+                return base
+            },
+            base2() { 
+                let base = decimalTen
+                return base
+            },
+            effect() { // Effects of owning x of the items, x is a decimal
+                let x = player.Ud.buyables[131]
+                let base = tmp[this.layer].buyables[this.id].base
+                return Decimal.pow(base, x);
+            },
+            effect2() { // Effects of owning x of the items, x is a decimal
+                let x = player.Ud.buyables[131]
+                let base = tmp[this.layer].buyables[this.id].base2
+                return Decimal.pow(base, x);
+            },
+            display() { // Everything else displayed in the buyable button after the title
+                if (player.tab != "Ud" || player.subtabs.Ud.mainTabs != "Deadly Crows") return
+                let extra = ""
+                let dis = "Divide Deadly CrowBird birth rate by "+format(tmp.Ud.buyables[131].base)+" and death rate by "+format(tmp.Ud.buyables[131].base2)
+                return dis + ".\n\
+                Cost: /" + formatWhole(tmp[this.layer].buyables[this.id].cost)+" Deadly CrowBirds\n\
+                Effect: /" + format(tmp[this.layer].buyables[this.id].effect) + ", /" +format(tmp[this.layer].buyables[this.id].effect2)+"\n\
+                Amount: " + formatWhole(getBuyableAmount("Ud", 131))
+            },
+            unlocked() { return hasMilestone("Ud",70) }, 
+            canAfford() {
+                    return player.Ud.crowBirds.gte(tmp[this.layer].buyables[this.id].cost)},
+            buy() { 
+                cost = tmp[this.layer].buyables[this.id].cost
+                let max = tmp.Ud.buyables[131].maxAfford
+                let b = max.max(1)
+                if (tmp[this.layer].buyables[this.id].canAfford) {
+                    if (false) {
+                        player[this.layer].buyables[this.id] = b
+                    }
+                    else {
+                        if (true) {
+                            player.Ud.crowBirds = player.Ud.crowBirds.div(cost).max(1).round()
+                            updateTemp()
+                        }
+                        player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1).max(1)
+                    }
+                }
+            },
+            maxAfford() {
+                let s = player.Ud.crowBirds
+                let base = tmp.Ud.buyables[131].costb
+                let exp = tmp.Ud.buyables[131].coste
+                let target = s.div(12e8).log(base).root(exp)
                 return target.floor().add(1)
             },
             buyMax() { 
-                let target = tmp.Ud.buyables[114].maxAfford
-                let base = tmp.Ud.buyables[114].costb
-                let exp = tmp.Ud.buyables[114].coste
-                let cost = Decimal.pow(base,target.pow(exp)).mul(1e25)
+                let target = tmp.Ud.buyables[131].maxAfford
+                let base = tmp.Ud.buyables[131].costb
+                let exp = tmp.Ud.buyables[131].coste
+                let cost = Decimal.pow(base,target.pow(exp)).mul(12e8)
                 if (tmp[this.layer].buyables[this.id].canAfford) {
-                    player.Ud.buyables[114] = player.Ud.buyables[114].max(target)
+                    player.Ud.buyables[131] = player.Ud.buyables[131].max(target)
+                
+                }
+            },
+            style: {"width":"160px","height":"160px",}
+        },
+        132: {
+            title: "CbB^",
+            cost() { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let base = tmp.Ud.buyables[132].costb
+                let exp = tmp.Ud.buyables[132].coste
+                let x = player.Ud.buyables[132]
+                if (x.gte(7)) x = Decimal.pow(1.2,x.sub(7)).mul(7)
+                let cost = Decimal.pow(base,x.pow(exp)).mul(33e8)
+                return cost
+            },
+            costb() { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let cost = new Decimal(8.5)
+                return cost
+            },
+            coste() { 
+                let cost = new Decimal(1.5)
+                return cost
+            },
+            base() { 
+                let base = new Decimal(0.02)
+                return base
+            },
+            base2() { 
+                let base = new Decimal(0.95)
+                return base
+            },
+            effect() { // Effects of owning x of the items, x is a decimal
+                let x = player.Ud.buyables[132]
+                let base = tmp[this.layer].buyables[this.id].base
+                return Decimal.mul(base, x);
+            },
+            effect2() { // Effects of owning x of the items, x is a decimal
+                let x = player.Ud.buyables[132]
+                let base = tmp[this.layer].buyables[this.id].base2
+                return Decimal.pow(base, x);
+            },
+            display() { // Everything else displayed in the buyable button after the title
+                if (player.tab != "Ud" || player.subtabs.Ud.mainTabs != "Deadly Crows") return
+                let extra = ""
+                let dis = "Increase 'CbB+' and 'B^' 1st base by "+format(tmp.Ud.buyables[132].base)+" and raise Deadly CrowBird birth rate reduction to "+format(tmp.Ud.buyables[132].base2)
+                return dis + ".\n\
+                Cost: /" + formatWhole(tmp[this.layer].buyables[this.id].cost)+" Deadly CrowBirds\n\
+                Effect: +" + format(tmp[this.layer].buyables[this.id].effect) + ", ^" + format(tmp[this.layer].buyables[this.id].effect2) + "\n\
+                Amount: " + formatWhole(getBuyableAmount("Ud", 132))
+            },
+            unlocked() { return hasMilestone("Ud",70) }, 
+            canAfford() {
+                    return player.Ud.crowBirds.gte(tmp[this.layer].buyables[this.id].cost)},
+            buy() { 
+                cost = tmp[this.layer].buyables[this.id].cost
+                let max = tmp.Ud.buyables[132].maxAfford
+                let b = max.max(1)
+                if (tmp[this.layer].buyables[this.id].canAfford) {
+                    if (false) {
+                        player[this.layer].buyables[this.id] = b
+                    }
+                    else {
+                        if (true) {
+                            player.Ud.crowBirds = player.Ud.crowBirds.div(cost).max(1).round()
+                            updateTemp()
+                        }
+                        player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1).max(1)
+                    }
+                }
+            },
+            maxAfford() {
+                let s = player.Ud.crowBirds
+                let base = tmp.Ud.buyables[132].costb
+                let exp = tmp.Ud.buyables[132].coste
+                let target = s.div(33e8).log(base).root(exp)
+                if (target.gte(7)) target = target.div(7).log(1.2).add(7)
+                return target.floor().add(1)
+            },
+            buyMax() { 
+                let target = tmp.Ud.buyables[132].maxAfford
+                let base = tmp.Ud.buyables[132].costb
+                let exp = tmp.Ud.buyables[132].coste
+                let cost = Decimal.pow(base,target.pow(exp)).mul(33e8)
+                if (tmp[this.layer].buyables[this.id].canAfford) {
+                    player.Ud.buyables[132] = player.Ud.buyables[132].max(target)
+                
+                }
+            },
+            style: {"width":"160px","height":"160px",}
+        },
+        133: {
+            title: "CbD^",
+            cost() { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let base = tmp.Ud.buyables[133].costb
+                let exp = tmp.Ud.buyables[133].coste
+                let x = player.Ud.buyables[133]
+                if (x.gte(6)) x = Decimal.pow(1.3,x.sub(6)).mul(6)
+                let cost = Decimal.pow(base,x.pow(exp)).mul(43e8)
+                return cost
+            },
+            costb() { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let cost = new Decimal(11.5)
+                return cost
+            },
+            coste() { 
+                let cost = new Decimal(1.55)
+                return cost
+            },
+            base() { 
+                let base = new Decimal(0.02)
+                return base
+            },
+            base2() { 
+                let base = new Decimal(0.95)
+                return base
+            },
+            effect() { // Effects of owning x of the items, x is a decimal
+                let x = player.Ud.buyables[133]
+                let base = tmp[this.layer].buyables[this.id].base
+                return Decimal.mul(base, x);
+            },
+            effect2() { // Effects of owning x of the items, x is a decimal
+                let x = player.Ud.buyables[133]
+                let base = tmp[this.layer].buyables[this.id].base2
+                return Decimal.pow(base, x);
+            },
+            display() { // Everything else displayed in the buyable button after the title
+                if (player.tab != "Ud" || player.subtabs.Ud.mainTabs != "Deadly Crows") return
+                let extra = ""
+                let dis = "Increase 'CbD-' and 'D^' 1st base by "+format(tmp.Ud.buyables[133].base)+" and raise Deadly CrowBird death rate increase to "+format(tmp.Ud.buyables[133].base2)
+                return dis + ".\n\
+                Cost: /" + formatWhole(tmp[this.layer].buyables[this.id].cost)+" Deadly CrowBirds\n\
+                Effect: +" + format(tmp[this.layer].buyables[this.id].effect) + ", ^" + format(tmp[this.layer].buyables[this.id].effect2) + "\n\
+                Amount: " + formatWhole(getBuyableAmount("Ud", 133))
+            },
+            unlocked() { return hasMilestone("Ud",70) }, 
+            canAfford() {
+                    return player.Ud.crowBirds.gte(tmp[this.layer].buyables[this.id].cost)},
+            buy() { 
+                cost = tmp[this.layer].buyables[this.id].cost
+                let max = tmp.Ud.buyables[133].maxAfford
+                let b = max.max(1)
+                if (tmp[this.layer].buyables[this.id].canAfford) {
+                    if (false) {
+                        player[this.layer].buyables[this.id] = b
+                    }
+                    else {
+                        if (true) {
+                            player.Ud.crowBirds = player.Ud.crowBirds.div(cost).max(1).round()
+                            updateTemp()
+                        }
+                        player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1).max(1)
+                    }
+                }
+            },
+            maxAfford() {
+                let s = player.Ud.crowBirds
+                let base = tmp.Ud.buyables[133].costb
+                let exp = tmp.Ud.buyables[133].coste
+                let target = s.div(43e8).log(base).root(exp)
+                if (target.gte(6)) target = target.div(6).log(1.3).add(6)
+                return target.floor().add(1)
+            },
+            buyMax() { 
+                let target = tmp.Ud.buyables[133].maxAfford
+                let base = tmp.Ud.buyables[133].costb
+                let exp = tmp.Ud.buyables[133].coste
+                let cost = Decimal.pow(base,target.pow(exp)).mul(43e8)
+                if (tmp[this.layer].buyables[this.id].canAfford) {
+                    player.Ud.buyables[133] = player.Ud.buyables[133].max(target)
+                
+                }
+            },
+            style: {"width":"160px","height":"160px",}
+        },
+        134: {
+            title: "CbI^",
+            cost() { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let base = tmp.Ud.buyables[134].costb
+                let exp = tmp.Ud.buyables[134].coste
+                let x = player.Ud.buyables[134]
+                if (x.gte(18)) x = Decimal.pow(1.1,x.sub(18)).mul(18)
+                let cost = Decimal.pow(base,x.pow(exp)).mul(123e13)
+                return cost
+            },
+            costb() { // cost for buying xth buyable, can be an object if there are multiple currencies
+                let cost = new Decimal(1e3)
+                return cost
+            },
+            coste() { 
+                let cost = new Decimal(1.6)
+                return cost
+            },
+            base() { 
+                let base = new Decimal(0.01)
+                return base
+            },
+            base2() { 
+                let base = new Decimal(1.01)
+                return base
+            },
+            effect() { // Effects of owning x of the items, x is a decimal
+                let x = player.Ud.buyables[134]
+                let base = tmp[this.layer].buyables[this.id].base
+                return Decimal.mul(base, x);
+            },
+            effect2() { // Effects of owning x of the items, x is a decimal
+                let x = player.Ud.buyables[134]
+                let base = tmp[this.layer].buyables[this.id].base2
+                return Decimal.pow(base, x);
+            },
+            display() { // Everything else displayed in the buyable button after the title
+                if (player.tab != "Ud" || player.subtabs.Ud.mainTabs != "Deadly Crows") return
+                let extra = ""
+                let dis = "Increase 'CbI-' and 'I^' 1st base by "+format(tmp.Ud.buyables[134].base)+" and raise Deadly CrowBird effect to "+format(tmp.Ud.buyables[134].base2)
+                return dis + ".\n\
+                Cost: /" + formatWhole(tmp[this.layer].buyables[this.id].cost)+" Deadly CrowBirds\n\
+                Effect: +" + format(tmp[this.layer].buyables[this.id].effect) + ", ^" + format(tmp[this.layer].buyables[this.id].effect2) + "\n\
+                Amount: " + formatWhole(getBuyableAmount("Ud", 134))
+            },
+            unlocked() { return hasMilestone("Ud",70) }, 
+            canAfford() {
+                    return player.Ud.crowBirds.gte(tmp[this.layer].buyables[this.id].cost)},
+            buy() { 
+                cost = tmp[this.layer].buyables[this.id].cost
+                let max = tmp.Ud.buyables[134].maxAfford
+                let b = max.max(1)
+                if (tmp[this.layer].buyables[this.id].canAfford) {
+                    if (false) {
+                        player[this.layer].buyables[this.id] = b
+                    }
+                    else {
+                        if (true) {
+                            player.Ud.crowBirds = player.Ud.crowBirds.div(cost).max(1).round()
+                            updateTemp()
+                        }
+                        player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1).max(1)
+                    }
+                }
+            },
+            maxAfford() {
+                let s = player.Ud.crowBirds
+                let base = tmp.Ud.buyables[134].costb
+                let exp = tmp.Ud.buyables[134].coste
+                let target = s.div(123e13).log(base).root(exp)
+                if (target.gte(18)) target = target.div(18).log(1.1).add(18)
+                return target.floor().add(1)
+            },
+            buyMax() { 
+                let target = tmp.Ud.buyables[134].maxAfford
+                let base = tmp.Ud.buyables[134].costb
+                let exp = tmp.Ud.buyables[134].coste
+                let cost = Decimal.pow(base,target.pow(exp)).mul(123e13)
+                if (tmp[this.layer].buyables[this.id].canAfford) {
+                    player.Ud.buyables[134] = player.Ud.buyables[134].max(target)
                 
                 }
             },
@@ -60593,10 +65028,13 @@ addLayer("Ud", {
                 let eff = player.Us.points.add(1).log10().pow(exp).div(300)
                 if (eff.gte(1.6)) eff = eff.div(1.6).log10().add(1.6)
                 if (eff.gte(2)) eff = eff.div(2).pow(0.5).mul(2)
+                if (eff.gte(1e27)) eff = eff.div(1e27).pow(0.7).mul(1e27)
+                if (eff.gte(1e30)) eff = eff.div(1e30).pow(0.8).mul(5e29).add(5e29)
                 return eff
             },
             rewardDisplay() {
-                return "+" + format(this.rewardEffect())
+                let dis = this.rewardEffect().gte("ee333") ? " (hardcapped)" : ""
+                return "+" + format(this.rewardEffect()) + dis
             },
             unlocked(){
                 return hasMilestone("Ud", 3)
@@ -60754,6 +65192,7 @@ addLayer("Ud", {
             rewardEffect2() {
                 if (inChallenge("Ud",22)) return decimalOne
                 let exp = player.Ud.challPoints[3]
+                if (exp.gte(1e95)) exp = exp.div(1e95).pow(0.5).mul(2e95).sub(1e95)
                 if (exp.gte(15e5)) exp = exp.div(15e5).pow(0.4).mul(100).add(149900)
                 if (exp.gte(350)) exp = exp.div(350).pow(0.9).mul(200).add(150)
                 if (exp.gte(45)) exp = exp.div(45).pow(0.6).mul(20).add(25)
@@ -60827,7 +65266,37 @@ addLayer("Ud", {
             unlocked() { return hasUpgrade("uv",106) }, 
             onClick() {
                 player.Ud.crows = player.Ud.crows.add(1)
-                player.Ud.crowCool = 60
+                player.Ud.crowCool = hasMilestone("uv",58)?1:hasMilestone("uv",55)?10:60
+            },
+        },
+        22: {
+            display() {
+                return "<h2>Max All (L)</h2><br>Cooldown: "+formatTime(player.Ud.maxCrowCool)
+            },
+            canClick() {return player.Ud.maxCrowCool == 0},
+            unlocked() { return hasUpgrade("ct",591) }, 
+            onClick() {
+                for (let i in player.Ud.buyables){
+                    let x = 110
+                    if (hasMilestone("uv",55)) x+=10
+                    if (hasMilestone("uv",58)) x+=10
+                    if (i>100&&i<110) layers.Ud.buyables[i].buy()
+                    if (i>110&&i<x) {
+                        if (player.Ud.maxDC2) layers.Ud.buyables[i].buy()
+                        else layers.Ud.buyables[i].buySafe()
+                    }
+                }
+                player.Ud.maxCrowCool = tmp.uv.buyables[53].effect.toNumber()
+            },
+        },
+        23: {
+            display() {
+                return "<h2>Buy Deadly Crow Buyables: "+(player.Ud.maxDC2?"MAX":"SAFE")+"</h2>"
+            },
+            canClick() {return true},
+            unlocked() { return hasMilestone("uv",55) }, 
+            onClick() {
+                player.Ud.maxDC2 = player.Ud.maxDC2?false:true
             },
         },
     }
