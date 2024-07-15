@@ -188,8 +188,7 @@ function hyperEformat(decimal, precision) {
 	if ((decimal.layer > 0 && decimal.mag>0) || decimal.mag >= 1e10) return 'E'+m+'#'+e
 	if (decimal.mag >= 1e3) return commaFormat(decimal, 0)
 	if (decimal.mag >= 0.001) return regularFormat(decimal, precision)
-	if (decimal.mag >= 1/9e15) return '1/'+standard(decimal.recip(),precision)
-	if (decimal.sign!=0) return '1/'+hyperEformat(decimal.recip(),precision)
+	if (decimal.mag >= 1/9e15 || decimal.sign!=0) return '1/'+hyperEformat(decimal.recip(),precision)
 	return regularFormat(decimal,precision)
 }
 
@@ -355,27 +354,100 @@ function formatTimeLong(s) {
 		mverse = arv2[id]
 		if (arv2[id]=="") mverse = "multi"
 	}
-	if (years.gte("6pt9")) return format(slog(years).pow10().div(9e6)) + " omniverse ages"
-	if (years.gte("eee56") && years.lt("eee69")) return format(years.log10().log10().div(1e56)) + " new big bangs"
-	if (years.gte("ee120") && years.lt("ee129")) return format(years.log10().div(1e120)) + " big rips"
-	if (years.gte("ee9")) return format(mlt[0].div(arv1[id])) + " " + mverse +"verse ages"
-	let scale1 = [5.39121e-44,1e-30,1e-27,1e-24,1e-21,1e-18,1e-15,1e-12,1e-9,1e-6,0.001,1,60,3600,86400,31556952,31556952e3,31556952e9,31556952e40,31556952e100]
+	if (years.gte("6pt9")) return format(slog(years).pow10().div(9e6)) + " omniverse " + pluralize(slog(years).pow10().div(9e6),"age","ages")
+	if (years.gte("eee56") && years.lt("eee69")) return format(years.log10().log10().div(1e56)) + " new big " + pluralize(years.log10().log10().div(1e56),"bang","bangs")
+	if (years.gte("ee120") && years.lt("ee129")) return format(years.log10().div(1e120)) + " big " + pluralize(years.log10().div(1e120),"rip","rips")
+	if (years.gte("ee9")) return format(mlt[0].div(arv1[id])) + " " + mverse +"verse " + pluralize(mlt[0].div(arv1[id]),"age","ages")
+	let scale1 = [5.39121e-44,1e-30,1e-27,1e-24,1e-21,1e-18,1e-15,1e-12,1e-9,1e-6,0.001,1,60,3600,86400,31556952,31556952e3,31556952e9,435e15,31556952e40,31556952e100]
 	let scale2 = [" Planck Times"," quectoseconds"," rontoseconds"," yoctoseconds"," zeptoseconds"," attoseconds"," femtoseconds"
 	," picoseconds"," nanoseconds"," microseconds"," milliseconds"," seconds"," minutes"
-	," hours", " days", " years", " millenia", " aeons", " degenerate eras", " black hole eras"]
+	," hours", " days", " years", " millenia", " aeons", " universe ages", " degenerate eras", " black hole eras"]
+	let scalesing = [" Planck Time"," quectosecond"," rontosecond"," yoctosecond"," zeptosecond"," attosecond"," femtosecond"
+	," picosecond"," nanosecond"," microsecond"," millisecond"," second"," minute"
+	," hour", " day", " year", " millenium", " aeon", " universe age", " degenerate era", " black hole era"]
 	let id2 = 0;
 		if (s.gte(scale1[scale1.length - 1])) id2 = scale1.length - 1;
 		else {
 			while (s.gte(scale1[id2])) id2++;
 			if (id2 > 0) id2--;
 		}
-	return format(s.div(scale1[id2])) + scale2[id2]
+	let mag = s.div(scale1[id2])
+	return format(mag) + pluralize(mag,scalesing[id2],scale2[id2])
 }
 function pluralize(n,singular,plural,round=false) {
 	n = new Decimal(n)
 	if ((n.eq_tolerance(1,0.0005) || (n.round().eq(1) && round==true && n.gte(1)))) return singular
 	return plural
 }
+
+function formatMass(s) {
+	s = new Decimal(s)
+	let uni = s.div(15e55)
+	let mlt = verse(uni)
+	let arv1 = [1,1e15,1e30,1e45,1e60,1e75,1e90,1e105,1e120,1e135]
+	let arv2 = ["","mega","giga","tera","peta","exa","zetta","yotta","ronna","quetta"]
+	let arv = 0;
+		if (mlt[0].gte(arv1[arv1.length - 1])) arv = arv1.length - 1;
+		else {
+			while (mlt[0].gte(arv1[arv])) arv++;
+			if (arv > 0) arv--;
+		}
+	let mverse = arv2[arv]+(arv2[arv]!=""?"-":"")+mlt[1]
+	if (mlt[1]=="multi") {
+		mverse = arv2[arv]
+		if (arv2[arv]=="") mverse = "multi"
+	}
+	if (uni.gte("6pt9")) return format(slog(uni).pow10().div(9e6)) + pluralize(slog(uni).pow10().div(9e6), " omniverse", " omniverses")
+	if (uni.gte("ee9")) return format(mlt[0].div(arv1[arv])) + " " + mverse  + pluralize(mlt[0].div(arv1[arv]), "verse", "verses")
+	let scale1 = [1.06959715e-64,1.78266192e-33,1e-30,1e-27,1e-24,1.6605390666e-24,1e-21,1e-18,1e-15,1e-12,1e-9,1e-6,2.176434e-5,0.001,1,1e3,1e6,1e9,1e12,1e15,1e18,1.619e20,5.972e27,1.989e33,2.9835e45,15e55]
+	let scale2 = [" gravitons"," electronvolt masses"," quectograms"," rontograms"," yoctograms"," daltons (atomic mass)"," zeptograms"," attograms"," femtograms"
+	," picograms"," nanograms"," micrograms"," Planck Masses"," milligrams"," grams"," kilograms"
+	," tonnes", " kilotonnes", " megatonnes", " gigatonnes", " teratonnes", " Mount Everests", " Earths", " Suns", " Milky Ways", " observable universes"]
+	let scalesing = [" graviton"," electronvolt mass"," quectogram"," rontogram"," yoctogram"," dalton (atomic mass)"," zeptogram"," attogram"," femtogram"
+	," picogram"," nanogram"," microgram"," Planck Mass"," milligram"," gram"," kilogram"
+	," tonne", " kilotonne", " megatonne", " gigatonne", " teratonne", " Mount Everest", " Earth", " Sun", " Milky Ways", " observable universe"]
+	let id = 0;
+		if (s.gte(scale1[scale1.length - 1])) id = scale1.length - 1;
+		else {
+			while (s.gte(scale1[id])) id++;
+			if (id > 0) id--;
+		}
+	let mag = s.div(scale1[id])
+	return format(mag) + pluralize(mag,scalesing[id],scale2[id])
+}
+
+function massShort(s) {
+	s = new Decimal(s)
+	let uni = s.div(15e55)
+	let mlt = verseShort(uni)
+	let arv1 = [1,1e15,1e30,1e45,1e60,1e75,1e90,1e105,1e120,1e135]
+	let arv2 = ["","mg","gg","tr","pt","ex","zt","yt","rn","qt"]
+	let arv = 0;
+		if (mlt[0].gte(arv1[arv1.length - 1])) arv = arv1.length - 1;
+		else {
+			while (mlt[0].gte(arv1[arv])) arv++;
+			if (arv > 0) arv--;
+		}
+	let mverse = arv2[arv]+(arv2[arv]!=""?"-":"")+mlt[1]
+	if (mlt[1]=="mlt") {
+		mverse = arv2[arv]+"v"
+		if (arv2[arv]=="") mverse = "mlt"
+	}
+	if (uni.gte("6pt9")) return format(slog(uni).pow10().div(9e6)) + " omni"
+	if (uni.gte("ee9")) return format(mlt[0].div(arv1[arv])) + " " + mverse
+	let scale1 = [1.06959715e-64,1.78266192e-33,1e-30,1e-27,1e-24,1.6605390666e-24,1e-21,1e-18,1e-15,1e-12,1e-9,1e-6,2.176434e-5,0.001,1,1e3,1e6,1e9,1e12,1e15,1e18,1.619e20,5.972e27,1.989e33,2.9835e45,15e55]
+	let scale2 = [" G"," eV/c<sup>2</sup>"," qg"," rg"," yg", " u"," zg"," ag"," fg"
+	," pg"," ng"," µg"," PM", " mg"," g"," kg"
+	," t", " kt"," Mt", " Gt"," Tt", " MME", " M🜨", " M☉", " MMWG", " uni"]
+	let id = 0;
+		if (s.gte(scale1[scale1.length - 1])) id = scale1.length - 1;
+		else {
+			while (s.gte(scale1[id])) id++;
+			if (id > 0) id--;
+		}
+	return format(s.div(scale1[id])) + scale2[id]
+}
+
 function formatSize(s) {
 	s = new Decimal(s)
 	let uni = s.div(8.8e26)
@@ -393,19 +465,23 @@ function formatSize(s) {
 		mverse = arv2[arv]
 		if (arv2[arv]=="") mverse = "multi"
 	}
-	if (uni.gte("6pt9")) return format(slog(uni).pow10().div(9e6)) + " omniverses"
-	if (uni.gte("ee9")) return format(mlt[0].div(arv1[arv])) + " " + mverse +"verses"
+	if (uni.gte("6pt9")) return format(slog(uni).pow10().div(9e6)) + pluralize(slog(uni).pow10().div(9e6), " omniverse", " omniverses")
+	if (uni.gte("ee9")) return format(mlt[0].div(arv1[arv])) + " " + mverse  + pluralize(mlt[0].div(arv1[arv]), "verse", "verses")
 	let scale1 = [1.616255e-35,1e-30,1e-27,1e-24,1e-21,1e-18,1e-15,1e-12,1e-9,1e-6,0.001,0.01,1,1e3,1e6,1e9,1.495978707e11,9.46e15,8.8e26]
 	let scale2 = [" Planck Lengths"," quectometers"," rontometers"," yoctometers"," zeptometers"," attometers"," femtometers"
 	," picometers"," nanometers"," micrometers"," millimeters"," centimeters"," meters"," kilometers"
 	," megameters", " gigameters", " astronomical units", " light-years", " observable universes"]
+	let scalesing = [" Planck Length"," quectometer"," rontometer"," yoctometer"," zeptometer"," attometer"," femtometer"
+	," picometer"," nanometer"," micrometer"," millimeter"," centimeter"," meter"," kilometer"
+	," megameter", " gigameter", " astronomical unit", " light-year", " observable universe"]
 	let id = 0;
 		if (s.gte(scale1[scale1.length - 1])) id = scale1.length - 1;
 		else {
 			while (s.gte(scale1[id])) id++;
 			if (id > 0) id--;
 		}
-	return format(s.div(scale1[id])) + scale2[id]
+	let mag = s.div(scale1[id])
+	return format(mag) + pluralize(mag,scalesing[id],scale2[id])
 }
 function distShort(s) {
 	s = new Decimal(s)
